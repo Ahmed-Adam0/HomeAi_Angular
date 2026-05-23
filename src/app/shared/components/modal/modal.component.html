@@ -1,0 +1,13 @@
+@if (visible) {
+  <div class="modal-backdrop d-flex align-items-center justify-content-center" (click)="onClose()">
+    <div class="modal-card rounded-4 shadow-2xl bg-white d-flex flex-column" [class]="'modal-' + size" (click)="$event.stopPropagation()">
+      <div class="modal-header d-flex justify-content-between align-items-center p-3 border-bottom">
+        <h5 class="fw-bold m-0 text-dark">{{ title }}</h5>
+        <button type="button" (click)="onClose()" class="btn-close" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4 flex-grow-1 overflow-auto">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+}

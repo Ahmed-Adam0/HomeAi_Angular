@@ -1,0 +1,19 @@
+<nav aria-label="Page navigation" class="d-flex justify-content-center my-4">
+  <ul class="pagination pagination-rounded gap-1">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="onPageClick(currentPage - 1)" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </button>
+    </li>
+    @for (page of pages; track page) {
+      <li class="page-item" [class.active]="page === currentPage">
+        <button class="page-link" (click)="onPageClick(page)">{{ page }}</button>
+      </li>
+    }
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <button class="page-link" (click)="onPageClick(currentPage + 1)" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </button>
+    </li>
+  </ul>
+</nav>

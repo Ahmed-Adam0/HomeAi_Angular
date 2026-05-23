@@ -1,0 +1,51 @@
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+      <h1 class="fw-bold text-dark m-0">Address Book</h1>
+      <p class="text-secondary m-0">Manage your shipping and billing destinations</p>
+    </div>
+  </div>
+
+  @if (addresses().length > 0) {
+    <div class="row g-4">
+      @for (addr of addresses(); track addr.id) {
+        <div class="col-md-6">
+          <div class="card border-0 shadow-sm rounded-4 p-4 address-card position-relative" [class.border-default]="addr.isDefault">
+            @if (addr.isDefault) {
+              <span class="badge bg-dark text-white position-absolute top-3 end-3 px-3 py-2 rounded-pill font-bold">
+                Default
+              </span>
+            }
+            <h5 class="fw-bold text-dark mb-1 text-capitalize">{{ addr.label }}</h5>
+            <p class="fw-semibold text-secondary small mb-3">{{ addr.fullName }}</p>
+            <div class="text-secondary small mb-4">
+              <div>{{ addr.street }}</div>
+              <div>{{ addr.city }}, {{ addr.zipCode }}</div>
+              <div>{{ addr.country }}</div>
+            </div>
+            <div class="d-flex gap-2">
+              <button (click)="openDeleteDialog(addr.id)" class="btn btn-outline-danger btn-sm px-3 rounded-pill fw-semibold">
+                Delete Address
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <app-empty-state
+      title="No addresses saved"
+      description="You have not added any delivery addresses yet."
+      icon="📍">
+    </app-empty-state>
+  }
+
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    title="Delete Address"
+    message="Are you sure you want to remove this delivery address from your profile?"
+    confirmText="Delete"
+    (confirm)="onConfirmDelete()"
+    (cancel)="onCancelDelete()">
+  </app-confirm-dialog>
+</div>

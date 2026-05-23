@@ -1,0 +1,25 @@
+.category-card {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08) !important;
+  border-color: #111;
+}
+
+.category-img-wrapper {
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9fb !important;
+}
+
+.category-badge {
+  font-size: 0.75rem;
+  border-radius: 8px;
+  padding: 6px 12px;
+}

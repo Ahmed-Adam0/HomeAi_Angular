@@ -1,0 +1,12 @@
+@if (visible) {
+  <div class="confirm-overlay d-flex align-items-center justify-content-center">
+    <div class="confirm-card p-4 rounded-4 shadow-lg bg-white border max-w-400">
+      <h4 class="fw-bold mb-2">{{ title }}</h4>
+      <p class="text-secondary mb-4">{{ message }}</p>
+      <div class="d-flex justify-content-end gap-2">
+        <button (click)="onCancel()" class="btn btn-light px-4 py-2 rounded-pill fw-semibold">{{ cancelText }}</button>
+        <button (click)="onConfirm()" class="btn btn-dark px-4 py-2 rounded-pill fw-semibold">{{ confirmText }}</button>
+      </div>
+    </div>
+  </div>
+}

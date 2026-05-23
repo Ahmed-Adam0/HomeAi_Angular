@@ -1,0 +1,6 @@
+<button (click)="toggleLanguage()" class="btn btn-outline-secondary btn-sm language-toggle-btn d-flex align-items-center gap-2 px-3 py-2 rounded-pill">
+  <span class="globe-icon">🌐</span>
+  <span class="lang-text fw-bold">
+    {{ translationService.currentLang() === 'en' ? 'العربية' : 'English' }}
+  </span>
+</button>
