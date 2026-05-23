@@ -1,0 +1,11 @@
+:root {
+  --primary-color: #111111;
+  --secondary-color: #64748b;
+  --bg-light: #f8fafc;
+  --bg-white: #ffffff;
+  --border-radius-sm: 8px;
+  --border-radius-md: 16px;
+  --border-radius-lg: 24px;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}

@@ -1,0 +1,29 @@
+.language-toggle-btn {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background-color: transparent;
+  color: #333;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.language-toggle-btn:hover {
+  background-color: #333;
+  color: #fff;
+  border-color: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.globe-icon {
+  font-size: 1rem;
+}
+
+.lang-text {
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+/* RTL support adjustments */
+[dir="rtl"] .language-toggle-btn {
+  flex-direction: row-reverse;
+}

@@ -1,0 +1,33 @@
+<div class="skeleton-wrapper w-100">
+  @for (item of arrayFromCount; track $index) {
+    @switch (type) {
+      @case ('card') {
+        <div class="skeleton-card shadow-sm mb-4 rounded border-0 p-3">
+          <div class="skeleton-img skeleton-pulse rounded mb-3"></div>
+          <div class="skeleton-title skeleton-pulse w-75 mb-2"></div>
+          <div class="skeleton-text skeleton-pulse w-50 mb-3"></div>
+          <div class="skeleton-button skeleton-pulse w-100"></div>
+        </div>
+      }
+      @case ('text') {
+        <div class="skeleton-text-block mb-3">
+          <div class="skeleton-title skeleton-pulse w-25 mb-2"></div>
+          <div class="skeleton-text skeleton-pulse w-100 mb-1"></div>
+          <div class="skeleton-text skeleton-pulse w-75"></div>
+        </div>
+      }
+      @case ('circle') {
+        <div class="skeleton-circle skeleton-pulse rounded-circle mb-3"></div>
+      }
+      @case ('list') {
+        <div class="skeleton-list-item d-flex align-items-center mb-3">
+          <div class="skeleton-avatar skeleton-pulse rounded-circle me-3"></div>
+          <div class="flex-grow-1">
+            <div class="skeleton-title skeleton-pulse w-50 mb-2"></div>
+            <div class="skeleton-text skeleton-pulse w-25"></div>
+          </div>
+        </div>
+      }
+    }
+  }
+</div>

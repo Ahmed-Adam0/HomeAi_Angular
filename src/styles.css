@@ -1,1 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import './styles/abstracts/variables.css';
+@import './styles/base/typography.css';
+@import './styles/components/buttons.css';
+@import './styles/components/cards.css';

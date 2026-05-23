@@ -1,0 +1,47 @@
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h1 class="fw-bold text-dark">Search Showroom</h1>
+    <p class="text-secondary lead">Find high-quality minimalist furniture for your workspace and home</p>
+  </div>
+
+  <div class="row justify-content-center mb-5">
+    <div class="col-md-8">
+      <app-search-bar (search)="onSearchChange($event)"></app-search-bar>
+    </div>
+  </div>
+
+  @if (loaded() && results().length > 0) {
+    <div class="search-info mb-4">
+      <h5 class="fw-bold">Search Results for "{{ query() }}" ({{ results().length }})</h5>
+    </div>
+    <div class="row g-4">
+      @for (item of results(); track item.id) {
+        <div class="col-md-6 col-lg-4">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 search-item-card">
+            <div class="card-img-placeholder py-5 bg-light text-center fs-1">🪑</div>
+            <div class="card-body p-4">
+              <span class="badge bg-secondary mb-2 text-capitalize">{{ item.category }}</span>
+              <h5 class="fw-bold mb-2">{{ item.name }}</h5>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <span class="fw-bold fs-5">${{ item.price }}</span>
+                <a [routerLink]="['/products']" class="btn btn-dark btn-sm rounded-pill px-3">View</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (loaded() && results().length === 0) {
+    <app-empty-state 
+      title="No items found" 
+      [description]="'We could not find any products matching \'' + query() + '\''" 
+      icon="🔍"
+      actionText="Browse All Products"
+      (actionClick)="onSearchChange('')">
+    </app-empty-state>
+  } @else {
+    <div class="text-center py-5 text-secondary">
+      <p class="fs-5">Start typing in the search bar above to look for furniture.</p>
+    </div>
+  }
+</div>

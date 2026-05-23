@@ -1,0 +1,17 @@
+<div class="error-container text-center d-flex flex-column align-items-center justify-content-center min-vh-100 bg-light p-4">
+  <div class="error-card shadow-lg p-5 rounded-4 bg-white max-w-500">
+    <div class="error-code mb-4">500</div>
+    <h1 class="h3 fw-bold mb-3">Server Connection Error</h1>
+    <p class="text-muted mb-4">
+      We are experiencing a temporary system disruption. Our design mechanics are fixing it. Please try reloading in a bit.
+    </p>
+    <div class="d-flex gap-3 justify-content-center">
+      <button onclick="window.location.reload()" class="btn btn-dark px-4 py-2 rounded-pill shadow-sm transition">
+        Reload Page
+      </button>
+      <a routerLink="/" class="btn btn-outline-dark px-4 py-2 rounded-pill transition">
+        Back to Home
+      </a>
+    </div>
+  </div>
+</div>

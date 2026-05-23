@@ -1,0 +1,7 @@
+<div class="section-title-wrapper mb-4" [class]="'text-' + align">
+  <h2 class="fw-bold text-dark m-0 section-main-title">{{ title }}</h2>
+  @if (subtitle) {
+    <p class="text-secondary m-0 mt-1 section-sub-title">{{ subtitle }}</p>
+  }
+  <div class="divider mt-2" [class]="'align-' + align"></div>
+</div>

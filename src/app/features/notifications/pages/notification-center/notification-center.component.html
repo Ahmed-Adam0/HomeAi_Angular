@@ -1,0 +1,48 @@
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+      <h1 class="fw-bold text-dark m-0">Notification Center</h1>
+      <p class="text-secondary m-0">Stay updated on your design recommendations and orders</p>
+    </div>
+    @if (notificationsList().length > 0) {
+      <button (click)="clearAll()" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+        Clear All
+      </button>
+    }
+  </div>
+
+  @if (notificationsList().length > 0) {
+    <div class="list-group gap-2">
+      @for (item of notificationsList(); track item.id) {
+        <div class="list-group-item list-group-item-action border rounded-3 p-3 position-relative notification-item" [class.unread-item]="!item.read" (click)="markRead(item.id)">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                @switch (item.type) {
+                  @case ('success') { <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Success</span> }
+                  @case ('error') { <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">Error</span> }
+                  @case ('warning') { <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1">Warning</span> }
+                  @case ('info') { <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1">Update</span> }
+                }
+                <h5 class="fw-bold text-dark m-0 fs-6">{{ item.title }}</h5>
+              </div>
+              <p class="text-secondary small m-0">{{ item.message }}</p>
+              <span class="text-muted extra-small mt-2 d-block">{{ item.createdAt | date: 'shortTime' }}</span>
+            </div>
+            @if (!item.read) {
+              <span class="unread-dot position-absolute top-3 end-3 rounded-circle"></span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <app-empty-state
+      title="All caught up!"
+      description="You have no notifications at the moment."
+      icon="🔔"
+      actionText="Return to Showroom"
+      (actionClick)="clearAll()">
+    </app-empty-state>
+  }
+</div>

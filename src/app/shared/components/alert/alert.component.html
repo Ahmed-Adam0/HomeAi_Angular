@@ -1,0 +1,18 @@
+@if (visible && message) {
+  <div class="alert d-flex align-items-center justify-content-between p-3 mb-3 border rounded-3 alert-dismissible" [class]="'alert-' + type">
+    <div class="d-flex align-items-center gap-2">
+      <span class="alert-icon">
+        @switch (type) {
+          @case ('success') { ✅ }
+          @case ('danger') { ❌ }
+          @case ('warning') { ⚠️ }
+          @case ('info') { ℹ️ }
+        }
+      </span>
+      <span class="alert-text fw-medium">{{ message }}</span>
+    </div>
+    @if (dismissible) {
+      <button type="button" (click)="onClose()" class="btn-close" aria-label="Close"></button>
+    }
+  </div>
+}

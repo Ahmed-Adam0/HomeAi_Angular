@@ -1,0 +1,23 @@
+{
+  "APP_TITLE": "FurniMind AI",
+  "NAV_HOME": "Home",
+  "NAV_PRODUCTS": "Products",
+  "NAV_CART": "Cart",
+  "NAV_FAVORITES": "Favorites",
+  "NAV_ORDERS": "Orders",
+  "NAV_AI_CHAT": "AI Designer",
+  "NAV_ABOUT": "About Us",
+  "NAV_CONTACT": "Contact",
+  "NAV_LOGIN": "Login",
+  "NAV_REGISTER": "Register",
+  "NAV_PROFILE": "Profile",
+  "SEARCH_PLACEHOLDER": "Search modern furniture...",
+  "ADD_TO_CART": "Add to Cart",
+  "EMPTY_CART": "Your cart is empty",
+  "CHECKOUT": "Proceed to Checkout",
+  "CURRENCY": "$",
+  "LANG_SWITCH": "العربية",
+  "ERROR_NOT_FOUND": "Page Not Found",
+  "ERROR_UNAUTHORIZED": "Access Denied",
+  "ERROR_SERVER": "Server Connection Error"
+}

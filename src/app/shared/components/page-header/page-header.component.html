@@ -1,0 +1,29 @@
+<div class="page-header-banner bg-dark text-white py-5 mb-4 position-relative overflow-hidden">
+  <div class="header-overlay position-absolute start-0 top-0 w-100 h-100 bg-black-50"></div>
+  <div class="container position-relative z-index-1">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h1 class="fw-bold tracking-tight mb-2">{{ title }}</h1>
+        @if (subtitle) {
+          <p class="text-white-50 lead m-0">{{ subtitle }}</p>
+        }
+      </div>
+      @if (breadcrumbs.length > 0) {
+        <div class="col-md-4 mt-3 mt-md-0 d-md-flex justify-content-md-end">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item"><a routerLink="/" class="text-white-50 text-decoration-none">Home</a></li>
+              @for (bc of breadcrumbs; track $index; let last = $last) {
+                @if (last) {
+                  <li class="breadcrumb-item active text-white" aria-current="page">{{ bc.label }}</li>
+                } @else {
+                  <li class="breadcrumb-item"><a [routerLink]="bc.url" class="text-white-50 text-decoration-none">{{ bc.label }}</a></li>
+                }
+              }
+            </ol>
+          </nav>
+        </div>
+      }
+    </div>
+  </div>
+</div>

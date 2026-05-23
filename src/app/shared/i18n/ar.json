@@ -1,0 +1,23 @@
+{
+  "APP_TITLE": "فورني مايند الذكي",
+  "NAV_HOME": "الرئيسية",
+  "NAV_PRODUCTS": "المنتجات",
+  "NAV_CART": "عربة التسوق",
+  "NAV_FAVORITES": "المفضلة",
+  "NAV_ORDERS": "الطلبات",
+  "NAV_AI_CHAT": "المصمم الذكي",
+  "NAV_ABOUT": "من نحن",
+  "NAV_CONTACT": "اتصل بنا",
+  "NAV_LOGIN": "تسجيل الدخول",
+  "NAV_REGISTER": "إنشاء حساب",
+  "NAV_PROFILE": "الملف الشخصي",
+  "SEARCH_PLACEHOLDER": "ابحث عن أثاث عصري...",
+  "ADD_TO_CART": "أضف إلى السلة",
+  "EMPTY_CART": "عربة التسوق فارغة",
+  "CHECKOUT": "الذهاب للدفع",
+  "CURRENCY": "ج.م",
+  "LANG_SWITCH": "English",
+  "ERROR_NOT_FOUND": "الصفحة غير موجودة",
+  "ERROR_UNAUTHORIZED": "غير مسموح بالدخول",
+  "ERROR_SERVER": "خطأ في الاتصال بالخادم"
+}

@@ -1,0 +1,46 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card border-0 shadow-lg p-4 p-md-5 rounded-4 bg-white">
+        <h2 class="fw-bold mb-4 text-center">Complete Payment</h2>
+
+        @if (processing()) {
+          <app-loading-spinner size="lg" message="Authorizing transaction..."></app-loading-spinner>
+        } @else {
+          @if (errorMessage()) {
+            <app-alert type="danger" [message]="errorMessage()"></app-alert>
+          }
+          @if (successMessage()) {
+            <app-alert type="success" [message]="successMessage()"></app-alert>
+          }
+
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3 text-secondary">Select Payment Option</h5>
+            <div class="list-group gap-2">
+              @for (method of paymentMethods(); track method.id) {
+                <button (click)="selectProvider(method.provider)" class="list-group-item list-group-item-action border rounded-3 p-3 d-flex align-items-center justify-content-between option-item" [class.active-option]="selectedProvider() === method.provider">
+                  <div class="d-flex align-items-center gap-3">
+                    <span class="fs-3">{{ method.icon }}</span>
+                    <span class="fw-bold">{{ method.name }}</span>
+                  </div>
+                  <span class="indicator"></span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="border-top pt-4 mb-4">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-secondary">Amount due</span>
+              <span class="fw-bold">$249.99</span>
+            </div>
+          </div>
+
+          <button (click)="pay()" class="btn btn-dark w-100 py-3 rounded-pill fw-bold fs-5 shadow-sm transition">
+            Pay Now
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

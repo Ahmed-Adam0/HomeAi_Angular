@@ -1,0 +1,18 @@
+.search-item-card {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.search-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06) !important;
+  border-color: #111;
+}
+
+.card-img-placeholder {
+  background-color: #f9f9fb !important;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

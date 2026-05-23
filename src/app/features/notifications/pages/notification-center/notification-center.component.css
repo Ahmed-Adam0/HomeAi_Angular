@@ -1,0 +1,27 @@
+.notification-item {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.notification-item:hover {
+  background-color: #f9f9fb;
+  border-color: #333 !important;
+}
+
+.unread-item {
+  background-color: #f8fafc;
+  border-left: 4px solid #1e293b !important;
+}
+
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #3b82f6;
+  right: 1.5rem;
+  top: 1.5rem;
+}
+
+.extra-small {
+  font-size: 0.7rem;
+}
