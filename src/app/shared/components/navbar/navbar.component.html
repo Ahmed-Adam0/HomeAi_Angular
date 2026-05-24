@@ -1,37 +1,391 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top custom-navbar">
-  <div class="container">
+<!-- Top Black Bar -->
+<div class="top-bar py-2 text-white bg-dark-custom">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <!-- Social Links -->
+    <div class="social-links d-flex gap-3">
+      <a href="https://facebook.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+      <a href="https://instagram.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+      <a href="https://twitter.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
+      <a href="https://linkedin.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      <a href="https://youtube.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+    </div>
 
-    <!-- Logo -->
-    <a class="navbar-brand fw-bold fs-4" href="#">MyWebsite</a>
+    <!-- Contact Info -->
+    <div class="contact-info d-flex align-items-center gap-2">
+      <span class="fs-7 font-secondary font-weight-medium tracking-wide">+1-202-555-0172</span>
+    </div>
 
-    <!-- Toggle -->
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <!-- Utility Links & Dropdowns -->
+    <div class="utility-links d-flex align-items-center gap-3">
+      <a routerLink="/about" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{ 'NAV_ABOUT_US' | translate }}</a>
+      <span class="bar-separator">•</span>
+      <a routerLink="/contact" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{ 'NAV_CONTACT_US' | translate }}</a>
+      <span class="bar-separator">•</span>
 
-    <!-- Content -->
-    <div class="collapse navbar-collapse" id="navbar">
-      
-      <!-- Links -->
-      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3 text-center">
+      <!-- Language Dropdown -->
+      <div class="dropdown-wrapper position-relative">
+        <button class="dropdown-trigger text-white bg-transparent border-0 opacity-75 hover-opacity-100 fs-7 p-0 d-flex align-items-center gap-1"
+                (click)="toggleLanguageDropdown($event)">
+          <span>{{ selectedLanguage().label }}</span>
+          <i class="bi bi-chevron-down fs-8"></i>
+        </button>
+        @if (isLanguageDropdownOpen()) {
+          <ul class="dropdown-menu-custom position-absolute end-0 mt-2 py-1 shadow bg-white rounded list-unstyled z-3">
+            @for (lang of languages(); track lang.code) {
+              <li>
+                <button class="dropdown-item-custom w-100 text-start px-3 py-1-5 border-0 bg-transparent fs-7 d-flex align-items-center gap-2"
+                        (click)="selectLanguage(lang)">
+                   <span>{{ lang.flag }}</span>
+                   <span>{{ lang.label }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
 
-         <li class="nav-item">
-          <a class="nav-link active"  routerLinkActive="active-link" routerLink="/profile">profile</a>
-        </li>
+      <span class="bar-separator">•</span>
 
-        <li class="nav-item">
-          <a class="nav-link"  routerLinkActive="active-link" routerLink="/filter-sidebar">filter-sidebar</a>
-        </li>
+      <!-- Currency Dropdown -->
+      <div class="dropdown-wrapper position-relative">
+        <button class="dropdown-trigger text-white bg-transparent border-0 opacity-75 hover-opacity-100 fs-7 p-0 d-flex align-items-center gap-1"
+                (click)="toggleCurrencyDropdown($event)">
+          <span>{{ selectedCurrency().symbol }} {{ selectedCurrency().code }}</span>
+          <i class="bi bi-chevron-down fs-8"></i>
+        </button>
+        @if (isCurrencyDropdownOpen()) {
+          <ul class="dropdown-menu-custom position-absolute end-0 mt-2 py-1 shadow bg-white rounded list-unstyled z-3">
+            @for (curr of currencies(); track curr.code) {
+              <li>
+                <button class="dropdown-item-custom w-100 text-start px-3 py-1-5 border-0 bg-transparent fs-7 d-flex align-items-center gap-2"
+                        (click)="selectCurrency(curr)">
+                  <span>{{ curr.symbol }}</span>
+                  <span>{{ curr.label }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  </div>
+</div>
 
-      </ul>
-        
+<!-- Main Navigation Bar -->
+<header class="main-header bg-white sticky-top shadow-sm" (click)="closeAllDropdowns()">
+  <div class="container d-flex align-items-center justify-content-between py-3">
 
-      <!-- Buttons -->
-      <div class="d-flex gap-2 ms-lg-4 mt-3 mt-lg-0 justify-content-center">
-        <a href="#" class="btn btn-outline-light px-4" routerLink="/Login">Login</a>
-        <a href="#" class="btn btn-primary px-4" routerLink="/Register">Sign Up</a>
+    <!-- Brand Logo -->
+    <a routerLink="/" class="logo-area d-flex align-items-center gap-2 text-decoration-none">
+      <div class="logo-box d-flex align-items-center justify-content-center">
+        <!-- Minimalist Luxury Furniture Outline Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="logo-svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3.545L12.75 9M12.75 9H6.75M12.75 9v12" />
+        </svg>
+      </div>
+      <div class="logo-text d-flex flex-column">
+        <span class="brand-name font-primary fw-bold tracking-tight text-dark">FurniMind</span>
+        <span class="brand-sub font-secondary tracking-widest text-gold text-uppercase fs-9">AI PORTAL</span>
+      </div>
+    </a>
+
+    <!-- Desktop Menu Navigation (Center) -->
+    <nav class="desktop-nav d-none d-lg-flex align-items-center gap-4">
+      @for (link of mainNavLinks(); track link.labelEn) {
+        @if (link.hasDropdown) {
+          <!-- Products (Mega Menu Trigger) -->
+          <div class="nav-item-wrapper"
+               (mouseenter)="onMouseEnter()"
+               (mouseleave)="onMouseLeave()">
+            <a class="nav-link-custom d-flex align-items-center gap-1.5 cursor-pointer"
+               [class.active]="activeMainLink() === link.labelEn">
+              <i class="bi bi-justify-left fs-5 hamburger-menu-icon"></i>
+              <span>{{ translationService.currentLang() === 'ar' ? link.labelAr : link.labelEn }}</span>
+              <i class="bi bi-chevron-down fs-8 arrow-icon"></i>
+            </a>
+          </div>
+        } @else {
+          <!-- Rooms, Inspirations, Offers & promotions -->
+          <div class="nav-item-wrapper">
+            <a [routerLink]="[link.route]"
+               class="nav-link-custom d-flex align-items-center gap-1"
+               [class.highlighted-link]="link.labelEn === 'Inspirations'"
+               [class.active]="activeMainLink() === link.labelEn"
+               (click)="selectMainLink(link.labelEn)">
+              <span>{{ translationService.currentLang() === 'ar' ? link.labelAr : link.labelEn }}</span>
+              @if (link.labelEn === 'Rooms' || link.labelEn === 'Inspirations') {
+                <i class="bi bi-chevron-down fs-8 arrow-icon"></i>
+              }
+            </a>
+          </div>
+        }
+      }
+    </nav>
+
+    <!-- Desktop Actions (Right Side) -->
+    <div class="actions-area d-flex align-items-center gap-3">
+      <!-- Search Input (Bottom Line Style) -->
+      <div class="search-wrapper d-none d-md-flex align-items-center position-relative">
+        <input type="text"
+               class="search-input bg-transparent border-0 py-1 pe-4 fs-7"
+               [placeholder]="'NAV_SEARCH_PLACEHOLDER' | translate"
+               [value]="searchInput()"
+               (input)="onSearch($event)">
+        <i class="bi bi-search search-icon position-absolute end-0 cursor-pointer"></i>
+      </div>
+
+      <!-- User Profile Link -->
+      <a routerLink="/profile" (click)="onProfileSelect()" class="action-btn text-dark text-decoration-none" aria-label="Profile">
+        <i class="bi bi-person fs-5"></i>
+      </a>
+
+      <!-- Wishlist with Badge -->
+      <a routerLink="/wishlist" (click)="onWishlistSelect()" class="action-btn text-dark text-decoration-none position-relative" aria-label="Wishlist">
+        <i class="bi bi-heart fs-5"></i>
+        @if (wishlistCount() > 0) {
+          <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
+            {{ wishlistCount() }}
+          </span>
+        }
+      </a>
+
+      <!-- Cart with Badge -->
+      <a routerLink="/cart" (click)="onCartSelect()" class="action-btn text-dark text-decoration-none position-relative" aria-label="Shopping Cart">
+        <i class="bi bi-bag fs-5"></i>
+        @if (cartCount() > 0) {
+          <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
+            {{ cartCount() }}
+          </span>
+        }
+      </a>
+
+      <!-- Mobile Hamburger Toggle -->
+      <button class="mobile-toggle border-0 bg-transparent p-0 d-block d-lg-none"
+              (click)="toggleMobileMenu()"
+              [attr.aria-expanded]="isMobileMenuOpen()"
+              aria-label="Toggle Navigation">
+        <i class="bi bi-list fs-3 text-dark"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mega Menu Dropdown (Desktop Only) -->
+  <div class="mega-menu shadow-lg border-top"
+       [class.show]="isMegaMenuOpen()"
+       (mouseenter)="onMouseEnter()"
+       (mouseleave)="onMouseLeave()">
+    <div class="container py-4">
+
+      <!-- Top Section: Category Row -->
+      <div class="categories-row d-flex justify-content-between align-items-center flex-wrap gap-3 pb-4 mb-4 border-bottom">
+        @for (category of categoryItems(); track category.id) {
+          <a [routerLink]="['/categories', category.id]"
+             (click)="onCategorySelect(category)"
+             class="category-card d-flex align-items-center gap-2 text-decoration-none">
+            <div class="category-icon-circle d-flex align-items-center justify-content-center bg-light-cream">
+              @if (category.svgPath) {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="category-svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="category.svgPath" />
+                </svg>
+              } @else {
+                <i [class]="category.icon + ' fs-5 text-dark'"></i>
+              }
+            </div>
+            <span class="category-label font-primary fs-7 text-dark fw-medium">
+              {{ translationService.currentLang() === 'ar' ? category.nameAr : category.nameEn }}
+            </span>
+          </a>
+        }
+      </div>
+
+      <!-- Bottom Section: Columns & Promo Banner -->
+      <div class="row g-4">
+        <!-- 4-Column Directory -->
+        <div class="col-xl-8 col-lg-7">
+          <div class="row row-cols-2 row-cols-sm-4 g-3">
+            @for (column of megaMenuColumns(); track column.titleEn) {
+              <div class="col">
+                <h6 class="column-title font-primary fw-bold text-dark mb-3 text-uppercase tracking-wider fs-7">
+                  {{ translationService.currentLang() === 'ar' ? column.titleAr : column.titleEn }}
+                </h6>
+                <ul class="column-list list-unstyled d-flex flex-column gap-2 mb-0">
+                  @for (item of column.items; track item.nameEn) {
+                    <li>
+                      <a [routerLink]="['/search']" [queryParams]="{ q: item.nameEn }" class="column-link text-decoration-none text-muted fs-7 hover-text-gold">
+                        {{ translationService.currentLang() === 'ar' ? item.nameAr : item.nameEn }}
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Right Side: Luxury Promo Banner Card -->
+        <div class="col-xl-4 col-lg-5" (click)="onPromoSelect(promoBanner())">
+          <div class="promo-banner-card overflow-hidden position-relative rounded shadow-sm cursor-pointer">
+            <img [src]="promoBanner().imageUrl" alt="Promo Furniture" class="promo-image w-100 h-100 object-fit-cover position-absolute top-0 start-0">
+            <div class="promo-overlay d-flex flex-column justify-content-end p-4 position-relative z-1 text-white">
+              <h4 class="promo-title font-secondary fw-bold text-white mb-2 fs-3 leading-tight">
+                {{ translationService.currentLang() === 'ar' ? promoBanner().titleAr : promoBanner().titleEn }}
+              </h4>
+              <p class="promo-description fs-7 text-white-50 mb-4">
+                {{ translationService.currentLang() === 'ar' ? promoBanner().subtitleAr : promoBanner().subtitleEn }}
+              </p>
+              <a [routerLink]="[promoBanner().link]" class="promo-cta d-flex align-items-center gap-2 text-white fw-bold text-decoration-none fs-7">
+                <span>{{ translationService.currentLang() === 'ar' ? promoBanner().ctaTextAr : promoBanner().ctaTextEn }}</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
   </div>
-</nav>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div class="mobile-drawer position-fixed top-0 bottom-0 start-0 shadow-lg bg-white z-5 d-flex flex-column"
+     [class.show]="isMobileMenuOpen()">
+  <!-- Drawer Header -->
+  <div class="drawer-header d-flex align-items-center justify-content-between p-3 border-bottom">
+    <div class="logo-area d-flex align-items-center gap-2">
+      <div class="logo-box-mini d-flex align-items-center justify-content-center bg-gold">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" class="logo-svg-mini">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3.545L12.75 9M12.75 9H6.75M12.75 9v12" />
+        </svg>
+      </div>
+      <span class="brand-name font-primary fw-bold text-dark fs-5">FurniMind AI</span>
+    </div>
+    <button class="btn-close-custom border-0 bg-transparent p-0" (click)="toggleMobileMenu()" aria-label="Close Drawer">
+      <i class="bi bi-x-lg fs-4 text-dark"></i>
+    </button>
+  </div>
+
+  <!-- Drawer Body -->
+  <div class="drawer-body flex-grow-1 overflow-y-auto p-3">
+    <!-- Search in Mobile -->
+    <div class="mobile-search mb-4 position-relative">
+      <input type="text"
+             class="form-control rounded-pill border-light-cream px-3 py-2 fs-7"
+             [placeholder]="'NAV_SEARCH_PRODUCTS' | translate"
+             [value]="searchInput()"
+             (input)="onSearch($event)">
+      <i class="bi bi-search position-absolute end-0 top-50 translate-middle-y me-3 text-muted"></i>
+    </div>
+
+    <!-- Navigation Accordion -->
+    <div class="mobile-nav-list d-flex flex-column gap-1">
+      <!-- Products Accordion -->
+      <div class="accordion-item-custom">
+        <button class="accordion-trigger-custom w-100 d-flex justify-content-between align-items-center py-2 px-1 border-0 bg-transparent fs-6 fw-semibold text-dark"
+                (click)="toggleMobileAccordion('products')">
+          <span class="d-flex align-items-center gap-2"><i class="bi bi-grid-fill text-gold fs-7"></i> {{ 'NAV_PRODUCTS' | translate }}</span>
+          <i class="bi" [class.bi-chevron-down]="activeMobileAccordion() !== 'products'" [class.bi-chevron-up]="activeMobileAccordion() === 'products'"></i>
+        </button>
+        @if (activeMobileAccordion() === 'products') {
+          <div class="accordion-content-custom ps-3 py-2 border-start ms-2">
+            <!-- Render categories inline -->
+            <div class="mobile-categories d-flex flex-column gap-2 mb-3">
+              <span class="text-uppercase tracking-wider fs-9 fw-bold text-muted">{{ 'NAV_QUICK_CATEGORIES' | translate }}</span>
+              @for (cat of categoryItems(); track cat.id) {
+                <a [routerLink]="['/categories', cat.id]"
+                   class="mobile-nav-sublink text-decoration-none text-muted py-1 d-block fs-7"
+                   (click)="onCategorySelect(cat); toggleMobileMenu()">
+                  {{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}
+                </a>
+              }
+            </div>
+            <!-- Render columns -->
+            @for (col of megaMenuColumns(); track col.titleEn) {
+              <div class="mobile-menu-col-sub mb-3">
+                <span class="text-uppercase tracking-wider fs-9 fw-bold text-muted d-block mb-1">
+                  {{ translationService.currentLang() === 'ar' ? col.titleAr : col.titleEn }}
+                </span>
+                @for (sub of col.items; track sub.nameEn) {
+                  <a [routerLink]="['/search']" [queryParams]="{ q: sub.nameEn }" class="mobile-nav-sublink text-decoration-none text-muted py-1 d-block fs-7" (click)="toggleMobileMenu()">
+                    {{ translationService.currentLang() === 'ar' ? sub.nameAr : sub.nameEn }}
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Rooms Accordion -->
+      <div class="accordion-item-custom">
+        <button class="accordion-trigger-custom w-100 d-flex justify-content-between align-items-center py-2 px-1 border-0 bg-transparent fs-6 fw-semibold text-dark"
+                (click)="toggleMobileAccordion('rooms')">
+          <span class="d-flex align-items-center gap-2"><i class="bi bi-house-door-fill text-gold fs-7"></i> {{ 'NAV_ROOMS' | translate }}</span>
+          <i class="bi" [class.bi-chevron-down]="activeMobileAccordion() !== 'rooms'" [class.bi-chevron-up]="activeMobileAccordion() === 'rooms'"></i>
+        </button>
+        @if (activeMobileAccordion() === 'rooms') {
+          <div class="accordion-content-custom ps-3 py-2 border-start ms-2">
+            @for (room of megaMenuColumns()[1].items; track room.nameEn) {
+              <a [routerLink]="['/search']" [queryParams]="{ q: room.nameEn }" class="mobile-nav-sublink text-decoration-none text-muted py-1.5 d-block fs-7" (click)="toggleMobileMenu()">
+                {{ translationService.currentLang() === 'ar' ? room.nameAr : room.nameEn }}
+              </a>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Inspirations -->
+      <a routerLink="/inspirations"
+         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-gold d-flex align-items-center gap-2 fs-6"
+         (click)="toggleMobileMenu()">
+        <i class="bi bi-lightbulb-fill fs-7"></i>
+        <span>{{ 'NAV_INSPIRATIONS' | translate }}</span>
+      </a>
+
+      <!-- Offers -->
+      <a routerLink="/offers"
+         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+         (click)="toggleMobileMenu()">
+        <i class="bi bi-percent fs-7"></i>
+        <span>{{ 'NAV_OFFERS' | translate }}</span>
+      </a>
+    </div>
+
+    <!-- Divider -->
+    <hr class="my-4 border-light-cream">
+
+    <!-- Secondary Utilities -->
+    <div class="mobile-utilities d-flex flex-column gap-2 mb-4">
+      <a routerLink="/about" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{ 'NAV_ABOUT_US' | translate }}</a>
+      <a routerLink="/blog" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{ 'NAV_BLOG' | translate }}</a>
+      <a routerLink="/contact" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{ 'NAV_CONTACT_US' | translate }}</a>
+    </div>
+
+    <!-- Language & Currency inside drawer -->
+    <div class="mobile-selectors bg-light-cream p-3 rounded d-flex justify-content-between">
+      <div class="mobile-selector">
+        <label class="fs-9 text-uppercase tracking-wider text-muted fw-bold d-block mb-1">{{ 'NAV_LANGUAGE' | translate }}</label>
+        <span class="fs-7 text-dark fw-medium">{{ selectedLanguage().flag }} {{ selectedLanguage().label }}</span>
+      </div>
+      <div class="mobile-selector text-end">
+        <label class="fs-9 text-uppercase tracking-wider text-muted fw-bold d-block mb-1">{{ 'NAV_CURRENCY' | translate }}</label>
+        <span class="fs-7 text-dark fw-medium">{{ selectedCurrency().symbol }} {{ selectedCurrency().code }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer Footer -->
+  <div class="drawer-footer p-3 border-top d-flex gap-3 justify-content-center">
+    <a href="https://facebook.com" class="text-dark opacity-70"><i class="bi bi-facebook fs-5"></i></a>
+    <a href="https://instagram.com" class="text-dark opacity-70"><i class="bi bi-instagram fs-5"></i></a>
+    <a href="https://twitter.com" class="text-dark opacity-70"><i class="bi bi-twitter-x"></i></a>
+    <a href="https://linkedin.com" class="text-dark opacity-70"><i class="bi bi-linkedin fs-5"></i></a>
+    <a href="https://youtube.com" class="text-dark opacity-70"><i class="bi bi-youtube fs-5"></i></a>
+  </div>
+</div>
+
+<!-- Backdrop (Mobile/Tablet drawer trigger overlay) -->
+@if (isMobileMenuOpen()) {
+  <div class="drawer-backdrop position-fixed top-0 bottom-0 start-0 end-0 z-4"
+       (click)="toggleMobileMenu()">
+  </div>
+}

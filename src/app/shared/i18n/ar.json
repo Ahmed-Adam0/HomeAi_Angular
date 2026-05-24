@@ -19,5 +19,16 @@
   "LANG_SWITCH": "English",
   "ERROR_NOT_FOUND": "الصفحة غير موجودة",
   "ERROR_UNAUTHORIZED": "غير مسموح بالدخول",
-  "ERROR_SERVER": "خطأ في الاتصال بالخادم"
+  "ERROR_SERVER": "خطأ في الاتصال بالخادم",
+  "NAV_ABOUT_US": "من نحن",
+  "NAV_BLOG": "المدونة",
+  "NAV_CONTACT_US": "اتصل بنا",
+  "NAV_ROOMS": "الغرف",
+  "NAV_INSPIRATIONS": "الأفكار الملهمة",
+  "NAV_OFFERS": "العروض والتنزيلات",
+  "NAV_SEARCH_PLACEHOLDER": "ابحث عن المنتجات...",
+  "NAV_QUICK_CATEGORIES": "الفئات السريعة",
+  "NAV_LANGUAGE": "اللغة",
+  "NAV_CURRENCY": "العملة",
+  "NAV_SEARCH_PRODUCTS": "ابحث عن المنتجات..."
 }

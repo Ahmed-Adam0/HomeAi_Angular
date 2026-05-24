@@ -19,5 +19,16 @@
   "LANG_SWITCH": "العربية",
   "ERROR_NOT_FOUND": "Page Not Found",
   "ERROR_UNAUTHORIZED": "Access Denied",
-  "ERROR_SERVER": "Server Connection Error"
+  "ERROR_SERVER": "Server Connection Error",
+  "NAV_ABOUT_US": "About us",
+  "NAV_BLOG": "Blog",
+  "NAV_CONTACT_US": "Contact",
+  "NAV_ROOMS": "Rooms",
+  "NAV_INSPIRATIONS": "Inspirations",
+  "NAV_OFFERS": "Offers & promotions",
+  "NAV_SEARCH_PLACEHOLDER": "Search for products",
+  "NAV_QUICK_CATEGORIES": "Quick Categories",
+  "NAV_LANGUAGE": "Language",
+  "NAV_CURRENCY": "Currency",
+  "NAV_SEARCH_PRODUCTS": "Search products..."
 }

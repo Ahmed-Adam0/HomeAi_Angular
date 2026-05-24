@@ -1,1 +1,20 @@
-<p>button works!</p>
+<button
+  [type]="type()"
+  [class]="buttonClass()"
+  [disabled]="isButtonDisabled()"
+  (click)="onClick($event)"
+>
+  @if (isLoading()) {
+    <span class="btn-spinner-container">
+      <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
+    </span>
+  }
+
+  <span class="btn-content" [class.btn-content-hidden]="isLoading()">
+    @if (label()) {
+      {{ label() }}
+    } @else {
+      <ng-content></ng-content>
+    }
+  </span>
+</button>

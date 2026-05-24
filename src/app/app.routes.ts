@@ -1,124 +1,206 @@
 import { Routes } from '@angular/router';
+
 import { APP_ROUTES } from './core/constants';
+
 import { MainLayoutComponent } from './core/layouts/main-layout/main-layout.component';
 import { AuthLayoutComponent } from './core/layouts/auth-layout/auth-layout.component';
 import { EmptyLayoutComponent } from './core/layouts/empty-layout/empty-layout.component';
 
 export const routes: Routes = [
-  // Auth Layout wrapper for authentication routes
+
+  // =========================
+  // AUTH LAYOUT
+  // =========================
   {
-    path: '',
+    path: 'auth',
     component: AuthLayoutComponent,
+
     children: [
       {
         path: '',
+        redirectTo: APP_ROUTES.LOGIN,
+        pathMatch: 'full',
+      },
+
+      {
+        path: '',
         loadChildren: () =>
-          import('./features/auth/auth.routes').then((m) => m.authRoutes),
+          import('./features/auth/auth.routes').then(
+            (m) => m.authRoutes
+          ),
       },
     ],
   },
 
-  // Main Layout wrapper for shop and customer routes
+  // =========================
+  // MAIN LAYOUT
+  // =========================
   {
     path: '',
     component: MainLayoutComponent,
+
     children: [
+
+      // Home
       {
         path: '',
         loadChildren: () =>
-          import('./features/home/home.routes').then((m) => m.homeRoutes),
+          import('./features/home/home.routes').then(
+            (m) => m.homeRoutes
+          ),
       },
+
+      // Products
       {
         path: '',
         loadChildren: () =>
-          import('./features/products/products.routes').then((m) => m.productsRoutes),
+          import('./features/products/products.routes').then(
+            (m) => m.productsRoutes
+          ),
       },
+
+      // Cart
       {
         path: '',
         loadChildren: () =>
-          import('./features/cart/cart.routes').then((m) => m.cartRoutes),
+          import('./features/cart/cart.routes').then(
+            (m) => m.cartRoutes
+          ),
       },
+
+      // Profile
       {
         path: '',
         loadChildren: () =>
-          import('./features/profile/profile.routes').then((m) => m.profileRoutes),
+          import('./features/profile/profile.routes').then(
+            (m) => m.profileRoutes
+          ),
       },
+
+      // Favorites
       {
         path: '',
         loadChildren: () =>
-          import('./features/favorites/favorites.routes').then((m) => m.favoritesRoutes),
+          import('./features/favorites/favorites.routes').then(
+            (m) => m.favoritesRoutes
+          ),
       },
+
+      // Orders
       {
         path: '',
         loadChildren: () =>
-          import('./features/orders/orders.routes').then((m) => m.ordersRoutes),
+          import('./features/orders/orders.routes').then(
+            (m) => m.ordersRoutes
+          ),
       },
+
+      // AI Chat
       {
         path: '',
         loadChildren: () =>
-          import('./features/ai/ai.routes').then((m) => m.aiRoutes),
+          import('./features/ai/ai.routes').then(
+            (m) => m.aiRoutes
+          ),
       },
-      // New domain features loaded under Main Layout
+
+      // Categories
       {
         path: '',
         loadChildren: () =>
-          import('./features/categories/categories.routes').then((m) => m.categoriesRoutes),
+          import('./features/categories/categories.routes').then(
+            (m) => m.categoriesRoutes
+          ),
       },
+
+      // Search
       {
         path: '',
         loadChildren: () =>
-          import('./features/search/search.routes').then((m) => m.searchRoutes),
+          import('./features/search/search.routes').then(
+            (m) => m.searchRoutes
+          ),
       },
+
+      // Checkout
       {
         path: '',
         loadChildren: () =>
-          import('./features/checkout/checkout.routes').then((m) => m.checkoutRoutes),
+          import('./features/checkout/checkout.routes').then(
+            (m) => m.checkoutRoutes
+          ),
       },
+
+      // Notifications
       {
         path: '',
         loadChildren: () =>
-          import('./features/notifications/notifications.routes').then((m) => m.notificationsRoutes),
+          import('./features/notifications/notifications.routes').then(
+            (m) => m.notificationsRoutes
+          ),
       },
+
+      // Addresses
       {
         path: '',
         loadChildren: () =>
-          import('./features/addresses/addresses.routes').then((m) => m.addressesRoutes),
+          import('./features/addresses/addresses.routes').then(
+            (m) => m.addressesRoutes
+          ),
       },
+
+      // About
       {
         path: '',
         loadChildren: () =>
-          import('./features/about/about.routes').then((m) => m.aboutRoutes),
+          import('./features/about/about.routes').then(
+            (m) => m.aboutRoutes
+          ),
       },
+
+      // Contact
       {
         path: '',
         loadChildren: () =>
-          import('./features/contact/contact.routes').then((m) => m.contactRoutes),
+          import('./features/contact/contact.routes').then(
+            (m) => m.contactRoutes
+          ),
       },
     ],
   },
 
-  // Empty Layout wrapper for errors and full screen checkout/payments
+  // =========================
+  // EMPTY LAYOUT
+  // =========================
   {
     path: '',
     component: EmptyLayoutComponent,
+
     children: [
       {
         path: '',
         loadChildren: () =>
-          import('./features/errors/errors.routes').then((m) => m.errorsRoutes),
+          import('./features/errors/errors.routes').then(
+            (m) => m.errorsRoutes
+          ),
       },
+
       {
         path: '',
         loadChildren: () =>
-          import('./features/payment/payment.routes').then((m) => m.paymentRoutes),
+          import('./features/payment/payment.routes').then(
+            (m) => m.paymentRoutes
+          ),
       },
     ],
   },
 
-  // Wildcard / Not Found Route redirects to /404 page
+  // =========================
+  // NOT FOUND
+  // =========================
   {
     path: APP_ROUTES.WILDCARD,
-    redirectTo: '/404',
-    pathMatch: 'full'
+    redirectTo: APP_ROUTES.NOT_FOUND,
+    pathMatch: 'full',
   },
 ];
