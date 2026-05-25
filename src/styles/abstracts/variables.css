@@ -1,11 +1,232 @@
+/*
+ * FURNIMIND AI - Enterprise Design System Variables
+ * Inspired by Apple, Linear, Stripe, Airbnb, Framer, and luxury furniture aesthetics.
+ * Clean, soft, minimal, and premium SaaS + e-commerce architecture.
+ */
+
 :root {
-  --primary-color: #111111;
-  --secondary-color: #64748b;
-  --bg-light: #f8fafc;
-  --bg-white: #ffffff;
-  --border-radius-sm: 8px;
-  --border-radius-md: 16px;
-  --border-radius-lg: 24px;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  /* ==========================================
+     1. TYPOGRAPHY & FONTS
+     ========================================== */
+  --fm-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fm-font-display: 'Outfit', 'Playfair Display', 'Didot', -apple-system, BlinkMacSystemFont, serif;
+  --fm-font-mono: 'SFMono-Regular', Consolas, 'Fira Code', 'Liberation Mono', Menlo, monospace;
+
+  /* Legacy & Compatibility mappings */
+  --font-sans: var(--fm-font-sans);
+
+  /* ==========================================
+     2. COLOR SYSTEM
+     ========================================== */
+
+  /* Primary Forest / Luxury Emerald Palette */
+  --fm-color-primary-50: #f3f7f5;
+  --fm-color-primary-100: #e2ede8;
+  --fm-color-primary-200: #c9ded5;
+  --fm-color-primary-300: #a2c4b6;
+  --fm-color-primary-400: #74a391;
+  --fm-color-primary-500: #1c523f; /* Signature Luxury Emerald */
+  --fm-color-primary-600: #144030; /* Rich Elegant Hover */
+  --fm-color-primary-700: #0f3024; /* Deep Active / Solid Accent */
+  --fm-color-primary-800: #0a2119; /* Deep Forest Shadow */
+  --fm-color-primary-900: #05120e; /* Near-Black Emerald */
+
+  /* Neutral Warm Luxury Scale (Gallery & Alabaster Undertones) */
+  --fm-color-neutral-50: #fafaf9;   /* Pure alabaster / warm museum backdrop */
+  --fm-color-neutral-100: #f4f4f3;  /* Soft elevated background / layout grid */
+  --fm-color-neutral-200: #e7e7e5;  /* Subtle divider / keyline border */
+  --fm-color-neutral-300: #d6d6d3;  /* Soft border outline */
+  --fm-color-neutral-400: #a8a8a4;  /* Muted icons / input placeholder */
+  --fm-color-neutral-500: #787874;  /* Premium metadata / body light */
+  --fm-color-neutral-600: #5c5c58;  /* Readable subheaders / soft text */
+  --fm-color-neutral-700: #40403d;  /* High-legibility body copy */
+  --fm-color-neutral-800: #262624;  /* Prominent titles / elegant buttons */
+  --fm-color-neutral-900: #171716;  /* Deep onyx / absolute contrast */
+  --fm-color-neutral-950: #0d0d0c;  /* True deep charcoal */
+
+  /* Semantic Palette (Soft Refined Tones, Avoiding High Neon) */
+  /* Success - Refined Sage */
+  --fm-color-success-50: #f1f8f5;
+  --fm-color-success-100: #dfede5;
+  --fm-color-success-500: #2e7d5c;
+  --fm-color-success-600: #215e45;
+
+  /* Danger - Warm Terracotta Crimson */
+  --fm-color-danger-50: #fdf4f4;
+  --fm-color-danger-100: #fae4e4;
+  --fm-color-danger-500: #c94a4a;
+  --fm-color-danger-600: #9b3535;
+
+  /* Warning - Ochre Gold */
+  --fm-color-warning-50: #fdfaf2;
+  --fm-color-warning-100: #f9f1df;
+  --fm-color-warning-500: #c28d38;
+  --fm-color-warning-600: #936824;
+
+  /* Info - Deep Ocean Slate */
+  --fm-color-info-50: #f2f7fb;
+  --fm-color-info-100: #e1eef6;
+  --fm-color-info-500: #3b7fad;
+  --fm-color-info-600: #2b5e82;
+
+  /* Text Color Intentions */
+  --fm-text-heading: var(--fm-color-neutral-900);
+  --fm-text-body: var(--fm-color-neutral-700);
+  --fm-text-muted: var(--fm-color-neutral-500);
+  --fm-text-disabled: var(--fm-color-neutral-400);
+  --fm-text-inverted: #ffffff;
+  --fm-text-brand: var(--fm-color-primary-500);
+
+  /* Legacy & Compatibility mappings */
+  --primary-color: var(--fm-color-primary-500);
+  --secondary-color: var(--fm-color-neutral-500);
+
+  /* ==========================================
+     3. BORDERS & RADIUS SYSTEM
+     ========================================== */
+  --fm-border-subtle: rgba(23, 23, 22, 0.05);
+  --fm-border-medium: rgba(23, 23, 22, 0.09);
+  --fm-border-strong: rgba(23, 23, 22, 0.18);
+  --fm-border-focus: var(--fm-color-primary-500);
+
+  /* Border Radius Scale (Minimal & Smooth) */
+  --fm-radius-xs: 4px;
+  --fm-radius-sm: 8px;
+  --fm-radius-md: 12px;
+  --fm-radius-lg: 16px;
+  --fm-radius-xl: 24px;
+  --fm-radius-2xl: 32px;
+  --fm-radius-pill: 9999px;
+  --fm-radius-circle: 50%;
+
+  /* Legacy & Compatibility mappings */
+  --border-radius-sm: var(--fm-radius-sm);
+  --border-radius-md: var(--fm-radius-md);
+  --border-radius-lg: var(--fm-radius-lg);
+
+  /* ==========================================
+     4. SPACING SYSTEM (4px base grid)
+     ========================================== */
+  --fm-space-4: 4px;
+  --fm-space-8: 8px;
+  --fm-space-12: 12px;
+  --fm-space-16: 16px;
+  --fm-space-20: 20px;
+  --fm-space-24: 24px;
+  --fm-space-32: 32px;
+  --fm-space-40: 40px;
+  --fm-space-48: 48px;
+  --fm-space-64: 64px;
+  --fm-space-80: 80px;
+  --fm-space-96: 96px;
+
+  /* ==========================================
+     5. SURFACE & GLASSMORPHISM SYSTEM
+     ========================================== */
+  --fm-surface-bg: var(--fm-color-neutral-50);
+  --fm-surface-card: #ffffff;
+  --fm-surface-elevated: #ffffff;
+  --fm-surface-navbar: rgba(255, 255, 255, 0.85);
+  --fm-surface-modal: #ffffff;
+  --fm-surface-overlay: rgba(13, 13, 12, 0.4);
+
+  /* Inputs & Interactive Fields */
+  --fm-input-bg: #ffffff;
+  --fm-input-border: var(--fm-border-medium);
+  --fm-input-focus-border: var(--fm-color-primary-500);
+  --fm-input-focus-ring: rgba(28, 82, 63, 0.08);
+
+  /* Glassmorphism System */
+  --fm-glass-bg: rgba(255, 255, 255, 0.7);
+  --fm-glass-border: rgba(255, 255, 255, 0.4);
+  --fm-glass-blur: blur(20px) saturate(190%);
+  --fm-glass-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 8px 32px 0 rgba(0, 0, 0, 0.03);
+
+  /* Legacy & Compatibility mappings */
+  --bg-light: var(--fm-surface-bg);
+  --bg-white: var(--fm-surface-card);
+
+  /* ==========================================
+     6. SHADOW SYSTEM (Multi-layered Premium Shadows)
+     ========================================== */
+  /* Extra subtle border-like shadow */
+  --fm-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.015);
+
+  /* Apple & Vercel soft elevation */
+  --fm-shadow-sm:
+    0 1px 1px rgba(0, 0, 0, 0.01),
+    0 2px 4px rgba(0, 0, 0, 0.015);
+
+  /* Linear Card Shadow */
+  --fm-shadow-md:
+    0 2px 4px rgba(0, 0, 0, 0.01),
+    0 8px 16px rgba(0, 0, 0, 0.02);
+
+  /* Premium Box Large Shadow */
+  --fm-shadow-lg:
+    0 4px 8px rgba(0, 0, 0, 0.01),
+    0 16px 32px rgba(0, 0, 0, 0.035);
+
+  /* Extremely soft immersive shadow for Modals & Overlays */
+  --fm-shadow-xl:
+    0 12px 24px rgba(0, 0, 0, 0.02),
+    0 24px 48px rgba(0, 0, 0, 0.05);
+
+  /* Floating UI / Dialogues */
+  --fm-shadow-floating:
+    0 0 1px rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.03),
+    0 20px 40px rgba(0, 0, 0, 0.06);
+
+  /* Dynamic Elevating States */
+  --fm-shadow-hover:
+    0 8px 24px rgba(0, 0, 0, 0.03),
+    0 20px 48px rgba(0, 0, 0, 0.065);
+
+  /* ==========================================
+     7. TRANSITION & ANIMATION SYSTEM
+     ========================================== */
+  --fm-transition-duration-fast: 150ms;
+  --fm-transition-duration-normal: 300ms;
+  --fm-transition-duration-slow: 450ms;
+
+  /* Sophisticated Cubic Beziers (Apple, Framer, Stripe inspired) */
+  --fm-ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);     /* Apple-standard ease-out */
+  --fm-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* Natural overshoot */
+  --fm-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);    /* Symmetrical smooth */
+
+  /* High-level Preset Transitions */
+  --fm-transition-smooth: all var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+  --fm-transition-fast: all var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+
+  --fm-transition-button-hover:
+    background-color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
+    color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
+    border-color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
+    transform var(--fm-transition-duration-fast) var(--fm-ease-smooth),
+    box-shadow var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+
+  --fm-transition-card-hover:
+    transform var(--fm-transition-duration-normal) var(--fm-ease-smooth),
+    box-shadow var(--fm-transition-duration-normal) var(--fm-ease-smooth),
+    border-color var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+
+  --fm-transition-modal:
+    transform var(--fm-transition-duration-slow) var(--fm-ease-smooth),
+    opacity var(--fm-transition-duration-slow) var(--fm-ease-smooth);
+
+  /* Legacy & Compatibility mappings */
+  --transition-smooth: var(--fm-transition-smooth);
+
+  /* ==========================================
+     8. Z-INDEX SYSTEM (Robust Layering)
+     ========================================== */
+  --fm-z-minus: -10;
+  --fm-z-normal: 1;
+  --fm-z-dropdown: 1000;
+  --fm-z-navbar: 1010;
+  --fm-z-overlay: 1020;
+  --fm-z-modal: 1030;
+  --fm-z-toast: 1040;
+  --fm-z-tooltip: 1050;
 }
