@@ -113,7 +113,7 @@ export class ProductDetails implements OnInit, OnDestroy {
 
   addToCart(): void {
     if (!this.product()) return;
-    
+
     const prodName = this.translationService.currentLang() === 'ar' ? this.product()?.nameAr : this.product()?.nameEn;
     // Showcase interaction alert
     alert(`Successfully added ${this.itemQuantity()} x ${prodName} to cart!`);

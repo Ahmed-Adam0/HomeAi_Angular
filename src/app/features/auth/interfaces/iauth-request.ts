@@ -1,13 +1,13 @@
 export interface ILoginRequest {
   email: string;
-  password?: string;
-  rememberMe?: boolean;
+  password: string;
 }
 
 export interface IRegisterRequest {
+  fullName: string;
   email: string;
-  password?: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber?: string;
+  password: string;
+  confirmPassword: string;
+  phoneNumber: string | null;
+  preferredLanguage: string;
 }

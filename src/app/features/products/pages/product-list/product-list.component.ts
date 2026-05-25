@@ -80,10 +80,10 @@ export class ProductList implements OnInit, OnDestroy {
       this.activeFilters.categoryId = params['categoryId'] || '';
       this.activeFilters.page = params['page'] ? parseInt(params['page']) : 1;
       this.activeFilters.sortBy = params['sortBy'] || 'newest';
-      
+
       if (params['minPrice']) this.activeFilters.minPrice = parseFloat(params['minPrice']);
       else this.activeFilters.minPrice = undefined;
-      
+
       if (params['maxPrice']) this.activeFilters.maxPrice = parseFloat(params['maxPrice']);
       else this.activeFilters.maxPrice = undefined;
 
@@ -103,7 +103,7 @@ export class ProductList implements OnInit, OnDestroy {
     this.productService.getProducts(this.activeFilters).subscribe({
       next: (data) => {
         this.products.set(data);
-        
+
         // Mock full total counts because standard mock API cuts off locally
         // We calculate exact virtual list length for seamless routing/pagination experience
         this.calculateVirtualTotal();
@@ -126,7 +126,7 @@ export class ProductList implements OnInit, OnDestroy {
       const match = this.categories().find(c => c.id === Number(this.activeFilters.categoryId));
       baseCount = match ? 6 : 2;
     }
-    
+
     // Simulate pagination total limit
     this.totalCount.set(baseCount);
   }

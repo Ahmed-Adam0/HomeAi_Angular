@@ -1,6 +1,6 @@
 <div class="card card-premium product-card h-100 overflow-hidden border-0 shadow-sm position-relative">
   <!-- Favorite Button -->
-  <button 
+  <button
     class="favorite-btn btn btn-light rounded-circle shadow-sm border-0 position-absolute top-0 end-0 m-3 z-3 d-flex align-items-center justify-content-center transition-all"
     [class.is-fav]="isFavorite()"
     (click)="toggleFavorite($event)"
@@ -13,8 +13,8 @@
 
   <!-- Image Section -->
   <div class="image-wrapper overflow-hidden bg-light position-relative" [routerLink]="['/products', product.id]">
-    <img 
-      [src]="product.mainImageUrl || 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80'" 
+    <img
+      [src]="product.mainImageUrl || 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80'"
       [alt]="translationService.currentLang() === 'ar' ? product.nameAr : product.nameEn"
       class="product-img w-100 h-100 object-fit-cover transition-all duration-500"
       loading="lazy"

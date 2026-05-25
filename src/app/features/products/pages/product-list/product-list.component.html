@@ -48,9 +48,9 @@
             </label>
             <div class="d-flex flex-column gap-2">
               <div class="form-check text-start">
-                <input 
-                  class="form-check-input" 
-                  type="radio" 
+                <input
+                  class="form-check-input"
+                  type="radio"
                   name="category"
                   id="cat-all"
                   value=""
@@ -62,9 +62,9 @@
                 </label>
               </div>
               <div *ngFor="let cat of categories()" class="form-check text-start">
-                <input 
-                  class="form-check-input" 
-                  type="radio" 
+                <input
+                  class="form-check-input"
+                  type="radio"
                   name="category"
                   [id]="'cat-' + cat.id"
                   [value]="cat.id.toString()"
@@ -88,10 +88,10 @@
                 <span class="input-group-text bg-light text-secondary border-0 font-xs">
                   {{ 'FILTER_CURRENCY_SYMBOL' | translate }}
                 </span>
-                <input 
-                  type="number" 
-                  class="form-control border-0 font-xs text-dark" 
-                  [placeholder]="'FILTER_MIN' | translate" 
+                <input
+                  type="number"
+                  class="form-control border-0 font-xs text-dark"
+                  [placeholder]="'FILTER_MIN' | translate"
                   [(ngModel)]="activeFilters.minPrice"
                   (change)="applyFilters()"
                 />
@@ -100,10 +100,10 @@
                 <span class="input-group-text bg-light text-secondary border-0 font-xs">
                   {{ 'FILTER_CURRENCY_SYMBOL' | translate }}
                 </span>
-                <input 
-                  type="number" 
-                  class="form-control border-0 font-xs text-dark" 
-                  [placeholder]="'FILTER_MAX' | translate" 
+                <input
+                  type="number"
+                  class="form-control border-0 font-xs text-dark"
+                  [placeholder]="'FILTER_MAX' | translate"
                   [(ngModel)]="activeFilters.maxPrice"
                   (change)="applyFilters()"
                 />
@@ -138,7 +138,7 @@
         </div>
 
         <!-- Error State Container -->
-        <app-empty-state 
+        <app-empty-state
           *ngIf="!isLoading() && hasError()"
           [title]="'ERROR_GATEWAY_TITLE' | translate"
           [description]="'ERROR_GATEWAY_DESC' | translate"
@@ -148,7 +148,7 @@
         ></app-empty-state>
 
         <!-- Empty State Container -->
-        <app-empty-state 
+        <app-empty-state
           *ngIf="!isLoading() && !hasError() && products().length === 0"
           [title]="'EMPTY_DESIGNS_TITLE' | translate"
           [description]="'EMPTY_DESIGNS_DESC' | translate"
@@ -159,8 +159,8 @@
 
         <!-- Product Cards Grid -->
         <div *ngIf="!isLoading() && products().length > 0" class="row g-4 mb-5">
-          <div 
-            *ngFor="let prod of products()" 
+          <div
+            *ngFor="let prod of products()"
             class="col-sm-6 col-md-6 col-xl-4"
           >
             <app-product-card [product]="prod"></app-product-card>

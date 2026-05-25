@@ -13,13 +13,13 @@
   --color-gold: #b8935c;
   --color-gold-hover: #a37e4c;
   --color-white: #ffffff;
-  
+
   --font-primary: 'Plus Jakarta Sans', sans-serif;
   --font-secondary: 'Playfair Display', serif;
-  
+
   --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   --transition-fast: all 0.15s ease;
-  
+
   --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.05);
   --shadow-dropdown: 0 15px 40px rgba(0, 0, 0, 0.08);
 }
