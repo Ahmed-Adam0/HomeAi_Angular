@@ -174,13 +174,6 @@
 }
 
 /* Gold/Beige link (like 'Inspirations' in the screenshot) */
-.highlighted-link {
-  color: var(--color-gold) !important;
-}
-.highlighted-link .arrow-icon {
-  color: var(--color-gold) !important;
-}
-
 /* Down arrow rotational transition */
 .arrow-icon {
   font-size: 0.6rem;
@@ -233,11 +226,14 @@
   color: var(--fm-color-neutral-400);
   font-weight: 400;
 }
+.search-icon-btn {
+  line-height: 1;
+  top: 50%;
+  transform: translateY(-50%);
+}
 .search-icon {
   color: var(--color-dark);
   font-size: 0.95rem;
-  top: 50%;
-  transform: translateY(-50%);
   transition: var(--transition-fast);
 }
 .search-wrapper:focus-within .search-icon {
@@ -313,80 +309,6 @@
   color: #ffffff !important;
 }
 
-/* ==========================================================================
-   4. Floating Notifications Centre Dropdown
-   ========================================================================== */
-.notifications-dropdown {
-  width: 350px;
-  max-height: 480px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--fm-radius-md);
-  background: var(--color-white);
-  box-shadow: var(--shadow-dropdown) !important;
-  transform-origin: top right;
-  animation: dropdownFade 0.25s var(--fm-ease-smooth);
-  padding: 1.25rem !important;
-  right: 0;
-  top: 100%;
-}
-
-.notifications-list {
-  max-height: 330px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--fm-color-neutral-300) transparent;
-  padding-right: 4px;
-}
-
-/* Customized scrollbars */
-.notifications-list::-webkit-scrollbar {
-  width: 4px;
-}
-.notifications-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-.notifications-list::-webkit-scrollbar-thumb {
-  background: var(--fm-color-neutral-300);
-  border-radius: 2px;
-}
-
-.notification-item {
-  transition: var(--transition-fast);
-  border-bottom: 1px solid var(--fm-color-neutral-100);
-  padding-bottom: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-.notification-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-  margin-bottom: 0;
-}
-.notification-item.unread {
-  background-color: var(--fm-color-primary-50);
-  border-radius: var(--fm-radius-sm);
-  padding: 0.5rem;
-  margin-left: -0.25rem;
-  margin-right: -0.25rem;
-}
-
-.status-indicator .dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: var(--fm-radius-circle);
-}
-
-.clear-notif-btn {
-  transition: var(--transition-fast);
-}
-.clear-notif-btn:hover {
-  color: var(--fm-color-primary-600) !important;
-  text-decoration: underline;
-}
-
-.mark-read-btn {
-  transition: var(--transition-fast);
-}
 .mark-read-btn:hover {
   color: var(--fm-color-primary-600) !important;
   transform: scale(1.15);
@@ -841,7 +763,6 @@
   padding-right: 3px;
 }
 
-[dir="rtl"] .notifications-dropdown,
 [dir="rtl"] .profile-dropdown,
 [dir="rtl"] .profile-dropdown-card,
 [dir="rtl"] .dropdown-menu-custom {

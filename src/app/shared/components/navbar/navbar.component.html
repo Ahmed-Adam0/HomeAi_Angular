@@ -105,19 +105,14 @@
             </a>
           </div>
         } @else {
-          <!-- Rooms, Inspirations, Offers & promotions with RouterLinkActive Highlight -->
           <div class="nav-item-wrapper">
-            <a [routerLink]="[link.route]"
+            <a [routerLink]="link.route"
                routerLinkActive="active"
-               [routerLinkActiveOptions]="{exact: link.route === '/'}"
+               [routerLinkActiveOptions]="{ exact: link.route === '/' }"
                class="nav-link-custom d-flex align-items-center gap-1"
                [class.active]="activeMainLink() === link.labelEn"
-               [class.highlighted-link]="link.labelEn === 'Inspirations'"
                (click)="selectMainLink(link.labelEn)">
               <span>{{ translationService.currentLang() === 'ar' ? link.labelAr : link.labelEn }}</span>
-              @if (link.labelEn === 'Rooms' || link.labelEn === 'Inspirations') {
-                <i class="bi bi-chevron-down fs-8 arrow-icon"></i>
-              }
             </a>
           </div>
         }
@@ -127,71 +122,22 @@
     <!-- Desktop Actions (Right Side) -->
     <div class="actions-area d-flex align-items-center gap-3">
       <!-- Search Input (Bottom Line Style) -->
-      <div class="search-wrapper d-none d-md-flex align-items-center position-relative">
-        <input type="text"
+      <form class="search-wrapper d-none d-md-flex align-items-center position-relative"
+            (submit)="submitSearch($event)"
+            (click)="$event.stopPropagation()">
+        <input type="search"
                class="search-input bg-transparent border-0 py-1 pe-4 fs-7"
                [placeholder]="'NAV_SEARCH_PLACEHOLDER' | translate"
                [value]="searchInput()"
-               (input)="onSearch($event)"
+               (input)="onSearchInput($event)"
+               (keydown.enter)="submitSearch($event)"
                aria-label="Search Catalog">
-        <i class="bi bi-search search-icon position-absolute end-0 cursor-pointer"></i>
-      </div>
-
-      <!-- Notifications Dropdown (Bell icon with real-time reactive badge) -->
-      <div class="dropdown-wrapper position-relative">
-        <button (click)="toggleNotificationsDropdown($event)"
-                class="action-btn text-dark text-decoration-none border-0 bg-transparent position-relative"
-                [attr.aria-expanded]="isNotificationsDropdownOpen()"
-                aria-label="Toggle Notifications">
-          <i class="bi bi-bell fs-5"></i>
-          @if (notificationService.unreadCount() > 0) {
-            <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center animate-pulse">
-              {{ notificationService.unreadCount() }}
-            </span>
-          }
+        <button type="submit"
+                class="search-icon-btn border-0 bg-transparent p-0 position-absolute end-0"
+                aria-label="Submit search">
+          <i class="bi bi-search search-icon cursor-pointer"></i>
         </button>
-
-        @if (isNotificationsDropdownOpen()) {
-          <div class="notifications-dropdown shadow-lg bg-white rounded z-3 position-absolute end-0 mt-2 p-3" (click)="$event.stopPropagation()">
-            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-              <span class="fw-bold fs-7 text-dark">{{ 'NAV_NOTIFICATION_TITLE' | translate }}</span>
-              @if (notificationService.notifications().length > 0) {
-                <button (click)="clearAllNotifications($event)" class="clear-notif-btn border-0 bg-transparent text-gold fs-8 p-0 fw-semibold">
-                  {{ 'NAV_NOTIFICATION_CLEAR' | translate }}
-                </button>
-              }
-            </div>
-            
-            <div class="notifications-list d-flex flex-column gap-2 overflow-y-auto">
-              @if (notificationService.notifications().length === 0) {
-                <div class="text-center py-4 text-muted fs-8 empty-notifications">
-                  <i class="bi bi-bell-slash fs-4 d-block mb-1 opacity-50 text-gold"></i>
-                  {{ 'NAV_NOTIFICATION_EMPTY' | translate }}
-                </div>
-              } @else {
-                @for (notif of notificationService.notifications(); track notif.id) {
-                  <div class="notification-item p-2 rounded d-flex gap-2 align-items-start" [class.unread]="!notif.read">
-                    <div class="status-indicator mt-1.5">
-                      <span class="dot" [class.bg-success]="notif.type === 'success'" [class.bg-info]="notif.type === 'info'" [class.bg-warning]="notif.type === 'warning'"></span>
-                    </div>
-                    <div class="flex-grow-1">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold fs-8 text-dark">{{ notif.title }}</span>
-                        @if (!notif.read) {
-                          <button (click)="markNotificationAsRead(notif.id, $event)" class="mark-read-btn border-0 bg-transparent text-gold fs-9 p-0" [title]="'NAV_MARK_ALL_READ' | translate">
-                            <i class="bi bi-check2"></i>
-                          </button>
-                        }
-                      </div>
-                      <p class="mb-0 text-muted fs-8 leading-normal mt-0.5">{{ notif.message }}</p>
-                    </div>
-                  </div>
-                }
-              }
-            </div>
-          </div>
-        }
-      </div>
+      </form>
 
       <!-- Authentication: Profile Dropdown (Logged In) vs. Premium Dual CTAs (Logged Out) -->
       @if (authService.isLoggedIn()) {
@@ -256,18 +202,22 @@
         </div>
       }
 
-      <!-- Wishlist with Badge -->
-      <a routerLink="/wishlist" (click)="onWishlistSelect()" class="action-btn text-dark text-decoration-none position-relative" aria-label="Wishlist">
+      <!-- Wishlist -->
+      <a [routerLink]="navRoutes.FAVORITES"
+         class="action-btn text-dark text-decoration-none position-relative"
+         aria-label="Wishlist">
         <i class="bi bi-heart fs-5"></i>
-        @if (wishlistCount() > 0) {
+        @if (favoritesCount() > 0) {
           <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
-            {{ wishlistCount() }}
+            {{ favoritesCount() }}
           </span>
         }
       </a>
 
-      <!-- Cart with Badge -->
-      <a routerLink="/cart" (click)="onCartSelect()" class="action-btn text-dark text-decoration-none position-relative" aria-label="Shopping Cart">
+      <!-- Cart -->
+      <a [routerLink]="navRoutes.CART"
+         class="action-btn text-dark text-decoration-none position-relative"
+         aria-label="Shopping Cart">
         <i class="bi bi-bag fs-5"></i>
         @if (cartCount() > 0) {
           <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
@@ -303,7 +253,7 @@
         } @else {
           <!-- Dynamically Loaded Categories -->
           @for (category of dynamicCategories(); track category.id) {
-            <a [routerLink]="['/categories', category.id]"
+            <a [routerLink]="categoryRoute(category)"
                (click)="onCategorySelect(category)"
                class="category-card d-flex align-items-center gap-2 text-decoration-none">
               <div class="category-icon-circle d-flex align-items-center justify-content-center bg-light-cream">
@@ -338,7 +288,7 @@
                 <ul class="column-list list-unstyled d-flex flex-column gap-2 mb-0">
                   @for (item of column.items; track item.nameEn) {
                     <li>
-                      <a [routerLink]="['/search']" [queryParams]="{ q: item.nameEn }" class="column-link text-decoration-none text-muted fs-7 hover-text-gold">
+                      <a [routerLink]="navRoutes.SEARCH" [queryParams]="{ q: item.nameEn }" class="column-link text-decoration-none text-muted fs-7 hover-text-gold">
                         {{ translationService.currentLang() === 'ar' ? item.nameAr : item.nameEn }}
                       </a>
                     </li>
@@ -394,14 +344,21 @@
   <!-- Drawer Body -->
   <div class="drawer-body flex-grow-1 overflow-y-auto p-3">
     <!-- Search in Mobile -->
-    <div class="mobile-search mb-4 position-relative">
-      <input type="text"
+    <form class="mobile-search mb-4 position-relative"
+          (submit)="submitSearch($event)">
+      <input type="search"
              class="form-control rounded-pill border-light-cream px-3 py-2 fs-7"
              [placeholder]="'NAV_SEARCH_PRODUCTS' | translate"
              [value]="searchInput()"
-             (input)="onSearch($event)">
-      <i class="bi bi-search position-absolute end-0 top-50 translate-middle-y me-3 text-muted"></i>
-    </div>
+             (input)="onSearchInput($event)"
+             (keydown.enter)="submitSearch($event)"
+             aria-label="Search products">
+      <button type="submit"
+              class="border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-3 text-muted p-0"
+              aria-label="Submit search">
+        <i class="bi bi-search"></i>
+      </button>
+    </form>
 
     <!-- Navigation Accordion -->
     <div class="mobile-nav-list d-flex flex-column gap-1">
@@ -422,9 +379,9 @@
                 <app-skeleton-loader type="list" [count]="4"></app-skeleton-loader>
               } @else {
                 @for (cat of dynamicCategories(); track cat.id) {
-                  <a [routerLink]="['/categories', cat.id]"
+                  <a [routerLink]="categoryRoute(cat)"
                      class="mobile-nav-sublink text-decoration-none text-muted py-1 d-block fs-7"
-                     (click)="onCategorySelect(cat); toggleMobileMenu()">
+                     (click)="onCategorySelect(cat)">
                     {{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}
                   </a>
                 }
@@ -438,7 +395,7 @@
                   {{ translationService.currentLang() === 'ar' ? col.titleAr : col.titleEn }}
                 </span>
                 @for (sub of col.items; track sub.nameEn) {
-                  <a [routerLink]="['/search']" [queryParams]="{ q: sub.nameEn }" class="mobile-nav-sublink text-decoration-none text-muted py-1 d-block fs-7" (click)="toggleMobileMenu()">
+                  <a [routerLink]="navRoutes.SEARCH" [queryParams]="{ q: sub.nameEn }" class="mobile-nav-sublink text-decoration-none text-muted py-1 d-block fs-7" (click)="toggleMobileMenu()">
                     {{ translationService.currentLang() === 'ar' ? sub.nameAr : sub.nameEn }}
                   </a>
                 }
@@ -448,28 +405,18 @@
         }
       </div>
 
-      <!-- Rooms Accordion -->
-      <div class="accordion-item-custom">
-        <button class="accordion-trigger-custom w-100 d-flex justify-content-between align-items-center py-2 px-1 border-0 bg-transparent fs-6 fw-semibold text-dark"
-                (click)="toggleMobileAccordion('rooms')">
-          <span class="d-flex align-items-center gap-2"><i class="bi bi-house-door-fill text-gold fs-7"></i> {{ 'NAV_ROOMS' | translate }}</span>
-          <i class="bi" [class.bi-chevron-down]="activeMobileAccordion() !== 'rooms'" [class.bi-chevron-up]="activeMobileAccordion() === 'rooms'"></i>
-        </button>
-        @if (activeMobileAccordion() === 'rooms') {
-          <div class="accordion-content-custom ps-3 py-2 border-start ms-2">
-            @for (room of megaMenuColumns()[1].items; track room.nameEn) {
-              <a [routerLink]="['/search']" [queryParams]="{ q: room.nameEn }" class="mobile-nav-sublink text-decoration-none text-muted py-1.5 d-block fs-7" (click)="toggleMobileMenu()">
-                {{ translationService.currentLang() === 'ar' ? room.nameAr : room.nameEn }}
-              </a>
-            }
-          </div>
-        }
-      </div>
+      <!-- Rooms -->
+      <a routerLink="/rooms"
+         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+         (click)="selectMainLink('Rooms')">
+        <i class="bi bi-house-door-fill text-gold fs-7"></i>
+        <span>{{ 'NAV_ROOMS' | translate }}</span>
+      </a>
 
       <!-- Inspirations -->
       <a routerLink="/inspirations"
-         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-gold d-flex align-items-center gap-2 fs-6"
-         (click)="toggleMobileMenu()">
+         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+         (click)="selectMainLink('Inspirations')">
         <i class="bi bi-lightbulb-fill fs-7"></i>
         <span>{{ 'NAV_INSPIRATIONS' | translate }}</span>
       </a>
@@ -477,7 +424,7 @@
       <!-- Offers -->
       <a routerLink="/offers"
          class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
-         (click)="toggleMobileMenu()">
+         (click)="selectMainLink('Offers & promotions')">
         <i class="bi bi-percent fs-7"></i>
         <span>{{ 'NAV_OFFERS' | translate }}</span>
       </a>

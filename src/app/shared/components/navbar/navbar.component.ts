@@ -1,14 +1,36 @@
-import { Component, inject, signal, input, model, output, PLATFORM_ID, OnInit, HostListener, DestroyRef } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  input,
+  model,
+  output,
+  computed,
+  PLATFORM_ID,
+  OnInit,
+  HostListener,
+  DestroyRef,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs/operators';
 import { TranslationService } from '../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
-import { LanguageOption, CurrencyOption, Category, MegaMenuColumn, PromoBanner, NavLink } from '../../../shared/interfaces/navbar.interfaces';
+import {
+  LanguageOption,
+  CurrencyOption,
+  Category,
+  MegaMenuColumn,
+  PromoBanner,
+  NavLink,
+} from '../../../shared/interfaces/navbar.interfaces';
 import * as Constants from '../../../core/constants/navbar.constants';
+import { LOCAL_STORAGE_KEYS, NAV_ROUTES } from '../../../core/constants';
 import { AuthService } from '../../../features/auth/services/auth.service';
-import { NotificationService } from '../../../features/notifications/services/notification.service';
 import { CategoryService } from '../../../features/categories/services/category.service';
+import { CartService } from '../../../features/cart/services/cart.service';
+import { IFavoriteItem } from '../../../features/favorites/interfaces/ifavorite-item';
 import { SkeletonLoader } from '../skeleton-loader/skeleton-loader.component';
 
 @Component({
@@ -19,17 +41,14 @@ import { SkeletonLoader } from '../skeleton-loader/skeleton-loader.component';
   styleUrl: './navbar.component.css',
 })
 export class Navbar implements OnInit {
-  // Injection Services
-  protected translationService = inject(TranslationService);
-  protected authService = inject(AuthService);
-  protected notificationService = inject(NotificationService);
-  protected categoryService = inject(CategoryService);
-  private platformId = inject(PLATFORM_ID);
-  private router = inject(Router);
+  protected readonly translationService = inject(TranslationService);
+  protected readonly authService = inject(AuthService);
+  protected readonly categoryService = inject(CategoryService);
+  protected readonly cartService = inject(CartService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly router = inject(Router);
 
-  // CONFIGURABLE INPUT SIGNALS (Dumb Component Inputs with Defaults)
-  readonly wishlistCount = input<number>(2);
-  readonly cartCount = input<number>(3);
+  readonly navRoutes = NAV_ROUTES;
 
   readonly languages = input<LanguageOption[]>(Constants.LANGUAGES);
   readonly currencies = input<CurrencyOption[]>(Constants.CURRENCIES);
@@ -38,64 +57,101 @@ export class Navbar implements OnInit {
   readonly megaMenuColumns = input<MegaMenuColumn[]>(Constants.MEGA_MENU_COLUMNS);
   readonly promoBanner = input<PromoBanner>(Constants.PROMO_BANNER);
 
-  // MODELS (Two-Way Bindings)
-  readonly activeMainLink = model<string>('Inspirations');
+  readonly activeMainLink = model<string>('');
   readonly selectedLanguage = model<LanguageOption>(Constants.LANGUAGES[0]);
   readonly selectedCurrency = model<CurrencyOption>(Constants.CURRENCIES[0]);
 
-  // OUTPUT EMITTERS (Dumb Component Events)
   readonly languageChange = output<LanguageOption>();
   readonly currencyChange = output<CurrencyOption>();
   readonly searchChange = output<string>();
   readonly mainLinkClick = output<string>();
   readonly categoryClick = output<Category>();
-  readonly wishlistClick = output<void>();
-  readonly cartClick = output<void>();
-  readonly profileClick = output<void>();
   readonly promoClick = output<PromoBanner>();
 
-  // LOCAL UI STATE SIGNALS (Internal View State Only)
   readonly isMobileMenuOpen = signal<boolean>(false);
   readonly isMegaMenuOpen = signal<boolean>(false);
   readonly isLanguageDropdownOpen = signal<boolean>(false);
   readonly isCurrencyDropdownOpen = signal<boolean>(false);
   readonly isProfileDropdownOpen = signal<boolean>(false);
-  readonly isNotificationsDropdownOpen = signal<boolean>(false);
   readonly activeMobileAccordion = signal<string | null>(null);
   readonly searchInput = signal<string>('');
   readonly isScrolled = signal<boolean>(false);
+  readonly favoritesCount = signal<number>(0);
 
-  // DYNAMIC CATEGORIES API STATE
   readonly isLoadingCategories = signal<boolean>(true);
   readonly dynamicCategories = signal<Category[]>([]);
 
-  // Hover Delay Timeout Management
-  private hoverTimeout: any;
+  readonly cartCount = computed(() => this.cartService.itemCount());
+
+  private hoverTimeout: ReturnType<typeof setTimeout> | null = null;
 
   readonly currentUrl = signal<string>('');
 
   constructor() {
     const destroyRef = inject(DestroyRef);
-    
-    // Set initial URL
+
     this.currentUrl.set(this.router.url);
     this.updateActiveLink(this.router.url);
+    this.syncSearchFromUrl(this.router.url);
 
-    // Listen to routing events
-    this.router.events.pipe(
-      takeUntilDestroyed(destroyRef)
-    ).subscribe(event => {
-      if (event instanceof NavigationEnd) {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(destroyRef)
+      )
+      .subscribe((event) => {
         const url = event.urlAfterRedirects;
         this.currentUrl.set(url);
         this.updateActiveLink(url);
-      }
-    });
+        this.syncSearchFromUrl(url);
+        this.refreshFavoritesCount();
+        this.cartService.refreshFromStorage();
+      });
+  }
+
+  ngOnInit(): void {
+    this.loadCategories();
+    this.updateActiveLink(this.router.url);
+    this.syncSearchFromUrl(this.router.url);
+    this.refreshFavoritesCount();
+    this.cartService.refreshFromStorage();
+  }
+
+  categoryRoute(category: Category): string[] {
+    return [NAV_ROUTES.categoryDetail(category.id)];
+  }
+
+  @HostListener('document:click', [])
+  onDocumentClick(): void {
+    this.closeAllFloatingDropdowns();
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.isScrolled.set(window.scrollY > 40);
+  }
+
+  @HostListener('document:keydown.escape', [])
+  onEscapePressed(): void {
+    this.closeAllFloatingDropdowns();
+    this.isMegaMenuOpen.set(false);
+    this.isMobileMenuOpen.set(false);
+  }
+
+  @HostListener('window:storage', ['$event'])
+  onStorageEvent(event: StorageEvent): void {
+    if (event.key === LOCAL_STORAGE_KEYS.FAVORITES || event.key === null) {
+      this.refreshFavoritesCount();
+    }
+    if (event.key === LOCAL_STORAGE_KEYS.CART || event.key === null) {
+      this.cartService.refreshFromStorage();
+    }
   }
 
   updateActiveLink(url: string): void {
     const path = url.split('?')[0];
-    if (path === '/products' || path.startsWith('/categories/') || path === '/search') {
+    if (path === NAV_ROUTES.PRODUCTS || path.startsWith(`${NAV_ROUTES.CATEGORIES}/`) || path === NAV_ROUTES.SEARCH) {
       this.activeMainLink.set('Products');
     } else if (path.startsWith('/rooms')) {
       this.activeMainLink.set('Rooms');
@@ -108,49 +164,21 @@ export class Navbar implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this.loadCategories();
-    this.updateActiveLink(this.router.url);
-  }
-
-  // Document click listener to close floating dropdowns automatically when clicking outside
-  @HostListener('document:click', [])
-  onDocumentClick(): void {
-    this.closeAllFloatingDropdowns();
-  }
-
-  // Window scroll event listener to trigger sticky compression & glassmorphism styling
-  @HostListener('window:scroll', [])
-  onWindowScroll(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    this.isScrolled.set(window.scrollY > 40);
-  }
-
-  // Keyboard accessibility helper to close all open elements on Escape press
-  @HostListener('document:keydown.escape', [])
-  onEscapePressed(): void {
-    this.closeAllFloatingDropdowns();
-    this.isMegaMenuOpen.set(false);
-    this.isMobileMenuOpen.set(false);
-  }
-
   loadCategories(): void {
     this.isLoadingCategories.set(true);
     this.categoryService.getCategories().subscribe({
       next: (cats) => {
         if (cats && cats.length > 0) {
-          // Map dynamic categories (ICategory) to our Category format
-          const mapped: Category[] = cats.map(c => ({
+          const mapped: Category[] = cats.map((c) => ({
             id: String(c.id),
             nameEn: c.nameEn,
             nameAr: c.nameAr,
             imageUrl: c.imageUrl,
             icon: this.getIconForCategory(c.nameEn),
-            svgPath: this.getSvgPathForCategory(c.nameEn)
+            svgPath: this.getSvgPathForCategory(c.nameEn),
           }));
           this.dynamicCategories.set(mapped);
         } else {
-          // Fallback to local constants if API is empty
           this.dynamicCategories.set(Constants.CATEGORIES);
         }
         this.isLoadingCategories.set(false);
@@ -159,7 +187,7 @@ export class Navbar implements OnInit {
         console.error('Failed to fetch dynamic categories. Falling back to static assets.', err);
         this.dynamicCategories.set(Constants.CATEGORIES);
         this.isLoadingCategories.set(false);
-      }
+      },
     });
   }
 
@@ -179,11 +207,11 @@ export class Navbar implements OnInit {
     }
     this.hoverTimeout = setTimeout(() => {
       this.isMegaMenuOpen.set(false);
-    }, 200); // 200ms delay to allow cursor transitions without flickering
+    }, 200);
   }
 
   toggleMobileMenu(): void {
-    this.isMobileMenuOpen.update(prev => !prev);
+    this.isMobileMenuOpen.update((prev) => !prev);
     if (this.isMobileMenuOpen()) {
       this.closeAllFloatingDropdowns();
     }
@@ -193,40 +221,29 @@ export class Navbar implements OnInit {
     if (forceState !== undefined) {
       this.isMegaMenuOpen.set(forceState);
     } else {
-      this.isMegaMenuOpen.update(prev => !prev);
+      this.isMegaMenuOpen.update((prev) => !prev);
     }
   }
 
   toggleLanguageDropdown(event: Event): void {
     event.stopPropagation();
-    this.isLanguageDropdownOpen.update(prev => !prev);
+    this.isLanguageDropdownOpen.update((prev) => !prev);
     this.isCurrencyDropdownOpen.set(false);
     this.isProfileDropdownOpen.set(false);
-    this.isNotificationsDropdownOpen.set(false);
   }
 
   toggleCurrencyDropdown(event: Event): void {
     event.stopPropagation();
-    this.isCurrencyDropdownOpen.update(prev => !prev);
+    this.isCurrencyDropdownOpen.update((prev) => !prev);
     this.isLanguageDropdownOpen.set(false);
     this.isProfileDropdownOpen.set(false);
-    this.isNotificationsDropdownOpen.set(false);
   }
 
   toggleProfileDropdown(event: Event): void {
     event.stopPropagation();
-    this.isProfileDropdownOpen.update(prev => !prev);
+    this.isProfileDropdownOpen.update((prev) => !prev);
     this.isLanguageDropdownOpen.set(false);
     this.isCurrencyDropdownOpen.set(false);
-    this.isNotificationsDropdownOpen.set(false);
-  }
-
-  toggleNotificationsDropdown(event: Event): void {
-    event.stopPropagation();
-    this.isNotificationsDropdownOpen.update(prev => !prev);
-    this.isLanguageDropdownOpen.set(false);
-    this.isCurrencyDropdownOpen.set(false);
-    this.isProfileDropdownOpen.set(false);
   }
 
   selectLanguage(lang: LanguageOption): void {
@@ -243,7 +260,7 @@ export class Navbar implements OnInit {
   }
 
   toggleMobileAccordion(section: string): void {
-    this.activeMobileAccordion.update(curr => curr === section ? null : section);
+    this.activeMobileAccordion.update((curr) => (curr === section ? null : section));
   }
 
   selectMainLink(link: string): void {
@@ -253,49 +270,39 @@ export class Navbar implements OnInit {
       this.toggleMegaMenu(true);
     } else {
       this.toggleMegaMenu(false);
+      this.isMobileMenuOpen.set(false);
     }
   }
 
-  onSearch(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.searchInput.set(input.value);
-    this.searchChange.emit(input.value);
+  onSearchInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchInput.set(value);
+    this.searchChange.emit(value);
+  }
+
+  submitSearch(event?: Event): void {
+    event?.preventDefault();
+    const query = this.searchInput().trim();
+    if (!query) return;
+
+    this.isMobileMenuOpen.set(false);
+    void this.router.navigate([NAV_ROUTES.SEARCH], { queryParams: { q: query } });
   }
 
   onCategorySelect(cat: Category): void {
     this.categoryClick.emit(cat);
+    this.isMegaMenuOpen.set(false);
+    this.isMobileMenuOpen.set(false);
   }
 
   onPromoSelect(banner: PromoBanner): void {
     this.promoClick.emit(banner);
   }
 
-  onWishlistSelect(): void {
-    this.wishlistClick.emit();
-  }
-
-  onCartSelect(): void {
-    this.cartClick.emit();
-  }
-
-  onProfileSelect(): void {
-    this.profileClick.emit();
-  }
-
   onLogout(): void {
     this.authService.logout();
     this.isProfileDropdownOpen.set(false);
-    this.router.navigate(['/auth/login']);
-  }
-
-  markNotificationAsRead(id: string, event: Event): void {
-    event.stopPropagation();
-    this.notificationService.markAsRead(id);
-  }
-
-  clearAllNotifications(event: Event): void {
-    event.stopPropagation();
-    this.notificationService.clearAll();
+    void this.router.navigate([NAV_ROUTES.LOGIN]);
   }
 
   closeAllDropdowns(): void {
@@ -307,10 +314,54 @@ export class Navbar implements OnInit {
     this.isLanguageDropdownOpen.set(false);
     this.isCurrencyDropdownOpen.set(false);
     this.isProfileDropdownOpen.set(false);
-    this.isNotificationsDropdownOpen.set(false);
   }
 
-  // Utility category styling helpers
+  private syncSearchFromUrl(url: string): void {
+    const queryIndex = url.indexOf('?');
+    if (queryIndex === -1) return;
+
+    const params = new URLSearchParams(url.slice(queryIndex + 1));
+    const q = params.get('q');
+    if (q !== null) {
+      this.searchInput.set(q);
+    }
+  }
+
+  private refreshFavoritesCount(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.favoritesCount.set(0);
+      return;
+    }
+
+    try {
+      const raw = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITES);
+      if (!raw) {
+        this.favoritesCount.set(0);
+        return;
+      }
+
+      const parsed: unknown = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        this.favoritesCount.set(parsed.length);
+        return;
+      }
+
+      if (
+        parsed &&
+        typeof parsed === 'object' &&
+        'items' in parsed &&
+        Array.isArray((parsed as { items: unknown }).items)
+      ) {
+        this.favoritesCount.set((parsed as { items: IFavoriteItem[] }).items.length);
+        return;
+      }
+
+      this.favoritesCount.set(0);
+    } catch {
+      this.favoritesCount.set(0);
+    }
+  }
+
   private getIconForCategory(name: string): string {
     const term = name.toLowerCase();
     if (term.includes('sofa') || term.includes('couch')) return 'bi bi-couch';
@@ -325,7 +376,7 @@ export class Navbar implements OnInit {
   private getSvgPathForCategory(name: string): string {
     const term = name.toLowerCase();
     const match = Constants.CATEGORIES.find(
-      c => c.nameEn.toLowerCase().includes(term) || term.includes(c.nameEn.toLowerCase())
+      (c) => c.nameEn.toLowerCase().includes(term) || term.includes(c.nameEn.toLowerCase())
     );
     return match?.svgPath || '';
   }

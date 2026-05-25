@@ -7,6 +7,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server,
   },
   {
+    path: APP_ROUTES.CATEGORY_DETAIL,
+    renderMode: RenderMode.Server,
+  },
+  {
     path: APP_ROUTES.ORDER_DETAILS,
     renderMode: RenderMode.Server,
   },
