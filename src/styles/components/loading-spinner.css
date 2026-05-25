@@ -1,0 +1,499 @@
+/**
+ * FurniMind AI - Premium Motion Design & Loading System
+ * Inspired by Stripe, Linear, Apple, Framer & Vercel.
+ * Optimized for GPU rendering, fluid animations, and absolute visual excellence.
+ */
+
+:root {
+  /* Color Palette - Elegant Obsidian & Champagne Gold */
+  --fm-bg-dark: #09090b;
+  --fm-bg-light: #ffffff;
+  
+  --fm-primary-gold: #d4af37;
+  --fm-primary-gold-rgb: 212, 175, 55;
+  --fm-accent-bronze: #aa7c11;
+  
+  --fm-slate-900: #0f172a;
+  --fm-slate-800: #1e293b;
+  --fm-slate-700: #334155;
+  --fm-slate-100: #f1f5f9;
+  --fm-slate-200: #e2e8f0;
+  --fm-slate-400: #94a3b8;
+  
+  /* Modern Easing & Motion Curves */
+  --fm-ease-premium: cubic-bezier(0.16, 1, 0.3, 1);     /* Smooth outExponential */
+  --fm-ease-io: cubic-bezier(0.65, 0, 0.35, 1);          /* Elegant in-out */
+  --fm-ease-pulse: cubic-bezier(0.4, 0, 0.6, 1);         /* Breathing ease */
+  --fm-ease-fluid: cubic-bezier(0.22, 1, 0.36, 1);       /* Soft decelerating */
+  
+  /* Shimmer Gradients */
+  --fm-shimmer-dark: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.00) 0%,
+    rgba(255, 255, 255, 0.03) 30%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 70%,
+    rgba(255, 255, 255, 0.00) 100%
+  );
+  --fm-shimmer-light: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.00) 0%,
+    rgba(0, 0, 0, 0.02) 30%,
+    rgba(0, 0, 0, 0.05) 50%,
+    rgba(0, 0, 0, 0.02) 70%,
+    rgba(0, 0, 0, 0.00) 100%
+  );
+}
+
+/* Base GPU Optimization Utility */
+.fm-gpu-optimize {
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
+}
+
+/* ==========================================================================
+   1. DEFAULT SPINNER (Elegant dual-ring concentric arc)
+   ========================================================================== */
+.fm-spinner-default {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  vertical-align: middle;
+}
+
+.fm-spinner-default::before,
+.fm-spinner-default::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  box-sizing: border-box;
+}
+
+/* Track ring */
+.fm-spinner-default::before {
+  border-color: rgba(var(--fm-primary-gold-rgb), 0.08);
+}
+
+/* Active animated ring */
+.fm-spinner-default::after {
+  border-top-color: var(--fm-primary-gold);
+  border-right-color: rgba(var(--fm-primary-gold-rgb), 0.4);
+  animation: fm-spin-premium 1s var(--fm-ease-io) infinite;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+@keyframes fm-spin-premium {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================================
+   2. DOTS LOADER (Fluid Stripe-like micro-dots)
+   ========================================================================== */
+.fm-loader-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+}
+
+.fm-loader-dots span {
+  width: 6px;
+  height: 6px;
+  background-color: var(--fm-primary-gold);
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.3;
+  transform: scale(0.8) translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  animation: fm-fluid-dots 1.4s var(--fm-ease-io) infinite;
+}
+
+.fm-loader-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.fm-loader-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes fm-fluid-dots {
+  0%, 80%, 100% {
+    transform: scale(0.8) translateY(0);
+    opacity: 0.3;
+  }
+  40% {
+    transform: scale(1.2) translateY(-4px);
+    opacity: 1;
+    box-shadow: 0 4px 12px rgba(var(--fm-primary-gold-rgb), 0.3);
+  }
+}
+
+/* ==========================================================================
+   3. PULSE LOADER (Concentric atmospheric waves)
+   ========================================================================== */
+.fm-loader-pulse {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fm-loader-pulse::before,
+.fm-loader-pulse::after,
+.fm-loader-pulse-core {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  box-sizing: border-box;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+/* Central Core */
+.fm-loader-pulse-core {
+  width: 12px;
+  height: 12px;
+  background-color: var(--fm-primary-gold);
+  box-shadow: 0 0 16px rgba(var(--fm-primary-gold-rgb), 0.6);
+  z-index: 2;
+}
+
+/* Concentric Wave 1 */
+.fm-loader-pulse::before {
+  inset: 0;
+  border: 1px solid rgba(var(--fm-primary-gold-rgb), 0.3);
+  animation: fm-pulse-wave 2.2s var(--fm-ease-premium) infinite;
+}
+
+/* Concentric Wave 2 */
+.fm-loader-pulse::after {
+  inset: 0;
+  border: 1px solid rgba(var(--fm-primary-gold-rgb), 0.15);
+  animation: fm-pulse-wave 2.2s var(--fm-ease-premium) infinite;
+  animation-delay: 1.1s;
+}
+
+@keyframes fm-pulse-wave {
+  0% {
+    transform: scale(0.15);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   4. SKELETON SHIMMER LOADER (Premium hardware-accelerated masks)
+   ========================================================================== */
+.fm-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+}
+
+/* Adaptive styles for Light Theme environments if active */
+@media (prefers-color-scheme: light) {
+  .fm-skeleton {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+}
+
+/* CSS-Class explicit light theme support */
+.light-theme .fm-skeleton {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Hardware accelerated sliding shimmer mask */
+.fm-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: var(--fm-shimmer-dark);
+  animation: fm-shimmer-slide 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+@media (prefers-color-scheme: light) {
+  .fm-skeleton::after {
+    background: var(--fm-shimmer-light);
+  }
+}
+
+.light-theme .fm-skeleton::after {
+  background: var(--fm-shimmer-light);
+}
+
+@keyframes fm-shimmer-slide {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Skeleton Layout Components */
+
+/* Image Skeleton - Perfectly scaled for furniture products */
+.fm-skeleton-image {
+  width: 100%;
+  height: 240px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fm-skeleton-image::before {
+  content: "";
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.light-theme .fm-skeleton-image::before {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Text Skeleton lines with varying luxury-magazine widths */
+.fm-skeleton-text {
+  height: 12px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+}
+
+.fm-skeleton-text:last-child {
+  margin-bottom: 0;
+}
+
+.fm-skeleton-text.title {
+  height: 20px;
+  width: 60%;
+  margin-bottom: 16px;
+}
+
+.fm-skeleton-text.long {
+  width: 100%;
+}
+
+.fm-skeleton-text.medium {
+  width: 85%;
+}
+
+.fm-skeleton-text.short {
+  width: 45%;
+}
+
+/* Button Skeleton */
+.fm-skeleton-button {
+  height: 48px;
+  width: 100%;
+  border-radius: 24px;
+}
+
+/* Card Skeleton (Assembled Product Preview Card) */
+.fm-skeleton-card {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .fm-skeleton-card {
+  background: rgba(0, 0, 0, 0.01);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.fm-skeleton-card .fm-img-slot {
+  height: 200px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+/* ==========================================================================
+   5. FULLSCREEN OVERLAY LOADER (Glassmorphic immersive focus)
+   ========================================================================== */
+.fm-overlay-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(9, 9, 11, 0.75);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s var(--fm-ease-premium), visibility 0.4s var(--fm-ease-premium);
+}
+
+.light-theme .fm-overlay-fullscreen {
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+.fm-overlay-fullscreen.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.fm-overlay-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  transform: scale(0.95) translate3d(0, 0, 0);
+  transition: transform 0.5s var(--fm-ease-premium);
+  will-change: transform;
+}
+
+.fm-overlay-fullscreen.active .fm-overlay-content {
+  transform: scale(1);
+}
+
+/* Subtle, breathing branding typography */
+.fm-overlay-brand {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fm-primary-gold);
+  opacity: 0.8;
+  animation: fm-brand-pulse 2.5s var(--fm-ease-pulse) infinite;
+  will-change: opacity;
+}
+
+@keyframes fm-brand-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    text-shadow: 0 0 8px rgba(var(--fm-primary-gold-rgb), 0);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 16px rgba(var(--fm-primary-gold-rgb), 0.3);
+  }
+}
+
+/* ==========================================================================
+   6. INLINE BUTTON LOADER (Seamless action-level states)
+   ========================================================================== */
+.fm-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--fm-ease-premium);
+  cursor: pointer;
+}
+
+/* When the button is loading */
+.fm-btn-loading {
+  pointer-events: none;
+}
+
+/* Hide original button content elegantly, keeping layout structural boundaries */
+.fm-btn-loading > .fm-btn-text {
+  opacity: 0;
+  transform: scale(0.96) translate3d(0, 0, 0);
+  transition: opacity 0.25s var(--fm-ease-premium), transform 0.25s var(--fm-ease-premium);
+}
+
+/* Inline Spinner integrated dynamically */
+.fm-btn-spinner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  opacity: 0;
+  transform: scale(0.7) rotate(0deg) translate3d(0, 0, 0);
+  transition: opacity 0.25s var(--fm-ease-premium), transform 0.25s var(--fm-ease-premium);
+  will-change: transform, opacity;
+}
+
+.fm-btn-loading > .fm-btn-spinner {
+  opacity: 1;
+  transform: scale(1) rotate(360deg) translate3d(0, 0, 0);
+  animation: fm-btn-spin-anim 0.85s linear infinite;
+}
+
+.fm-btn-spinner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  box-sizing: border-box;
+}
+
+@keyframes fm-btn-spin-anim {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ==========================================================================
+   7. ACCESSIBILITY & USER COMPASSION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  /* Slow or static visual equivalents for users with vestibular sensitivities */
+  .fm-spinner-default::after,
+  .fm-btn-loading > .fm-btn-spinner {
+    animation-duration: 2.5s;
+    animation-timing-function: linear;
+  }
+
+  .fm-loader-dots span {
+    animation: fm-reduced-dots 3s ease-in-out infinite;
+  }
+
+  .fm-loader-pulse::before,
+  .fm-loader-pulse::after {
+    animation-duration: 4.4s;
+  }
+
+  .fm-skeleton::after {
+    animation-duration: 3.5s;
+  }
+
+  .fm-overlay-brand {
+    animation: none;
+    opacity: 0.75;
+  }
+
+  @keyframes fm-reduced-dots {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1);
+    }
+  }
+}
