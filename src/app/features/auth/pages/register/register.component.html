@@ -1,1 +1,202 @@
-<p>register works!</p>
+<div class="auth-wrapper register-mirror">
+
+  <div class="auth-form-side">
+    <div class="auth-form-inner">
+
+      <div class="brand-logo">
+        <div class="logo-icon-small">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span class="logo-text">FurniMind AI</span>
+      </div>
+
+      <div class="form-header">
+        <h1>أنشئ حسابك الجديد</h1>
+        <p>ابدأ رحلتك لتصميم بيتك الذكي واستكشاف الماركت بليس</p>
+      </div>
+      <div class="alert-success" *ngIf="successMessage" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 12px; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 20px; height: 20px; flex-shrink: 0;">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        {{ successMessage }}
+      </div>
+      <div class="alert-danger" *ngIf="errorMessage">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+
+        <div class="form-group">
+          <label for="fullName">الاسم الكامل</label>
+          <div class="input-wrapper">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </span>
+            <input
+              type="text"
+              id="fullName"
+              formControlName="fullName"
+              placeholder="أدخل اسمك الثلاثي"
+              [class.is-invalid]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid"
+            />
+          </div>
+          <div class="error-msg" *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.hasError('required')">الاسم الكامل مطلوب.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">البريد الإلكتروني</label>
+          <div class="input-wrapper">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </span>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              placeholder="your@example.com"
+              [class.is-invalid]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid"
+            />
+          </div>
+          <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')">البريد الإلكتروني مطلوب.</div>
+          <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')">صيغة البريد غير صحيحة.</div>
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber">رقم الهاتف</label>
+          <div class="input-wrapper">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </span>
+            <input
+              type="text"
+              id="phoneNumber"
+              formControlName="phoneNumber"
+              placeholder="01xxxxxxxxx"
+              [class.is-invalid]="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.invalid"
+            />
+          </div>
+          <div class="error-msg" *ngIf="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.hasError('required')">
+            رقم الهاتف مطلوب لإتمام التسجيل.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">كلمة المرور</label>
+          <div class="input-wrapper">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            <input
+              type="password"
+              id="password"
+              placeholder="••••••••"
+              formControlName="password"
+              [class.is-invalid]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid"
+            />
+          </div>
+          <div class="error-msg" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('required')">كلمة المرور مطلوبة.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">تأكيد كلمة المرور</label>
+          <div class="input-wrapper">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </span>
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="••••••••"
+              formControlName="confirmPassword"
+              [class.is-invalid]="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('mismatch'))"
+            />
+          </div>
+          <div class="error-msg" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.hasError('mismatch')">كلمتا المرور غير متطابقتين.</div>
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="registerForm.invalid || isLoading">
+          <span *ngIf="!isLoading">
+            إنشاء حساب جديد
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="submit-arrow">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </span>
+          <span *ngIf="isLoading" class="spinner"></span>
+        </button>
+
+      </form>
+
+      <p class="auth-footer" style="margin-top: 24px;">
+        لديك حساب بالفعل؟
+        <a routerLink="/login">تسجيل الدخول</a>
+      </p>
+
+    </div>
+  </div>
+  <!-- الجانب الأيمن - صورة أو تصميم جذاب -->
+  <div class="auth-visual-side">
+    <div class="visual-content">
+      
+      <div class="visual-icon animate-pop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </div>
+      
+      <h2 class="animate-fade-up-1">انضم إلى مستقبل التصميم الداخلي</h2>
+      <p class="visual-subtitle animate-fade-up-2">أنشئ حساباً لحفظ مشاريعك، وتتبع طلبات الأثاث، والحصول على اقتراحات ذكية مخصصة لغرفتك.</p>
+      
+      <div class="features-list animate-fade-up-3">
+        <div class="feature-item">
+          <span class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+          <span class="feature-text">معاينة الغرف وتوزيع الأثاث بالذكاء الاصطناعي</span>
+        </div>
+        
+        <div class="feature-item">
+          <span class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+          <span class="feature-text">توصيات ذكية مخصصة لقطع الأثاث المفضلة لديك</span>
+        </div>
+        
+        <div class="feature-item">
+          <span class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+          <span class="feature-text">إمكانية حفظ مشاريع التصميم ومشاركتها فوراً</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>

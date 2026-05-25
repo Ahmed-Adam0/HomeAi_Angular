@@ -13,7 +13,7 @@ export const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./features/auth/auth.routes').then((m) => m.authRoutes),
+          import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
       },
     ],
   },
