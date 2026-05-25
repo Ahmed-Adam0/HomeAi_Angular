@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.furnimind-ai.com/api/',
+  apiUrl: 'http://home-ai.runasp.net/api/',
   featureFlags: {
     enableAiRecommendations: true,
     enableNewCheckout: true,

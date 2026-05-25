@@ -1,0 +1,51 @@
+<section class="categories-section py-5 bg-white">
+  <div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-5 align-items-end">
+      <div class="col-md-8 text-start">
+        <span class="text-gold fw-bold text-uppercase letter-spacing-wide fs-7 mb-2 d-inline-block">
+          {{ 'CAT_STRIP_BADGE' | translate }}
+        </span>
+        <h2 class="display-5 fw-extrabold text-dark tracking-tight mb-0">
+          {{ 'CAT_STRIP_TITLE' | translate }}
+        </h2>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a routerLink="/categories" class="btn btn-outline-dark rounded-pill px-4 fw-bold transition-all hover-btn">
+          {{ 'CAT_STRIP_VIEW_ALL' | translate }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Responsive Grid -->
+    <div class="row g-4 justify-content-center">
+      <div 
+        *ngFor="let cat of categories(); let idx = index" 
+        class="col-md-6 col-lg-3"
+      >
+        <div 
+          class="category-card rounded-4 overflow-hidden shadow-sm border-0 position-relative"
+          [routerLink]="['/products']"
+          [queryParams]="{ categoryId: cat.id }"
+        >
+          <!-- Background image from API -->
+          <img 
+            [src]="cat.imageUrl || 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80'" 
+            [alt]="translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn"
+            class="category-img w-100 h-100 object-fit-cover transition-all duration-700"
+          />
+
+          <!-- Translucent Gradient Overlay -->
+          <div class="card-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4 bg-gradient-dark transition-all">
+            <!-- Title at bottom -->
+            <div class="category-meta text-white text-start">
+              <h4 class="fw-bold mb-0 fs-5 tracking-tight">
+                {{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

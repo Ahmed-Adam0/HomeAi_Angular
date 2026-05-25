@@ -1,0 +1,73 @@
+.catalog-page {
+  background-color: var(--bg-light);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "→" !important;
+  font-size: 0.65rem;
+  color: #94a3b8;
+  vertical-align: middle;
+}
+
+.filter-card {
+  background-color: var(--bg-white);
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+}
+
+.filter-group label {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.form-check-input {
+  cursor: pointer;
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.25rem rgba(17, 17, 17, 0.15) !important;
+}
+
+.focus-none:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.input-group input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.form-select:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 0.25rem rgba(17, 17, 17, 0.1) !important;
+}
+
+.btn-link:hover {
+  color: var(--primary-color) !important;
+}
+
+/* Custom pricing text input spacing */
+.input-group-text {
+  border: none;
+}
+
+/* Hide spin arrows in number inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* RTL Layout Overrides */
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+  content: "←" !important;
+}

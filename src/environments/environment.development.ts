@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://home-ai.runasp.net/api/',
+  apiUrl: 'http://home-ai.runasp.net/api/',
   featureFlags: {
     enableAiRecommendations: true,
     enableNewCheckout: true,

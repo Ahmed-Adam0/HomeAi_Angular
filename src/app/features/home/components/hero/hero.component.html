@@ -1,0 +1,87 @@
+<section class="hero-section position-relative overflow-hidden py-5 d-flex align-items-center bg-dark">
+  <!-- Gradient Ambient Backdrops -->
+  <div class="ambient-glow-1 position-absolute rounded-circle filter-blur z-0"></div>
+  <div class="ambient-glow-2 position-absolute rounded-circle filter-blur z-0"></div>
+
+  <div class="container position-relative z-1 py-5">
+    <div class="row align-items-center g-5">
+      <!-- Text & Call to Action -->
+      <div class="col-lg-6 text-dark text-start">
+        <span class="badge badge-gold px-3 py-2 rounded-pill fw-bold mb-4 tracking-wide text-uppercase fs-7 animate-fade-in-down d-inline-block">
+          {{ 'HERO_BADGE' | translate }}
+        </span>
+        
+        <h1 class="display-3 fw-extrabold mb-3 tracking-tight lh-sm animate-fade-in-left">
+          {{ 'HERO_TITLE_PART1' | translate }} <br/> {{ 'HERO_TITLE_PART2' | translate }} <span class="text-gradient">{{ 'HERO_TITLE_SPATIAL_AI' | translate }}</span>
+        </h1>
+        
+        <p class="lead text-secondary-color fs-5 mb-4 animate-fade-in-left duration-700">
+          {{ 'HERO_DESCRIPTION' | translate }}
+        </p>
+
+        <!-- Search Bar Integration -->
+        <div class="search-container mb-5 p-2 rounded-pill shadow-sm animate-fade-in-left duration-900">
+          <app-search-bar (search)="onSearch($event)"></app-search-bar>
+        </div>
+
+        <!-- Call To Actions -->
+        <div class="d-flex flex-wrap gap-3 animate-fade-in-up">
+          <a routerLink="/products" class="btn btn-premium px-4 py-3 d-flex align-items-center gap-2">
+            {{ 'HERO_EXPLORE_CATALOG' | translate }}
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+          <a routerLink="/ai-chat" class="btn btn-outline-dark px-4 py-3 rounded-pill fw-bold d-flex align-items-center gap-2 backdrop-blur transition-all btn-ai">
+            <span class="ai-spark-dot"></span>
+            {{ 'HERO_SCAN_ROOM' | translate }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Gorgeous Cinematic Furniture Image Showcase -->
+      <div class="col-lg-6 position-relative animate-fade-in-right">
+        <div class="image-showcase-wrapper">
+          <!-- Back shadow decoration -->
+          <div class="showcase-shadow position-absolute rounded-4 w-100 h-100 bg-info opacity-10"></div>
+          
+          <!-- Core showcase image -->
+          <div class="main-image-container rounded-4 overflow-hidden shadow-2xl border border-white border-opacity-10 position-relative z-2">
+            <img 
+              src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80" 
+              [alt]="'HERO_SHOWCASE_ALT' | translate" 
+              class="w-100 h-100 object-fit-cover hover-scale transition-all duration-1000"
+            />
+            
+            <!-- Glassmorphic Overlay Info Card -->
+            <div class="glass-overlay-card position-absolute bottom-0 start-0 m-4 p-4 rounded-4 text-white text-start z-3 border border-white border-opacity-15 shadow-2xl backdrop-blur">
+              <div class="d-flex align-items-center gap-3">
+                <div class="icon-pulse bg-info rounded-circle p-2 d-flex align-items-center justify-content-center shadow-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-white">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                  </svg>
+                </div>
+                <div>
+                  <h6 class="mb-0 fw-extrabold text-white">
+                    {{ 'HERO_COORDINATES_ACTIVE' | translate }}
+                  </h6>
+                  <span class="fs-7 text-secondary-color text-opacity-80">
+                    {{ 'HERO_COORDINATES_DETAILS' | translate }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Absolute floating design accents -->
+          <div class="accent-box-1 position-absolute bg-white bg-opacity-5 border border-white border-opacity-10 rounded-3 p-3 backdrop-blur shadow-lg z-3 text-white text-start d-flex align-items-center gap-3">
+            <span class="badge bg-success rounded-pill p-1">✔</span>
+            <span class="fs-7 fw-semibold">
+              {{ 'HERO_CONFIDENCE_MATCH' | translate }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

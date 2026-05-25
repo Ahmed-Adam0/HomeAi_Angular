@@ -1,0 +1,44 @@
+<section class="featured-section py-5 bg-white">
+  <div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-5 align-items-end">
+      <div class="col-md-8 text-start">
+        <span class="text-gold fw-bold text-uppercase letter-spacing-wide fs-7 mb-2 d-inline-block">
+          {{ 'FEATURED_BADGE' | translate }}
+        </span>
+        <h2 class="display-5 fw-extrabold text-dark tracking-tight mb-0">
+          {{ 'FEATURED_TITLE' | translate }}
+        </h2>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a routerLink="/products" class="btn btn-premium px-4 py-2">
+          {{ 'FEATURED_SHOP_ALL' | translate }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Shimmering Skeleton Loader during API load -->
+    <div *ngIf="isLoading()" class="row g-4">
+      <div *ngFor="let skeleton of [1,2,3,4]" class="col-sm-6 col-md-4 col-lg-3">
+        <app-skeleton-loader type="card" [count]="1"></app-skeleton-loader>
+      </div>
+    </div>
+
+    <!-- Connection Error state -->
+    <div *ngIf="!isLoading() && hasError()" class="alert alert-dark border border-secondary bg-dark text-white rounded-4 p-4 text-center my-4">
+      <div class="fs-1 mb-2">🔌</div>
+      <h5 class="fw-bold">{{ 'FEATURED_LOAD_ERROR' | translate }}</h5>
+      <p class="text-secondary font-xs mb-0">{{ 'FEATURED_CONN_ERROR' | translate }}</p>
+    </div>
+
+    <!-- Featured Products Grid -->
+    <div *ngIf="!isLoading() && !hasError()" class="row g-4">
+      <div 
+        *ngFor="let prod of featuredProducts()" 
+        class="col-sm-6 col-md-4 col-lg-3"
+      >
+        <app-product-card [product]="prod"></app-product-card>
+      </div>
+    </div>
+  </div>
+</section>

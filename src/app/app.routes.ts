@@ -7,10 +7,6 @@ import { AuthLayoutComponent } from './core/layouts/auth-layout/auth-layout.comp
 import { EmptyLayoutComponent } from './core/layouts/empty-layout/empty-layout.component';
 
 export const routes: Routes = [
-
-  // =========================
-  // AUTH LAYOUT
-  // =========================
   {
     path: 'auth',
     component: AuthLayoutComponent,
@@ -32,9 +28,6 @@ export const routes: Routes = [
     ],
   },
 
-  // =========================
-  // MAIN LAYOUT
-  // =========================
   {
     path: '',
     component: MainLayoutComponent,
@@ -168,6 +161,19 @@ export const routes: Routes = [
       },
     ],
   },
+  // Auth Layout wrapper for authentication routes
+  {
+    path: '',
+    component: AuthLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./features/auth/auth.routes').then((m) => m.authRoutes),
+      },
+    ],
+  },
+
 
   // =========================
   // EMPTY LAYOUT

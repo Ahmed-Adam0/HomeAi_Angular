@@ -11,11 +11,11 @@ export const API_URLS = {
     ME: 'auth/me',
   },
   PRODUCTS: {
-    LIST: 'products',
-    DETAILS: (id: string | number) => `products/${id}`,
-    CATEGORIES: 'products/categories',
-    SEARCH: 'products/search',
-    FEATURED: 'products/featured',
+    LIST: 'Products',
+    DETAILS: (id: string | number) => `Products/${id}`,
+    CATEGORIES: 'Categories',
+    SEARCH: 'Products',
+    FEATURED: 'Products',
   },
   CART: {
     GET: 'cart',

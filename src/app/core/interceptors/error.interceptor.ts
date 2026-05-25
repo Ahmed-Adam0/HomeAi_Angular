@@ -25,7 +25,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       let userMessage = 'An unexpected error occurred. Please try again later.';
 
-      if (error.error instanceof ErrorEvent) {
+      if (error.error instanceof Error) {
         // Client-side or network error
         userMessage = `Network error: ${error.error.message}`;
       } else {

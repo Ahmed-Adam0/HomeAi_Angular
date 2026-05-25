@@ -1,0 +1,38 @@
+.featured-section {
+  background-color: var(--bg-white) !important;
+}
+
+.letter-spacing-wide {
+  letter-spacing: 0.1em;
+}
+
+/* Make sure grids stretch perfectly */
+.row {
+  margin-right: -12px;
+  margin-left: -12px;
+}
+
+.col-sm-6, .col-md-4, .col-lg-3 {
+  padding-right: 12px;
+  padding-left: 12px;
+}
+
+/* Premium Warm Aesthetics */
+.text-gold {
+  color: #b8935c !important;
+}
+
+.btn-premium {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border: 1px solid #111111 !important;
+  border-radius: 50px !important;
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-premium:hover {
+  background-color: #b8935c !important;
+  border-color: #b8935c !important;
+  transform: translateY(-2px);
+}
