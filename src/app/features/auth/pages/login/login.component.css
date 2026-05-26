@@ -13,6 +13,18 @@
   width: 100%;
   min-height: 100vh;
   background: #ffffff;
+  animation: auth-page-enter 0.72s ease-out both;
+}
+
+@keyframes auth-page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(-28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .login-mirror {
@@ -35,7 +47,10 @@
 .auth-form-inner {
   width: 100%;
   max-width: 400px;
-  direction: rtl; 
+}
+
+.auth-wrapper[dir="ltr"] .auth-form-inner {
+  direction: ltr;
 }
 
 .brand-logo {
@@ -148,6 +163,29 @@
   box-sizing: border-box;
   text-align: right;
   transition: all 0.2s;
+}
+
+.auth-wrapper[dir="ltr"] .form-group input {
+  text-align: left;
+  padding: 0 16px 0 46px;
+}
+
+.auth-wrapper[dir="ltr"] .input-icon {
+  right: auto;
+  left: 14px;
+}
+
+.auth-wrapper[dir="ltr"] .auth-footer a {
+  margin-right: 0;
+  margin-left: 4px;
+}
+
+.auth-wrapper[dir="ltr"] .visual-content {
+  text-align: left;
+}
+
+.auth-wrapper[dir="ltr"] .visual-subtitle {
+  direction: ltr;
 }
 
 .form-group input:focus {
@@ -334,6 +372,17 @@
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-8px); }
+}
+
+@keyframes auth-page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* ═══════════════════════════════

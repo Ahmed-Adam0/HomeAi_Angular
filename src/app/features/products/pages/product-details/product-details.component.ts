@@ -8,6 +8,7 @@ import { IReview } from '../../interfaces/ireview';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { CartService } from '../../../cart/services/cart.service';
 
 @Component({
   selector: 'app-product-details',
@@ -20,6 +21,7 @@ export class ProductDetails implements OnInit, OnDestroy {
   private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private readonly cartService = inject(CartService);
   readonly translationService = inject(TranslationService);
 
   protected readonly Math = Math;
@@ -112,10 +114,21 @@ export class ProductDetails implements OnInit, OnDestroy {
   }
 
   addToCart(): void {
-    if (!this.product()) return;
+    const product = this.product();
+    if (!product) {
+      return;
+    }
 
-    const prodName = this.translationService.currentLang() === 'ar' ? this.product()?.nameAr : this.product()?.nameEn;
-    // Showcase interaction alert
-    alert(`Successfully added ${this.itemQuantity()} x ${prodName} to cart!`);
+    this.cartService.addToCart(product, this.itemQuantity());
+
+    const productTitle = this.translationService.currentLang() === 'ar'
+      ? product.nameAr
+      : product.nameEn;
+
+    const message = this.translationService.currentLang() === 'ar'
+      ? `تمت إضافة ${this.itemQuantity()} × ${productTitle} إلى سلة التسوق.`
+      : `Added ${this.itemQuantity()} × ${productTitle} to your cart.`;
+
+    window.alert(message);
   }
 }
