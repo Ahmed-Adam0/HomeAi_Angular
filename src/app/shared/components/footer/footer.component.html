@@ -1,39 +1,136 @@
-<footer class="bg-dark text-white pt-4 pb-2 mt-5">
-  <div class="container text-center text-md-start">
-    <div class="row">
+<footer class="site-footer" aria-label="Site footer">
+  <!-- Category navigation -->
+  <section class="footer-categories" aria-label="Shop by category">
+    <div class="footer-container">
+      @if (isLoadingCategories()) {
+        <ul class="footer-categories-list footer-categories-list--loading" aria-hidden="true">
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+            <li class="footer-category-skeleton"></li>
+          }
+        </ul>
+      } @else {
+        <ul class="footer-categories-list">
+          @for (category of footerCategories(); track category.id) {
+            <li>
+              <a
+                [routerLink]="categoryRoute(category)"
+                class="footer-category-card"
+                [attr.aria-label]="labelForCategory(category)"
+              >
+                <span class="footer-category-icon" aria-hidden="true">
+                  @if (category.svgPath) {
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      class="footer-category-svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        [attr.d]="category.svgPath"
+                      />
+                    </svg>
+                  } @else if (category.imageUrl) {
+                    <img
+                      [src]="category.imageUrl"
+                      [alt]=""
+                      class="footer-category-img"
+                      loading="lazy"
+                    />
+                  } @else if (category.icon) {
+                    <i [class]="category.icon"></i>
+                  }
+                </span>
+                <span class="footer-category-label">{{ labelForCategory(category) }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </section>
 
-      <!-- Company Info -->
-      <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
-        <h5 class="text-uppercase fw-bold">My Website</h5>
-        <p>
-          Building modern web applications using Bootstrap, Angular, and .NET.
-        </p>
+  <!-- Marketing + link columns -->
+  <section class="footer-main">
+    <div class="footer-container footer-main-grid">
+      <div class="footer-tagline">
+        <h2 class="footer-tagline-heading">
+          <span class="footer-tagline-line">{{ taglineLine1() }}</span>
+          <span class="footer-tagline-line footer-tagline-line--accent">{{ taglineLine2() }}</span>
+        </h2>
       </div>
 
-      <!-- Links -->
-      <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
-        <h5 class="text-uppercase fw-bold">Links</h5>
-        <ul class="list-unstyled">
-          <li><a href="#" class="text-white text-decoration-none">Home</a></li>
-          <li><a href="#" class="text-white text-decoration-none">About</a></li>
-          <li><a href="#" class="text-white text-decoration-none">Services</a></li>
-          <li><a href="#" class="text-white text-decoration-none">Contact</a></li>
+      <nav class="footer-columns" aria-label="Footer navigation">
+        @for (column of linkColumns(); track column.titleEn) {
+          <div class="footer-column">
+            <h3 class="footer-column-title">{{ columnTitle(column) }}</h3>
+            <ul class="footer-column-links">
+              @for (link of column.links; track link.labelEn) {
+                <li>
+                  <a
+                    [routerLink]="link.route"
+                    class="footer-link"
+                    [class.footer-link--highlight]="link.highlight"
+                  >
+                    {{ labelForLink(link) }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </nav>
+    </div>
+  </section>
+
+  <!-- Utility bar -->
+  <section class="footer-utility">
+    <div class="footer-container footer-utility-grid">
+      <div class="footer-utility-start">
+        <p class="footer-copyright">
+          Copyright ©{{ 'APP_TITLE' | translate }}. All Rights Reserved
+          <span class="footer-copyright-year">{{ copyrightYear() }}</span>
+        </p>
+
+        <ul class="footer-payments" aria-label="Accepted payment methods">
+          @for (brand of paymentBrands(); track brand.id) {
+            <li>
+              <span class="footer-payment-badge" [attr.data-brand]="brand.id" [attr.title]="brand.label">
+                <span class="visually-hidden">{{ brand.label }}</span>
+              </span>
+            </li>
+          }
         </ul>
       </div>
 
-      <!-- Contact -->
-      <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
-        <h5 class="text-uppercase fw-bold">Contact</h5>
-        <p>Email: info@example.com</p>
-        <p>Phone: +20 123 456 789</p>
-      </div>
-
+      <ul class="footer-social" aria-label="Social media">
+        @for (social of socialLinks(); track social.id) {
+          <li>
+            <a
+              [href]="social.url"
+              class="footer-social-link"
+              target="_blank"
+              rel="noopener noreferrer"
+              [attr.aria-label]="socialLabel(social)"
+            >
+              <i class="bi" [class]="social.iconClass" aria-hidden="true"></i>
+            </a>
+          </li>
+        }
+      </ul>
     </div>
-  </div>
+  </section>
 
-  <!-- Bottom -->
-  <div class="text-center p-3 bg-secondary mt-3">
-    © 2026 Copyright:
-    <a class="text-white text-decoration-none" href="#">MyWebsite.com</a>
-  </div>
+  <button
+    type="button"
+    class="footer-scroll-top"
+    [class.footer-scroll-top--visible]="showScrollTop()"
+    (click)="scrollToTop()"
+    aria-label="Scroll to top"
+  >
+    <i class="bi bi-arrow-up" aria-hidden="true"></i>
+  </button>
 </footer>

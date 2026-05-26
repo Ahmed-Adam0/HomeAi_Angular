@@ -71,11 +71,11 @@
   </div>
 </div>
 
-<!-- Main Navigation Bar -->
-<header class="main-header bg-white sticky-top shadow-sm" (click)="closeAllDropdowns()">
-  <div class="container d-flex align-items-center justify-content-between py-3">
+<!-- Main Navigation Bar with Glassmorphic Sticky Transition -->
+<header class="main-header sticky-top" [class.scrolled]="isScrolled()" (click)="closeAllFloatingDropdowns()">
+  <div class="container d-flex align-items-center justify-content-between py-3 header-container">
 
-    <!-- Brand Logo -->
+    <!-- Brand Logo Area -->
     <a routerLink="/" class="logo-area d-flex align-items-center gap-2 text-decoration-none">
       <div class="logo-box d-flex align-items-center justify-content-center">
         <!-- Minimalist Luxury Furniture Outline Icon -->
@@ -105,17 +105,14 @@
             </a>
           </div>
         } @else {
-          <!-- Rooms, Inspirations, Offers & promotions -->
           <div class="nav-item-wrapper">
-            <a [routerLink]="[link.route]"
+            <a [routerLink]="link.route"
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: link.route === '/' }"
                class="nav-link-custom d-flex align-items-center gap-1"
-               [class.highlighted-link]="link.labelEn === 'Inspirations'"
                [class.active]="activeMainLink() === link.labelEn"
                (click)="selectMainLink(link.labelEn)">
               <span>{{ translationService.currentLang() === 'ar' ? link.labelAr : link.labelEn }}</span>
-              @if (link.labelEn === 'Rooms' || link.labelEn === 'Inspirations') {
-                <i class="bi bi-chevron-down fs-8 arrow-icon"></i>
-              }
             </a>
           </div>
         }
@@ -125,32 +122,102 @@
     <!-- Desktop Actions (Right Side) -->
     <div class="actions-area d-flex align-items-center gap-3">
       <!-- Search Input (Bottom Line Style) -->
-      <div class="search-wrapper d-none d-md-flex align-items-center position-relative">
-        <input type="text"
+      <form class="search-wrapper d-none d-md-flex align-items-center position-relative"
+            (submit)="submitSearch($event)"
+            (click)="$event.stopPropagation()">
+        <input type="search"
                class="search-input bg-transparent border-0 py-1 pe-4 fs-7"
                [placeholder]="'NAV_SEARCH_PLACEHOLDER' | translate"
                [value]="searchInput()"
-               (input)="onSearch($event)">
-        <i class="bi bi-search search-icon position-absolute end-0 cursor-pointer"></i>
-      </div>
+               (input)="onSearchInput($event)"
+               (keydown.enter)="submitSearch($event)"
+               aria-label="Search Catalog">
+        <button type="submit"
+                class="search-icon-btn border-0 bg-transparent p-0 position-absolute end-0"
+                aria-label="Submit search">
+          <i class="bi bi-search search-icon cursor-pointer"></i>
+        </button>
+      </form>
 
-      <!-- User Profile Link -->
-      <a routerLink="/profile" (click)="onProfileSelect()" class="action-btn text-dark text-decoration-none" aria-label="Profile">
-        <i class="bi bi-person fs-5"></i>
-      </a>
+      <!-- Authentication: Profile Dropdown (Logged In) vs. Premium Dual CTAs (Logged Out) -->
+      @if (authService.isLoggedIn()) {
+        <div class="dropdown-wrapper position-relative">
+          <button (click)="toggleProfileDropdown($event)"
+                  class="profile-avatar-trigger border-0 bg-transparent position-relative d-flex align-items-center justify-content-center"
+                  [attr.aria-expanded]="isProfileDropdownOpen()"
+                  aria-label="User Account Options">
+            <div class="avatar-ring-outer">
+              <div class="avatar-ring-inner">
+                <span class="avatar-initials">{{ authService.currentUser()?.initials || 'FM' }}</span>
+              </div>
+            </div>
+            <span class="online-indicator"></span>
+          </button>
+          
+          @if (isProfileDropdownOpen()) {
+            <div class="profile-dropdown-card shadow-lg bg-white rounded z-3 position-absolute end-0 mt-2 p-0" (click)="$event.stopPropagation()">
+              <div class="profile-dropdown-header p-3 border-bottom">
+                <span class="user-fullname d-block fw-bold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
+                <span class="user-email d-block text-muted fs-8">{{ authService.currentUser()?.email }}</span>
+                <div class="mt-2 text-start">
+                  <span class="user-badge py-0.5 px-2 rounded-pill fs-9 fw-bold text-gold">{{ authService.currentUser()?.tier }}</span>
+                </div>
+              </div>
+              
+              <div class="profile-dropdown-body py-1">
+                <a routerLink="/profile" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
+                  <i class="bi bi-person-fill text-muted item-icon"></i>
+                  <span>{{ 'NAV_MY_PROFILE' | translate }}</span>
+                </a>
+                <a routerLink="/orders" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
+                  <i class="bi bi-card-list text-muted item-icon"></i>
+                  <span>{{ 'NAV_MY_ORDERS' | translate }}</span>
+                </a>
+                <a routerLink="/ai-chat" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
+                  <i class="bi bi-cpu-fill text-gold item-icon"></i>
+                  <span class="fw-semibold">{{ 'NAV_SAVED_SPACES' | translate }}</span>
+                </a>
+              </div>
 
-      <!-- Wishlist with Badge -->
-      <a routerLink="/wishlist" (click)="onWishlistSelect()" class="action-btn text-dark text-decoration-none position-relative" aria-label="Wishlist">
+              <div class="profile-dropdown-footer border-top p-2 bg-light-cream">
+                <button (click)="onLogout()" class="w-100 logout-btn-premium py-1.5 px-3 border-0 bg-transparent rounded text-danger fs-7 d-flex align-items-center gap-2.5">
+                  <i class="bi bi-box-arrow-right"></i>
+                  <span>{{ 'NAV_LOGOUT' | translate }}</span>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <!-- Dual Premium Auth Actions -->
+        <div class="auth-guest-actions d-flex align-items-center gap-2">
+          <!-- Sign In Link -->
+          <a routerLink="/auth/login" class="login-action-btn text-decoration-none fs-7 fw-bold" aria-label="Login">
+            <span>{{ 'NAV_LOGIN' | translate }}</span>
+          </a>
+          <!-- Register Premium CTA -->
+          <a routerLink="/auth/register" class="register-action-btn text-decoration-none fs-7 fw-bold" aria-label="Register">
+            <span>{{ 'NAV_REGISTER' | translate }}</span>
+          </a>
+        </div>
+      }
+
+      <!-- Wishlist -->
+      <a [routerLink]="navRoutes.FAVORITES"
+         class="action-btn text-dark text-decoration-none position-relative"
+         aria-label="Wishlist">
         <i class="bi bi-heart fs-5"></i>
-        @if (wishlistCount() > 0) {
+        @if (favoritesCount() > 0) {
           <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
-            {{ wishlistCount() }}
+            {{ favoritesCount() }}
           </span>
         }
       </a>
 
-      <!-- Cart with Badge -->
-      <a routerLink="/cart" (click)="onCartSelect()" class="action-btn text-dark text-decoration-none position-relative" aria-label="Shopping Cart">
+      <!-- Cart -->
+      <a [routerLink]="navRoutes.CART"
+         class="action-btn text-dark text-decoration-none position-relative"
+         aria-label="Shopping Cart">
         <i class="bi bi-bag fs-5"></i>
         @if (cartCount() > 0) {
           <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
@@ -176,25 +243,35 @@
        (mouseleave)="onMouseLeave()">
     <div class="container py-4">
 
-      <!-- Top Section: Category Row -->
-      <div class="categories-row d-flex justify-content-between align-items-center flex-wrap gap-3 pb-4 mb-4 border-bottom">
-        @for (category of categoryItems(); track category.id) {
-          <a [routerLink]="['/categories', category.id]"
-             (click)="onCategorySelect(category)"
-             class="category-card d-flex align-items-center gap-2 text-decoration-none">
-            <div class="category-icon-circle d-flex align-items-center justify-content-center bg-light-cream">
-              @if (category.svgPath) {
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="category-svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="category.svgPath" />
-                </svg>
-              } @else {
-                <i [class]="category.icon + ' fs-5 text-dark'"></i>
-              }
-            </div>
-            <span class="category-label font-primary fs-7 text-dark fw-medium">
-              {{ translationService.currentLang() === 'ar' ? category.nameAr : category.nameEn }}
-            </span>
-          </a>
+      <!-- Top Section: Dynamic API Category Row -->
+      <div class="categories-row d-flex justify-content-between align-items-center flex-wrap gap-3 pb-4 mb-4 border-bottom position-relative">
+        @if (isLoadingCategories()) {
+          <!-- High-fidelity custom Skeleton Loader array during dynamic HTTP loading -->
+          <div class="w-100 d-flex justify-content-between align-items-center gap-3 skeleton-container">
+            <app-skeleton-loader type="card" [count]="6" class="w-100 d-flex justify-content-between"></app-skeleton-loader>
+          </div>
+        } @else {
+          <!-- Dynamically Loaded Categories -->
+          @for (category of dynamicCategories(); track category.id) {
+            <a [routerLink]="categoryRoute(category)"
+               (click)="onCategorySelect(category)"
+               class="category-card d-flex align-items-center gap-2 text-decoration-none">
+              <div class="category-icon-circle d-flex align-items-center justify-content-center bg-light-cream">
+                @if (category.svgPath) {
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="category-svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="category.svgPath" />
+                  </svg>
+                } @else if (category.imageUrl) {
+                  <img [src]="category.imageUrl" [alt]="category.nameEn" class="category-img rounded-circle w-100 h-100 object-fit-cover">
+                } @else {
+                  <i [class]="category.icon + ' fs-5 text-dark'"></i>
+                }
+              </div>
+              <span class="category-label font-primary fs-7 text-dark fw-medium">
+                {{ translationService.currentLang() === 'ar' ? category.nameAr : category.nameEn }}
+              </span>
+            </a>
+          }
         }
       </div>
 
@@ -211,7 +288,7 @@
                 <ul class="column-list list-unstyled d-flex flex-column gap-2 mb-0">
                   @for (item of column.items; track item.nameEn) {
                     <li>
-                      <a [routerLink]="['/search']" [queryParams]="{ q: item.nameEn }" class="column-link text-decoration-none text-muted fs-7 hover-text-gold">
+                      <a [routerLink]="navRoutes.SEARCH" [queryParams]="{ q: item.nameEn }" class="column-link text-decoration-none text-muted fs-7 hover-text-gold">
                         {{ translationService.currentLang() === 'ar' ? item.nameAr : item.nameEn }}
                       </a>
                     </li>
@@ -267,14 +344,21 @@
   <!-- Drawer Body -->
   <div class="drawer-body flex-grow-1 overflow-y-auto p-3">
     <!-- Search in Mobile -->
-    <div class="mobile-search mb-4 position-relative">
-      <input type="text"
+    <form class="mobile-search mb-4 position-relative"
+          (submit)="submitSearch($event)">
+      <input type="search"
              class="form-control rounded-pill border-light-cream px-3 py-2 fs-7"
              [placeholder]="'NAV_SEARCH_PRODUCTS' | translate"
              [value]="searchInput()"
-             (input)="onSearch($event)">
-      <i class="bi bi-search position-absolute end-0 top-50 translate-middle-y me-3 text-muted"></i>
-    </div>
+             (input)="onSearchInput($event)"
+             (keydown.enter)="submitSearch($event)"
+             aria-label="Search products">
+      <button type="submit"
+              class="border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-3 text-muted p-0"
+              aria-label="Submit search">
+        <i class="bi bi-search"></i>
+      </button>
+    </form>
 
     <!-- Navigation Accordion -->
     <div class="mobile-nav-list d-flex flex-column gap-1">
@@ -290,14 +374,20 @@
             <!-- Render categories inline -->
             <div class="mobile-categories d-flex flex-column gap-2 mb-3">
               <span class="text-uppercase tracking-wider fs-9 fw-bold text-muted">{{ 'NAV_QUICK_CATEGORIES' | translate }}</span>
-              @for (cat of categoryItems(); track cat.id) {
-                <a [routerLink]="['/categories', cat.id]"
-                   class="mobile-nav-sublink text-decoration-none text-muted py-1 d-block fs-7"
-                   (click)="onCategorySelect(cat); toggleMobileMenu()">
-                  {{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}
-                </a>
+              
+              @if (isLoadingCategories()) {
+                <app-skeleton-loader type="list" [count]="4"></app-skeleton-loader>
+              } @else {
+                @for (cat of dynamicCategories(); track cat.id) {
+                  <a [routerLink]="categoryRoute(cat)"
+                     class="mobile-nav-sublink text-decoration-none text-muted py-1 d-block fs-7"
+                     (click)="onCategorySelect(cat)">
+                    {{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}
+                  </a>
+                }
               }
             </div>
+            
             <!-- Render columns -->
             @for (col of megaMenuColumns(); track col.titleEn) {
               <div class="mobile-menu-col-sub mb-3">
@@ -305,7 +395,7 @@
                   {{ translationService.currentLang() === 'ar' ? col.titleAr : col.titleEn }}
                 </span>
                 @for (sub of col.items; track sub.nameEn) {
-                  <a [routerLink]="['/search']" [queryParams]="{ q: sub.nameEn }" class="mobile-nav-sublink text-decoration-none text-muted py-1 d-block fs-7" (click)="toggleMobileMenu()">
+                  <a [routerLink]="navRoutes.SEARCH" [queryParams]="{ q: sub.nameEn }" class="mobile-nav-sublink text-decoration-none text-muted py-1 d-block fs-7" (click)="toggleMobileMenu()">
                     {{ translationService.currentLang() === 'ar' ? sub.nameAr : sub.nameEn }}
                   </a>
                 }
@@ -315,28 +405,18 @@
         }
       </div>
 
-      <!-- Rooms Accordion -->
-      <div class="accordion-item-custom">
-        <button class="accordion-trigger-custom w-100 d-flex justify-content-between align-items-center py-2 px-1 border-0 bg-transparent fs-6 fw-semibold text-dark"
-                (click)="toggleMobileAccordion('rooms')">
-          <span class="d-flex align-items-center gap-2"><i class="bi bi-house-door-fill text-gold fs-7"></i> {{ 'NAV_ROOMS' | translate }}</span>
-          <i class="bi" [class.bi-chevron-down]="activeMobileAccordion() !== 'rooms'" [class.bi-chevron-up]="activeMobileAccordion() === 'rooms'"></i>
-        </button>
-        @if (activeMobileAccordion() === 'rooms') {
-          <div class="accordion-content-custom ps-3 py-2 border-start ms-2">
-            @for (room of megaMenuColumns()[1].items; track room.nameEn) {
-              <a [routerLink]="['/search']" [queryParams]="{ q: room.nameEn }" class="mobile-nav-sublink text-decoration-none text-muted py-1.5 d-block fs-7" (click)="toggleMobileMenu()">
-                {{ translationService.currentLang() === 'ar' ? room.nameAr : room.nameEn }}
-              </a>
-            }
-          </div>
-        }
-      </div>
+      <!-- Rooms -->
+      <a routerLink="/rooms"
+         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+         (click)="selectMainLink('Rooms')">
+        <i class="bi bi-house-door-fill text-gold fs-7"></i>
+        <span>{{ 'NAV_ROOMS' | translate }}</span>
+      </a>
 
       <!-- Inspirations -->
       <a routerLink="/inspirations"
-         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-gold d-flex align-items-center gap-2 fs-6"
-         (click)="toggleMobileMenu()">
+         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+         (click)="selectMainLink('Inspirations')">
         <i class="bi bi-lightbulb-fill fs-7"></i>
         <span>{{ 'NAV_INSPIRATIONS' | translate }}</span>
       </a>
@@ -344,7 +424,7 @@
       <!-- Offers -->
       <a routerLink="/offers"
          class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
-         (click)="toggleMobileMenu()">
+         (click)="selectMainLink('Offers & promotions')">
         <i class="bi bi-percent fs-7"></i>
         <span>{{ 'NAV_OFFERS' | translate }}</span>
       </a>
@@ -361,7 +441,7 @@
     </div>
 
     <!-- Language & Currency inside drawer -->
-    <div class="mobile-selectors bg-light-cream p-3 rounded d-flex justify-content-between">
+    <div class="mobile-selectors bg-light-cream p-3 rounded d-flex justify-content-between mb-4">
       <div class="mobile-selector">
         <label class="fs-9 text-uppercase tracking-wider text-muted fw-bold d-block mb-1">{{ 'NAV_LANGUAGE' | translate }}</label>
         <span class="fs-7 text-dark fw-medium">{{ selectedLanguage().flag }} {{ selectedLanguage().label }}</span>
@@ -370,6 +450,50 @@
         <label class="fs-9 text-uppercase tracking-wider text-muted fw-bold d-block mb-1">{{ 'NAV_CURRENCY' | translate }}</label>
         <span class="fs-7 text-dark fw-medium">{{ selectedCurrency().symbol }} {{ selectedCurrency().code }}</span>
       </div>
+    </div>
+
+    <!-- Authentication in Mobile Drawer -->
+    <div class="mobile-auth-drawer border-top pt-3">
+      @if (authService.isLoggedIn()) {
+        <div class="d-flex align-items-center gap-2.5 mb-3 px-1">
+          <div class="avatar-mini bg-gold rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-7">
+            {{ authService.currentUser()?.initials || 'FM' }}
+          </div>
+          <div>
+            <span class="d-block fw-bold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
+            <span class="d-block text-muted fs-9">{{ authService.currentUser()?.tier }}</span>
+          </div>
+        </div>
+        <div class="d-flex flex-column gap-2">
+          <a routerLink="/profile" class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2" (click)="toggleMobileMenu()">
+            <i class="bi bi-person text-gold fs-6"></i>
+            <span>{{ 'NAV_MY_PROFILE' | translate }}</span>
+          </a>
+          <a routerLink="/orders" class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2" (click)="toggleMobileMenu()">
+            <i class="bi bi-card-list text-gold fs-6"></i>
+            <span>{{ 'NAV_MY_ORDERS' | translate }}</span>
+          </a>
+          <a routerLink="/ai-chat" class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2" (click)="toggleMobileMenu()">
+            <i class="bi bi-cpu text-gold fs-6"></i>
+            <span class="fw-semibold">{{ 'NAV_SAVED_SPACES' | translate }}</span>
+          </a>
+          <button (click)="onLogout(); toggleMobileMenu()" class="border-0 bg-transparent text-start text-danger fs-7 py-1.5 px-1 d-flex align-items-center gap-2">
+            <i class="bi bi-box-arrow-right fs-6"></i>
+            <span>{{ 'NAV_LOGOUT' | translate }}</span>
+          </button>
+        </div>
+      } @else {
+        <div class="d-flex flex-column gap-2">
+          <a routerLink="/auth/login" class="btn btn-gold-outline w-100 rounded-pill fs-7 py-2 fw-bold d-flex align-items-center justify-content-center gap-2" (click)="toggleMobileMenu()">
+            <i class="bi bi-box-arrow-in-right"></i>
+            <span>{{ 'NAV_LOGIN' | translate }}</span>
+          </a>
+          <a routerLink="/auth/register" class="btn btn-gold w-100 rounded-pill fs-7 py-2 text-white fw-bold d-flex align-items-center justify-content-center gap-2" (click)="toggleMobileMenu()">
+            <i class="bi bi-person-plus"></i>
+            <span>{{ 'NAV_REGISTER' | translate }}</span>
+          </a>
+        </div>
+      }
     </div>
   </div>
 

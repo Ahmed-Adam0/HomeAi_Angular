@@ -12,16 +12,17 @@
 
 /* Premium Integrated Sidebar (Col-3 Column) */
 .filter-sidebar {
-  border-right: 1px solid rgba(184, 147, 92, 0.12); /* Clean golden-grey dividing line */
-  padding-right: 2rem;
+  border-right: 1px solid rgba(184, 147, 92, 0.12) !important; /* Clean golden-grey dividing line */
+  padding-right: 2.2rem !important;
+  padding-left: 0 !important;
   transition: all 0.3s ease;
 }
 
 [dir="rtl"] .filter-sidebar {
-  border-right: none;
-  border-left: 1px solid rgba(184, 147, 92, 0.12);
-  padding-right: 0;
-  padding-left: 2rem;
+  border-right: none !important;
+  border-left: 1px solid rgba(184, 147, 92, 0.12) !important;
+  padding-right: 0 !important;
+  padding-left: 2.2rem !important;
 }
 
 /* Typography Hierarchy & Header */
@@ -38,29 +39,86 @@
   color: #111111 !important;
 }
 
-/* Sidebar Search Styling */
-.sidebar-search .input-group {
-  border: 1px solid rgba(184, 147, 92, 0.15) !important;
-  background-color: #ffffff !important;
-  border-radius: 8px !important;
-  padding: 0.2rem 0.4rem;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+/* Sidebar Search Styling matching Navbar premium search */
+.sidebar-search .search-input-wrapper {
+  position: relative;
+  width: 100%;
 }
 
-.sidebar-search .input-group:focus-within {
-  border-color: #b8935c !important; /* Gold focus glow */
-  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.1) !important;
-}
-
-.sidebar-search input {
-  font-size: 0.78rem !important;
-  font-weight: 500 !important;
+.sidebar-search-input {
+  width: 100%;
+  height: 38px; /* Same input height proportions as navbar mobile-search */
+  padding: 0.5rem 2.5rem 0.5rem 2.5rem !important; /* Spacing for magnifying glass & X clear button */
+  border-radius: 50px !important; /* Rounded-pill shape */
+  border: 1px solid rgba(184, 147, 92, 0.2) !important; /* Thin elegant golden-taupe border */
+  background-color: #ffffff !important; /* Soft luxury white background */
   color: #111111 !important;
-  padding: 0.3rem 0.2rem !important;
+  font-size: 0.78rem !important; /* Same typography feel */
+  font-weight: 500 !important;
+  outline: none !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.sidebar-search .input-group-text {
+/* Placeholder styling identical to navbar */
+.sidebar-search-input::placeholder {
+  color: #8c857b !important; /* Warm taupe placeholder identical to navbar search text */
+  font-weight: 400 !important;
+  opacity: 0.7;
+}
+
+/* Minimalist magnifying icon wrapper */
+.sidebar-search-icon-wrapper {
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #8c857b; /* Minimalist charcoal-taupe icon color */
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-search-icon-wrapper i {
   font-size: 0.75rem !important;
+}
+
+/* Clear X button */
+.sidebar-search-clear-btn {
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8c857b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-search-clear-btn:hover {
+  color: #111111 !important;
+  transform: translateY(-50%) scale(1.1) !important; /* Keep center vertical alignment and scale */
+}
+
+.sidebar-search-clear-btn i {
+  font-size: 0.75rem !important;
+}
+
+/* Smooth focus glow & hover elevation */
+.sidebar-search-input:hover {
+  border-color: #b8935c !important; /* Luxury gold on hover */
+  box-shadow: 0 4px 12px rgba(184, 147, 92, 0.05) !important; /* Subtle hover elevation */
+}
+
+.sidebar-search-input:focus {
+  border-color: #b8935c !important; /* Gold focus border */
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.12) !important; /* Smooth focus glow */
+  background-color: #ffffff !important;
+}
+
+/* Focus color feedback for the icon */
+.search-input-wrapper:focus-within .sidebar-search-icon-wrapper {
+  color: #b8935c !important; /* Accent gold focus */
+}
+
+/* RTL Layout adjustments */
+[dir="rtl"] .sidebar-search-input {
+  padding: 0.5rem 2.5rem 0.5rem 2.5rem !important;
 }
 
 /* Space Categories Filter Layout - Tighter compact spacing */
@@ -78,16 +136,15 @@
   display: block;
 }
 
-/* Custom Charcoal Dot Radio Buttons - Tight margin spacing */
+/* Custom Charcoal Dot Radio Buttons - Premium Flexbox alignment */
 .form-check {
-  padding-left: 1.4rem;
-  margin-bottom: 0.3rem !important; /* Compacter e-commerce layout spacing */
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  padding: 0 !important; /* Reset native padding */
+  margin-bottom: 0.45rem !important; /* Compacter e-commerce layout spacing */
+  cursor: pointer;
   transition: all 0.2s ease-in-out;
-}
-
-[dir="rtl"] .form-check {
-  padding-left: 0;
-  padding-right: 1.4rem;
 }
 
 .form-check-input[type="radio"] {
@@ -98,18 +155,11 @@
   border-radius: 50% !important;
   width: 14px !important;
   height: 14px !important;
-  margin-top: 0.28rem !important;
   position: relative;
   cursor: pointer;
-  float: left;
-  margin-left: -1.4rem;
+  margin: 0 !important; /* Clear old float-margin hacks */
+  flex-shrink: 0;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-[dir="rtl"] .form-check-input[type="radio"] {
-  float: right;
-  margin-left: 0;
-  margin-right: -1.4rem;
 }
 
 .form-check-input[type="radio"]::after {
@@ -389,4 +439,85 @@ input[type=number] {
   border-color: rgba(184, 147, 92, 0.05) !important;
   cursor: not-allowed !important;
   transform: none !important;
+}
+
+/* ==========================================================================
+   Premium Arabic RTL Polish & Layout Balance overrides
+   ========================================================================== */
+[dir="rtl"] {
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+}
+
+/* Adjust typography rules for the complex Arabic letters shape */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+[dir="rtl"] .tracking-tight,
+[dir="rtl"] .display-5 {
+  letter-spacing: normal !important; /* Disconnect issue fix */
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+[dir="rtl"] .lead,
+[dir="rtl"] p,
+[dir="rtl"] label,
+[dir="rtl"] select,
+[dir="rtl"] input,
+[dir="rtl"] button {
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+}
+
+[dir="rtl"] .catalog-page h1 {
+  line-height: 1.45 !important;
+}
+
+[dir="rtl"] .catalog-page .lead {
+  line-height: 1.6 !important;
+  font-size: 0.85rem !important; /* Slightly enlarged for elegant Arabic readability */
+}
+
+[dir="rtl"] .form-check-label {
+  font-size: 0.82rem !important; /* Elegant readability proportion for Cairo font */
+  line-height: 1.4 !important;
+  padding-right: 0.15rem !important; /* Slight breathing room next to radio dot */
+}
+
+/* Beautiful sort select dropdown symmetry in RTL */
+[dir="rtl"] .sort-select {
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+  background-position: left center !important;
+  padding-left: 1.6rem !important;
+  padding-right: 0.3rem !important;
+  font-size: 0.82rem !important;
+  line-height: 1.4 !important;
+}
+
+[dir="rtl"] .catalog-totals {
+  font-size: 0.82rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Clean, balanced margins and dividers */
+[dir="rtl"] .filter-sidebar h5 {
+  letter-spacing: 0.02em !important; /* Tighter letter spacing for Arabic caps */
+  font-size: 0.85rem !important;
+}
+
+/* Aligned breadcrumbs separator in RTL */
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+  content: "←" !important;
+  font-size: 0.7rem !important;
+  vertical-align: middle !important;
+  display: inline-block !important;
+  transform: translateY(-1px) !important;
+}
+
+[dir="rtl"] .sidebar-search-input {
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+  padding: 0.5rem 2.6rem 0.5rem 2.6rem !important; /* Balance icon and clear button spacing */
+  font-size: 0.82rem !important;
 }

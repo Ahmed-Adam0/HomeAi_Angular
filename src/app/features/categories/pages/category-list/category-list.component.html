@@ -7,20 +7,20 @@
       {{ translationService.currentLang() === 'ar' ? 'استكشف مجموعاتنا المصممة للمنازل الحديثة' : 'Explore our curated collections designed for modern homes' }}
     </p>
   </div>
-  
+
   <div class="row g-4 justify-content-center">
     @for (cat of categories(); track cat.id) {
       <div class="col-md-6 col-lg-3">
-        <div 
-          class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 category-card" 
-          [routerLink]="['/products']" 
+        <div
+          class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 category-card"
+          [routerLink]="['/products']"
           [queryParams]="{ categoryId: cat.id }"
           style="cursor: pointer;"
         >
           <div class="category-img-wrapper bg-light position-relative" style="aspect-ratio: 1; overflow: hidden;">
             @if (cat.imageUrl) {
-              <img 
-                [src]="cat.imageUrl" 
+              <img
+                [src]="cat.imageUrl"
                 [alt]="translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn"
                 class="w-100 h-100 object-fit-cover"
               />

@@ -2,7 +2,8 @@ import { Directive, ElementRef, Renderer2, inject, effect } from '@angular/core'
 import { TranslationService } from '../i18n/translation.service';
 
 @Directive({
-  selector: '[appRtl]'
+  selector: '[appRtl]',
+  standalone: true
 })
 export class RtlDirective {
   private el = inject(ElementRef);

@@ -35,9 +35,9 @@
         <div class="gallery-wrapper">
           <!-- Active Screen Image -->
           <div class="active-image-container rounded-4 overflow-hidden shadow-md bg-light border border-light position-relative">
-            <img 
-              [src]="activeImage() || 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80'" 
-              [alt]="translationService.currentLang() === 'ar' ? product()?.nameAr : product()?.nameEn" 
+            <img
+              [src]="activeImage() || 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80'"
+              [alt]="translationService.currentLang() === 'ar' ? product()?.nameAr : product()?.nameEn"
               class="active-img w-100 h-100 object-fit-cover transition-all"
             />
           </div>
@@ -91,9 +91,9 @@
                 <p class="font-xs text-secondary-color text-opacity-90 mb-3 lh-sm">
                   {{ translationService.currentLang() === 'ar' ? 'احصل على اقتراحات لوضع هذا الأثاث في غرفتك باستخدام الذكاء الاصطناعي للمساحات المعمارية.' : 'Get dynamic recommendations for placing this furniture item in your room using our spatial design consultant.' }}
                 </p>
-                <a 
-                  routerLink="/ai-chat" 
-                  [queryParams]="{ productId: product()?.id }" 
+                <a
+                  routerLink="/ai-chat"
+                  [queryParams]="{ productId: product()?.id }"
                   class="btn btn-info-premium btn-sm rounded-pill px-4 fw-bold font-xs d-inline-flex align-items-center gap-2"
                 >
                   <span class="ar-spark-dot"></span>
@@ -113,7 +113,7 @@
               <span class="fw-bold text-dark px-2 font-xs">{{ itemQuantity() }}</span>
               <button class="btn btn-link text-dark p-0 px-3 border-0 font-xs focus-none" (click)="incrementQuantity()">+</button>
             </div>
-            
+
             <button class="btn btn-premium flex-grow-1 py-3 px-5 d-flex align-items-center justify-content-center gap-2 shadow" (click)="addToCart()">
               {{ translationService.currentLang() === 'ar' ? 'إضافة إلى عربة التسوق' : 'Add to Shopping Cart' }}
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -131,7 +131,7 @@
         <h3 class="fw-extrabold text-dark mb-4 pb-2 border-bottom border-light">
           {{ translationService.currentLang() === 'ar' ? 'المراجعات المعمارية' : 'Architectural Reviews' }}
         </h3>
-        
+
         <div class="reviews-wrapper d-flex flex-column gap-4">
           <div *ngFor="let rev of reviews()" class="review-item card border-0 bg-light p-4 rounded-4 shadow-sm">
             <div class="d-flex justify-content-between align-items-start mb-2">

@@ -14,7 +14,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 export class CategoryListComponent implements OnInit {
   private categoryService = inject(CategoryService);
   readonly translationService = inject(TranslationService);
-  
+
   readonly categories = signal<ICategory[]>([]);
 
   ngOnInit(): void {

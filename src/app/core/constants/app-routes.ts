@@ -11,6 +11,11 @@ export const APP_ROUTES = {
   PRODUCTS: 'products',
   PRODUCT_DETAILS: 'products/:id',
 
+  CATEGORIES: 'categories',
+  CATEGORY_DETAIL: 'categories/:id',
+
+  SEARCH: 'search',
+
   CART: 'cart',
 
   FAVORITES: 'favorites',
@@ -36,6 +41,10 @@ export const NAV_ROUTES = {
   FILTER_SIDEBAR: '/filter-sidebar',
 
   PRODUCTS: '/products',
+
+  CATEGORIES: '/categories',
+  categoryDetail: (id: string | number) => `/categories/${id}`,
+  SEARCH: '/search',
 
   CART: '/cart',
 
