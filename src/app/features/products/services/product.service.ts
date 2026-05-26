@@ -31,7 +31,9 @@ export class ProductService {
       if (filter.isNewArrival !== undefined) params = params.set('isNewArrival', filter.isNewArrival.toString());
       if (filter.sortBy) params = params.set('sortBy', filter.sortBy);
       params = params.set('page', filter.page.toString());
+      params = params.set('pageNumber', filter.page.toString());
       params = params.set('limit', filter.limit.toString());
+      params = params.set('pageSize', filter.limit.toString());
     }
 
     return this.http.get<any>(`${this.apiUrl}${API_URLS.PRODUCTS.LIST}`, { params }).pipe(

@@ -9,11 +9,11 @@ import { IProduct } from '../../interfaces/iproduct';
 import { ICategory } from '../../../categories/interfaces/icategory';
 import { IProductFilter } from '../../interfaces/iproduct-filter';
 import { ProductCard } from '../../../../shared/components/product-card/product-card.component';
-import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-product-list',
@@ -24,10 +24,10 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
     FormsModule,
     RouterLink,
     ProductCard,
-    PaginationComponent,
     SkeletonLoader,
     EmptyStateComponent,
-    TranslatePipe
+    TranslatePipe,
+    PaginationComponent
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
@@ -61,6 +61,8 @@ export class ProductList implements OnInit, OnDestroy {
   priceLimitMin = 0;
   priceLimitMax = 3000;
 
+  private allProductsFromApi: IProduct[] = [];
+  private lastApiFiltersStr = '';
   private routeSub!: Subscription;
 
   ngOnInit(): void {
@@ -98,24 +100,104 @@ export class ProductList implements OnInit, OnDestroy {
   }
 
   loadCatalog(): void {
+    const apiFiltersJson = JSON.stringify({
+      categoryId: this.activeFilters.categoryId,
+      minPrice: this.activeFilters.minPrice,
+      maxPrice: this.activeFilters.maxPrice,
+      sortBy: this.activeFilters.sortBy
+    });
+
+    // If API filters haven't changed, perform instant client-side keyword search and pagination in memory.
+    // This completely prevents unnecessary API requests, removes loading skeleton flickering, and eliminates typing lag.
+    if (this.allProductsFromApi.length > 0 && apiFiltersJson === this.lastApiFiltersStr) {
+      this.applyClientSideFilter();
+      return;
+    }
+
     this.isLoading.set(true);
     this.hasError.set(false);
-    this.productService.getProducts(this.activeFilters).subscribe({
+    this.lastApiFiltersStr = apiFiltersJson;
+    
+    // Always request up to 100 products from API to do premium client-side filtering and pagination slicing.
+    const apiFilters = { ...this.activeFilters, query: '', limit: 100, page: 1 };
+    
+    this.productService.getProducts(apiFilters).subscribe({
       next: (data) => {
-        this.products.set(data);
-        
-        // Mock full total counts because standard mock API cuts off locally
-        // We calculate exact virtual list length for seamless routing/pagination experience
-        this.calculateVirtualTotal();
+        this.allProductsFromApi = data || [];
+        this.applyClientSideFilter();
         this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Catalog loading failure', err);
+        this.allProductsFromApi = [];
         this.products.set([]);
+        this.totalCount.set(0);
         this.hasError.set(true);
         this.isLoading.set(false);
       }
     });
+  }
+
+  private applyClientSideFilter(): void {
+    let filtered = [...this.allProductsFromApi];
+    
+    // 1. Live Search keyword filtering (name, category, description, and workshop in En/Ar)
+    if (this.activeFilters.query) {
+      const q = this.activeFilters.query.toLowerCase().trim();
+      filtered = filtered.filter(p => 
+        (p.nameEn && p.nameEn.toLowerCase().includes(q)) ||
+        (p.nameAr && p.nameAr.toLowerCase().includes(q)) ||
+        (p.categoryNameEn && p.categoryNameEn.toLowerCase().includes(q)) ||
+        (p.categoryNameAr && p.categoryNameAr.toLowerCase().includes(q)) ||
+        (p.descriptionEn && p.descriptionEn.toLowerCase().includes(q)) ||
+        (p.descriptionAr && p.descriptionAr.toLowerCase().includes(q)) ||
+        (p.workshopNameEn && p.workshopNameEn.toLowerCase().includes(q)) ||
+        (p.workshopNameAr && p.workshopNameAr.toLowerCase().includes(q))
+      );
+    }
+    
+    // 2. Pricing Threshold Live Filtering
+    if (this.activeFilters.minPrice !== undefined && this.activeFilters.minPrice !== null) {
+      filtered = filtered.filter(p => p.price >= this.activeFilters.minPrice!);
+    }
+    if (this.activeFilters.maxPrice !== undefined && this.activeFilters.maxPrice !== null) {
+      filtered = filtered.filter(p => p.price <= this.activeFilters.maxPrice!);
+    }
+    
+    // 3. Category Filter Live Filtering (fallback)
+    if (this.activeFilters.categoryId) {
+      filtered = filtered.filter(p => p.categoryId === Number(this.activeFilters.categoryId));
+    }
+    
+    // 4. Client-side Sorting
+    if (this.activeFilters.sortBy === 'price_asc') {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (this.activeFilters.sortBy === 'price_desc') {
+      filtered.sort((a, b) => b.price - a.price);
+    } else {
+      // 'newest' sort option: sort by createdAt descending, fallback to id descending
+      filtered.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        if (dateA !== dateB) return dateB - dateA;
+        return b.id - a.id;
+      });
+    }
+    
+    // Update total count with filtered list size
+    this.totalCount.set(filtered.length);
+    
+    // 5. Apply Client-Side Pagination Slicing
+    const totalPages = Math.ceil(filtered.length / this.activeFilters.limit) || 1;
+    if (this.activeFilters.page > totalPages) {
+      this.activeFilters.page = 1;
+    }
+    
+    const startIndex = (this.activeFilters.page - 1) * this.activeFilters.limit;
+    const endIndex = startIndex + this.activeFilters.limit;
+    const paginatedProducts = filtered.slice(startIndex, endIndex);
+    
+    this.products.set(paginatedProducts);
   }
 
   calculateVirtualTotal(): void {
