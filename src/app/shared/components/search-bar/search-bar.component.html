@@ -1,9 +1,10 @@
 <div class="search-container position-relative w-100">
-  <span class="search-icon position-absolute top-50 translate-middle-y start-3 text-secondary">🔍</span>
-  <input type="text" [formControl]="searchControl" [placeholder]="placeholder" class="form-control search-input ps-5 pe-5 py-3 rounded-pill shadow-sm">
   @if (searchControl.value) {
-    <button type="button" (click)="clearSearch()" class="btn-clear position-absolute top-50 translate-middle-y end-3 border-0 bg-transparent text-secondary p-0">
-      ❌
+    <button type="button" (click)="clearSearch()" class="btn-clear position-absolute top-50 translate-middle-y start-3 border-0 bg-transparent text-secondary p-0">
+      ✕
     </button>
+  } @else {
+    <span class="search-icon position-absolute top-50 translate-middle-y start-3 text-secondary">🔍</span>
   }
+  <input type="text" [formControl]="searchControl" [placeholder]="placeholder" class="form-control search-input ps-5 pe-3 py-3 rounded-pill shadow-sm">
 </div>

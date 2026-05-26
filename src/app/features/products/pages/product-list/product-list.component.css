@@ -1,40 +1,248 @@
 .catalog-page {
-  background-color: var(--bg-light);
+  background-color: #FAF9F6; /* Premium warm ivory catalog section depth backdrop */
+  min-height: 100vh;
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
   content: "→" !important;
   font-size: 0.65rem;
-  color: #94a3b8;
+  color: #c5bba8;
   vertical-align: middle;
 }
 
-.filter-card {
-  background-color: var(--bg-white);
-  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+/* Premium Integrated Sidebar (Col-3 Column) */
+.filter-sidebar {
+  border-right: 1px solid rgba(184, 147, 92, 0.12) !important; /* Clean golden-grey dividing line */
+  padding-right: 2.2rem !important;
+  padding-left: 0 !important;
+  transition: all 0.3s ease;
 }
 
-.filter-group label {
-  color: var(--primary-color);
+[dir="rtl"] .filter-sidebar {
+  border-right: none !important;
+  border-left: 1px solid rgba(184, 147, 92, 0.12) !important;
+  padding-right: 0 !important;
+  padding-left: 2.2rem !important;
+}
+
+/* Typography Hierarchy & Header */
+.filter-sidebar h5 {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
   font-weight: 700;
+  text-transform: uppercase;
+  color: #111111;
 }
 
-.form-check-input {
-  cursor: pointer;
+.filter-sidebar h5 svg {
+  color: #111111 !important;
 }
 
-.form-check-input:checked {
-  background-color: var(--primary-color) !important;
-  border-color: var(--primary-color) !important;
+/* Sidebar Search Styling matching Navbar premium search */
+.sidebar-search .search-input-wrapper {
+  position: relative;
+  width: 100%;
 }
 
-.form-check-input:focus {
-  box-shadow: 0 0 0 0.25rem rgba(17, 17, 17, 0.15) !important;
-}
-
-.focus-none:focus {
-  box-shadow: none !important;
+.sidebar-search-input {
+  width: 100%;
+  height: 38px; /* Same input height proportions as navbar mobile-search */
+  padding: 0.5rem 2.5rem 0.5rem 2.5rem !important; /* Spacing for magnifying glass & X clear button */
+  border-radius: 50px !important; /* Rounded-pill shape */
+  border: 1px solid rgba(184, 147, 92, 0.2) !important; /* Thin elegant golden-taupe border */
+  background-color: #ffffff !important; /* Soft luxury white background */
+  color: #111111 !important;
+  font-size: 0.78rem !important; /* Same typography feel */
+  font-weight: 500 !important;
   outline: none !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Placeholder styling identical to navbar */
+.sidebar-search-input::placeholder {
+  color: #8c857b !important; /* Warm taupe placeholder identical to navbar search text */
+  font-weight: 400 !important;
+  opacity: 0.7;
+}
+
+/* Minimalist magnifying icon wrapper */
+.sidebar-search-icon-wrapper {
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #8c857b; /* Minimalist charcoal-taupe icon color */
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-search-icon-wrapper i {
+  font-size: 0.75rem !important;
+}
+
+/* Clear X button */
+.sidebar-search-clear-btn {
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8c857b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-search-clear-btn:hover {
+  color: #111111 !important;
+  transform: translateY(-50%) scale(1.1) !important; /* Keep center vertical alignment and scale */
+}
+
+.sidebar-search-clear-btn i {
+  font-size: 0.75rem !important;
+}
+
+/* Smooth focus glow & hover elevation */
+.sidebar-search-input:hover {
+  border-color: #b8935c !important; /* Luxury gold on hover */
+  box-shadow: 0 4px 12px rgba(184, 147, 92, 0.05) !important; /* Subtle hover elevation */
+}
+
+.sidebar-search-input:focus {
+  border-color: #b8935c !important; /* Gold focus border */
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.12) !important; /* Smooth focus glow */
+  background-color: #ffffff !important;
+}
+
+/* Focus color feedback for the icon */
+.search-input-wrapper:focus-within .sidebar-search-icon-wrapper {
+  color: #b8935c !important; /* Accent gold focus */
+}
+
+/* RTL Layout adjustments */
+[dir="rtl"] .sidebar-search-input {
+  padding: 0.5rem 2.5rem 0.5rem 2.5rem !important;
+}
+
+/* Space Categories Filter Layout - Tighter compact spacing */
+.filter-group {
+  margin-bottom: 1.5rem !important; /* Spaced closer */
+}
+
+.filter-group .form-label {
+  font-size: 0.7rem !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  color: #8c857b !important; /* Warm taupe muted color */
+  margin-bottom: 0.65rem !important;
+  display: block;
+}
+
+/* Custom Charcoal Dot Radio Buttons - Premium Flexbox alignment */
+.form-check {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  padding: 0 !important; /* Reset native padding */
+  margin-bottom: 0.45rem !important; /* Compacter e-commerce layout spacing */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-check-input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: 1px solid #dcd3c8 !important; /* Clean warm-taupe ring */
+  border-radius: 50% !important;
+  width: 14px !important;
+  height: 14px !important;
+  position: relative;
+  cursor: pointer;
+  margin: 0 !important; /* Clear old float-margin hacks */
+  flex-shrink: 0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.form-check-input[type="radio"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #111111 !important; /* Clean premium charcoal active core */
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.form-check-input[type="radio"]:checked {
+  border-color: #111111 !important; /* Strong active borders */
+  background-color: transparent !important;
+}
+
+.form-check-input[type="radio"]:checked::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.form-check-input[type="radio"]:focus {
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06) !important;
+  outline: none !important;
+}
+
+/* Beautiful Options Label & Smooth Transitions */
+.form-check-label {
+  font-size: 0.78rem !important;
+  font-weight: 400 !important;
+  color: #64748b !important; /* Clean slate grey options */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.form-check-input:checked + .form-check-label {
+  color: #111111 !important;
+  font-weight: 600 !important;
+}
+
+.form-check:hover .form-check-label {
+  color: #111111 !important;
+}
+
+/* Custom pricing text input layout and spacing */
+.input-group {
+  border: 1px solid rgba(184, 147, 92, 0.15) !important; /* Warm border */
+  background-color: #ffffff !important; /* Pristine soft white backdrop */
+  border-radius: 8px !important;
+  padding: 0.18rem 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.input-group:focus-within {
+  border-color: #b8935c !important; /* Direct gold highlight on focus */
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.08) !important;
+}
+
+.input-group-text {
+  background-color: transparent !important;
+  color: #b8935c !important; /* Luxury gold label */
+  font-weight: 600 !important;
+  font-size: 0.7rem !important;
+  border: none !important;
+  padding-right: 0.2rem !important;
+}
+
+.input-group input.form-control {
+  background-color: transparent !important;
+  border: none !important;
+  font-size: 0.78rem !important;
+  font-weight: 500 !important;
+  color: #111111 !important;
+  padding: 0.25rem 0.18rem !important;
+}
+
+.input-group input.form-control::placeholder {
+  color: #c5bfa8 !important;
 }
 
 .input-group input:focus {
@@ -42,18 +250,124 @@
   box-shadow: none !important;
 }
 
+/* Sleek Integrated Catalog Toolbar Header */
+.catalog-toolbar {
+  background-color: transparent !important;
+  padding: 0 0 1rem 0 !important;
+  border-bottom: 1px solid rgba(184, 147, 92, 0.12) !important; /* Gold divide line */
+}
+
+.catalog-totals {
+  font-size: 0.8rem !important;
+  color: #64748b !important;
+}
+
+/* Premium Borderless Sort Dropdown Selector */
+.sort-select {
+  border: none !important;
+  background-color: transparent !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #111111;
+  cursor: pointer;
+  padding-right: 1.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 10px;
+}
+
+[dir="rtl"] .sort-select {
+  background-position: left center;
+  padding-left: 1.5rem;
+  padding-right: 0;
+}
+
+.sort-select:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .form-select:focus {
-  border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 0.25rem rgba(17, 17, 17, 0.1) !important;
+  border-color: #b8935c !important;
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.08) !important;
+}
+
+/* Premium Filter Clear Button */
+.btn-link {
+  font-size: 0.72rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700 !important;
+  color: #b8935c !important;
+  transition: all 0.2s ease;
+  text-decoration: none !important;
 }
 
 .btn-link:hover {
-  color: var(--primary-color) !important;
+  color: #a37e4c !important;
 }
 
-/* Custom pricing text input spacing */
-.input-group-text {
-  border: none;
+/* Premium Product Card Redesign & Elegant Animations */
+::ng-deep .product-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(184, 147, 92, 0.06) !important; /* Subtle gold border frame */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01) !important;
+}
+
+::ng-deep .product-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 16px 40px rgba(184, 147, 92, 0.08) !important; /* Soft gold-accented drop shadow */
+  border-color: rgba(184, 147, 92, 0.15) !important;
+}
+
+/* Image Zoom Transition */
+::ng-deep .product-card .image-wrapper {
+  overflow: hidden;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+::ng-deep .product-card .product-img {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+::ng-deep .product-card:hover .product-img {
+  transform: scale(1.04) !important;
+}
+
+/* Elegant quick view overlay display */
+::ng-deep .product-card .quick-view-overlay {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  background-color: rgba(17, 17, 17, 0.25) !important;
+}
+
+::ng-deep .product-card:hover .quick-view-overlay {
+  opacity: 1 !important;
+}
+
+/* Action button transitions */
+::ng-deep .product-card .add-to-cart-btn {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  background-color: #111111 !important;
+}
+
+::ng-deep .product-card:hover .add-to-cart-btn {
+  background-color: #b8935c !important; /* Gold on card hover */
+  transform: scale(1.05);
+}
+
+::ng-deep .product-card .favorite-btn {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+::ng-deep .product-card .favorite-btn:hover {
+  transform: scale(1.1) !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Hide spin arrows in number inputs */
@@ -67,7 +381,143 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+/* Responsive Stylesheet Overrides */
+@media (max-width: 991.98px) {
+  .filter-sidebar {
+    border-right: none !important;
+    border-left: none !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    margin-bottom: 2rem;
+  }
+}
+
 /* RTL Layout Overrides */
 [dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
   content: "←" !important;
+}
+
+/* Compact Luxury Minimalist Pagination Styling */
+::ng-deep .pagination {
+  margin-top: 2.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+::ng-deep .pagination-rounded .page-link {
+  border-radius: 6px !important; /* Soft minimal rounding */
+  margin: 0 3px !important;
+  border: 1px solid rgba(184, 147, 92, 0.12) !important; /* Softer golden-taupe border */
+  background-color: #ffffff !important;
+  color: #64748b !important; /* Slate grey default text */
+  width: 34px !important;
+  height: 34px !important;
+  font-weight: 600 !important;
+  font-size: 0.78rem !important; /* Compact luxury size */
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+::ng-deep .pagination-rounded .page-link:hover {
+  background-color: #fcfbf7 !important; /* Premium warm tint */
+  color: #b8935c !important; /* Luxury gold focus text */
+  border-color: #b8935c !important;
+  transform: translateY(-1px) !important;
+}
+
+::ng-deep .pagination-rounded .page-item.active .page-link {
+  background-color: #b8935c !important; /* Premium gold active background */
+  border-color: #b8935c !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 15px rgba(184, 147, 92, 0.15) !important; /* Warm glow shadow */
+}
+
+::ng-deep .pagination-rounded .page-item.disabled .page-link {
+  color: #cbd5e1 !important;
+  background-color: #FAF9F6 !important;
+  border-color: rgba(184, 147, 92, 0.05) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* ==========================================================================
+   Premium Arabic RTL Polish & Layout Balance overrides
+   ========================================================================== */
+[dir="rtl"] {
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+}
+
+/* Adjust typography rules for the complex Arabic letters shape */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+[dir="rtl"] .tracking-tight,
+[dir="rtl"] .display-5 {
+  letter-spacing: normal !important; /* Disconnect issue fix */
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+[dir="rtl"] .lead,
+[dir="rtl"] p,
+[dir="rtl"] label,
+[dir="rtl"] select,
+[dir="rtl"] input,
+[dir="rtl"] button {
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+}
+
+[dir="rtl"] .catalog-page h1 {
+  line-height: 1.45 !important;
+}
+
+[dir="rtl"] .catalog-page .lead {
+  line-height: 1.6 !important;
+  font-size: 0.85rem !important; /* Slightly enlarged for elegant Arabic readability */
+}
+
+[dir="rtl"] .form-check-label {
+  font-size: 0.82rem !important; /* Elegant readability proportion for Cairo font */
+  line-height: 1.4 !important;
+  padding-right: 0.15rem !important; /* Slight breathing room next to radio dot */
+}
+
+/* Beautiful sort select dropdown symmetry in RTL */
+[dir="rtl"] .sort-select {
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+  background-position: left center !important;
+  padding-left: 1.6rem !important;
+  padding-right: 0.3rem !important;
+  font-size: 0.82rem !important;
+  line-height: 1.4 !important;
+}
+
+[dir="rtl"] .catalog-totals {
+  font-size: 0.82rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Clean, balanced margins and dividers */
+[dir="rtl"] .filter-sidebar h5 {
+  letter-spacing: 0.02em !important; /* Tighter letter spacing for Arabic caps */
+  font-size: 0.85rem !important;
+}
+
+/* Aligned breadcrumbs separator in RTL */
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+  content: "←" !important;
+  font-size: 0.7rem !important;
+  vertical-align: middle !important;
+  display: inline-block !important;
+  transform: translateY(-1px) !important;
+}
+
+[dir="rtl"] .sidebar-search-input {
+  font-family: 'Cairo', 'Outfit', sans-serif !important;
+  padding: 0.5rem 2.6rem 0.5rem 2.6rem !important; /* Balance icon and clear button spacing */
+  font-size: 0.82rem !important;
 }
