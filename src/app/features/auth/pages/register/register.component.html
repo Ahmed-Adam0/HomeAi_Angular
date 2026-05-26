@@ -1,4 +1,4 @@
-<div class="auth-wrapper register-mirror">
+<div class="auth-wrapper register-mirror" [attr.dir]="direction()" [attr.lang]="currentLang()">
 
   <div class="auth-form-side">
     <div class="auth-form-inner">
@@ -15,8 +15,8 @@
       </div>
 
       <div class="form-header">
-        <h1>أنشئ حسابك الجديد</h1>
-        <p>ابدأ رحلتك لتصميم بيتك الذكي واستكشاف الماركت بليس</p>
+        <h1>{{ t().pageTitle }}</h1>
+        <p>{{ t().pageSubtitle }}</p>
       </div>
       <div class="alert-success" *ngIf="successMessage" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 12px; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 20px; height: 20px; flex-shrink: 0;">
@@ -34,7 +34,7 @@
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
 
         <div class="form-group">
-          <label for="fullName">الاسم الكامل</label>
+          <label for="fullName">{{ t().fullNameLabel }}</label>
           <div class="input-wrapper">
             <span class="input-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -46,15 +46,15 @@
               type="text"
               id="fullName"
               formControlName="fullName"
-              placeholder="أدخل اسمك الثلاثي"
+              [placeholder]="t().fullNamePlaceholder"
               [class.is-invalid]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid"
             />
           </div>
-          <div class="error-msg" *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.hasError('required')">الاسم الكامل مطلوب.</div>
+          <div class="error-msg" *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.hasError('required')">{{ t().fullNameRequired }}</div>
         </div>
 
         <div class="form-group">
-          <label for="email">البريد الإلكتروني</label>
+          <label for="email">{{ t().emailLabel }}</label>
           <div class="input-wrapper">
             <span class="input-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -66,15 +66,15 @@
               type="email"
               id="email"
               formControlName="email"
-              placeholder="your@example.com"
+              [placeholder]="t().emailPlaceholder"
               [class.is-invalid]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid"
             />
           </div>
-          <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')">البريد الإلكتروني مطلوب.</div>
-          <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')">صيغة البريد غير صحيحة.</div>
+          <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')">{{ t().emailRequired }}</div>
+          <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')">{{ t().emailInvalid }}</div>
         </div>
         <div class="form-group">
-          <label for="phoneNumber">رقم الهاتف</label>
+          <label for="phoneNumber">{{ t().phoneLabel }}</label>
           <div class="input-wrapper">
             <span class="input-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -85,17 +85,17 @@
               type="text"
               id="phoneNumber"
               formControlName="phoneNumber"
-              placeholder="01xxxxxxxxx"
+              [placeholder]="t().phonePlaceholder"
               [class.is-invalid]="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.invalid"
             />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.hasError('required')">
-            رقم الهاتف مطلوب لإتمام التسجيل.
+            {{ t().phoneRequired }}
           </div>
         </div>
 
         <div class="form-group">
-          <label for="password">كلمة المرور</label>
+          <label for="password">{{ t().passwordLabel }}</label>
           <div class="input-wrapper">
             <span class="input-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -106,16 +106,16 @@
             <input
               type="password"
               id="password"
-              placeholder="••••••••"
+              [placeholder]="t().passwordPlaceholder"
               formControlName="password"
               [class.is-invalid]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid"
             />
           </div>
-          <div class="error-msg" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('required')">كلمة المرور مطلوبة.</div>
+          <div class="error-msg" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('required')">{{ t().passwordRequired }}</div>
         </div>
 
         <div class="form-group">
-          <label for="confirmPassword">تأكيد كلمة المرور</label>
+          <label for="confirmPassword">{{ t().confirmPasswordLabel }}</label>
           <div class="input-wrapper">
             <span class="input-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -125,17 +125,17 @@
             <input
               type="password"
               id="confirmPassword"
-              placeholder="••••••••"
+              [placeholder]="t().passwordPlaceholder"
               formControlName="confirmPassword"
               [class.is-invalid]="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('mismatch'))"
             />
           </div>
-          <div class="error-msg" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.hasError('mismatch')">كلمتا المرور غير متطابقتين.</div>
+          <div class="error-msg" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.hasError('mismatch')">{{ t().passwordMismatch }}</div>
         </div>
 
         <button type="submit" class="btn-submit" [disabled]="registerForm.invalid || isLoading">
           <span *ngIf="!isLoading">
-            إنشاء حساب جديد
+            {{ t().registerButton }}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="submit-arrow">
               <line x1="5" y1="12" x2="19" y2="12"/>
               <polyline points="12 5 19 12 12 19"/>
@@ -147,8 +147,8 @@
       </form>
 
       <p class="auth-footer" style="margin-top: 24px;">
-        لديك حساب بالفعل؟
-        <a routerLink="/login">تسجيل الدخول</a>
+        {{ t().haveAccountText }}
+        <a routerLink="/login">{{ t().loginLink }}</a>
       </p>
 
     </div>
@@ -164,8 +164,8 @@
         </svg>
       </div>
 
-      <h2 class="animate-fade-up-1">انضم إلى مستقبل التصميم الداخلي</h2>
-      <p class="visual-subtitle animate-fade-up-2">أنشئ حساباً لحفظ مشاريعك، وتتبع طلبات الأثاث، والحصول على اقتراحات ذكية مخصصة لغرفتك.</p>
+      <h2 class="animate-fade-up-1">{{ t().visualHeading }}</h2>
+      <p class="visual-subtitle animate-fade-up-2">{{ t().visualSubtitle }}</p>
 
       <div class="features-list animate-fade-up-3">
         <div class="feature-item">
@@ -174,7 +174,7 @@
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </span>
-          <span class="feature-text">معاينة الغرف وتوزيع الأثاث بالذكاء الاصطناعي</span>
+          <span class="feature-text">{{ t().feature1 }}</span>
         </div>
 
         <div class="feature-item">
@@ -183,7 +183,7 @@
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </span>
-          <span class="feature-text">توصيات ذكية مخصصة لقطع الأثاث المفضلة لديك</span>
+          <span class="feature-text">{{ t().feature2 }}</span>
         </div>
 
         <div class="feature-item">
@@ -192,7 +192,7 @@
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </span>
-          <span class="feature-text">إمكانية حفظ مشاريع التصميم ومشاركتها فوراً</span>
+          <span class="feature-text">{{ t().feature3 }}</span>
         </div>
       </div>
     </div>
