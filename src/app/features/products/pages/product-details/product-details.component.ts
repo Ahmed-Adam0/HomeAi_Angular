@@ -9,11 +9,12 @@ import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/sk
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { CartService } from '../../../cart/services/cart.service';
+import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [NgIf, NgFor, RouterLink, SkeletonLoader, CurrencyFormatPipe, DatePipe],
+  imports: [NgIf, NgFor, RouterLink, SkeletonLoader, CurrencyFormatPipe, DatePipe, LoadingSpinner],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css',
 })
@@ -21,7 +22,7 @@ export class ProductDetails implements OnInit, OnDestroy {
   private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private readonly cartService = inject(CartService);
+  readonly cartService = inject(CartService);
   readonly translationService = inject(TranslationService);
 
   protected readonly Math = Math;
@@ -119,16 +120,10 @@ export class ProductDetails implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.cartService.isProductAdding(product.id)) {
+      return;
+    }
+
     this.cartService.addToCart(product, this.itemQuantity());
-
-    const productTitle = this.translationService.currentLang() === 'ar'
-      ? product.nameAr
-      : product.nameEn;
-
-    const message = this.translationService.currentLang() === 'ar'
-      ? `تمت إضافة ${this.itemQuantity()} × ${productTitle} إلى سلة التسوق.`
-      : `Added ${this.itemQuantity()} × ${productTitle} to your cart.`;
-
-    window.alert(message);
   }
 }

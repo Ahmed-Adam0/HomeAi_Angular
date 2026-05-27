@@ -1,9 +1,13 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UiState {
+  private readonly platformId = inject(PLATFORM_ID);
+  private alertTimeout: ReturnType<typeof setTimeout> | null = null;
+
   // Global loading overlay signal
   readonly globalLoading = signal<boolean>(false);
 
@@ -27,12 +31,23 @@ export class UiState {
 
   showAlert(type: 'success' | 'danger' | 'warning' | 'info', message: string): void {
     this.activeAlert.set({ type, message });
-    setTimeout(() => {
-      this.activeAlert.set(null);
-    }, 4000);
+
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.alertTimeout) {
+        clearTimeout(this.alertTimeout);
+      }
+      this.alertTimeout = setTimeout(() => {
+        this.activeAlert.set(null);
+        this.alertTimeout = null;
+      }, 4000);
+    }
   }
 
   dismissAlert(): void {
+    if (this.alertTimeout) {
+      clearTimeout(this.alertTimeout);
+      this.alertTimeout = null;
+    }
     this.activeAlert.set(null);
   }
 }

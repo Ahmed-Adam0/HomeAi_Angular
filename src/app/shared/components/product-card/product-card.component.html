@@ -58,11 +58,16 @@
         type="button"
         class="add-to-cart-btn btn btn-dark rounded-circle d-flex align-items-center justify-content-center p-2 transition-all border-0 shadow-sm"
         aria-label="Add to cart"
+        [disabled]="cartService.isProductAdding(product.id)"
         (click)="addToCart($event)"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="cart-btn-icon text-white">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-        </svg>
+        @if (cartService.isProductAdding(product.id)) {
+          <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="cart-btn-icon text-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+        }
       </button>
     </div>
   </div>
