@@ -1,8 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Button } from '../button/button.component';
 
 @Component({
   selector: 'app-empty-state',
-  imports: [],
+  imports: [Button],
   templateUrl: './empty-state.component.html',
   styleUrl: './empty-state.component.css'
 })

@@ -4,11 +4,12 @@ import { Router, RouterModule } from '@angular/router';
 import { Button } from '../../../../shared/components/button/button.component';
 import { CartService } from '../../services/cart.service';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, RouterModule, Button],
+  imports: [CommonModule, RouterModule, Button, EmptyStateComponent],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
 })
@@ -16,6 +17,10 @@ export class Cart {
   readonly cartService = inject(CartService);
   readonly translationService = inject(TranslationService);
   private router = inject(Router);
+
+  onContinueShopping(): void {
+    this.router.navigate(['/products']);
+  }
 
   readonly items = this.cartService.items;
   readonly hasItems = computed(() => this.items().length > 0);

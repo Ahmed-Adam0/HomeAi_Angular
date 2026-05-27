@@ -1,10 +1,14 @@
-<div class="empty-state-container text-center p-5 border rounded-4 bg-white shadow-sm max-w-500 mx-auto my-5">
-  <div class="empty-state-icon mb-4">{{ icon }}</div>
-  <h3 class="fw-bold text-dark mb-2">{{ title }}</h3>
-  <p class="text-secondary mb-4">{{ description }}</p>
+<div class="empty-state-container">
+  <div class="empty-state-icon">{{ icon }}</div>
+  <h3 class="empty-state-title">{{ title }}</h3>
+  <p class="empty-state-copy">{{ description }}</p>
   @if (actionText) {
-    <button (click)="onAction()" class="btn btn-dark px-4 py-2 rounded-pill shadow-sm transition">
-      {{ actionText }}
-    </button>
+    <app-button
+      [label]="actionText"
+      variant="premium"
+      size="lg"
+      (clicked)="onAction()"
+      class="empty-state-action"
+    ></app-button>
   }
 </div>

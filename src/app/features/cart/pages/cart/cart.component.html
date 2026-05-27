@@ -104,17 +104,14 @@
   </ng-container>
 
   <ng-template #emptyState>
-    <div class="cart-empty-state">
-      <div class="empty-icon">🛒</div>
-      <h2>{{ emptyLabel() }}</h2>
-      <p class="empty-copy">
-        {{ translationService.currentLang() === 'ar'
-          ? 'ابدأ بإضافة قطع الأثاث المميزة إلى سلتك لتظهر هنا.'
-          : 'Add high-end furniture pieces to your cart and they will appear here.' }}
-      </p>
-      <a routerLink="/products" class="btn btn-dark px-4 py-2 rounded-pill shadow-sm">
-        {{ labels().continueShopping }}
-      </a>
-    </div>
+    <app-empty-state
+      [title]="emptyLabel()"
+      [description]="translationService.currentLang() === 'ar'
+        ? 'ابدأ بإضافة قطع الأثاث المميزة إلى سلتك لتظهر هنا.'
+        : 'Add high-end furniture pieces to your cart and they will appear here.'"
+      icon="🛒"
+      [actionText]="labels().continueShopping"
+      (actionClick)="onContinueShopping()">
+    </app-empty-state>
   </ng-template>
 </section>
