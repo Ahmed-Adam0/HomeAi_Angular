@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants';
 import { IOrder, IBackendOrder } from '../interfaces';
@@ -45,6 +45,7 @@ export class OrdersApiService {
       .get<ApiEnvelope<IBackendOrder>>(`${this.apiUrl}${API_URLS.ORDERS.DETAILS(id)}`)
       .pipe(
         map(unwrap),
+        tap((response) => console.log('Backend order response inside API service:', response)),
         map(mapBackendToOrder)
       );
   }

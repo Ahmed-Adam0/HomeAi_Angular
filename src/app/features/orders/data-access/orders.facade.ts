@@ -99,6 +99,10 @@ export class OrdersFacade {
    * Fetches detailed information for a single order.
    */
   loadOrder(id: string): void {
+    this.loadOrderDetails(id);
+  }
+
+  loadOrderDetails(id: string): void {
     this.isLoadingDetails.set(true);
     this.detailsErrorKey.set(null);
 
@@ -112,7 +116,12 @@ export class OrdersFacade {
         finalize(() => this.isLoadingDetails.set(false)),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((order) => this.selectedOrder.set(order));
+      .subscribe({
+        next: (order) => {
+          console.log('Loaded order details:', order);
+          this.selectedOrder.set(order);
+        }
+      });
   }
 
   /**

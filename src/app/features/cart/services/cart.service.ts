@@ -23,6 +23,7 @@ export class CartService {
   private readonly authService = inject(AuthService);
   private readonly loadingStates = signal<Record<string, { adding?: boolean; updating?: boolean; removing?: boolean }>>({});
   private readonly activeSyncRequests = new Set<string>();
+  private readonly activeQuantityUpdates = new Set<string>();
   private readonly updateQuantityDebounceTimers = new Map<string, any>();
   private readonly pendingUpdatePromises = new Map<string, Promise<any>>();
 
@@ -346,7 +347,6 @@ export class CartService {
               const p = obs.toPromise()
                 .then(() => {
                   this.activeSyncRequests.delete(lockKey);
-                  this.syncCartFromBackend();
                 })
                 .catch((err: any) => {
                   this.activeSyncRequests.delete(lockKey);
@@ -429,7 +429,7 @@ export class CartService {
       console.log('Removing cart item', { id: cartItemIdVal });
       const p = this.cartApi.removeItem(cartItemIdVal).toPromise()
         .then(() => {
-          this.syncCartFromBackend();
+          // successful removal; local state is already updated optimistically
         })
         .catch((err) => {
           console.error('Cart sync failed on item remove:', err);
@@ -458,7 +458,27 @@ export class CartService {
       return;
     }
 
+    const existing = this.items().find(
+      (item) =>
+        String(item.id).trim() === targetId ||
+        String(item.productId).trim() === targetId ||
+        String(item.cartItemId || '').trim() === targetId
+    );
+    if (!existing) {
+      return;
+    }
+    if (existing.quantity === cleanQty) {
+      return;
+    }
+
+    const syncKey = targetId;
+    if (this.activeQuantityUpdates.has(syncKey)) {
+      return;
+    }
+
+    this.activeQuantityUpdates.add(syncKey);
     this.setItemActionState(targetId, 'updating', true);
+    console.log('Updating cart item', { productId: targetId, quantity: cleanQty });
 
     // 1. Optimistic update
     this.items.update((current) =>
@@ -496,10 +516,14 @@ export class CartService {
             String(i.productId).trim() === targetId ||
             String(i.cartItemId || '').trim() === targetId
         );
-        if (!matched) return;
+        if (!matched) {
+          this.activeQuantityUpdates.delete(syncKey);
+          return;
+        }
 
         if (!matched.cartItemId) {
           console.error('Missing cartItemId', matched);
+          this.activeQuantityUpdates.delete(syncKey);
           this.pendingUpdatePromises.delete(targetId);
           return;
         }
@@ -507,6 +531,7 @@ export class CartService {
         const parsedId = Number(matched.cartItemId);
         if (isNaN(parsedId)) {
           console.error('Invalid cartItemId for update', matched.cartItemId, matched);
+          this.activeQuantityUpdates.delete(syncKey);
           this.pendingUpdatePromises.delete(targetId);
           return;
         }
@@ -520,15 +545,13 @@ export class CartService {
         this.activeSyncRequests.add(lockKey);
         const payload = { id: parsedId, quantity: matched.quantity };
         console.log('Cart item before update', matched);
-        console.log('PUT payload', payload);
+        console.log('Sending PUT request once only', payload);
 
         const syncPromise = this.cartApi.updateItem(parsedId, matched.quantity).toPromise()
           .then(() => {
-            this.activeSyncRequests.delete(lockKey);
-            this.syncCartFromBackend();
+            // optimistic state is already applied; no reload needed
           })
           .catch((err) => {
-            this.activeSyncRequests.delete(lockKey);
             console.error('Cart sync failed on quantity update:', err);
             const isAr = this.translationService.currentLang() === 'ar';
             const warningMsg = isAr
@@ -537,6 +560,8 @@ export class CartService {
             this.uiState.showAlert('warning', warningMsg);
           })
           .finally(() => {
+            this.activeSyncRequests.delete(lockKey);
+            this.activeQuantityUpdates.delete(syncKey);
             this.pendingUpdatePromises.delete(targetId);
           });
 
@@ -579,14 +604,14 @@ export class CartService {
 
           const p = this.cartApi.updateItem(parsedId, matched.quantity).toPromise()
             .then(() => {
-              this.activeSyncRequests.delete(lockKey);
-              this.syncCartFromBackend();
+              // successful forced sync; local state remains authoritative
             })
             .catch((err) => {
-              this.activeSyncRequests.delete(lockKey);
               console.error('Forced cart sync failed:', err);
             })
             .finally(() => {
+              this.activeSyncRequests.delete(lockKey);
+              this.activeQuantityUpdates.delete(targetId);
               this.pendingUpdatePromises.delete(targetId);
             });
           this.pendingUpdatePromises.set(targetId, p);

@@ -3,26 +3,30 @@
   <div class="text-muted">{{ items().length }} {{ 'ORDER_DETAILS_ITEMS_COUNT' | translate }}</div>
 </header>
 
-@if (items().length > 0) {
+@if (hasItems()) {
   <div class="details-items">
-    @for (it of items(); track it.productId) {
+    @for (item of items(); track item.productId) {
       <div class="details-item-row">
-        <img class="details-item-img" [src]="it.productImage" [alt]="it.productName" loading="lazy" />
+        <img class="details-item-img" [src]="item.image || item.productImage" [alt]="item.name || item.productName" loading="lazy" />
         <div class="min-w-0 flex-grow-1">
-          <div class="details-item-name">{{ it.productName }}</div>
+          <div class="details-item-name">{{ item.name || item.productName }}</div>
           <div class="text-muted details-item-meta">
-            <span>{{ 'ORDER_DETAILS_QTY' | translate }}: {{ it.quantity }}</span>
-            @if (it.selectedColor) {
+            <span>{{ 'ORDER_DETAILS_QTY' | translate }}: {{ item.quantity }}</span>
+            @if (item.price) {
               <span class="mx-2">•</span>
-              <span>{{ 'ORDER_DETAILS_COLOR' | translate }}: {{ it.selectedColor }}</span>
+              <span>{{ item.price | currencyFormat }}</span>
             }
-            @if (it.selectedMaterial) {
+            @if (item.selectedColor) {
               <span class="mx-2">•</span>
-              <span>{{ 'ORDER_DETAILS_MATERIAL' | translate }}: {{ it.selectedMaterial }}</span>
+              <span>{{ 'ORDER_DETAILS_COLOR' | translate }}: {{ item.selectedColor }}</span>
+            }
+            @if (item.selectedMaterial) {
+              <span class="mx-2">•</span>
+              <span>{{ 'ORDER_DETAILS_MATERIAL' | translate }}: {{ item.selectedMaterial }}</span>
             }
           </div>
         </div>
-        <div class="details-item-price">{{ it.subtotal | currencyFormat }}</div>
+        <div class="details-item-price">{{ (item.total || item.subtotal) | currencyFormat }}</div>
       </div>
     }
   </div>

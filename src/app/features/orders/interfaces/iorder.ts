@@ -22,6 +22,12 @@ export interface IOrder {
   createdAt: string;
   updatedAt: string;
   estimatedDeliveryDate?: string;
+  placedAt?: string;
+  estimatedDelivery?: string;
+  subtotal?: number;
+  total?: number;
+  address?: string;
+  phoneNumber?: string;
 }
 
 export interface IBackendOrderItem {
@@ -50,5 +56,7 @@ export interface IBackendOrder {
   carrier?: string;
   updatedAt?: string;
   estimatedDeliveryDate?: string;
+  address?: string;
+  phoneNumber?: string;
 }
 

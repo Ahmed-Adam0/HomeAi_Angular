@@ -10,6 +10,8 @@ export function mapBackendToOrder(b: IBackendOrder): IOrder {
     throw new Error('Backend order is null or undefined');
   }
 
+  console.log('Backend order response inside mapper:', b);
+
   // Map case-insensitive backend status to frontend OrderStatus type
   const rawStatus = (b.status || 'Pending').toLowerCase();
   let status: OrderStatus = 'pending';
@@ -25,51 +27,65 @@ export function mapBackendToOrder(b: IBackendOrder): IOrder {
     status = 'refunded';
   }
 
-  // Derive invoice totals
-  const totalAmount = Number(b.totalPrice || 0);
-  const shippingCost = b.shippingCost !== undefined ? Number(b.shippingCost) : 29; // standard shipping fallback
-  
-  // Calculate a mock 7.5% tax if tax is not provided (aligned with CartStore)
-  const taxAmount = b.taxAmount !== undefined ? Number(b.taxAmount) : Number((totalAmount * 0.075).toFixed(2));
-  const discountAmount = b.discountAmount !== undefined ? Number(b.discountAmount) : 0;
-
-  // Shipping Address mapping with fallback values
-  const shippingAddress: IShippingAddress = b.shippingAddress || {
-    firstName: 'Valued',
-    lastName: 'Customer',
-    streetAddress: '123 Smart Home Avenue',
-    city: 'Cairo',
-    state: 'Cairo Governorate',
-    zipCode: '11511',
-    country: 'EG',
-    phone: '+20 100 123 4567',
-    apartment: 'Floor 3, Apt 12'
-  };
-
-  const billingAddress: IShippingAddress = b.billingAddress || shippingAddress;
-
-  // Map backend items to frontend items, adding fallbacks for images and names
-  const items = (b.items || []).map((item) => {
-    const unitPrice = Number(item.unitPrice || 0);
-    const quantity = Math.max(1, Math.round(Number(item.quantity) || 1));
-    return {
-      productId: String(item.productId || item.id || ''),
-      productName: item.productName || `Premium Furniture #${item.productId}`,
-      // Premium placeholder image for maximum visual wow factor in checkout & orders
-      productImage: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=300&q=80',
-      price: unitPrice,
-      quantity: quantity,
-      subtotal: Number((unitPrice * quantity).toFixed(2)),
-      selectedColor: 'Standard',
-      selectedMaterial: 'Oak Wood'
-    };
-  });
-
-  // Calculate default tracking numbers & estimated delivery dates based on order creation
+  // Derive dates
   const createdDate = new Date(b.createdAt || Date.now());
   const deliveryDate = new Date(createdDate.getTime() + 5 * 24 * 60 * 60 * 1000); // 5 days delivery window
 
-  return {
+  // Shipping Address mapping with backend fields and fallbacks
+  const shippingAddress: IShippingAddress = (b.shippingAddress && typeof b.shippingAddress === 'object')
+    ? {
+        firstName: b.shippingAddress.firstName || 'Valued',
+        lastName: b.shippingAddress.lastName || 'Customer',
+        streetAddress: b.shippingAddress.streetAddress || b.address || '123 Smart Home Avenue',
+        city: b.shippingAddress.city || 'Cairo',
+        state: b.shippingAddress.state || 'Cairo Governorate',
+        zipCode: b.shippingAddress.zipCode || '11511',
+        country: b.shippingAddress.country || 'EG',
+        phone: b.shippingAddress.phone || b.phoneNumber || '+20 100 123 4567',
+        apartment: b.shippingAddress.apartment || ''
+      }
+    : {
+        firstName: 'Valued',
+        lastName: 'Customer',
+        streetAddress: b.address || '123 Smart Home Avenue',
+        city: 'Cairo',
+        state: 'Cairo Governorate',
+        zipCode: '11511',
+        country: 'EG',
+        phone: b.phoneNumber || '+20 100 123 4567',
+        apartment: 'Floor 3, Apt 12'
+      };
+
+  const billingAddress: IShippingAddress = b.billingAddress || shippingAddress;
+
+  // Map items properly
+  const items = (b.items || []).map((item) => {
+    const unitPrice = Number(item.unitPrice || 0);
+    const quantity = Math.max(1, Math.round(Number(item.quantity) || 1));
+    const total = unitPrice * quantity;
+    const image = 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85';
+    const name = item.productName || `Product ${item.productId}`;
+    return {
+      id: item.id,
+      productId: String(item.productId || item.id || ''),
+      productName: name,
+      productImage: image,
+      price: unitPrice,
+      quantity: quantity,
+      subtotal: total,
+      selectedColor: 'Standard',
+      selectedMaterial: 'Oak Wood',
+      // Compatibility fields
+      name: name,
+      total: total,
+      image: image
+    };
+  });
+
+  const subtotalVal = b.totalPrice ?? 0;
+  const totalVal = b.totalPrice ?? 0;
+
+  const mapped: IOrder = {
     id: String(b.id || ''),
     orderNumber: `ORD-${String(b.id || '').padStart(6, '0')}`,
     userId: b.userId || '',
@@ -77,16 +93,26 @@ export function mapBackendToOrder(b: IBackendOrder): IOrder {
     status,
     shippingAddress,
     billingAddress,
-    shippingCost,
-    taxAmount,
-    discountAmount,
-    totalAmount,
-    paymentMethod: b.paymentMethod || 'Stripe Credit Card',
-    paymentStatus: b.paymentStatus || (status === 'cancelled' ? 'failed' : status === 'pending' ? 'pending' : 'paid'),
-    trackingNumber: b.trackingNumber || `TRK-${b.id || ''}${Math.floor(100000 + Math.random() * 900000)}`,
+    shippingCost: 0,
+    taxAmount: 0,
+    discountAmount: b.discountAmount !== undefined ? Number(b.discountAmount) : 0,
+    totalAmount: totalVal,
+    paymentMethod: b.paymentMethod || 'Cash on Delivery',
+    paymentStatus: (b.status === 'Delivered' ? 'paid' : 'pending') as any,
+    trackingNumber: b.trackingNumber || `TRK-${100000 + b.id}`,
     carrier: b.carrier || 'Aramex Express',
     createdAt: b.createdAt || new Date().toISOString(),
     updatedAt: b.updatedAt || b.createdAt || new Date().toISOString(),
-    estimatedDeliveryDate: b.estimatedDeliveryDate || deliveryDate.toISOString()
+    estimatedDeliveryDate: b.estimatedDeliveryDate || deliveryDate.toISOString(),
+    // Compatibility fields
+    placedAt: b.createdAt,
+    estimatedDelivery: deliveryDate.toISOString(),
+    subtotal: subtotalVal,
+    total: totalVal,
+    address: b.address || 'N/A',
+    phoneNumber: b.phoneNumber || 'N/A'
   };
+
+  console.log('Mapped order VM:', mapped);
+  return mapped;
 }

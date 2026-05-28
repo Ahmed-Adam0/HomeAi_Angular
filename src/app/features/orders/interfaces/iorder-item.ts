@@ -7,4 +7,7 @@ export interface IOrderItem {
   selectedColor?: string;
   selectedMaterial?: string;
   subtotal: number;
+  name?: string;
+  total?: number;
+  image?: string;
 }

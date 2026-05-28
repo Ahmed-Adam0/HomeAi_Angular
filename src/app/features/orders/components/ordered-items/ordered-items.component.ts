@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -14,5 +14,9 @@ import { IOrderItem } from '../../interfaces';
 })
 export class OrderedItemsComponent {
   readonly items = input.required<IOrderItem[]>();
+
+  readonly hasItems = computed(
+    () => (this.items()?.length ?? 0) > 0
+  );
 }
 
