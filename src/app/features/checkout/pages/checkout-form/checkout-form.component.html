@@ -1,7 +1,7 @@
 <div class="container py-5">
   <h1 class="fw-bold mb-4 text-center">Billing & Checkout</h1>
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
+  <div class="row justify-content-center gy-4">
+    <div class="col-lg-7">
       <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="bg-white p-4 p-md-5 rounded-4 shadow-lg">
         <h4 class="fw-bold mb-4 text-secondary">Billing Information</h4>
 
@@ -78,10 +78,54 @@
           </div>
         </div>
 
-        <button type="submit" [disabled]="submitting" class="btn btn-dark w-100 py-3 rounded-pill fw-bold fs-5 shadow-sm mt-5 transition">
+        <button type="submit" [disabled]="submitting || cartEmpty()" class="btn btn-dark w-100 py-3 rounded-pill fw-bold fs-5 shadow-sm mt-5 transition">
           {{ submitting ? 'Submitting Details...' : 'Proceed to Payment' }}
         </button>
       </form>
+    </div>
+
+    <div class="col-lg-4">
+      <aside class="bg-white p-4 p-md-5 rounded-4 shadow-lg sticky-top" style="top: 100px;">
+        <h4 class="fw-bold mb-4 text-secondary">Order Summary</h4>
+
+        <ng-container *ngIf="!cartEmpty(); else emptyCartSummary">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span>Items</span>
+            <strong>{{ cartSummary().totalQuantity }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span>Subtotal</span>
+            <strong>{{ cartSummary().subtotal | number:'1.2-2' }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span>Shipping</span>
+            <strong>{{ cartSummary().shipping | number:'1.2-2' }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span>Tax</span>
+            <strong>{{ cartSummary().tax | number:'1.2-2' }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4" *ngIf="cartSummary().discount > 0">
+            <span>Discount</span>
+            <strong>-{{ cartSummary().discount | number:'1.2-2' }}</strong>
+          </div>
+
+          <div class="border-top pt-3 mt-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-semibold">Order Total</span>
+              <strong>{{ cartSummary().total | number:'1.2-2' }}</strong>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #emptyCartSummary>
+          <p class="text-muted mb-0">Your cart is empty. Add items to view order totals.</p>
+        </ng-template>
+      </aside>
     </div>
   </div>
 </div>

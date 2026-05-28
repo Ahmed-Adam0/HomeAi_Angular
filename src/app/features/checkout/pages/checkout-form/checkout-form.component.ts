@@ -1,19 +1,34 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { CheckoutService } from '../../services/checkout.service';
+import { CartService } from '../../../cart/services/cart.service';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-checkout-form-page',
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './checkout-form.component.html',
   styleUrl: './checkout-form.component.css'
 })
 export class CheckoutFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private checkoutService = inject(CheckoutService);
+  private cartService = inject(CartService);
   private router = inject(Router);
+
+  readonly cartItems = this.cartService.items;
+  readonly cartTotals = this.cartService.totals;
+  readonly cartEmpty = computed(() => this.cartItems().length === 0);
+  readonly cartSummary = computed(() => ({
+    subtotal: this.cartTotals().totalPrice,
+    shipping: this.cartTotals().shippingCost,
+    tax: this.cartTotals().taxAmount,
+    discount: this.cartTotals().discountAmount,
+    total: this.cartTotals().grandTotal,
+    totalQuantity: this.cartTotals().totalQuantity,
+  }));
 
   checkoutForm!: FormGroup;
   submitting = false;
@@ -41,7 +56,7 @@ export class CheckoutFormComponent implements OnInit {
 
     this.submitting = true;
     const formValues = this.checkoutForm.value;
-    
+
     const checkoutDetails = {
       billingDetails: {
         fullName: formValues.fullName,
