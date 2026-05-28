@@ -1,6 +1,7 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 import { catchError, throwError } from 'rxjs';
 import { LOCAL_STORAGE_KEYS } from '../constants';
 
@@ -10,9 +11,7 @@ import { LOCAL_STORAGE_KEYS } from '../constants';
  */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
-
-  // PLACEHOLDER: Inject custom Toast or Notification Service here when available
-  // const toastService = inject(ToastService);
+  const platformId = inject(PLATFORM_ID);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -39,11 +38,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             break;
           case 401:
             userMessage = 'Your session has expired. Please log in again.';
-            // Clean up credentials and navigate to login
-            if (typeof window !== 'undefined') {
+            if (isPlatformBrowser(platformId)) {
               localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
+              router.navigate(['/auth/login']);
             }
-            router.navigate(['/auth/login']);
             break;
           case 403:
             userMessage = 'You do not have permission to perform this action.';
@@ -67,7 +65,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       // Console notification preview for developer testing
       console.warn(`[Toast Notification Preview] Title: Error, Message: ${userMessage}`);
 
-      // Pass the error to the calling services to handle if needed
       return throwError(() => error);
     })
   );
