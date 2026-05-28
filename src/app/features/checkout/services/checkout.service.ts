@@ -7,6 +7,12 @@ import { environment } from '../../../../environments/environment';
 import { OrdersApiService } from '../../orders/data-access/orders-api.service';
 import { CartService } from '../../cart/services/cart.service';
 
+export interface ICheckoutPayload {
+  address: string;
+  phoneNumber: string;
+  notes: string | null;
+}
+
 export interface ICouponValidationResult {
   valid: boolean;
   discountAmount: number;
@@ -50,41 +56,14 @@ export class CheckoutService {
   private cartService = inject(CartService);
 
   /**
-   * Submits order details and cart items to the backend orders API.
-   * Maps BillingDetails and Cart Items to match the backend expectations.
+   * Submits a checkout payload to create a new order on the backend.
    */
-  submitCheckout(details: ICheckoutDetails): Observable<{ success: boolean; orderId: string }> {
-    const names = details.billingDetails.fullName.trim().split(/\s+/);
-    const firstName = names[0] || 'Valued';
-    const lastName = names.slice(1).join(' ') || 'Customer';
-
-    const payload = {
-      shippingAddress: {
-        firstName,
-        lastName,
-        streetAddress: details.billingDetails.addressLine1 + (details.billingDetails.addressLine2 ? `, ${details.billingDetails.addressLine2}` : ''),
-        city: details.billingDetails.city,
-        state: details.billingDetails.city, // fallback to city
-        zipCode: details.billingDetails.zipCode,
-        country: details.billingDetails.country,
-        phone: details.billingDetails.phone,
-      },
-      paymentMethod: details.paymentProvider,
-      items: this.cartService.items().map(item => ({
-        productId: Number(item.productId),
-        quantity: item.quantity
-      }))
-    };
-
+  submitCheckout(payload: ICheckoutPayload): Observable<{ success: boolean; orderId: string }> {
     return this.ordersApi.createOrder(payload).pipe(
       map((order) => ({
         success: true,
         orderId: order.id
-      })),
-      catchError((error) => {
-        console.error('Checkout API submission failed:', error);
-        return of({ success: false, orderId: '' });
-      })
+      }))
     );
   }
 

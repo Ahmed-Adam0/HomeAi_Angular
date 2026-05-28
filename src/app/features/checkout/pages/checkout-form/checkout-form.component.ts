@@ -1,7 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { CheckoutService, ICouponValidationResult, ICouponTotalsContext } from '../../services/checkout.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CheckoutService, ICouponValidationResult, ICouponTotalsContext, ICheckoutPayload } from '../../services/checkout.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
 import { Router } from '@angular/router';
@@ -11,6 +12,7 @@ import { RtlDirective } from '../../../../shared/directives/rtl.directive';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { CouponBoxComponent } from '../../components/coupon-box/coupon-box.component';
 import { finalize } from 'rxjs/operators';
+import { UiState } from '../../../../core/state/ui.state';
 
 @Component({
   standalone: true,
@@ -25,6 +27,7 @@ export class CheckoutFormComponent implements OnInit {
   private cartService = inject(CartService);
   private router = inject(Router);
   private translationService = inject(TranslationService);
+  private uiState = inject(UiState);
 
   readonly currentLang = this.translationService.currentLang;
   readonly cartItems = this.cartService.items;
@@ -109,32 +112,35 @@ export class CheckoutFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.cartEmpty()) {
+      this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_EMPTY_CART'));
+      return;
+    }
+
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
+      this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_VALIDATION'));
       return;
     }
 
     this.submitting = true;
     const formValues = this.checkoutForm.getRawValue();
 
-    const checkoutDetails = {
-      billingDetails: {
-        fullName: formValues.fullName,
-        email: formValues.email,
-        phone: formValues.phone,
-        addressLine1: formValues.addressLine1,
-        addressLine2: formValues.addressLine2,
-        city: formValues.city,
-        zipCode: formValues.zipCode,
-        country: formValues.country,
-      },
-      shippingOption: formValues.shippingOption,
-      paymentProvider: formValues.paymentProvider,
-      orderNotes: formValues.orderNotes,
-      couponCode: this.activeCoupon() ?? undefined,
+    const addressParts: string[] = [
+      formValues.addressLine1,
+      formValues.addressLine2,
+      formValues.city,
+      formValues.zipCode,
+      formValues.country
+    ].map(p => p?.trim()).filter(p => !!p);
+
+    const payload: ICheckoutPayload = {
+      address: addressParts.join(', '),
+      phoneNumber: formValues.phone.trim(),
+      notes: formValues.orderNotes?.trim() || null
     };
 
-    this.checkoutService.submitCheckout(checkoutDetails).pipe(
+    this.checkoutService.submitCheckout(payload).pipe(
       finalize(() => {
         this.submitting = false;
       })
@@ -142,11 +148,21 @@ export class CheckoutFormComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           this.cartService.clearCart();
-          this.router.navigate(['/payment']);
+          this.onRemoveCoupon();
+          this.uiState.showAlert('success', this.translationService.translate('CHECKOUT_SUCCESS_ORDER_PLACED'));
+          this.router.navigate(['/orders']);
         }
       },
-      error: () => {
-        // preserve existing behavior if submission fails
+      error: (err: HttpErrorResponse) => {
+        let errorMsgKey = 'CHECKOUT_ERROR_GENERIC';
+        if (err.status === 0) {
+          errorMsgKey = 'CHECKOUT_ERROR_NETWORK';
+        } else if (err.status === 401) {
+          errorMsgKey = 'CHECKOUT_ERROR_UNAUTHORIZED';
+        } else if (err.status === 400 || err.status === 422) {
+          errorMsgKey = 'CHECKOUT_ERROR_VALIDATION';
+        }
+        this.uiState.showAlert('danger', this.translationService.translate(errorMsgKey));
       }
     });
   }

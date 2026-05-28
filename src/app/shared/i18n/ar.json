@@ -136,6 +136,12 @@
   "CHECKOUT_ORDER_NOTES_HELP": "أضف تعليمات التسليم أو الطلبات الخاصة.",
   "CHECKOUT_ORDER_NOTES_MAX": "يجب ألا تتجاوز ملاحظات الطلب 300 حرف.",
   "CHECKOUT_CHAR_COUNT": "حرف",
+  "CHECKOUT_SUCCESS_ORDER_PLACED": "تم تقديم طلبك بنجاح!",
+  "CHECKOUT_ERROR_EMPTY_CART": "عربة التسوق فارغة. يرجى إضافة منتجات إلى العربة قبل إتمام الشراء.",
+  "CHECKOUT_ERROR_UNAUTHORIZED": "يجب تسجيل الدخول لإتمام عملية الشراء. يرجى تسجيل الدخول أولاً.",
+  "CHECKOUT_ERROR_VALIDATION": "يرجى التحقق من المدخلات. بعض الحقول في نموذج الشراء غير صالحة.",
+  "CHECKOUT_ERROR_NETWORK": "حدث خطأ في الشبكة. يرجى التحقق من اتصالك بالإنترنت.",
+  "CHECKOUT_ERROR_GENERIC": "حدث خطأ أثناء تقديم طلبك. يرجى المحاولة مرة أخرى.",
 
   "ORDERS_TITLE": "الطلبات",
   "ORDERS_SUBTITLE": "تابع مشترياتك مع حالة الطلب وبيانات التوصيل.",

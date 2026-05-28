@@ -136,6 +136,12 @@
   "CHECKOUT_ORDER_NOTES_HELP": "Add delivery instructions or custom requests.",
   "CHECKOUT_ORDER_NOTES_MAX": "Order notes cannot exceed 300 characters.",
   "CHECKOUT_CHAR_COUNT": "chars",
+  "CHECKOUT_SUCCESS_ORDER_PLACED": "Your order has been placed successfully!",
+  "CHECKOUT_ERROR_EMPTY_CART": "Your cart is empty. Please add items to your cart before proceeding to checkout.",
+  "CHECKOUT_ERROR_UNAUTHORIZED": "You must be logged in to complete your checkout. Please log in first.",
+  "CHECKOUT_ERROR_VALIDATION": "Please verify your input. Some fields in the checkout form are invalid.",
+  "CHECKOUT_ERROR_NETWORK": "A network error occurred. Please check your internet connection.",
+  "CHECKOUT_ERROR_GENERIC": "An error occurred while placing your order. Please try again.",
 
   "ORDERS_TITLE": "Orders",
   "ORDERS_SUBTITLE": "Track your purchases with real-time status and delivery insights.",
