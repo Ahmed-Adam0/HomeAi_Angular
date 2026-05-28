@@ -5,10 +5,15 @@ import { CheckoutService } from '../../services/checkout.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
+import { RtlDirective } from '../../../../shared/directives/rtl.directive';
+import { TranslationService } from '../../../../shared/i18n/translation.service';
 
 @Component({
+  standalone: true,
   selector: 'app-checkout-form-page',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, CurrencyFormatPipe, RtlDirective],
   templateUrl: './checkout-form.component.html',
   styleUrl: './checkout-form.component.css'
 })
@@ -17,7 +22,9 @@ export class CheckoutFormComponent implements OnInit {
   private checkoutService = inject(CheckoutService);
   private cartService = inject(CartService);
   private router = inject(Router);
+  private translationService = inject(TranslationService);
 
+  readonly currentLang = this.translationService.currentLang;
   readonly cartItems = this.cartService.items;
   readonly cartTotals = this.cartService.totals;
   readonly cartEmpty = computed(() => this.cartItems().length === 0);
