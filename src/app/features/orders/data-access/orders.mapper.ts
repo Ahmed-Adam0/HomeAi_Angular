@@ -1,116 +1,85 @@
-import { IOrder, IBackendOrder, OrderStatus, IShippingAddress } from '../interfaces';
+import { IBackendOrder, IOrder, OrderStatus, IShippingAddress } from '../interfaces';
 
 /**
  * Maps a raw backend order (IBackendOrder) to the frontend IOrder model.
- * Provides sensible defaults for fields not returned by the API so that the
- * premium UI components render correctly without breaking.
+ * This mapper assumes the backend already returns a single order object.
  */
-export function mapBackendToOrder(b: IBackendOrder): IOrder {
-  if (!b) {
-    throw new Error('Backend order is null or undefined');
+export function mapBackendToOrder(order: IBackendOrder): IOrder {
+  if (!order || Array.isArray(order)) {
+    throw new Error('Expected a single backend order object');
   }
 
-  console.log('Backend order response inside mapper:', b);
+  console.log('Backend order response inside mapper:', order);
 
-  // Map case-insensitive backend status to frontend OrderStatus type
-  const rawStatus = (b.status || 'Pending').toLowerCase();
-  let status: OrderStatus = 'pending';
-  if (rawStatus === 'processing') {
-    status = 'processing';
-  } else if (rawStatus === 'shipped') {
-    status = 'shipped';
-  } else if (rawStatus === 'delivered') {
-    status = 'delivered';
-  } else if (rawStatus === 'cancelled') {
-    status = 'cancelled';
-  } else if (rawStatus === 'refunded') {
-    status = 'refunded';
-  }
+  const rawStatus = (order.status ?? '').toLowerCase();
+  const status: OrderStatus =
+    rawStatus === 'processing'
+      ? 'processing'
+      : rawStatus === 'shipped'
+      ? 'shipped'
+      : rawStatus === 'delivered'
+      ? 'delivered'
+      : rawStatus === 'cancelled'
+      ? 'cancelled'
+      : rawStatus === 'refunded'
+      ? 'refunded'
+      : 'pending';
 
-  // Derive dates
-  const createdDate = new Date(b.createdAt || Date.now());
-  const deliveryDate = new Date(createdDate.getTime() + 5 * 24 * 60 * 60 * 1000); // 5 days delivery window
+  const shippingAddress: IShippingAddress = order.shippingAddress ?? {
+    firstName: '',
+    lastName: '',
+    streetAddress: order.address ?? '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: '',
+    phone: order.phoneNumber ?? '',
+    apartment: '',
+  };
 
-  // Shipping Address mapping with backend fields and fallbacks
-  const shippingAddress: IShippingAddress = (b.shippingAddress && typeof b.shippingAddress === 'object')
-    ? {
-        firstName: b.shippingAddress.firstName || 'Valued',
-        lastName: b.shippingAddress.lastName || 'Customer',
-        streetAddress: b.shippingAddress.streetAddress || b.address || '123 Smart Home Avenue',
-        city: b.shippingAddress.city || 'Cairo',
-        state: b.shippingAddress.state || 'Cairo Governorate',
-        zipCode: b.shippingAddress.zipCode || '11511',
-        country: b.shippingAddress.country || 'EG',
-        phone: b.shippingAddress.phone || b.phoneNumber || '+20 100 123 4567',
-        apartment: b.shippingAddress.apartment || ''
-      }
-    : {
-        firstName: 'Valued',
-        lastName: 'Customer',
-        streetAddress: b.address || '123 Smart Home Avenue',
-        city: 'Cairo',
-        state: 'Cairo Governorate',
-        zipCode: '11511',
-        country: 'EG',
-        phone: b.phoneNumber || '+20 100 123 4567',
-        apartment: 'Floor 3, Apt 12'
-      };
+  const billingAddress: IShippingAddress = order.billingAddress ?? shippingAddress;
 
-  const billingAddress: IShippingAddress = b.billingAddress || shippingAddress;
+  const items = Array.isArray(order.items)
+    ? order.items.map((item) => ({
+        id: item.id,
+        productId: String(item.productId),
+        productName: item.productName,
+        quantity: item.quantity,
+        price: Number(item.unitPrice),
+        subtotal: Number(item.unitPrice) * item.quantity,
+        productImage: '',
+      }))
+    : [];
 
-  // Map items properly
-  const items = (b.items || []).map((item) => {
-    const unitPrice = Number(item.unitPrice || 0);
-    const quantity = Math.max(1, Math.round(Number(item.quantity) || 1));
-    const total = unitPrice * quantity;
-    const image = 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85';
-    const name = item.productName || `Product ${item.productId}`;
-    return {
-      id: item.id,
-      productId: String(item.productId || item.id || ''),
-      productName: name,
-      productImage: image,
-      price: unitPrice,
-      quantity: quantity,
-      subtotal: total,
-      selectedColor: 'Standard',
-      selectedMaterial: 'Oak Wood',
-      // Compatibility fields
-      name: name,
-      total: total,
-      image: image
-    };
-  });
-
-  const subtotalVal = b.totalPrice ?? 0;
-  const totalVal = b.totalPrice ?? 0;
+  const paymentStatus = order.paymentStatus ?? (status === 'delivered' ? 'paid' : 'pending');
 
   const mapped: IOrder = {
-    id: String(b.id || ''),
-    orderNumber: `ORD-${String(b.id || '').padStart(6, '0')}`,
-    userId: b.userId || '',
+    id: String(order.id),
+    orderNumber: `ORD-${String(order.id).padStart(6, '0')}`,
+    userId: order.userId,
     items,
     status,
     shippingAddress,
     billingAddress,
-    shippingCost: 0,
-    taxAmount: 0,
-    discountAmount: b.discountAmount !== undefined ? Number(b.discountAmount) : 0,
-    totalAmount: totalVal,
-    paymentMethod: b.paymentMethod || 'Cash on Delivery',
-    paymentStatus: (b.status === 'Delivered' ? 'paid' : 'pending') as any,
-    trackingNumber: b.trackingNumber || `TRK-${100000 + b.id}`,
-    carrier: b.carrier || 'Aramex Express',
-    createdAt: b.createdAt || new Date().toISOString(),
-    updatedAt: b.updatedAt || b.createdAt || new Date().toISOString(),
-    estimatedDeliveryDate: b.estimatedDeliveryDate || deliveryDate.toISOString(),
-    // Compatibility fields
-    placedAt: b.createdAt,
-    estimatedDelivery: deliveryDate.toISOString(),
-    subtotal: subtotalVal,
-    total: totalVal,
-    address: b.address || 'N/A',
-    phoneNumber: b.phoneNumber || 'N/A'
+    shippingCost: order.shippingCost ?? 0,
+    taxAmount: order.taxAmount ?? 0,
+    discountAmount: order.discountAmount ?? 0,
+    totalAmount: Number(order.totalPrice),
+    paymentMethod: order.paymentMethod ?? 'Cash on Delivery',
+    paymentStatus,
+    trackingNumber: order.trackingNumber,
+    carrier: order.carrier,
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt ?? order.createdAt,
+    estimatedDeliveryDate: order.estimatedDeliveryDate,
+    placedAt: order.createdAt,
+    estimatedDelivery: order.createdAt,
+    subtotal: Number(order.totalPrice),
+    total: Number(order.totalPrice),
+    address: order.address ?? '',
+    phoneNumber: order.phoneNumber ?? '',
+    notes: order.notes ?? null,
+    statusHistory: order.statusHistory ?? [],
   };
 
   console.log('Mapped order VM:', mapped);

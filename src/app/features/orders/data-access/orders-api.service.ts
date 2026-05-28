@@ -6,16 +6,27 @@ import { API_URLS } from '../../../core/constants';
 import { IOrder, IBackendOrder } from '../interfaces';
 import { mapBackendToOrder } from './orders.mapper';
 
-type ApiEnvelope<T> = T | { data: T } | { result: T } | { items: T };
+type ApiEnvelope<T> = T | { data: T } | { result: T };
 
-function unwrap<T>(value: ApiEnvelope<T>): T {
-  if (value && typeof value === 'object') {
+type ApiArrayEnvelope<T> = T[] | { data: T[] } | { result: T[] } | { items: T[] };
+
+function unwrapApiResponse<T>(value: ApiEnvelope<T>): T {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
     const v = value as Record<string, unknown>;
     if ('data' in v) return v['data'] as T;
     if ('result' in v) return v['result'] as T;
-    if ('items' in v) return v['items'] as T;
   }
   return value as T;
+}
+
+function unwrapApiArrayResponse<T>(value: ApiArrayEnvelope<T>): T[] {
+  if (value && typeof value === 'object') {
+    const v = value as Record<string, unknown>;
+    if ('data' in v) return v['data'] as T[];
+    if ('result' in v) return v['result'] as T[];
+    if ('items' in v) return v['items'] as T[];
+  }
+  return value as T[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -29,9 +40,9 @@ export class OrdersApiService {
    */
   getMyOrders(): Observable<IOrder[]> {
     return this.http
-      .get<ApiEnvelope<IBackendOrder[]>>(`${this.apiUrl}${API_URLS.ORDERS.LIST}`)
+      .get<ApiArrayEnvelope<IBackendOrder>>(`${this.apiUrl}${API_URLS.ORDERS.LIST}`)
       .pipe(
-        map(unwrap),
+        map(unwrapApiArrayResponse),
         map((orders) => (orders || []).map(mapBackendToOrder))
       );
   }
@@ -44,7 +55,7 @@ export class OrdersApiService {
     return this.http
       .get<ApiEnvelope<IBackendOrder>>(`${this.apiUrl}${API_URLS.ORDERS.DETAILS(id)}`)
       .pipe(
-        map(unwrap),
+        map(unwrapApiResponse),
         tap((response) => console.log('Backend order response inside API service:', response)),
         map(mapBackendToOrder)
       );
@@ -58,7 +69,7 @@ export class OrdersApiService {
     return this.http
       .post<ApiEnvelope<IBackendOrder>>(`${this.apiUrl}${API_URLS.ORDERS.CREATE}`, payload)
       .pipe(
-        map(unwrap),
+        map(unwrapApiResponse),
         map(mapBackendToOrder)
       );
   }
@@ -70,7 +81,7 @@ export class OrdersApiService {
     return this.http
       .put<ApiEnvelope<IBackendOrder>>(`${this.apiUrl}${API_URLS.ORDERS.UPDATE_STATUS(id)}`, { status })
       .pipe(
-        map(unwrap),
+        map(unwrapApiResponse),
         map(mapBackendToOrder)
       );
   }

@@ -28,6 +28,8 @@ export interface IOrder {
   total?: number;
   address?: string;
   phoneNumber?: string;
+  notes: string | null;
+  statusHistory: IOrderStatusHistory[];
 }
 
 export interface IBackendOrderItem {
@@ -36,6 +38,13 @@ export interface IBackendOrderItem {
   productName: string;
   quantity: number;
   unitPrice: number;
+}
+
+export interface IOrderStatusHistory {
+  id: number;
+  oldStatus: string;
+  newStatus: string;
+  createdAt: string;
 }
 
 export interface IBackendOrder {
@@ -58,5 +67,7 @@ export interface IBackendOrder {
   estimatedDeliveryDate?: string;
   address?: string;
   phoneNumber?: string;
+  notes?: string | null;
+  statusHistory?: IOrderStatusHistory[];
 }
 
