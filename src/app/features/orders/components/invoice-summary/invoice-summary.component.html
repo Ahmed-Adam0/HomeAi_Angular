@@ -1,0 +1,29 @@
+<header class="details-card-header">
+  <div class="details-card-title">{{ 'ORDER_DETAILS_INVOICE_TITLE' | translate }}</div>
+  <div class="text-muted">{{ 'ORDER_DETAILS_INVOICE_SUBTITLE' | translate }}</div>
+</header>
+
+<div class="details-kv">
+  <div class="details-kv-row">
+    <div class="details-k">{{ 'ORDER_DETAILS_SUBTOTAL' | translate }}</div>
+    <div class="details-v fw-semibold">{{ subtotal() | currencyFormat }}</div>
+  </div>
+  <div class="details-kv-row">
+    <div class="details-k">{{ 'ORDER_DETAILS_SHIPPING_COST' | translate }}</div>
+    <div class="details-v">{{ shippingCost() | currencyFormat }}</div>
+  </div>
+  <div class="details-kv-row">
+    <div class="details-k">{{ 'ORDER_DETAILS_TAX' | translate }}</div>
+    <div class="details-v">{{ taxAmount() | currencyFormat }}</div>
+  </div>
+  <div class="details-kv-row">
+    <div class="details-k">{{ 'ORDER_DETAILS_DISCOUNT' | translate }}</div>
+    <div class="details-v">-{{ discountAmount() | currencyFormat }}</div>
+  </div>
+  <div class="details-divider"></div>
+  <div class="details-kv-row">
+    <div class="details-k fw-bold">{{ 'ORDER_DETAILS_TOTAL' | translate }}</div>
+    <div class="details-v fw-bold">{{ totalAmount() | currencyFormat }}</div>
+  </div>
+</div>
+

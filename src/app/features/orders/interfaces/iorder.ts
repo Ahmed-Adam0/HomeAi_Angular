@@ -23,3 +23,32 @@ export interface IOrder {
   updatedAt: string;
   estimatedDeliveryDate?: string;
 }
+
+export interface IBackendOrderItem {
+  id: number;
+  productId: number;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface IBackendOrder {
+  id: number;
+  userId: string;
+  totalPrice: number;
+  status: string; // E.g. 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled'
+  createdAt: string;
+  items: IBackendOrderItem[];
+  shippingAddress?: IShippingAddress;
+  billingAddress?: IShippingAddress;
+  shippingCost?: number;
+  taxAmount?: number;
+  discountAmount?: number;
+  paymentMethod?: string;
+  paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded';
+  trackingNumber?: string;
+  carrier?: string;
+  updatedAt?: string;
+  estimatedDeliveryDate?: string;
+}
+

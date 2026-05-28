@@ -1,0 +1,42 @@
+<header class="details-card-header">
+  <div class="details-card-title">{{ 'ORDER_DETAILS_SHIPPING_TITLE' | translate }}</div>
+  @if (trackingNumber()) {
+    <div class="text-muted">
+      {{ 'ORDER_DETAILS_TRACKING' | translate }}: {{ trackingNumber() }}
+    </div>
+  }
+</header>
+
+<div class="details-kv">
+  <div class="details-kv-row">
+    <div class="details-k">{{ 'ORDER_DETAILS_CARRIER' | translate }}</div>
+    <div class="details-v">{{ carrier() || ('ORDER_DETAILS_UNKNOWN' | translate) }}</div>
+  </div>
+  <div class="details-kv-row">
+    <div class="details-k">{{ 'ORDER_DETAILS_ESTIMATED_DELIVERY' | translate }}</div>
+    <div class="details-v">
+      {{
+        estimatedDeliveryDate()
+          ? (estimatedDeliveryDate() | date: 'mediumDate')
+          : ('ORDER_DETAILS_UNKNOWN' | translate)
+      }}
+    </div>
+  </div>
+  <div class="details-kv-row">
+    <div class="details-k">{{ 'ORDER_DETAILS_ADDRESS' | translate }}</div>
+    <div class="details-v">
+      <div class="fw-semibold">{{ address().firstName }} {{ address().lastName }}</div>
+      <div class="text-muted">
+        {{ address().streetAddress }}
+        @if (address().apartment) {
+          , {{ address().apartment }}
+        }
+      </div>
+      <div class="text-muted">
+        {{ address().city }}, {{ address().state }} {{ address().zipCode }}
+      </div>
+      <div class="text-muted">{{ address().country }}</div>
+    </div>
+  </div>
+</div>
+

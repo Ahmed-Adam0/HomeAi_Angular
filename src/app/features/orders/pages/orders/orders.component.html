@@ -1,1 +1,117 @@
-<p>orders works!</p>
+<div class="orders-page" appRtl>
+  <app-page-header
+    [title]="'ORDERS_TITLE' | translate"
+    [subtitle]="'ORDERS_SUBTITLE' | translate"
+  />
+
+  <div class="container pb-5">
+    @if (facade.isLoadingList()) {
+      <div class="orders-loading">
+        <app-loading-spinner size="lg" [overlay]="false" [message]="'ORDERS_LOADING' | translate" />
+      </div>
+    } @else {
+      @if (facade.orderListVm().length === 0) {
+        <div class="orders-empty">
+          <app-empty-state
+            [title]="'ORDERS_EMPTY_TITLE' | translate"
+            [description]="'ORDERS_EMPTY_DESC' | translate"
+            [icon]="'📦'"
+          />
+        </div>
+      } @else {
+        <!-- Desktop / Tablet table -->
+        <div class="orders-table card-premium d-none d-md-block">
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_ID' | translate }}</th>
+                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_DATE' | translate }}</th>
+                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_TOTAL' | translate }}</th>
+                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_PAYMENT' | translate }}</th>
+                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_STATUS' | translate }}</th>
+                  <th class="text-muted fw-semibold text-end">{{ 'ORDERS_COL_ACTION' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (o of facade.orderListVm(); track trackById($index, o)) {
+                  <tr>
+                    <td class="fw-semibold">
+                      <div class="d-flex flex-column">
+                        <span class="orders-id">{{ o.orderNumber }}</span>
+                        <span class="orders-meta text-muted">#{{ o.id }}</span>
+                      </div>
+                    </td>
+                    <td class="text-muted">{{ o.createdAt | date: 'mediumDate' }}</td>
+                    <td class="fw-semibold">{{ o.totalAmount | currencyFormat }}</td>
+                    <td>
+                      <app-status-badge
+                        [label]="'ORDERS_PAYMENT_' + (o.paymentStatus | uppercase) | translate"
+                        [tone]="paymentStatusTone(o.paymentStatus)"
+                        size="sm"
+                      />
+                    </td>
+                    <td>
+                      <app-status-badge
+                        [label]="'ORDERS_STATUS_' + (o.orderStatus | uppercase) | translate"
+                        [tone]="orderStatusTone(o.orderStatus)"
+                        size="sm"
+                      />
+                    </td>
+                    <td class="text-end">
+                      <a class="text-decoration-none" [routerLink]="['/orders', o.id]">
+                        <app-button
+                          [label]="'ORDERS_VIEW_DETAILS' | translate"
+                          variant="outline"
+                          size="sm"
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mobile cards -->
+        <div class="orders-mobile d-md-none">
+          @for (o of facade.orderListVm(); track trackById($index, o)) {
+            <div class="orders-card card-premium">
+              <div class="orders-card-top">
+                <div class="min-w-0">
+                  <div class="orders-card-id">{{ o.orderNumber }}</div>
+                  <div class="orders-card-date text-muted">{{ o.createdAt | date: 'mediumDate' }}</div>
+                </div>
+                <div class="orders-card-total">{{ o.totalAmount | currencyFormat }}</div>
+              </div>
+
+              <div class="orders-card-badges">
+                <app-status-badge
+                  [label]="'ORDERS_PAYMENT_' + (o.paymentStatus | uppercase) | translate"
+                  [tone]="paymentStatusTone(o.paymentStatus)"
+                  size="sm"
+                />
+                <app-status-badge
+                  [label]="'ORDERS_STATUS_' + (o.orderStatus | uppercase) | translate"
+                  [tone]="orderStatusTone(o.orderStatus)"
+                  size="sm"
+                />
+              </div>
+
+              <div class="orders-card-cta">
+                <a [routerLink]="['/orders', o.id]" class="w-100 text-decoration-none">
+                  <app-button
+                    [label]="'ORDERS_VIEW_DETAILS' | translate"
+                    variant="premium"
+                    size="md"
+                  />
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

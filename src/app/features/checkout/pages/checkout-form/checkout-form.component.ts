@@ -141,6 +141,7 @@ export class CheckoutFormComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         if (res.success) {
+          this.cartService.clearCart();
           this.router.navigate(['/payment']);
         }
       },

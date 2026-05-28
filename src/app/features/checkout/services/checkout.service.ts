@@ -4,6 +4,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ICheckoutDetails } from '../interfaces/icheckout';
 import { environment } from '../../../../environments/environment';
+import { OrdersApiService } from '../../orders/data-access/orders-api.service';
+import { CartService } from '../../cart/services/cart.service';
 
 export interface ICouponValidationResult {
   valid: boolean;
@@ -44,13 +46,46 @@ interface ICouponValidationApiError {
 })
 export class CheckoutService {
   private http = inject(HttpClient);
+  private ordersApi = inject(OrdersApiService);
+  private cartService = inject(CartService);
 
+  /**
+   * Submits order details and cart items to the backend orders API.
+   * Maps BillingDetails and Cart Items to match the backend expectations.
+   */
   submitCheckout(details: ICheckoutDetails): Observable<{ success: boolean; orderId: string }> {
-    const mockOrderId = `ord_${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
+    const names = details.billingDetails.fullName.trim().split(/\s+/);
+    const firstName = names[0] || 'Valued';
+    const lastName = names.slice(1).join(' ') || 'Customer';
 
-    // Bridge to a real checkout endpoint when the backend is ready.
-    // return this.http.post<{ success: boolean; orderId: string }>(`${environment.apiUrl}checkout`, details);
-    return of({ success: true, orderId: mockOrderId });
+    const payload = {
+      shippingAddress: {
+        firstName,
+        lastName,
+        streetAddress: details.billingDetails.addressLine1 + (details.billingDetails.addressLine2 ? `, ${details.billingDetails.addressLine2}` : ''),
+        city: details.billingDetails.city,
+        state: details.billingDetails.city, // fallback to city
+        zipCode: details.billingDetails.zipCode,
+        country: details.billingDetails.country,
+        phone: details.billingDetails.phone,
+      },
+      paymentMethod: details.paymentProvider,
+      items: this.cartService.items().map(item => ({
+        productId: Number(item.productId),
+        quantity: item.quantity
+      }))
+    };
+
+    return this.ordersApi.createOrder(payload).pipe(
+      map((order) => ({
+        success: true,
+        orderId: order.id
+      })),
+      catchError((error) => {
+        console.error('Checkout API submission failed:', error);
+        return of({ success: false, orderId: '' });
+      })
+    );
   }
 
   validateCoupon(code: string, totals: ICouponTotalsContext): Observable<ICouponValidationResult> {

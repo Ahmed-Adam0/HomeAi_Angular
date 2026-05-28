@@ -1,0 +1,14 @@
+<div class="fm-timeline" role="list">
+  @for (s of stepClass(); track s.key; let last = $last) {
+    <div class="fm-tl-item" role="listitem">
+      <div [ngClass]="s.cls">
+        <div class="fm-tl-dot" aria-hidden="true"></div>
+        <div class="fm-tl-label">{{ s.labelKey | translate }}</div>
+      </div>
+      @if (!last) {
+        <div class="fm-tl-connector" aria-hidden="true"></div>
+      }
+    </div>
+  }
+</div>
+

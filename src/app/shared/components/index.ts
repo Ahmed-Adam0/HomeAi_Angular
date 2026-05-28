@@ -14,3 +14,4 @@ export * from './pagination/pagination.component';
 export * from './search-bar/search-bar.component';
 export * from './section-title/section-title.component';
 export * from './page-header/page-header.component';
+export * from './status-badge/status-badge.component';

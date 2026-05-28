@@ -1,1 +1,109 @@
-<p>order-details works!</p>
+<div class="order-details-page" appRtl>
+  <app-page-header
+    [title]="'ORDER_DETAILS_TITLE' | translate"
+    [subtitle]="'ORDER_DETAILS_SUBTITLE' | translate"
+  />
+
+  <div class="container pb-5">
+    <div class="mb-3">
+      <a routerLink="/orders" class="text-decoration-none">
+        <app-button [label]="'ORDER_DETAILS_BACK' | translate" variant="secondary" size="sm" />
+      </a>
+    </div>
+
+    @if (facade.isLoadingDetails()) {
+      <div class="details-loading">
+        <app-loading-spinner size="lg" [overlay]="false" [message]="'ORDER_DETAILS_LOADING' | translate" />
+      </div>
+    } @else {
+      @if (!order()) {
+        <div class="details-empty card-premium">
+          <div class="p-4">
+            <div class="fw-bold mb-1">{{ 'ORDER_DETAILS_NOT_FOUND_TITLE' | translate }}</div>
+            <div class="text-muted mb-3">{{ 'ORDER_DETAILS_NOT_FOUND_DESC' | translate }}</div>
+            <a routerLink="/orders" class="text-decoration-none">
+              <app-button [label]="'ORDER_DETAILS_GO_TO_ORDERS' | translate" variant="outline" size="md" />
+            </a>
+          </div>
+        </div>
+      } @else {
+        <div class="details-header card-premium">
+          <div class="details-header-inner">
+            <div class="min-w-0">
+              <div class="details-order-number">{{ order()!.orderNumber }}</div>
+              <div class="text-muted details-meta">
+                {{ 'ORDER_DETAILS_PLACED_ON' | translate }} {{ order()!.createdAt | date: 'mediumDate' }}
+              </div>
+            </div>
+
+            <div class="details-badges">
+              <app-status-badge
+                [label]="'ORDERS_PAYMENT_' + (order()!.paymentStatus | uppercase) | translate"
+                [tone]="paymentStatusTone(order()!.paymentStatus)"
+                size="sm"
+              />
+              <app-status-badge
+                [label]="'ORDERS_STATUS_' + (order()!.status | uppercase) | translate"
+                [tone]="orderStatusTone(order()!.status)"
+                size="sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="details-section mt-3">
+          <app-order-timeline [steps]="facade.timelineFor(order()!.status)" />
+        </div>
+
+        <div class="details-grid mt-3">
+          <section class="details-card card-premium">
+            <app-ordered-items [items]="order()!.items" />
+          </section>
+
+          <section class="details-card card-premium">
+            <app-shipping-info
+              [address]="order()!.shippingAddress"
+              [trackingNumber]="order()!.trackingNumber ?? null"
+              [carrier]="order()!.carrier ?? null"
+              [estimatedDeliveryDate]="order()!.estimatedDeliveryDate ?? null"
+            />
+          </section>
+
+          <section class="details-card card-premium">
+            <app-invoice-summary
+              [shippingCost]="order()!.shippingCost"
+              [taxAmount]="order()!.taxAmount"
+              [discountAmount]="order()!.discountAmount"
+              [totalAmount]="order()!.totalAmount"
+            />
+          </section>
+
+          <!-- Payment summary -->
+          <section class="details-card card-premium">
+            <header class="details-card-header">
+              <div class="details-card-title">{{ 'ORDER_DETAILS_PAYMENT_TITLE' | translate }}</div>
+              <div class="text-muted">{{ 'ORDER_DETAILS_PAYMENT_SUBTITLE' | translate }}</div>
+            </header>
+
+            <div class="details-kv">
+              <div class="details-kv-row">
+                <div class="details-k">{{ 'ORDER_DETAILS_PAYMENT_METHOD' | translate }}</div>
+                <div class="details-v">{{ order()!.paymentMethod }}</div>
+              </div>
+              <div class="details-kv-row">
+                <div class="details-k">{{ 'ORDER_DETAILS_PAYMENT_STATUS' | translate }}</div>
+                <div class="details-v">
+                  <app-status-badge
+                    [label]="'ORDERS_PAYMENT_' + (order()!.paymentStatus | uppercase) | translate"
+                    [tone]="paymentStatusTone(order()!.paymentStatus)"
+                    size="sm"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      }
+    }
+  </div>
+</div>

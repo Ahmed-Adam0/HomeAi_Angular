@@ -1,0 +1,28 @@
+<header class="details-card-header">
+  <div class="details-card-title">{{ 'ORDER_DETAILS_ITEMS_TITLE' | translate }}</div>
+  <div class="text-muted">{{ items().length }} {{ 'ORDER_DETAILS_ITEMS_COUNT' | translate }}</div>
+</header>
+
+<div class="details-items">
+  @for (it of items(); track it.productId) {
+    <div class="details-item-row">
+      <img class="details-item-img" [src]="it.productImage" [alt]="it.productName" loading="lazy" />
+      <div class="min-w-0">
+        <div class="details-item-name">{{ it.productName }}</div>
+        <div class="text-muted details-item-meta">
+          <span>{{ 'ORDER_DETAILS_QTY' | translate }}: {{ it.quantity }}</span>
+          @if (it.selectedColor) {
+            <span class="mx-2">•</span>
+            <span>{{ 'ORDER_DETAILS_COLOR' | translate }}: {{ it.selectedColor }}</span>
+          }
+          @if (it.selectedMaterial) {
+            <span class="mx-2">•</span>
+            <span>{{ 'ORDER_DETAILS_MATERIAL' | translate }}: {{ it.selectedMaterial }}</span>
+          }
+        </div>
+      </div>
+      <div class="details-item-price">{{ it.subtotal | currencyFormat }}</div>
+    </div>
+  }
+</div>
+

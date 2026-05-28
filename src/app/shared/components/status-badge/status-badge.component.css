@@ -1,0 +1,57 @@
+.fm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fm-space-8);
+  border-radius: var(--fm-radius-pill);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border: 1px solid var(--fm-border-medium);
+  white-space: nowrap;
+}
+
+.fm-badge-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.fm-badge-md {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.fm-badge-neutral {
+  background: var(--fm-color-neutral-100);
+  color: var(--fm-color-neutral-800);
+  border-color: var(--fm-color-neutral-200);
+}
+
+.fm-badge-brand {
+  background: var(--fm-color-primary-soft);
+  color: var(--fm-color-primary-700);
+  border-color: rgba(184, 147, 92, 0.22);
+}
+
+.fm-badge-success {
+  background: var(--fm-color-success-100);
+  color: var(--fm-color-success-600);
+  border-color: rgba(101, 126, 93, 0.22);
+}
+
+.fm-badge-warning {
+  background: var(--fm-color-warning-100);
+  color: var(--fm-color-warning-600);
+  border-color: rgba(176, 129, 73, 0.22);
+}
+
+.fm-badge-info {
+  background: var(--fm-color-info-100);
+  color: var(--fm-color-info-600);
+  border-color: rgba(92, 127, 147, 0.22);
+}
+
+.fm-badge-danger {
+  background: var(--fm-color-danger-100);
+  color: var(--fm-color-danger-600);
+  border-color: rgba(173, 92, 81, 0.22);
+}
+

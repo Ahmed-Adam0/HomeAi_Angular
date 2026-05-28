@@ -25,10 +25,10 @@ export const API_URLS = {
     CLEAR: 'cart/clear',
   },
   ORDERS: {
-    LIST: 'orders',
-    DETAILS: (id: string | number) => `orders/${id}`,
-    CREATE: 'orders',
-    CANCEL: (id: string | number) => `orders/${id}/cancel`,
+    LIST: 'Order/my-orders',
+    DETAILS: (id: string | number) => `Order/${id}`,
+    CREATE: 'Order',
+    UPDATE_STATUS: (id: string | number) => `Order/${id}/status`,
   },
   AI: {
     RECOMMEND: 'ai/recommend',
