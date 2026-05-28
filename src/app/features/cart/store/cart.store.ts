@@ -38,6 +38,15 @@ export class CartStore {
       )
   );
 
+  readonly totals = computed(() => ({
+    totalQuantity: this.totalQuantity(),
+    totalPrice: this.totalPrice(),
+    shippingCost: this.shippingCost(),
+    taxAmount: this.taxAmount(),
+    discountAmount: this.discountAmount(),
+    grandTotal: this.grandTotal(),
+  }));
+
   constructor() {
     effect(() => {
       if (typeof window === 'undefined') {

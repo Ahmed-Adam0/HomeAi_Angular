@@ -10,7 +10,7 @@
   <ng-container *ngIf="hasItems(); else emptyState">
     <div class="cart-layout">
       <div class="cart-items-panel">
-        <div class="cart-item-card" *ngFor="let item of items()">
+        <div class="cart-item-card" [class.is-removing]="cartService.isItemRemoving(item.id)" *ngFor="let item of items()">
           <div class="item-media">
             <img [src]="item.productImage" [alt]="item.productName" />
             
@@ -21,8 +21,17 @@
               <h2>
                 {{ translationService.currentLang() === 'ar' ? item.productNameAr || item.productName : item.productNameEn || item.productName }}
               </h2>
-              <button type="button" class="remove-action" (click)="removeItem(item.id)">
-                {{ labels().remove }}
+              <button
+                type="button"
+                class="remove-action"
+                (click)="removeItem(item.id)"
+                [disabled]="cartService.isItemPending(item.id)"
+              >
+                @if (cartService.isItemRemoving(item.id)) {
+                  <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
+                } @else {
+                  {{ labels().remove }}
+                }
               </button>
             </div>
 
@@ -33,10 +42,31 @@
             <div class="item-meta">
               <div class="quantity-control">
                 <label>{{ labels().quantity }}</label>
-                <div class="quantity-actions">
-                  <button type="button" class="qty-btn" (click)="updateQuantity(item.id, item.quantity - 1)">−</button>
-                  <span>{{ item.quantity }}</span>
-                  <button type="button" class="qty-btn" (click)="updateQuantity(item.id, item.quantity + 1)">+</button>
+                <div class="quantity-actions" [class.is-updating]="cartService.isItemUpdating(item.id)">
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    (click)="updateQuantity(item.id, item.quantity - 1)"
+                    [disabled]="cartService.isItemPending(item.id)"
+                  >
+                    −
+                  </button>
+
+                  <span class="quantity-value">
+                    {{ item.quantity }}
+                    @if (cartService.isItemUpdating(item.id)) {
+                      <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
+                    }
+                  </span>
+
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    (click)="updateQuantity(item.id, item.quantity + 1)"
+                    [disabled]="cartService.isItemPending(item.id)"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
 
@@ -53,6 +83,11 @@
         <div class="summary-card">
           <div class="summary-header">
             <h3>{{ labels().cartSummary }}</h3>
+            @if (isCartBusy()) {
+              <span class="summary-busy">
+                <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
+              </span>
+            }
           </div>
 
           <div class="summary-row">
@@ -95,7 +130,12 @@
             (clicked)="goToCheckout()"
           ></app-button>
 
-          <button type="button" class="btn btn-outline-secondary w-100 mt-3" (click)="clearCart()">
+          <button
+            type="button"
+            class="btn btn-outline-secondary w-100 mt-3"
+            (click)="clearCart()"
+            [disabled]="isCartBusy()"
+          >
             {{ labels().clearCart }}
           </button>
         </div>

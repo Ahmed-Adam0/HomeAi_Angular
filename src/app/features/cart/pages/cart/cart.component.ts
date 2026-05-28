@@ -5,11 +5,12 @@ import { Button } from '../../../../shared/components/button/button.component';
 import { CartService } from '../../services/cart.service';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, RouterModule, Button, EmptyStateComponent],
+  imports: [CommonModule, RouterModule, Button, EmptyStateComponent, LoadingSpinner],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
 })
@@ -25,13 +26,17 @@ export class Cart {
   readonly items = this.cartService.items;
   readonly hasItems = computed(() => this.items().length > 0);
   readonly itemCount = this.cartService.totalQuantity;
-  readonly summary = computed(() => ({
-    subtotal: this.cartService.totalPrice(),
-    shipping: this.cartService.shippingCost(),
-    tax: this.cartService.taxAmount(),
-    discount: this.cartService.discountAmount(),
-    total: this.cartService.grandTotal(),
-  }));
+  readonly isCartBusy = this.cartService.cartBusy;
+  readonly summary = computed(() => {
+    const totals = this.cartService.totals();
+    return {
+      subtotal: totals.totalPrice,
+      shipping: totals.shippingCost,
+      tax: totals.taxAmount,
+      discount: totals.discountAmount,
+      total: totals.grandTotal,
+    };
+  });
 
   readonly pageTitle = computed(() => this.translationService.translate('NAV_CART'));
   readonly emptyLabel = computed(() => this.translationService.translate('EMPTY_CART'));

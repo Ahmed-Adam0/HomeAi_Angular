@@ -15,7 +15,7 @@ export class CartService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly uiState = inject(UiState);
   private readonly translationService = inject(TranslationService);
-  private readonly loadingStates = signal<Record<string, boolean>>({});
+  private readonly loadingStates = signal<Record<string, { adding?: boolean; updating?: boolean; removing?: boolean }>>({});
 
   readonly items = this.cartStore.items;
   readonly totalItems = this.cartStore.totalItems;
@@ -29,6 +29,43 @@ export class CartService {
 
   readonly hasItems = computed(() => this.totalItems() > 0);
   readonly itemCount = this.totalQuantity;
+  readonly cartBusy = computed(() =>
+    Object.values(this.loadingStates()).some(
+      (state) => state?.adding || state?.updating || state?.removing
+    )
+  );
+
+  private setItemActionState(
+    itemId: string,
+    action: 'adding' | 'updating' | 'removing',
+    value: boolean
+  ): void {
+    this.loadingStates.update((states) => ({
+      ...states,
+      [itemId]: {
+        ...states[itemId],
+        [action]: value,
+      },
+    }));
+  }
+
+  isProductAdding(productId: string | number): boolean {
+    return !!this.loadingStates()[String(productId)]?.adding;
+  }
+
+  isItemUpdating(itemId: string | number): boolean {
+    return !!this.loadingStates()[String(itemId)]?.updating;
+  }
+
+  isItemRemoving(itemId: string | number): boolean {
+    return !!this.loadingStates()[String(itemId)]?.removing;
+  }
+
+  isItemPending(itemId: string | number): boolean {
+    const state = this.loadingStates()[String(itemId)];
+    return !!state?.adding || !!state?.updating || !!state?.removing;
+  }
+  readonly totals = this.cartStore.totals;
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -37,17 +74,13 @@ export class CartService {
     }
   }
 
-  isProductAdding(productId: string | number): boolean {
-    return !!this.loadingStates()[String(productId)];
-  }
-
   addToCart(product: IProduct, quantity = 1): Promise<void> {
     const itemId = product.id.toString().trim();
-    if (this.loadingStates()[itemId]) {
+    if (this.loadingStates()[itemId]?.adding) {
       return Promise.resolve();
     }
 
-    this.loadingStates.update((states) => ({ ...states, [itemId]: true }));
+    this.setItemActionState(itemId, 'adding', true);
 
     return new Promise<void>((resolve) => {
       setTimeout(() => {
@@ -138,7 +171,7 @@ export class CartService {
             : `Failed to add ${productTitle} to your cart. Please try again.`;
           this.uiState.showAlert('danger', errorMsg);
         } finally {
-          this.loadingStates.update((states) => ({ ...states, [itemId]: false }));
+          this.setItemActionState(itemId, 'adding', false);
           resolve();
         }
       }, 600);
@@ -147,23 +180,36 @@ export class CartService {
 
   removeFromCart(itemId: string): void {
     const targetId = itemId.trim();
-    this.items.update((current) =>
-      current.filter(
-        (item) =>
-          String(item.id).trim() !== targetId &&
-          String(item.productId).trim() !== targetId
-      )
-    );
-  }
-
-  updateQuantity(itemId: string, quantity: number): void {
-    const cleanQty = Math.round(Number(quantity));
-    if (isNaN(cleanQty) || cleanQty <= 0) {
-      this.removeFromCart(itemId);
+    if (this.isItemPending(targetId)) {
       return;
     }
 
+    this.setItemActionState(targetId, 'removing', true);
+    setTimeout(() => {
+      this.items.update((current) =>
+        current.filter(
+          (item) =>
+            String(item.id).trim() !== targetId &&
+            String(item.productId).trim() !== targetId
+        )
+      );
+      this.setItemActionState(targetId, 'removing', false);
+    }, 180);
+  }
+
+  updateQuantity(itemId: string, quantity: number): void {
     const targetId = itemId.trim();
+    if (this.isItemPending(targetId)) {
+      return;
+    }
+
+    const cleanQty = Math.round(Number(quantity));
+    if (isNaN(cleanQty) || cleanQty <= 0) {
+      this.removeFromCart(targetId);
+      return;
+    }
+
+    this.setItemActionState(targetId, 'updating', true);
     this.items.update((current) =>
       current.map((item) =>
         String(item.id).trim() === targetId ||
@@ -178,6 +224,10 @@ export class CartService {
           : item
       )
     );
+
+    setTimeout(() => {
+      this.setItemActionState(targetId, 'updating', false);
+    }, 180);
   }
 
   clearCart(): void {
@@ -187,24 +237,12 @@ export class CartService {
   getCart(): ICart {
     return {
       items: this.items(),
-      totalQuantity: this.totalQuantity(),
-      totalPrice: this.totalPrice(),
-      shippingCost: this.shippingCost(),
-      taxAmount: this.taxAmount(),
-      discountAmount: this.discountAmount(),
-      grandTotal: this.grandTotal(),
+      ...this.totals(),
     };
   }
 
   calculateTotals() {
-    return {
-      totalQuantity: this.totalQuantity(),
-      totalPrice: this.totalPrice(),
-      shippingCost: this.shippingCost(),
-      taxAmount: this.taxAmount(),
-      discountAmount: this.discountAmount(),
-      grandTotal: this.grandTotal(),
-    };
+    return this.totals();
   }
 
   refreshFromStorage(): void {
