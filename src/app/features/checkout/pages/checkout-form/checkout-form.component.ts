@@ -170,11 +170,17 @@ export class CheckoutFormComponent implements OnInit {
             formValues.country
           ].map((part) => part?.trim()).filter(Boolean);
 
+          const cartSnapshot = this.cartService.items().map((item) => ({
+            productId: Number(item.productId) || Number(item.id),
+            quantity: item.quantity,
+          }));
+
           const orderPayload: ICheckoutPayload = {
             ...formValues,
             address: addressParts.join(', '),
             phoneNumber: formValues.phone.trim(),
-            notes: formValues.orderNotes?.trim() || null
+            notes: formValues.orderNotes?.trim() || null,
+            items: cartSnapshot,
           };
 
           return this.checkoutService.submitCheckout(orderPayload);

@@ -24,7 +24,6 @@ export class CartService {
   private readonly authService = inject(AuthService);
   private readonly loadingStates = signal<Record<string, { adding?: boolean; updating?: boolean; removing?: boolean }>>({});
   private readonly activeSyncRequests = new Set<string>();
-  private readonly activeQuantityUpdates = new Set<string>();
   private readonly updateQuantityDebounceTimers = new Map<string, any>();
   private readonly pendingUpdatePromises = new Map<string, Promise<any>>();
 
@@ -58,6 +57,149 @@ export class CartService {
         [action]: value,
       },
     }));
+  }
+
+  private normalizeKey(value: string | number | undefined | null): string {
+    return value == null ? '' : String(value).trim();
+  }
+
+  private isMatchingCartItem(item: ICartItem, itemKey: string): boolean {
+    const normalizedKey = this.normalizeKey(itemKey);
+    if (!normalizedKey) {
+      return false;
+    }
+
+    return (
+      this.normalizeKey(item.id) === normalizedKey ||
+      this.normalizeKey(item.productId) === normalizedKey ||
+      this.normalizeKey(item.cartItemId) === normalizedKey
+    );
+  }
+
+  private findCartItem(itemKey: string): ICartItem | undefined {
+    const normalizedKey = this.normalizeKey(itemKey);
+    if (!normalizedKey) {
+      return undefined;
+    }
+
+    return this.items().find((item) => this.isMatchingCartItem(item, normalizedKey));
+  }
+
+  private updateLocalCartItem(itemKey: string, updater: (item: ICartItem) => ICartItem): void {
+    this.items.update((current) =>
+      current.map((item) =>
+        this.isMatchingCartItem(item, itemKey) ? updater(item) : item
+      )
+    );
+  }
+
+  private removeLocalCartItem(itemKey: string): void {
+    this.items.update((current) =>
+      current.filter((item) => !this.isMatchingCartItem(item, itemKey))
+    );
+  }
+
+  private consolidateCartItems(items: ICartItem[]): ICartItem[] {
+    const grouped = new Map<string, ICartItem>();
+
+    for (const item of items) {
+      const productKey = this.normalizeKey(item.productId || item.id);
+      const cartKey = this.normalizeKey(item.cartItemId || item.id);
+      const mapKey = productKey || cartKey;
+
+      const existing = grouped.get(mapKey);
+      if (existing) {
+        const quantity = existing.quantity + item.quantity;
+        grouped.set(mapKey, {
+          ...existing,
+          quantity,
+          subtotal: Number((existing.price * quantity).toFixed(2)),
+          cartItemId: existing.cartItemId || item.cartItemId,
+        });
+      } else {
+        grouped.set(mapKey, {
+          ...item,
+          id: this.normalizeKey(item.id || productKey),
+          productId: this.normalizeKey(item.productId || productKey || item.id),
+          cartItemId: this.normalizeKey(item.cartItemId) || undefined,
+        });
+      }
+    }
+
+    return Array.from(grouped.values());
+  }
+
+  private applyBackendResponseToLocalState(response: any): void {
+    const backendItems = this.parseBackendCartItems(response);
+    if (!backendItems.length) {
+      return;
+    }
+
+    backendItems.forEach((backendItem) => {
+      const lookupKey = backendItem.productId || backendItem.id || backendItem.cartItemId;
+      if (!lookupKey) {
+        return;
+      }
+
+      this.updateLocalCartItem(lookupKey, (current) => ({
+        ...current,
+        cartItemId: backendItem.cartItemId || current.cartItemId,
+        productId: backendItem.productId || current.productId,
+        id: current.id || backendItem.id,
+        price: backendItem.price || current.price,
+        quantity: backendItem.quantity,
+        subtotal: backendItem.subtotal,
+      }));
+    });
+  }
+
+  private async resolveBackendCartItemId(item: ICartItem): Promise<string | undefined> {
+    if (item.cartItemId) {
+      return item.cartItemId;
+    }
+
+    if (!this.authService.isAuthenticated()) {
+      return undefined;
+    }
+
+    try {
+      const backendCart = await firstValueFrom(this.cartApi.getCart());
+      const backendItems = this.parseBackendCartItems(backendCart);
+      const match = backendItems.find((backendItem) =>
+        this.normalizeKey(backendItem.productId) === this.normalizeKey(item.productId) ||
+        this.normalizeKey(backendItem.id) === this.normalizeKey(item.id)
+      );
+
+      if (match?.cartItemId) {
+        this.updateLocalCartItem(item.id, (current) => ({ ...current, cartItemId: match.cartItemId }));
+        return match.cartItemId;
+      }
+    } catch (err) {
+      console.error('Unable to resolve backend cart item id:', err);
+    }
+
+    return undefined;
+  }
+
+  private async syncCartItemIdFromResponse(itemKey: string, response: any): Promise<void> {
+    const backendItems = this.parseBackendCartItems(response);
+    if (!backendItems.length) {
+      return;
+    }
+
+    backendItems.forEach((backendItem) => {
+      const lookupKey = backendItem.productId || backendItem.id || backendItem.cartItemId;
+      if (!lookupKey) {
+        return;
+      }
+
+      this.updateLocalCartItem(lookupKey, (current) => ({
+        ...current,
+        cartItemId: backendItem.cartItemId || current.cartItemId,
+        productId: backendItem.productId || current.productId,
+        id: current.id || backendItem.id,
+      }));
+    });
   }
 
   isProductAdding(productId: string | number): boolean {
@@ -108,12 +250,11 @@ export class CartService {
    * Safely map raw backend response to frontend ICartItem[] structure defensively.
    */
   private parseBackendCartItems(response: any): ICartItem[] {
-    console.log('Backend cart response', response);
     if (!response) return [];
 
     const unwrapped = unwrap<any>(response);
-
     let rawItems: any[] = [];
+
     if (Array.isArray(unwrapped)) {
       rawItems = unwrapped;
     } else if (unwrapped && typeof unwrapped === 'object') {
@@ -132,40 +273,32 @@ export class CartService {
       return [];
     }
 
-    return rawItems.map((item: any) => {
+    const items = rawItems.map((item: any) => {
       const rawCartItemId = item.cartItemId ?? item.cartItemID ?? item.itemId ?? '';
       const productIdFromProduct = item.product?.id ?? item.product?.productId;
       const rawProductId = item.productId ?? productIdFromProduct ?? '';
       const rawId = item.id ?? '';
 
-      const normalizedCartItemId = String(rawCartItemId).trim();
-      const normalizedProductId = String(rawProductId).trim();
-      const normalizedId = String(rawId).trim();
+      const normalizedCartItemId = this.normalizeKey(rawCartItemId);
+      const normalizedProductId = this.normalizeKey(rawProductId);
+      const normalizedId = this.normalizeKey(rawId);
 
-      console.log('Raw backend cart item', item);
-
-      let cartItemId = normalizedCartItemId;
-      if (!cartItemId && normalizedId && normalizedId !== normalizedProductId) {
-        cartItemId = normalizedId;
-      }
-
-      let productId = normalizedProductId;
-      if (!productId && normalizedId && normalizedId !== cartItemId) {
-        productId = normalizedId;
-      }
-
-      const itemId = productId || cartItemId || normalizedId;
+      const cartItemId = normalizedCartItemId || (normalizedId && normalizedId !== normalizedProductId ? normalizedId : '');
+      const productId = normalizedProductId || (normalizedId && normalizedId !== cartItemId ? normalizedId : '');
+      const itemId = cartItemId || productId || normalizedId;
       const qty = Math.max(1, Math.round(Number(item.quantity) || 1));
       const price = Math.max(0, Number(item.price || item.product?.price || 0));
 
-      const productNameEn = item.productNameEn || item.productName || item.product?.nameEn || item.product?.name || '';
+      const productNameEn =
+        item.productNameEn || item.productName || item.product?.nameEn || item.product?.name || '';
       const productNameAr = item.productNameAr || item.product?.nameAr || productNameEn;
-      const productImage = item.productImage || item.imageUrl || item.product?.mainImageUrl || item.product?.imageUrl || '';
+      const productImage =
+        item.productImage || item.imageUrl || item.product?.mainImageUrl || item.product?.imageUrl || '';
 
       return {
         id: itemId,
-        productId,
-        cartItemId,
+        productId: productId || itemId,
+        cartItemId: cartItemId || undefined,
         productName: productNameEn,
         productNameEn,
         productNameAr,
@@ -177,6 +310,8 @@ export class CartService {
         selectedMaterial: item.selectedMaterial || item.material,
       };
     });
+
+    return this.consolidateCartItems(items);
   }
 
   /**
@@ -225,7 +360,7 @@ export class CartService {
   }
 
   addToCart(product: IProduct, quantity = 1): Promise<void> {
-    const itemId = product.id.toString().trim();
+    const itemId = this.normalizeKey(product.id);
     if (this.loadingStates()[itemId]?.adding) {
       return Promise.resolve();
     }
@@ -233,12 +368,11 @@ export class CartService {
     this.setItemActionState(itemId, 'adding', true);
 
     return new Promise<void>((resolve) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         try {
           const isAr = this.translationService.currentLang() === 'ar';
           const productTitle = isAr ? product.nameAr : product.nameEn;
 
-          // 1. Invalid Quantity Check
           if (isNaN(quantity) || quantity <= 0) {
             const errorMsg = isAr
               ? 'كمية غير صالحة: يرجى إدخال كمية صالحة أكبر من 0.'
@@ -250,19 +384,11 @@ export class CartService {
 
           const quantityToAdd = Math.round(Number(quantity));
           const productPrice = Math.max(0, Number(product.price) || 0);
-
-          const existingItem = this.items().find(
-            (item) =>
-              String(item.id).trim() === itemId ||
-              String(item.productId).trim() === itemId ||
-              String(item.cartItemId || '').trim() === itemId
-          );
-
+          const existingItem = this.findCartItem(itemId);
           const currentQty = existingItem ? existingItem.quantity : 0;
           const newQty = currentQty + quantityToAdd;
           const MAX_STOCK_LIMIT = 10;
 
-          // 2. Stock Issues Check
           if (newQty > MAX_STOCK_LIMIT) {
             const errorMsg = isAr
               ? `لا يمكن إضافة ${productTitle}. تم الوصول إلى الحد الأقصى للمخزون المتوفر (${MAX_STOCK_LIMIT} قطع).`
@@ -273,24 +399,11 @@ export class CartService {
           }
 
           if (existingItem) {
-            this.items.update((current) =>
-              current.map((item) =>
-                String(item.id).trim() === itemId ||
-                String(item.productId).trim() === itemId ||
-                String(item.cartItemId || '').trim() === itemId
-                  ? {
-                      ...item,
-                      quantity: item.quantity + quantityToAdd,
-                      subtotal: Number(
-                        (
-                          (item.quantity + quantityToAdd) *
-                          item.price
-                        ).toFixed(2)
-                      ),
-                    }
-                  : item
-              )
-            );
+            this.updateLocalCartItem(itemId, (item) => ({
+              ...item,
+              quantity: item.quantity + quantityToAdd,
+              subtotal: Number(((item.quantity + quantityToAdd) * item.price).toFixed(2)),
+            }));
           } else {
             const newItem: ICartItem = {
               id: itemId,
@@ -301,28 +414,19 @@ export class CartService {
               productImage: product.mainImageUrl,
               price: productPrice,
               quantity: quantityToAdd,
-              subtotal: Number(
-                (productPrice * quantityToAdd).toFixed(2)
-              ),
+              subtotal: Number((productPrice * quantityToAdd).toFixed(2)),
             };
 
             this.items.update((current) => [...current, newItem]);
           }
 
-          // 3. Success Feedback Trigger
           const successMsg = isAr
             ? `تمت إضافة ${quantityToAdd} × ${productTitle} إلى سلة التسوق بنجاح.`
             : `Added ${quantityToAdd} × ${productTitle} to your cart successfully.`;
           this.uiState.showAlert('success', successMsg);
 
-          // 4. Background Sync
           if (this.authService.isAuthenticated()) {
-            const matched = this.items().find(
-              (i) =>
-                String(i.id).trim() === itemId ||
-                String(i.productId).trim() === itemId ||
-                String(i.cartItemId || '').trim() === itemId
-            );
+            const matched = this.findCartItem(itemId);
             const cartItemIdVal = matched?.cartItemId;
             const lockKey = `sync-${itemId}`;
 
@@ -331,43 +435,33 @@ export class CartService {
               resolve();
               return;
             }
+
             this.activeSyncRequests.add(lockKey);
 
-            const handleSyncObservable = (obs: Observable<any>, payloadLog: any) => {
-              console.log('Updating cart item', payloadLog);
-              const p = obs.toPromise()
-                .then(() => {
-                  this.activeSyncRequests.delete(lockKey);
-                })
-                .catch((err: any) => {
-                  this.activeSyncRequests.delete(lockKey);
-                  console.error('Cart sync failed:', err);
-                  const warningMsg = isAr
-                    ? 'فشلت مزامنة السلة. سيتم المحاولة لاحقاً.'
-                    : 'Cart sync failed. Will retry later.';
-                  this.uiState.showAlert('warning', warningMsg);
-                })
-                .finally(() => {
-                  this.pendingUpdatePromises.delete(itemId);
-                });
-              this.pendingUpdatePromises.set(itemId, p);
-            };
+            const quantityToSync = matched?.quantity ?? newQty;
+            const observable = cartItemIdVal
+              ? this.cartApi.updateItem(Number(cartItemIdVal), quantityToSync)
+              : this.cartApi.addItem(Number(itemId), quantityToAdd);
 
-            if (matched && cartItemIdVal) {
-              const newQtyVal = matched.quantity;
-              handleSyncObservable(
-                this.cartApi.updateItem(Number(cartItemIdVal), newQtyVal),
-                { id: Number(cartItemIdVal), quantity: newQtyVal }
-              );
-            } else {
-              handleSyncObservable(
-                this.cartApi.addItem(Number(itemId), quantityToAdd),
-                { productId: itemId, quantity: quantityToAdd }
-              );
-            }
+            const p = observable.toPromise()
+              .then((response) => {
+                this.applyBackendResponseToLocalState(response);
+              })
+              .catch((err: any) => {
+                console.error('Cart sync failed:', err);
+                const warningMsg = isAr
+                  ? 'فشلت مزامنة السلة. سيتم المحاولة لاحقاً.'
+                  : 'Cart sync failed. Will retry later.';
+                this.uiState.showAlert('warning', warningMsg);
+              })
+              .finally(() => {
+                this.activeSyncRequests.delete(lockKey);
+                this.pendingUpdatePromises.delete(itemId);
+              });
+
+            this.pendingUpdatePromises.set(itemId, p);
           }
         } catch (error) {
-          // 5. Failed Add Action Check
           const isAr = this.translationService.currentLang() === 'ar';
           const productTitle = isAr ? product.nameAr : product.nameEn;
           const errorMsg = isAr
@@ -383,164 +477,111 @@ export class CartService {
   }
 
   removeFromCart(itemId: string): void {
-    const targetId = itemId.trim();
+    const targetId = this.normalizeKey(itemId);
     if (this.isItemPending(targetId)) {
+      return;
+    }
+
+    const matched = this.findCartItem(targetId);
+    if (!matched) {
       return;
     }
 
     this.setItemActionState(targetId, 'removing', true);
+    this.removeLocalCartItem(targetId);
 
-    const matched = this.items().find(
-      (i) =>
-        String(i.id).trim() === targetId ||
-        String(i.productId).trim() === targetId ||
-        String(i.cartItemId || '').trim() === targetId
-    );
-    const cartItemIdVal = matched?.cartItemId;
-
-    if (!cartItemIdVal) {
-      console.error('Missing cartItemId', matched || { targetId });
+    if (!this.authService.isAuthenticated()) {
       this.setItemActionState(targetId, 'removing', false);
       return;
     }
 
-    // 1. Optimistic removal
-    this.items.update((current) =>
-      current.filter(
-        (item) =>
-          String(item.id).trim() !== targetId &&
-          String(item.productId).trim() !== targetId &&
-          String(item.cartItemId || '').trim() !== targetId
-      )
-    );
-    this.setItemActionState(targetId, 'removing', false);
+    const syncTask = (async () => {
+      try {
+        const resolvedCartItemId = await this.resolveBackendCartItemId(matched);
+        if (!resolvedCartItemId) {
+          throw new Error('Unable to resolve backend cart item id for removal.');
+        }
 
-    // 2. Background sync
-    if (this.authService.isAuthenticated()) {
-      console.log('Removing cart item', { id: cartItemIdVal });
-      const p = this.cartApi.removeItem(cartItemIdVal).toPromise()
-        .then(() => {
-          // successful removal; local state is already updated optimistically
-        })
-        .catch((err) => {
-          console.error('Cart sync failed on item remove:', err);
-          const isAr = this.translationService.currentLang() === 'ar';
-          const warningMsg = isAr
-            ? 'فشلت مزامنة السلة. سيتم المحاولة لاحقاً.'
-            : 'Cart sync failed. Will retry later.';
-          this.uiState.showAlert('warning', warningMsg);
-        })
-        .finally(() => {
-          this.pendingUpdatePromises.delete(targetId);
-        });
-      this.pendingUpdatePromises.set(targetId, p);
-    }
+        console.log('Removing cart item', { id: resolvedCartItemId });
+        await firstValueFrom(this.cartApi.removeItem(Number(resolvedCartItemId)));
+      } catch (err) {
+        console.error('Cart sync failed on item remove:', err);
+        const isAr = this.translationService.currentLang() === 'ar';
+        const warningMsg = isAr
+          ? 'فشلت مزامنة السلة. سيتم المحاولة لاحقاً.'
+          : 'Cart sync failed. Will retry later.';
+        this.uiState.showAlert('warning', warningMsg);
+      } finally {
+        this.setItemActionState(targetId, 'removing', false);
+        this.pendingUpdatePromises.delete(targetId);
+      }
+    })();
+
+    this.pendingUpdatePromises.set(targetId, syncTask);
   }
 
   updateQuantity(itemId: string, quantity: number): void {
-    const targetId = itemId.trim();
-    if (this.isItemPending(targetId)) {
-      return;
-    }
-
+    const targetId = this.normalizeKey(itemId);
     const cleanQty = Math.round(Number(quantity));
-    if (isNaN(cleanQty) || cleanQty <= 0) {
+
+    if (cleanQty <= 0) {
       this.removeFromCart(targetId);
       return;
     }
 
-    const existing = this.items().find(
-      (item) =>
-        String(item.id).trim() === targetId ||
-        String(item.productId).trim() === targetId ||
-        String(item.cartItemId || '').trim() === targetId
-    );
-    if (!existing) {
-      return;
-    }
-    if (existing.quantity === cleanQty) {
+    const existing = this.findCartItem(targetId);
+    if (!existing || existing.quantity === cleanQty) {
       return;
     }
 
-    const syncKey = targetId;
-    if (this.activeQuantityUpdates.has(syncKey)) {
-      return;
-    }
-
-    this.activeQuantityUpdates.add(syncKey);
     this.setItemActionState(targetId, 'updating', true);
-    console.log('Updating cart item', { productId: targetId, quantity: cleanQty });
+    this.updateLocalCartItem(targetId, (item) => ({
+      ...item,
+      quantity: cleanQty,
+      subtotal: Number((item.price * cleanQty).toFixed(2)),
+    }));
 
-    // 1. Optimistic update
-    this.items.update((current) =>
-      current.map((item) =>
-        String(item.id).trim() === targetId ||
-        String(item.productId).trim() === targetId ||
-        String(item.cartItemId || '').trim() === targetId
-          ? {
-              ...item,
-              quantity: cleanQty,
-              subtotal: Number(
-                (item.price * cleanQty).toFixed(2)
-              ),
-            }
-          : item
-      )
-    );
+    if (this.updateQuantityDebounceTimers.has(targetId)) {
+      clearTimeout(this.updateQuantityDebounceTimers.get(targetId));
+    }
 
-    setTimeout(() => {
-      this.setItemActionState(targetId, 'updating', false);
-    }, 180);
+    const timer = setTimeout(async () => {
+      this.updateQuantityDebounceTimers.delete(targetId);
 
-    // 2. Background sync
-    if (this.authService.isAuthenticated()) {
-      if (this.updateQuantityDebounceTimers.has(targetId)) {
-        clearTimeout(this.updateQuantityDebounceTimers.get(targetId));
+      const matched = this.findCartItem(targetId);
+      if (!matched) {
+        this.setItemActionState(targetId, 'updating', false);
+        this.pendingUpdatePromises.delete(targetId);
+        return;
       }
 
-      const timer = setTimeout(() => {
-        this.updateQuantityDebounceTimers.delete(targetId);
+      if (!this.authService.isAuthenticated()) {
+        this.setItemActionState(targetId, 'updating', false);
+        this.pendingUpdatePromises.delete(targetId);
+        return;
+      }
 
-        const matched = this.items().find(
-          (i) =>
-            String(i.id).trim() === targetId ||
-            String(i.productId).trim() === targetId ||
-            String(i.cartItemId || '').trim() === targetId
-        );
-        if (!matched) {
-          this.activeQuantityUpdates.delete(syncKey);
-          return;
+      try {
+        const resolvedCartItemId = await this.resolveBackendCartItemId(matched);
+        if (!resolvedCartItemId) {
+          throw new Error('Missing backend cartItemId for quantity update.');
         }
 
-        if (!matched.cartItemId) {
-          console.error('Missing cartItemId', matched);
-          this.activeQuantityUpdates.delete(syncKey);
-          this.pendingUpdatePromises.delete(targetId);
-          return;
-        }
-
-        const parsedId = Number(matched.cartItemId);
+        const parsedId = Number(resolvedCartItemId);
         if (isNaN(parsedId)) {
-          console.error('Invalid cartItemId for update', matched.cartItemId, matched);
-          this.activeQuantityUpdates.delete(syncKey);
-          this.pendingUpdatePromises.delete(targetId);
-          return;
+          throw new Error(`Invalid backend cartItemId: ${resolvedCartItemId}`);
         }
 
         const lockKey = `update-${parsedId}`;
         if (this.activeSyncRequests.has(lockKey)) {
-          console.log(`Update request in progress for cart item ${parsedId}, skipping sync until previous completes.`);
-          return;
+          console.log(`Update request already in progress for cart item ${parsedId}, scheduling final update later.`);
+          await new Promise((resolve) => setTimeout(resolve, 50));
         }
 
         this.activeSyncRequests.add(lockKey);
-        const payload = { id: parsedId, quantity: matched.quantity };
-        console.log('Cart item before update', matched);
-        console.log('Sending PUT request once only', payload);
-
         const syncPromise = this.cartApi.updateItem(parsedId, matched.quantity).toPromise()
-          .then(() => {
-            // optimistic state is already applied; no reload needed
+          .then((response) => {
+            this.applyBackendResponseToLocalState(response);
           })
           .catch((err) => {
             console.error('Cart sync failed on quantity update:', err);
@@ -552,15 +593,20 @@ export class CartService {
           })
           .finally(() => {
             this.activeSyncRequests.delete(lockKey);
-            this.activeQuantityUpdates.delete(syncKey);
+            this.setItemActionState(targetId, 'updating', false);
             this.pendingUpdatePromises.delete(targetId);
           });
 
         this.pendingUpdatePromises.set(targetId, syncPromise);
-      }, 300); // 300ms debounce
+        await syncPromise;
+      } catch (err) {
+        console.error('Cart quantity sync failed:', err);
+        this.setItemActionState(targetId, 'updating', false);
+        this.pendingUpdatePromises.delete(targetId);
+      }
+    }, 300);
 
-      this.updateQuantityDebounceTimers.set(targetId, timer);
-    }
+    this.updateQuantityDebounceTimers.set(targetId, timer);
   }
 
   /**
@@ -574,39 +620,40 @@ export class CartService {
    * Returns a promise that resolves when all pending sync requests and debounce timers have completed.
    */
   async awaitPendingSyncs(): Promise<void> {
-    // 1. Force execution of any debounced timers immediately to start their request
+    // 1. Flush any debounced quantity updates immediately.
     for (const [targetId, timer] of this.updateQuantityDebounceTimers.entries()) {
       clearTimeout(timer);
       this.updateQuantityDebounceTimers.delete(targetId);
 
-      const matched = this.items().find(
-        (i) =>
-          String(i.id).trim() === targetId ||
-          String(i.productId).trim() === targetId ||
-          String(i.cartItemId || '').trim() === targetId
-      );
-      if (matched && matched.cartItemId) {
-        const parsedId = Number(matched.cartItemId);
-        if (!isNaN(parsedId)) {
-          const lockKey = `update-${parsedId}`;
-          this.activeSyncRequests.add(lockKey);
+      const matched = this.findCartItem(targetId);
+      if (!matched || !this.authService.isAuthenticated()) {
+        continue;
+      }
 
-          console.log('Forced Updating cart item', { id: parsedId, quantity: matched.quantity });
+      try {
+        const resolvedCartItemId = await this.resolveBackendCartItemId(matched);
+        if (resolvedCartItemId) {
+          const parsedId = Number(resolvedCartItemId);
+          if (!isNaN(parsedId)) {
+            const lockKey = `update-${parsedId}`;
+            this.activeSyncRequests.add(lockKey);
 
-          const p = this.cartApi.updateItem(parsedId, matched.quantity).toPromise()
-            .then(() => {
-              // successful forced sync; local state remains authoritative
-            })
-            .catch((err) => {
-              console.error('Forced cart sync failed:', err);
-            })
-            .finally(() => {
-              this.activeSyncRequests.delete(lockKey);
-              this.activeQuantityUpdates.delete(targetId);
-              this.pendingUpdatePromises.delete(targetId);
-            });
-          this.pendingUpdatePromises.set(targetId, p);
+            console.log('Forced Updating cart item', { id: parsedId, quantity: matched.quantity });
+
+            const p = this.cartApi.updateItem(parsedId, matched.quantity).toPromise()
+              .catch((err) => {
+                console.error('Forced cart sync failed:', err);
+              })
+              .finally(() => {
+                this.activeSyncRequests.delete(lockKey);
+                this.pendingUpdatePromises.delete(targetId);
+              });
+
+            this.pendingUpdatePromises.set(targetId, p);
+          }
         }
+      } catch (err) {
+        console.error('Forced cart sync failed while flushing updates:', err);
       }
     }
 
@@ -614,7 +661,7 @@ export class CartService {
     while (this.pendingUpdatePromises.size > 0 || this.activeSyncRequests.size > 0) {
       const promises = Array.from(this.pendingUpdatePromises.values());
       if (promises.length === 0) {
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
         continue;
       }
       await Promise.all(promises);
