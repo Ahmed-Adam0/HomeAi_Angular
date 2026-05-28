@@ -13,6 +13,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import { CouponBoxComponent } from '../../components/coupon-box/coupon-box.component';
 import { finalize } from 'rxjs/operators';
 import { UiState } from '../../../../core/state/ui.state';
+import { LOCAL_STORAGE_KEYS } from '../../../../core/constants';
 
 @Component({
   standalone: true,
@@ -111,60 +112,89 @@ export class CheckoutFormComponent implements OnInit {
     return this.checkoutForm.controls.orderNotes;
   }
 
-  onSubmit(): void {
-    if (this.cartEmpty()) {
+  async onSubmit(): Promise<void> {
+    if (this.submitting) {
+      return;
+    }
+
+    const cartItems = this.cartService.items();
+
+    if (!cartItems.length) {
       this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_EMPTY_CART'));
       return;
     }
 
     if (this.checkoutForm.invalid) {
+      console.log('Checkout form errors', this.checkoutForm.errors);
+      console.log('Checkout form value', this.checkoutForm.value);
+      console.log('Checkout form invalid', this.checkoutForm.invalid);
       this.checkoutForm.markAllAsTouched();
       this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_VALIDATION'));
       return;
     }
 
     this.submitting = true;
-    const formValues = this.checkoutForm.getRawValue();
 
-    const addressParts: string[] = [
-      formValues.addressLine1,
-      formValues.addressLine2,
-      formValues.city,
-      formValues.zipCode,
-      formValues.country
-    ].map(p => p?.trim()).filter(p => !!p);
+    try {
+      await this.cartService.awaitPendingSyncs();
+      await this.cartService.syncCartFromBackend();
 
-    const payload: ICheckoutPayload = {
-      address: addressParts.join(', '),
-      phoneNumber: formValues.phone.trim(),
-      notes: formValues.orderNotes?.trim() || null
-    };
-
-    this.checkoutService.submitCheckout(payload).pipe(
-      finalize(() => {
+      if (this.cartService.items().length === 0) {
         this.submitting = false;
-      })
-    ).subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.cartService.clearCart();
-          this.onRemoveCoupon();
-          this.uiState.showAlert('success', this.translationService.translate('CHECKOUT_SUCCESS_ORDER_PLACED'));
-          this.router.navigate(['/orders']);
-        }
-      },
-      error: (err: HttpErrorResponse) => {
-        let errorMsgKey = 'CHECKOUT_ERROR_GENERIC';
-        if (err.status === 0) {
-          errorMsgKey = 'CHECKOUT_ERROR_NETWORK';
-        } else if (err.status === 401) {
-          errorMsgKey = 'CHECKOUT_ERROR_UNAUTHORIZED';
-        } else if (err.status === 400 || err.status === 422) {
-          errorMsgKey = 'CHECKOUT_ERROR_VALIDATION';
-        }
-        this.uiState.showAlert('danger', this.translationService.translate(errorMsgKey));
+        this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_EMPTY_CART'));
+        return;
       }
-    });
+
+      const formValues = this.checkoutForm.getRawValue();
+
+      const addressParts: string[] = [
+        formValues.addressLine1,
+        formValues.addressLine2,
+        formValues.city,
+        formValues.zipCode,
+        formValues.country
+      ].map(p => p?.trim()).filter(p => !!p);
+
+      const orderPayload: ICheckoutPayload = {
+        ...formValues,
+        address: addressParts.join(', '),
+        phoneNumber: formValues.phone.trim(),
+        notes: formValues.orderNotes?.trim() || null
+      };
+
+      console.log('Final order payload', orderPayload);
+
+      this.checkoutService.submitCheckout(orderPayload).pipe(
+        finalize(() => {
+          this.submitting = false;
+        })
+      ).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.cartService.clearCart();
+            localStorage.removeItem(LOCAL_STORAGE_KEYS.CART);
+            this.onRemoveCoupon();
+            this.uiState.showAlert('success', this.translationService.translate('CHECKOUT_SUCCESS_ORDER_PLACED'));
+            this.router.navigate(['/orders']);
+          }
+        },
+        error: (err: HttpErrorResponse) => {
+          let errorMsgKey = 'CHECKOUT_ERROR_GENERIC';
+          if (err.status === 0) {
+            errorMsgKey = 'CHECKOUT_ERROR_NETWORK';
+          } else if (err.status === 401) {
+            errorMsgKey = 'CHECKOUT_ERROR_UNAUTHORIZED';
+          } else if (err.status === 400 || err.status === 422) {
+            errorMsgKey = 'CHECKOUT_ERROR_VALIDATION';
+          }
+          this.uiState.showAlert('danger', this.translationService.translate(errorMsgKey));
+        }
+      });
+    } catch (err) {
+      this.submitting = false;
+      console.error('Error awaiting pending syncs before checkout:', err);
+      this.uiState.showAlert('danger', 'Error preparing cart checkout. Please try again.');
+    }
   }
 
   onApplyCoupon(code: string): void {

@@ -209,5 +209,19 @@
   "ORDER_DETAILS_PAYMENT_TITLE": "ملخص الدفع",
   "ORDER_DETAILS_PAYMENT_SUBTITLE": "طريقة الدفع وحالة الدفع الحالية.",
   "ORDER_DETAILS_PAYMENT_METHOD": "طريقة الدفع",
-  "ORDER_DETAILS_PAYMENT_STATUS": "حالة الدفع"
+  "ORDER_DETAILS_PAYMENT_STATUS": "حالة الدفع",
+  "ORDER_DETAILS_EDIT": "تعديل الطلب",
+  "ORDER_DETAILS_CANCEL": "إلغاء الطلب",
+  "ORDER_DETAILS_LOCKED_MSG": "لا يمكن تعديل أو إلغاء هذا الطلب بعد الآن نظراً لبدء معالجته بالفعل.",
+  "ORDER_DETAILS_CANCEL_CONFIRM_TITLE": "إلغاء الطلب",
+  "ORDER_DETAILS_CANCEL_CONFIRM_MSG": "هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
+  "ORDER_DETAILS_CANCEL_CONFIRM_YES": "نعم، إلغاء الطلب",
+  "ORDER_DETAILS_CANCEL_CONFIRM_NO": "لا، الاحتفاظ بالطلب",
+  "ORDER_DETAILS_CANCEL_SUCCESS": "تم إلغاء الطلب بنجاح.",
+  "ORDER_DETAILS_CANCEL_ERROR": "فشل إلغاء الطلب. يرجى المحاولة مرة أخرى.",
+  "ORDER_DETAILS_EDIT_MODAL_TITLE": "تعديل الطلب",
+  "ORDER_DETAILS_EDIT_MODAL_MSG": "ميزة تعديل الطلبات قيد التطوير حالياً. في المستقبل، ستتمكن من إضافة/حذف المنتجات وتعديل المواصفات لطلبك قبل أن ينتقل من الحالة المعلقة.",
+  "ORDER_DETAILS_EDIT_MODAL_CLOSE": "فهمت",
+  "ORDER_DETAILS_ITEMS_EMPTY_TITLE": "لا توجد منتجات في هذا الطلب",
+  "ORDER_DETAILS_ITEMS_EMPTY_DESC": "لم نتمكن من العثور على أي منتجات مدرجة لهذا الطلب. قد يكون قد تم تعديله بواسطة المورد."
 }

@@ -7,10 +7,27 @@ import { environment } from '../../../../environments/environment';
 import { OrdersApiService } from '../../orders/data-access/orders-api.service';
 import { CartService } from '../../cart/services/cart.service';
 
+export interface ICheckoutItem {
+  productId: number;
+  quantity: number;
+}
+
 export interface ICheckoutPayload {
   address: string;
   phoneNumber: string;
   notes: string | null;
+  items?: ICheckoutItem[];
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  city?: string;
+  zipCode?: string;
+  country?: string;
+  shippingOption?: 'standard' | 'express';
+  paymentProvider?: 'stripe' | 'paypal' | 'paymob';
+  orderNotes?: string;
 }
 
 export interface ICouponValidationResult {

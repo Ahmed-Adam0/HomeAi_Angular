@@ -92,6 +92,7 @@ export class CartStore {
           ...item,
           id: String(item.id || item.productId || ''),
           productId: String(item.productId || item.id || ''),
+          cartItemId: item.cartItemId ? String(item.cartItemId) : (item.id && item.id !== item.productId ? String(item.id) : undefined),
           quantity: qty,
           price: price,
           subtotal: Number((price * qty).toFixed(2)),

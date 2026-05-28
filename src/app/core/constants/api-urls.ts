@@ -18,11 +18,11 @@ export const API_URLS = {
     FEATURED: 'Products',
   },
   CART: {
-    GET: 'cart',
-    ADD: 'cart/add',
-    UPDATE: (id: string | number) => `cart/update/${id}`,
-    REMOVE: (id: string | number) => `cart/remove/${id}`,
-    CLEAR: 'cart/clear',
+    GET: 'Cart',
+    CLEAR: 'Cart',
+    ADD_ITEM: 'Cart/items',
+    UPDATE_ITEM: 'Cart/items',
+    REMOVE_ITEM: (id: string | number) => `Cart/items/${id}`,
   },
   ORDERS: {
     LIST: 'Order/my-orders',

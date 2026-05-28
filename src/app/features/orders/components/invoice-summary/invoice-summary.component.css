@@ -2,3 +2,46 @@
   display: block;
 }
 
+.details-card-header {
+  padding: var(--fm-space-20) var(--fm-space-24);
+}
+
+.invoice-row {
+  font-size: 14px;
+}
+
+.discount-row {
+  color: var(--fm-color-success-600) !important;
+  background: rgba(16, 185, 129, 0.04);
+  padding: 6px 12px;
+  border-radius: var(--fm-radius-md);
+  margin-block: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.12);
+}
+
+.grand-total-container {
+  background: linear-gradient(180deg, rgba(250, 249, 246, 0.6) 0%, rgba(255, 255, 255, 0.95) 100%);
+  border: 1px solid var(--fm-border-medium);
+  box-shadow: var(--fm-shadow-xs);
+  padding: 14px 18px;
+  border-radius: var(--fm-radius-lg);
+}
+
+.grand-total-label {
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.grand-total-value {
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--fm-color-primary-600) 0%, var(--fm-color-primary-400) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+

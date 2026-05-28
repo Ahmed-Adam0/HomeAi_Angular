@@ -1,6 +1,7 @@
 export interface ICartItem {
   id: string;
   productId: string;
+  cartItemId?: string;
   productName: string;
   productNameEn?: string;
   productNameAr?: string;

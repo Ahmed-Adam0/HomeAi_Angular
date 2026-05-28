@@ -1,6 +1,6 @@
 import { DestroyRef, computed, inject, Injectable, signal } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { catchError, finalize, map, of, switchMap } from 'rxjs';
+import { catchError, finalize, map, Observable, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrdersApiService } from './orders-api.service';
 import { IOrder, OrderStatus } from '../interfaces';
@@ -33,9 +33,18 @@ export class OrdersFacade {
 
   readonly isLoadingList = signal(false);
   readonly isLoadingDetails = signal(false);
+  readonly isCancelling = signal(false);
 
   readonly listErrorKey = signal<string | null>(null);
   readonly detailsErrorKey = signal<string | null>(null);
+
+  /**
+   * Computed state: User can modify/cancel order only when status is 'pending'
+   */
+  readonly canModifyOrder = computed(() => {
+    const order = this.selectedOrder();
+    return order?.status === 'pending';
+  });
 
   /**
    * Reactive View Model for the Orders List.
@@ -104,6 +113,27 @@ export class OrdersFacade {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((order) => this.selectedOrder.set(order));
+  }
+
+  /**
+   * Cancels/deletes the order, updating the details and local list reactively.
+   */
+  cancelOrder(id: string): Observable<IOrder> {
+    this.isCancelling.set(true);
+    return this.api.updateOrderStatus(id, 'Cancelled').pipe(
+      tap((updatedOrder) => {
+        this.selectedOrder.set(updatedOrder);
+        
+        // Optimistic / reactive local cache list update
+        const currentOrders = this.orders();
+        if (currentOrders) {
+          this.orders.set(
+            currentOrders.map((o) => (o.id === id ? updatedOrder : o))
+          );
+        }
+      }),
+      finalize(() => this.isCancelling.set(false))
+    );
   }
 
   /**

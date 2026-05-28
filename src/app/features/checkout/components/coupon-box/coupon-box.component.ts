@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
@@ -13,7 +13,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   styleUrls: ['./coupon-box.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CouponBoxComponent {
+export class CouponBoxComponent implements OnChanges {
   private readonly fb = inject(FormBuilder);
   private readonly translationService = inject(TranslationService);
 
@@ -31,6 +31,21 @@ export class CouponBoxComponent {
 
   @Output() applyCoupon = new EventEmitter<string>();
   @Output() removeCoupon = new EventEmitter<void>();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['disabled'] || changes['status'] || changes['activeCoupon']) {
+      this.updateDisabledState();
+    }
+  }
+
+  private updateDisabledState(): void {
+    const shouldDisable = this.status === 'loading' || this.disabled || !!this.activeCoupon;
+    if (shouldDisable) {
+      this.couponControl.disable({ emitEvent: false });
+    } else {
+      this.couponControl.enable({ emitEvent: false });
+    }
+  }
 
   get couponControl(): FormControl<string> {
     return this.couponForm.controls.couponCode as FormControl<string>;
@@ -63,3 +78,4 @@ export class CouponBoxComponent {
     this.couponForm.reset({ couponCode: '' });
   }
 }
+

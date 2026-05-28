@@ -1,7 +1,8 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { IShippingAddress } from '../../interfaces';
+import { UiState } from '../../../../core/state/ui.state';
 
 @Component({
   selector: 'app-shipping-info',
@@ -15,5 +16,17 @@ export class ShippingInfoComponent {
   readonly trackingNumber = input<string | null>(null);
   readonly carrier = input<string | null>(null);
   readonly estimatedDeliveryDate = input<string | null>(null);
+
+  private uiState = inject(UiState);
+
+  copyTracking(): void {
+    const tracking = this.trackingNumber();
+    if (tracking) {
+      navigator.clipboard.writeText(tracking).then(() => {
+        this.uiState.showAlert('success', 'Tracking number copied.');
+      });
+    }
+  }
 }
+
 

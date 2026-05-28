@@ -1,29 +1,43 @@
-<header class="details-card-header">
-  <div class="details-card-title">{{ 'ORDER_DETAILS_INVOICE_TITLE' | translate }}</div>
-  <div class="text-muted">{{ 'ORDER_DETAILS_INVOICE_SUBTITLE' | translate }}</div>
+<header class="details-card-header pb-3 border-bottom">
+  <div class="details-card-title-group">
+    <h3 class="details-card-title mb-1 text-dark">{{ 'ORDER_DETAILS_INVOICE_TITLE' | translate }}</h3>
+    <p class="text-muted small mb-0">{{ 'ORDER_DETAILS_INVOICE_SUBTITLE' | translate }}</p>
+  </div>
 </header>
 
-<div class="details-kv">
-  <div class="details-kv-row">
-    <div class="details-k">{{ 'ORDER_DETAILS_SUBTOTAL' | translate }}</div>
-    <div class="details-v fw-semibold">{{ subtotal() | currencyFormat }}</div>
+<div class="details-kv p-4">
+  <!-- Subtotal -->
+  <div class="invoice-row d-flex justify-content-between align-items-center py-2.5">
+    <span class="invoice-label text-secondary fw-semibold">{{ 'ORDER_DETAILS_SUBTOTAL' | translate }}</span>
+    <span class="invoice-value text-dark fw-bold">{{ subtotal() | currencyFormat }}</span>
   </div>
-  <div class="details-kv-row">
-    <div class="details-k">{{ 'ORDER_DETAILS_SHIPPING_COST' | translate }}</div>
-    <div class="details-v">{{ shippingCost() | currencyFormat }}</div>
+  
+  <!-- Shipping -->
+  <div class="invoice-row d-flex justify-content-between align-items-center py-2.5">
+    <span class="invoice-label text-muted small">{{ 'ORDER_DETAILS_SHIPPING_COST' | translate }}</span>
+    <span class="invoice-value text-secondary">{{ shippingCost() | currencyFormat }}</span>
   </div>
-  <div class="details-kv-row">
-    <div class="details-k">{{ 'ORDER_DETAILS_TAX' | translate }}</div>
-    <div class="details-v">{{ taxAmount() | currencyFormat }}</div>
+  
+  <!-- Tax -->
+  <div class="invoice-row d-flex justify-content-between align-items-center py-2.5">
+    <span class="invoice-label text-muted small">{{ 'ORDER_DETAILS_TAX' | translate }}</span>
+    <span class="invoice-value text-secondary">{{ taxAmount() | currencyFormat }}</span>
   </div>
-  <div class="details-kv-row">
-    <div class="details-k">{{ 'ORDER_DETAILS_DISCOUNT' | translate }}</div>
-    <div class="details-v">-{{ discountAmount() | currencyFormat }}</div>
-  </div>
-  <div class="details-divider"></div>
-  <div class="details-kv-row">
-    <div class="details-k fw-bold">{{ 'ORDER_DETAILS_TOTAL' | translate }}</div>
-    <div class="details-v fw-bold">{{ totalAmount() | currencyFormat }}</div>
+  
+  <!-- Discount -->
+  @if (discountAmount() > 0) {
+    <div class="invoice-row d-flex justify-content-between align-items-center py-2.5 discount-row text-success">
+      <span class="invoice-label font-semibold">{{ 'ORDER_DETAILS_DISCOUNT' | translate }}</span>
+      <span class="invoice-value fw-bold">-{{ discountAmount() | currencyFormat }}</span>
+    </div>
+  }
+  
+  <hr class="my-3 opacity-10">
+  
+  <!-- Grand Total Highlighted Section -->
+  <div class="grand-total-container p-3 rounded-lg d-flex justify-content-between align-items-center">
+    <span class="grand-total-label fw-bold text-dark">{{ 'ORDER_DETAILS_TOTAL' | translate }}</span>
+    <span class="grand-total-value text-gradient-gold fw-black">{{ totalAmount() | currencyFormat }}</span>
   </div>
 </div>
 

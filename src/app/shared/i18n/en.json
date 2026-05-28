@@ -209,5 +209,19 @@
   "ORDER_DETAILS_PAYMENT_TITLE": "Payment summary",
   "ORDER_DETAILS_PAYMENT_SUBTITLE": "Method and current payment status.",
   "ORDER_DETAILS_PAYMENT_METHOD": "Payment method",
-  "ORDER_DETAILS_PAYMENT_STATUS": "Payment status"
+  "ORDER_DETAILS_PAYMENT_STATUS": "Payment status",
+  "ORDER_DETAILS_EDIT": "Edit Order",
+  "ORDER_DETAILS_CANCEL": "Cancel Order",
+  "ORDER_DETAILS_LOCKED_MSG": "This order can no longer be modified because processing has already started.",
+  "ORDER_DETAILS_CANCEL_CONFIRM_TITLE": "Cancel Order",
+  "ORDER_DETAILS_CANCEL_CONFIRM_MSG": "Are you sure you want to cancel this order? This action cannot be undone.",
+  "ORDER_DETAILS_CANCEL_CONFIRM_YES": "Yes, Cancel Order",
+  "ORDER_DETAILS_CANCEL_CONFIRM_NO": "No, Keep Order",
+  "ORDER_DETAILS_CANCEL_SUCCESS": "Order cancelled successfully.",
+  "ORDER_DETAILS_CANCEL_ERROR": "Failed to cancel order. Please try again.",
+  "ORDER_DETAILS_EDIT_MODAL_TITLE": "Edit Order Flow",
+  "ORDER_DETAILS_EDIT_MODAL_MSG": "The ability to edit your order is currently under active development. In the future, this will allow you to add/remove items and update specifications for your order before it transitions out of the pending state.",
+  "ORDER_DETAILS_EDIT_MODAL_CLOSE": "Got It",
+  "ORDER_DETAILS_ITEMS_EMPTY_TITLE": "No Items in Order",
+  "ORDER_DETAILS_ITEMS_EMPTY_DESC": "We could not find any items listed for this order. It might have been updated or modified by the supplier."
 }
