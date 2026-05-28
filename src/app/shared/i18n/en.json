@@ -118,5 +118,22 @@
   "CHECKOUT_SHIPPING_EXPRESS_DESC": "Delivers in 1-2 business days",
   "CHECKOUT_GATEWAY_STRIPE": "Credit / Debit Card (Stripe)",
   "CHECKOUT_GATEWAY_PAYPAL": "PayPal Checkout",
-  "CHECKOUT_GATEWAY_PAYMOB": "Paymob Gateway"
+  "CHECKOUT_GATEWAY_PAYMOB": "Paymob Gateway",
+  "CHECKOUT_COUPON_TITLE": "Have a coupon code?",
+  "CHECKOUT_COUPON_APPLY": "Apply Coupon",
+  "CHECKOUT_COUPON_REMOVE": "Remove Coupon",
+  "CHECKOUT_COUPON_SUCCESS": "Coupon Applied",
+  "CHECKOUT_COUPON_INVALID": "Invalid Coupon",
+  "CHECKOUT_COUPON_REQUIRED": "Please enter a coupon code.",
+  "CHECKOUT_COUPON_MAX_LENGTH": "Coupon code cannot exceed 20 characters.",
+  "CHECKOUT_COUPON_APPLIED_MESSAGE": "Your discount has been applied.",
+  "CHECKOUT_COUPON_GENERIC_ERROR": "Unable to verify coupon code. Please try again.",
+  "CHECKOUT_COUPON_NO_SAVINGS": "This coupon does not apply to your current order.",
+  "CHECKOUT_COUPON_SAVE_10_PERCENT": "Saved 10% on your order.",
+  "CHECKOUT_COUPON_FREE_SHIPPING": "Free shipping applied.",
+  "CHECKOUT_COUPON_SAVE_UP_TO_20_PERCENT": "Saved up to 20% on your order.",
+  "CHECKOUT_ORDER_NOTES_TITLE": "Order Notes",
+  "CHECKOUT_ORDER_NOTES_HELP": "Add delivery instructions or custom requests.",
+  "CHECKOUT_ORDER_NOTES_MAX": "Order notes cannot exceed 300 characters.",
+  "CHECKOUT_CHAR_COUNT": "chars"
 }

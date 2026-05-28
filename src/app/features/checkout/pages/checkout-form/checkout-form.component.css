@@ -277,6 +277,14 @@
 /* Totals Hierarchy */
 .summary-totals-grid {
   font-size: 14px;
+  display: grid;
+  gap: var(--fm-space-10);
+}
+
+.summary-totals-grid > div,
+.summary-total-divider,
+.grand-total-row {
+  transition: all 0.22s ease-in-out;
 }
 
 .summary-total-divider {
@@ -286,10 +294,25 @@
 .discount-row {
   background-color: var(--fm-color-success-50);
   padding: var(--fm-space-8);
+  border-radius: var(--fm-radius-md);
+  transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
 .grand-total-row {
   padding-top: var(--fm-space-8);
+}
+
+.checkout-notes-textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.notes-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--fm-space-12);
+  align-items: center;
 }
 
 .text-primary-gold {

@@ -1,0 +1,61 @@
+<div class="coupon-box" appRtl>
+  <div [formGroup]="couponForm" class="coupon-input-group">
+    <label class="form-label-custom fw-semibold" for="couponCode">
+      {{ 'CHECKOUT_COUPON_TITLE' | translate }}
+    </label>
+
+    <div class="coupon-field d-flex flex-wrap gap-3">
+      <input
+        id="couponCode"
+        type="text"
+        formControlName="couponCode"
+        class="form-control-custom coupon-input"
+        placeholder="FURNIMIND10"
+        [disabled]="status === 'loading' || disabled || !!activeCoupon"
+      />
+
+      <button
+        type="button"
+        class="btn-coupon rounded-pill fw-semibold"
+        [disabled]="isApplyDisabled"
+        (click)="requestApply()"
+      >
+        @if (status === 'loading') {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        }
+        {{ 'CHECKOUT_COUPON_APPLY' | translate }}
+      </button>
+    </div>
+
+    @if (couponControl.touched && couponControl.errors?.['required']) {
+      <div class="text-danger-custom small mt-2">{{ 'CHECKOUT_COUPON_REQUIRED' | translate }}</div>
+    }
+    @if (couponControl.touched && couponControl.errors?.['maxlength']) {
+      <div class="text-danger-custom small mt-2">{{ 'CHECKOUT_COUPON_MAX_LENGTH' | translate }}</div>
+    }
+  </div>
+
+  @if (status === 'error' && message) {
+    <div class="coupon-alert rounded bg-danger-soft border border-danger text-danger p-3 mt-3">
+      <span class="fw-semibold">{{ 'CHECKOUT_COUPON_INVALID' | translate }}</span>
+      <p class="small mb-0">{{ message | translate }}</p>
+    </div>
+  }
+
+  @if (activeCoupon) {
+    <div class="coupon-status-card rounded border border-success bg-success-soft p-3 mt-3 d-flex flex-column gap-2">
+      <div class="d-flex align-items-center justify-content-between gap-3">
+        <div>
+          <span class="badge bg-success text-white px-2 py-1 rounded-pill">{{ 'CHECKOUT_COUPON_SUCCESS' | translate }}</span>
+          <p class="mb-0 small text-dark opacity-85 mt-2">{{ message ? (message | translate) : ('CHECKOUT_COUPON_APPLIED_MESSAGE' | translate) }}</p>
+        </div>
+        <button type="button" class="coupon-remove-btn" (click)="requestRemove()">
+          {{ 'CHECKOUT_COUPON_REMOVE' | translate }}
+        </button>
+      </div>
+      @if (savedAmountLabel) {
+        <div class="coupon-saved-label small text-success">{{ savedAmountLabel | translate }}</div>
+      }
+    </div>
+  }
+</div>

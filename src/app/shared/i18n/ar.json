@@ -118,5 +118,22 @@
   "CHECKOUT_SHIPPING_EXPRESS_DESC": "التوصيل خلال 1-2 يوم عمل",
   "CHECKOUT_GATEWAY_STRIPE": "البطاقة البنكية (Stripe)",
   "CHECKOUT_GATEWAY_PAYPAL": "بوابة PayPal",
-  "CHECKOUT_GATEWAY_PAYMOB": "بوابة الدفع المحلية (Paymob)"
+  "CHECKOUT_GATEWAY_PAYMOB": "بوابة الدفع المحلية (Paymob)",
+  "CHECKOUT_COUPON_TITLE": "هل لديك رمز خصم؟",
+  "CHECKOUT_COUPON_APPLY": "تطبيق الخصم",
+  "CHECKOUT_COUPON_REMOVE": "إزالة الخصم",
+  "CHECKOUT_COUPON_SUCCESS": "تم تطبيق الخصم",
+  "CHECKOUT_COUPON_INVALID": "رمز خصم غير صالح",
+  "CHECKOUT_COUPON_REQUIRED": "يرجى إدخال رمز الخصم.",
+  "CHECKOUT_COUPON_MAX_LENGTH": "يجب ألا يزيد طول رمز الخصم عن 20 حرفًا.",
+  "CHECKOUT_COUPON_APPLIED_MESSAGE": "تم تطبيق خصم الطلب بنجاح.",
+  "CHECKOUT_COUPON_GENERIC_ERROR": "لا يمكن التحقق من رمز الخصم. يرجى المحاولة مرة أخرى.",
+  "CHECKOUT_COUPON_NO_SAVINGS": "هذا الخصم غير قابل للتطبيق على طلبك الحالي.",
+  "CHECKOUT_COUPON_SAVE_10_PERCENT": "تم توفير 10% على طلبك.",
+  "CHECKOUT_COUPON_FREE_SHIPPING": "تم تطبيق شحن مجاني.",
+  "CHECKOUT_COUPON_SAVE_UP_TO_20_PERCENT": "تم توفير ما يصل إلى 20% على طلبك.",
+  "CHECKOUT_ORDER_NOTES_TITLE": "ملاحظات الطلب",
+  "CHECKOUT_ORDER_NOTES_HELP": "أضف تعليمات التسليم أو الطلبات الخاصة.",
+  "CHECKOUT_ORDER_NOTES_MAX": "يجب ألا تتجاوز ملاحظات الطلب 300 حرف.",
+  "CHECKOUT_CHAR_COUNT": "حرف"
 }

@@ -9,7 +9,7 @@
       <!-- Left Column: Checkout Forms -->
       <div class="col-lg-7">
         <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="checkout-form-flow d-flex flex-column gap-4">
-          
+
           <!-- Section 1: Shipping Information -->
           <section class="checkout-card bg-white p-4 p-md-5">
             <div class="section-title-group d-flex align-items-center gap-3 mb-4">
@@ -236,6 +236,36 @@
               </label>
             </div>
           </section>
+
+          <section class="checkout-card bg-white p-4 p-md-5">
+            <div class="section-title-group d-flex align-items-center gap-3 mb-4">
+              <div class="section-number">5</div>
+              <h3 class="section-heading h4 fw-bold mb-0 text-dark">{{ 'CHECKOUT_ORDER_NOTES_TITLE' | translate }}</h3>
+            </div>
+
+            <div class="form-group-custom">
+              <label class="form-label-custom fw-semibold" for="orderNotes">{{ 'CHECKOUT_ORDER_NOTES_TITLE' | translate }}</label>
+              <textarea
+                id="orderNotes"
+                formControlName="orderNotes"
+                rows="5"
+                class="form-control-custom checkout-notes-textarea"
+                [placeholder]="currentLang() === 'ar' ? 'اكتب ملاحظات إضافية للطلب...' : 'Write any special instructions for your order...'"></textarea>
+
+              <div class="notes-meta d-flex align-items-center justify-content-between gap-3 mt-2 flex-wrap">
+                <span class="text-muted small">{{ 'CHECKOUT_ORDER_NOTES_HELP' | translate }}</span>
+                <span class="small" [class.text-danger-custom]="orderNotesControl.value.length >= 280">
+                  {{ orderNotesControl.value.length }}/300 {{ 'CHECKOUT_CHAR_COUNT' | translate }}
+                </span>
+              </div>
+
+              @if (checkoutForm.get('orderNotes')?.touched && checkoutForm.get('orderNotes')?.errors?.['maxlength']) {
+                <div class="text-danger-custom small mt-2">
+                  {{ 'CHECKOUT_ORDER_NOTES_MAX' | translate }}
+                </div>
+              }
+            </div>
+          </section>
         </form>
       </div>
 
@@ -270,6 +300,19 @@
                   </div>
                 </div>
               }
+            </div>
+
+            <!-- Coupon Box -->
+            <div class="summary-coupon-box mb-4">
+              <app-coupon-box
+                [disabled]="submitting"
+                [status]="couponStatus()"
+                [activeCoupon]="activeCoupon()"
+                [message]="couponMessage()"
+                [savedAmountLabel]="couponSavedAmountLabel()"
+                (applyCoupon)="onApplyCoupon($event)"
+                (removeCoupon)="onRemoveCoupon()"
+              ></app-coupon-box>
             </div>
 
             <!-- Summary Totals -->
