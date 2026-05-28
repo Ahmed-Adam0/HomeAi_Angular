@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, PLATFORM_ID, signal, effect } from '@angular/core';
+import { Injectable, computed, inject, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ICart, ICartItem } from '../interfaces';
 import { CartStore } from '../store/cart.store';
@@ -9,7 +9,8 @@ import { TranslationService } from '../../../shared/i18n/translation.service';
 import { CartApiService } from './cart-api.service';
 import { AuthService } from '../../auth/services/auth.service';
 import { unwrap } from '../../../core/utils/api-utils';
-import { Observable } from 'rxjs';
+import { firstValueFrom, filter, from, Observable, switchMap, tap, distinctUntilChanged } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -82,11 +83,22 @@ export class CartService {
       this.refreshFromStorage();
       window.addEventListener('storage', this.onStorageChange);
 
-      effect(() => {
-        if (this.authService.isAuthenticated()) {
-          this.syncCartFromBackend();
-        } else {
-          this.cartStore.clear();
+      // Auth-driven cart synchronization pipeline:
+      // - only run backend sync when auth state changes to true
+      // - clear local cart on logout
+      // - avoid repeated sync bursts from cart item signal changes
+      toObservable(this.authService.isAuthenticated).pipe(
+        distinctUntilChanged(),
+        tap((authenticated) => {
+          if (!authenticated) {
+            this.cartStore.clear();
+          }
+        }),
+        filter(Boolean),
+        switchMap(() => from(this.syncCartFromBackend()))
+      ).subscribe({
+        error: (error: unknown) => {
+          console.error('Auth cart sync failed:', error);
         }
       });
     }
@@ -170,67 +182,46 @@ export class CartService {
   /**
    * Syncs the cart with the backend. Merges local items with the backend items consolidating quantities.
    */
-  syncCartFromBackend(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      if (!this.authService.isLoggedIn()) {
-        resolve();
+  async syncCartFromBackend(): Promise<void> {
+    if (!this.authService.isLoggedIn()) {
+      return;
+    }
+
+    try {
+      const backendCart = await firstValueFrom(this.cartApi.getCart());
+      const backendItems = this.parseBackendCartItems(backendCart);
+      const localItems = this.items();
+      const guestItems = localItems.filter((item) => !item.cartItemId);
+
+      if (guestItems.length > 0) {
+        const mergePromises = guestItems.map(async (localItem) => {
+          const localProductKey = String(localItem.productId || localItem.id || localItem.cartItemId).trim();
+          const backendMatch = backendItems.find((bItem) =>
+            String(bItem.productId).trim() === localProductKey ||
+            String(bItem.id).trim() === localProductKey ||
+            String(bItem.cartItemId || '').trim() === localProductKey
+          );
+
+          if (backendMatch && backendMatch.cartItemId) {
+            const matchId = Number(backendMatch.cartItemId);
+            return firstValueFrom(this.cartApi.updateItem(matchId, localItem.quantity));
+          }
+
+          const addProductId = Number(localItem.productId || localItem.id || 0);
+          return firstValueFrom(this.cartApi.addItem(addProductId, localItem.quantity));
+        });
+
+        await Promise.all(mergePromises);
+        const latestCart = await firstValueFrom(this.cartApi.getCart());
+        this.cartStore.setItems(this.parseBackendCartItems(latestCart));
         return;
       }
 
-      this.cartApi.getCart().subscribe({
-        next: (backendCart) => {
-          const backendItems = this.parseBackendCartItems(backendCart);
-          const localItems = this.items();
-          const guestItems = localItems.filter((item) => !item.cartItemId);
-
-          if (guestItems.length > 0) {
-            // Merge only unsynced guest items to backend cart
-            const mergePromises = guestItems.map((localItem) => {
-              const backendMatch = backendItems.find(
-                (bItem) => String(bItem.productId) === String(localItem.productId)
-              );
-
-              if (backendMatch && backendMatch.cartItemId) {
-                const newQuantity = backendMatch.quantity + localItem.quantity;
-                const matchId = Number(backendMatch.cartItemId);
-                return this.cartApi.updateItem(matchId, newQuantity).toPromise();
-              } else {
-                return this.cartApi.addItem(Number(localItem.productId), localItem.quantity).toPromise();
-              }
-            });
-
-            Promise.all(mergePromises)
-              .then(() => {
-                // Reload backend cart again to get the single-source-of-truth state
-                this.cartApi.getCart().subscribe({
-                  next: (latestCart) => {
-                    const finalItems = this.parseBackendCartItems(latestCart);
-                    this.cartStore.setItems(finalItems);
-                    resolve();
-                  },
-                  error: (err) => {
-                    console.error('Error reloading cart after merge:', err);
-                    reject(err);
-                  }
-                });
-              })
-              .catch((err) => {
-                console.error('Error merging local cart into backend:', err);
-                this.cartStore.setItems(backendItems);
-                reject(err);
-              });
-          } else {
-            // No guest items to merge, just hydrate from backend directly
-            this.cartStore.setItems(backendItems);
-            resolve();
-          }
-        },
-        error: (err) => {
-          console.error('Error fetching backend cart:', err);
-          reject(err);
-        }
-      });
-    });
+      this.cartStore.setItems(backendItems);
+    } catch (err) {
+      console.error('Error syncing backend cart:', err);
+      throw err;
+    }
   }
 
   addToCart(product: IProduct, quantity = 1): Promise<void> {

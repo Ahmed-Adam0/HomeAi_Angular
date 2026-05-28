@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -11,9 +11,11 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pip
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { CouponBoxComponent } from '../../components/coupon-box/coupon-box.component';
-import { finalize } from 'rxjs/operators';
 import { UiState } from '../../../../core/state/ui.state';
 import { LOCAL_STORAGE_KEYS } from '../../../../core/constants';
+import { EMPTY, defer, from, Subject } from 'rxjs';
+import { catchError, exhaustMap, finalize, switchMap, tap } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   standalone: true,
@@ -39,6 +41,9 @@ export class CheckoutFormComponent implements OnInit {
   readonly activeCoupon = signal<string | null>(null);
   readonly couponDiscount = signal(0);
   readonly couponSavedAmountLabel = signal('');
+
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly submitCheckoutAction = new Subject<void>();
 
   readonly cartSummary = computed(() => {
     const totals = this.cartTotals();
@@ -106,70 +111,75 @@ export class CheckoutFormComponent implements OnInit {
       paymentProvider: FormControl<'stripe' | 'paypal' | 'paymob'>;
       orderNotes: FormControl<string>;
     }>;
+
+    // Production-safe checkout submission flow.
+    // Verification should rely on browser Network tab counts, not console logs.
+    // Expected results:
+    // - exactly one POST /Order per checkout
+    // - exactly one backend cart update per quantity change
+    // - no repeated GET /orders/:id or syncCart bursts
+    // - no duplicate requests during auth changes
+    this.submitCheckoutAction.pipe(
+      exhaustMap(() => this.handleCheckoutSubmit()),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
   }
 
   get orderNotesControl(): FormControl<string> {
     return this.checkoutForm.controls.orderNotes;
   }
 
-  async onSubmit(): Promise<void> {
-    if (this.submitting) {
-      return;
-    }
+  onSubmit(): void {
+    this.submitCheckoutAction.next();
+  }
 
-    const cartItems = this.cartService.items();
-
-    if (!cartItems.length) {
-      this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_EMPTY_CART'));
-      return;
-    }
-
-    if (this.checkoutForm.invalid) {
-      console.log('Checkout form errors', this.checkoutForm.errors);
-      console.log('Checkout form value', this.checkoutForm.value);
-      console.log('Checkout form invalid', this.checkoutForm.invalid);
-      this.checkoutForm.markAllAsTouched();
-      this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_VALIDATION'));
-      return;
-    }
-
-    this.submitting = true;
-
-    try {
-      await this.cartService.awaitPendingSyncs();
-      await this.cartService.syncCartFromBackend();
-
-      if (this.cartService.items().length === 0) {
-        this.submitting = false;
-        this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_EMPTY_CART'));
-        return;
+  private handleCheckoutSubmit() {
+    return defer(() => {
+      if (this.submitting) {
+        return EMPTY;
       }
 
-      const formValues = this.checkoutForm.getRawValue();
+      const cartItems = this.cartService.items();
 
-      const addressParts: string[] = [
-        formValues.addressLine1,
-        formValues.addressLine2,
-        formValues.city,
-        formValues.zipCode,
-        formValues.country
-      ].map(p => p?.trim()).filter(p => !!p);
+      if (!cartItems.length) {
+        this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_EMPTY_CART'));
+        return EMPTY;
+      }
 
-      const orderPayload: ICheckoutPayload = {
-        ...formValues,
-        address: addressParts.join(', '),
-        phoneNumber: formValues.phone.trim(),
-        notes: formValues.orderNotes?.trim() || null
-      };
+      if (this.checkoutForm.invalid) {
+        this.checkoutForm.markAllAsTouched();
+        this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_VALIDATION'));
+        return EMPTY;
+      }
 
-      console.log('Final order payload', orderPayload);
+      this.submitting = true;
+      return from(this.cartService.awaitPendingSyncs()).pipe(
+        switchMap(() => from(this.cartService.syncCartFromBackend())),
+        switchMap(() => {
+          if (this.cartService.items().length === 0) {
+            this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_EMPTY_CART'));
+            return EMPTY;
+          }
 
-      this.checkoutService.submitCheckout(orderPayload).pipe(
-        finalize(() => {
-          this.submitting = false;
-        })
-      ).subscribe({
-        next: (res) => {
+          const formValues = this.checkoutForm.getRawValue();
+          const addressParts: string[] = [
+            formValues.addressLine1,
+            formValues.addressLine2,
+            formValues.city,
+            formValues.zipCode,
+            formValues.country
+          ].map((part) => part?.trim()).filter(Boolean);
+
+          const orderPayload: ICheckoutPayload = {
+            ...formValues,
+            address: addressParts.join(', '),
+            phoneNumber: formValues.phone.trim(),
+            notes: formValues.orderNotes?.trim() || null
+          };
+
+          return this.checkoutService.submitCheckout(orderPayload);
+        }),
+        tap((res) => {
           if (res.success) {
             this.cartService.clearCart();
             localStorage.removeItem(LOCAL_STORAGE_KEYS.CART);
@@ -177,24 +187,26 @@ export class CheckoutFormComponent implements OnInit {
             this.uiState.showAlert('success', this.translationService.translate('CHECKOUT_SUCCESS_ORDER_PLACED'));
             this.router.navigate(['/orders']);
           }
-        },
-        error: (err: HttpErrorResponse) => {
+        }),
+        catchError((err: HttpErrorResponse | Error) => {
           let errorMsgKey = 'CHECKOUT_ERROR_GENERIC';
-          if (err.status === 0) {
-            errorMsgKey = 'CHECKOUT_ERROR_NETWORK';
-          } else if (err.status === 401) {
-            errorMsgKey = 'CHECKOUT_ERROR_UNAUTHORIZED';
-          } else if (err.status === 400 || err.status === 422) {
-            errorMsgKey = 'CHECKOUT_ERROR_VALIDATION';
+          if (err instanceof HttpErrorResponse) {
+            if (err.status === 0) {
+              errorMsgKey = 'CHECKOUT_ERROR_NETWORK';
+            } else if (err.status === 401) {
+              errorMsgKey = 'CHECKOUT_ERROR_UNAUTHORIZED';
+            } else if (err.status === 400 || err.status === 422) {
+              errorMsgKey = 'CHECKOUT_ERROR_VALIDATION';
+            }
           }
           this.uiState.showAlert('danger', this.translationService.translate(errorMsgKey));
-        }
-      });
-    } catch (err) {
-      this.submitting = false;
-      console.error('Error awaiting pending syncs before checkout:', err);
-      this.uiState.showAlert('danger', 'Error preparing cart checkout. Please try again.');
-    }
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.submitting = false;
+        })
+      );
+    });
   }
 
   onApplyCoupon(code: string): void {
