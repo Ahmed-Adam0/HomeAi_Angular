@@ -17,6 +17,11 @@ export const APP_ROUTES = {
   SEARCH: 'search',
 
   CART: 'cart',
+  CHECKOUT: 'checkout',
+  ADDRESSES: 'addresses',
+  FORGOT_PASSWORD: 'forgot-password',
+  VERIFY_OTP: 'verify-otp',
+  RESET_PASSWORD: 'reset-password',
 
   FAVORITES: 'favorites',
 
@@ -47,6 +52,11 @@ export const NAV_ROUTES = {
   SEARCH: '/search',
 
   CART: '/cart',
+  CHECKOUT: '/checkout',
+  ADDRESSES: '/addresses',
+  FORGOT_PASSWORD: '/auth/forgot-password',
+  VERIFY_OTP: '/auth/verify-otp',
+  RESET_PASSWORD: '/auth/reset-password',
 
   FAVORITES: '/favorites',
 

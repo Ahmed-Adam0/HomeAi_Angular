@@ -9,6 +9,10 @@ export const API_URLS = {
     REFRESH_TOKEN: 'auth/refresh-token',
     LOGOUT: 'auth/logout',
     ME: 'auth/me',
+    GOOGLE: 'auth/google',
+    FORGOT_PASSWORD: 'auth/forgot-password',
+    VERIFY_OTP: 'auth/verify-otp',
+    RESET_PASSWORD: 'auth/reset-password',
   },
   PRODUCTS: {
     LIST: 'Products',
