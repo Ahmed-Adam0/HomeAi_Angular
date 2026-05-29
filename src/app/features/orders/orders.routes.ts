@@ -6,13 +6,17 @@ export const ordersRoutes: Routes = [
   {
     path: APP_ROUTES.ORDERS,
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./pages/orders/orders.component').then((m) => m.Orders),
-  },
-  {
-    path: APP_ROUTES.ORDER_DETAILS,
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./pages/order-details/order-details.component').then((m) => m.OrderDetails),
-  },
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/orders/orders.component').then((m) => m.Orders),
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('./pages/order-details/order-details.component').then((m) => m.OrderDetails),
+      }
+    ]
+  }
 ];
