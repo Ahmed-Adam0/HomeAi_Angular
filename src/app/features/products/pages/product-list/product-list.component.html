@@ -165,11 +165,13 @@
             <div class="d-flex flex-column gap-2">
               <div class="form-check text-start d-flex align-items-center" *ngFor="let stars of [5,4,3,2,1]; let rIdx = index">
                 <input
-                  class="form-check-input rating-checkbox"
+                  class="form-check-input rating-checkbox cursor-pointer"
                   type="checkbox"
                   [id]="'rating-' + rIdx"
+                  [checked]="activeFilters.minRating === stars"
+                  (change)="toggleRatingFilter(stars)"
                 />
-                <label class="form-check-label font-xs text-dark d-flex align-items-center gap-1" [for]="'rating-' + rIdx">
+                <label class="form-check-label font-xs text-dark d-flex align-items-center gap-1 cursor-pointer" [for]="'rating-' + rIdx">
                   <span class="stars-gold d-flex gap-1">
                     <i *ngFor="let star of [1,2,3,4,5]" 
                        class="bi fs-8" 

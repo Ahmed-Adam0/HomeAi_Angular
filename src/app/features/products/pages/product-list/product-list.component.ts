@@ -2,7 +2,9 @@ import { Component, inject, OnInit, OnDestroy, signal, ElementRef, Renderer2, PL
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIf, NgFor, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, from, of, forkJoin, Observable } from 'rxjs';
+import { mergeMap, toArray, map, catchError } from 'rxjs/operators';
+import { ReviewsService } from '../../services/reviews.service';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../../categories/services/category.service';
 import { IProduct } from '../../interfaces/iproduct';
@@ -35,6 +37,7 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
 export class ProductList implements OnInit, OnDestroy, AfterViewInit {
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
+  private reviewsService = inject(ReviewsService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   readonly translationService = inject(TranslationService);
@@ -56,6 +59,7 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
     categoryId: '',
     minPrice: undefined,
     maxPrice: undefined,
+    minRating: undefined,
     sortBy: 'newest',
     page: 1,
     limit: 6
@@ -92,6 +96,9 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
 
       if (params['maxPrice']) this.activeFilters.maxPrice = parseFloat(params['maxPrice']);
       else this.activeFilters.maxPrice = undefined;
+
+      if (params['minRating']) this.activeFilters.minRating = parseInt(params['minRating']);
+      else this.activeFilters.minRating = undefined;
 
       this.loadCatalog();
     });
@@ -142,10 +149,9 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private applyClientSideFilter(): void {
+  private preFilterAndSortProducts(): IProduct[] {
     let filtered = [...this.allProductsFromApi];
     
-    // 1. Live Search keyword filtering (name, category, description, and workshop in En/Ar)
     if (this.activeFilters.query) {
       const q = this.activeFilters.query.toLowerCase().trim();
       filtered = filtered.filter(p => 
@@ -160,7 +166,6 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
       );
     }
     
-    // 2. Pricing Threshold Live Filtering
     if (this.activeFilters.minPrice !== undefined && this.activeFilters.minPrice !== null) {
       filtered = filtered.filter(p => p.price >= this.activeFilters.minPrice!);
     }
@@ -168,18 +173,15 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
       filtered = filtered.filter(p => p.price <= this.activeFilters.maxPrice!);
     }
     
-    // 3. Category Filter Live Filtering (fallback)
     if (this.activeFilters.categoryId) {
       filtered = filtered.filter(p => p.categoryId === Number(this.activeFilters.categoryId));
     }
     
-    // 4. Client-side Sorting
     if (this.activeFilters.sortBy === 'price_asc') {
       filtered.sort((a, b) => a.price - b.price);
     } else if (this.activeFilters.sortBy === 'price_desc') {
       filtered.sort((a, b) => b.price - a.price);
     } else {
-      // 'newest' sort option: sort by createdAt descending, fallback to id descending
       filtered.sort((a, b) => {
         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -187,21 +189,78 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
         return b.id - a.id;
       });
     }
-    
-    // Update total count with filtered list size
-    this.totalCount.set(filtered.length);
-    
-    // 5. Apply Client-Side Pagination Slicing
-    const totalPages = Math.ceil(filtered.length / this.activeFilters.limit) || 1;
-    if (this.activeFilters.page > totalPages) {
-      this.activeFilters.page = 1;
+
+    return filtered;
+  }
+
+  enrichProducts(products: IProduct[]): Observable<IProduct[]> {
+    const needsFetch = products.filter(p => p.averageRating === undefined);
+    if (needsFetch.length === 0) {
+      return of(products);
     }
-    
-    const startIndex = (this.activeFilters.page - 1) * this.activeFilters.limit;
-    const endIndex = startIndex + this.activeFilters.limit;
-    const paginatedProducts = filtered.slice(startIndex, endIndex);
-    
-    this.products.set(paginatedProducts);
+
+    return from(needsFetch).pipe(
+      mergeMap((p: IProduct) => this.reviewsService.getProductRating(p.id).pipe(
+        map(stats => {
+          p.averageRating = stats.averageRating;
+          p.totalReviews = stats.totalReviews;
+          return p;
+        }),
+        catchError(() => {
+          p.averageRating = 5.0;
+          p.totalReviews = 0;
+          return of(p);
+        })
+      ), 5),
+      toArray(),
+      map(() => products)
+    );
+  }
+
+  private applyClientSideFilter(): void {
+    const preFiltered = this.preFilterAndSortProducts();
+
+    if (this.activeFilters.minRating === undefined || this.activeFilters.minRating === null) {
+      this.totalCount.set(preFiltered.length);
+      
+      const totalPages = Math.ceil(preFiltered.length / this.activeFilters.limit) || 1;
+      if (this.activeFilters.page > totalPages) {
+        this.activeFilters.page = 1;
+      }
+      const startIndex = (this.activeFilters.page - 1) * this.activeFilters.limit;
+      const endIndex = startIndex + this.activeFilters.limit;
+      const paginatedProducts = preFiltered.slice(startIndex, endIndex);
+
+      this.enrichProducts(paginatedProducts).subscribe({
+        next: (enriched: IProduct[]) => {
+          this.products.set(enriched);
+        },
+        error: () => {
+          this.products.set(paginatedProducts);
+        }
+      });
+    } else {
+      this.enrichProducts(preFiltered).subscribe({
+        next: (enriched: IProduct[]) => {
+          const finalFiltered = enriched.filter((p: IProduct) => (p.averageRating ?? 0) >= this.activeFilters.minRating!);
+          this.totalCount.set(finalFiltered.length);
+
+          const totalPages = Math.ceil(finalFiltered.length / this.activeFilters.limit) || 1;
+          if (this.activeFilters.page > totalPages) {
+            this.activeFilters.page = 1;
+          }
+          const startIndex = (this.activeFilters.page - 1) * this.activeFilters.limit;
+          const endIndex = startIndex + this.activeFilters.limit;
+          const paginatedProducts = finalFiltered.slice(startIndex, endIndex);
+
+          this.products.set(paginatedProducts);
+        },
+        error: () => {
+          this.products.set([]);
+          this.totalCount.set(0);
+        }
+      });
+    }
   }
 
   calculateVirtualTotal(): void {
@@ -228,10 +287,21 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
       categoryId: '',
       minPrice: undefined,
       maxPrice: undefined,
+      minRating: undefined,
       sortBy: 'newest',
       page: 1,
       limit: 6
     };
+    this.updateRoute();
+  }
+
+  toggleRatingFilter(stars: number): void {
+    if (this.activeFilters.minRating === stars) {
+      this.activeFilters.minRating = undefined;
+    } else {
+      this.activeFilters.minRating = stars;
+    }
+    this.activeFilters.page = 1;
     this.updateRoute();
   }
 
@@ -254,7 +324,8 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
       sortBy: this.activeFilters.sortBy || null,
       page: this.activeFilters.page > 1 ? this.activeFilters.page : null,
       minPrice: this.activeFilters.minPrice || null,
-      maxPrice: this.activeFilters.maxPrice || null
+      maxPrice: this.activeFilters.maxPrice || null,
+      minRating: this.activeFilters.minRating || null
     };
 
     this.router.navigate([], {

@@ -1,5 +1,5 @@
 import { Component, Input, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IProduct } from '../../../features/products/interfaces/iproduct';
 import { CurrencyFormatPipe } from '../../pipes/currency-format.pipe';
@@ -10,11 +10,12 @@ import { FavoritesService } from '../../../features/favorites/services/favorites
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { LoadingSpinner } from '../loading-spinner/loading-spinner.component';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
+import { ReviewsService, IRatingStats } from '../../../features/products/services/reviews.service';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [RouterLink, CurrencyFormatPipe, TranslatePipe, LoadingSpinner],
+  imports: [NgIf, RouterLink, CurrencyFormatPipe, TranslatePipe, LoadingSpinner],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css',
 })
@@ -25,10 +26,12 @@ export class ProductCard implements OnInit {
   readonly cartService = inject(CartService);
   private favoritesService = inject(FavoritesService);
   private authService = inject(AuthService);
+  private reviewsService = inject(ReviewsService);
   private platformId = inject(PLATFORM_ID);
 
   readonly isFavorite = signal<boolean>(false);
   readonly isTogglingFav = signal<boolean>(false);
+  readonly ratingStats = signal<IRatingStats | null>(null);
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -36,6 +39,26 @@ export class ProductCard implements OnInit {
 
   ngOnInit(): void {
     this.syncFavoriteState();
+    this.loadRating();
+  }
+
+  private loadRating(): void {
+    if (this.product.averageRating !== undefined && this.product.totalReviews !== undefined) {
+      this.ratingStats.set({
+        averageRating: this.product.averageRating,
+        totalReviews: this.product.totalReviews
+      });
+      return;
+    }
+
+    this.reviewsService.getProductRating(this.product.id).subscribe({
+      next: (stats) => {
+        this.ratingStats.set(stats);
+      },
+      error: () => {
+        this.ratingStats.set({ averageRating: 5.0, totalReviews: 0 });
+      }
+    });
   }
 
   private syncFavoriteState(): void {

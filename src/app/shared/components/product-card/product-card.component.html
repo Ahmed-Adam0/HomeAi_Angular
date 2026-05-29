@@ -45,9 +45,38 @@
         </span>
       </div>
 
-      <h5 class="product-title fw-bold text-dark mb-3 transition-all fs-6" [routerLink]="['/products', product.id]">
+      <h5 class="product-title fw-bold text-dark mb-2 transition-all fs-6" [routerLink]="['/products', product.id]">
         {{ translationService.currentLang() === 'ar' ? product.nameAr : product.nameEn }}
       </h5>
+
+      <!-- Rating/New Badge Section -->
+      <div class="rating-stars-container d-flex align-items-center mb-3">
+        <ng-container *ngIf="ratingStats() && ratingStats()!.totalReviews > 0; else newBadge">
+          <span class="stars-gold d-flex gap-1">
+            @for (star of [1, 2, 3, 4, 5]; track star) {
+              <i
+                class="bi fs-8"
+                [class.bi-star-fill]="star <= ratingStats()!.averageRating"
+                [class.bi-star-half]="star - 0.5 <= ratingStats()!.averageRating && star > ratingStats()!.averageRating"
+                [class.bi-star]="star - 0.5 > ratingStats()!.averageRating"
+                [class.text-gold]="star - 0.5 <= ratingStats()!.averageRating"
+                [class.text-secondary-color]="star - 0.5 > ratingStats()!.averageRating"
+              ></i>
+            }
+          </span>
+          <span class="rating-value font-xxs fw-bold text-dark ms-1">
+            {{ ratingStats()!.averageRating.toFixed(1) }}
+          </span>
+          <span class="reviews-count font-xxs text-secondary ms-1">
+            ({{ ratingStats()!.totalReviews }})
+          </span>
+        </ng-container>
+        <ng-template #newBadge>
+          <span class="new-product-badge d-inline-flex align-items-center text-uppercase fw-extrabold letter-spacing-wide">
+            {{ translationService.currentLang() === 'ar' ? 'جديد' : 'New' }}
+          </span>
+        </ng-template>
+      </div>
     </div>
 
     <!-- Pricing and Action -->

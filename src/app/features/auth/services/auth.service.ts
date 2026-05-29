@@ -84,7 +84,7 @@ export class AuthService {
   }
 
   resetPassword(data: IResetPasswordRequest) {
-    return this.http.post(`${this.baseUrl}${API_URLS.RESET_PASSWORD}`, data);
+    return this.http.post(`${this.baseUrl}${API_URLS.AUTH.RESET_PASSWORD}`, data);
   }
 
   logout(): void {
@@ -120,7 +120,7 @@ export class AuthService {
 
   private decodeToken(token: string): AuthProfile {
     const fallbackUser: AuthProfile = {
-      id: 'fallback-user-id',
+      id: '',
       name: 'Alexander Wright',
       email: 'alexander@furnimind.ai',
       initials: 'AW',
@@ -134,11 +134,12 @@ export class AuthService {
       }
 
       const payload = JSON.parse(atob(parts[1]));
-      const id = payload['nameid'] ||
-                 payload['sub'] ||
-                 payload['id'] ||
-                 payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ||
-                 '';
+      const id =
+        payload['nameid'] ||
+        payload['sub'] ||
+        payload['id'] ||
+        payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ||
+        '';
       const email =
         payload['email'] ||
         payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ||
