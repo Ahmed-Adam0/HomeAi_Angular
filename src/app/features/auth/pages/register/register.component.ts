@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
 @Component({
@@ -147,7 +148,7 @@ export class Register {
         this.isLoading = false;
         this.successMessage = this.t().successMessage;
         setTimeout(() => {
-          this.router.navigate(['/login']);
+          this.router.navigate([NAV_ROUTES.LOGIN]);
         }, 2000);
       },
       error: (err) => {

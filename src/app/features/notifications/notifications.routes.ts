@@ -7,3 +7,4 @@ export const notificationsRoutes: Routes = [
       import('./pages/notification-center/notification-center.component').then((m) => m.NotificationCenterComponent),
   }
 ];
+

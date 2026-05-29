@@ -1,0 +1,38 @@
+.profile-page {
+  min-height: 100vh;
+  background-color: var(--fm-surface-bg);
+}
+
+.ai-activity-card {
+  background: linear-gradient(135deg, var(--fm-color-primary-50) 0%, rgba(255, 255, 255, 0.95) 100%);
+  border: 1px solid var(--fm-glass-border) !important;
+  box-shadow: var(--fm-shadow-lg) !important;
+  border-radius: var(--fm-radius-xl) !important;
+}
+
+.activity-icon-container {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--fm-border-medium);
+}
+
+.activity-stat-box {
+  border: 1px solid rgba(184, 147, 92, 0.08);
+  border-radius: var(--fm-radius-lg) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.activity-stat-box:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--fm-shadow-md) !important;
+  border-color: var(--fm-color-primary-300);
+}
+
+.activity-stat-value {
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.btn {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}

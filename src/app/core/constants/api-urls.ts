@@ -41,7 +41,7 @@ export const API_URLS = {
   },
   PROFILE: {
     GET: 'profile',
-    UPDATE: 'profile/update',
+    UPDATE: 'profile',
     CHANGE_PASSWORD: 'profile/change-password',
   }
 } as const;

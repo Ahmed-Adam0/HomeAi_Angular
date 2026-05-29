@@ -8,3 +8,4 @@ export const favoritesRoutes: Routes = [
       import('./pages/favorites/favorites.component').then((m) => m.Favorites),
   },
 ];
+
