@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { signal, WritableSignal } from '@angular/core';
 import { authGuard } from './auth.guard';
-import { LOCAL_STORAGE_KEYS, NAV_ROUTES } from '../constants';
-import { AuthRequiredService } from '../services/auth-required.service';
+import { NAV_ROUTES } from '../constants';
+import { AuthService } from '../../features/auth/services/auth.service';
 import { PLATFORM_ID } from '@angular/core';
 
 describe('authGuard', () => {
@@ -11,64 +11,76 @@ describe('authGuard', () => {
     TestBed.runInInjectionContext(() => authGuard(...guardParameters));
 
   let mockRouter: jasmine.SpyObj<Router>;
-  let mockAuthRequiredService: jasmine.SpyObj<AuthRequiredService>;
+  let authStateSignal: WritableSignal<boolean>;
+  let mockAuthService: { isAuthenticated: WritableSignal<boolean> };
 
   beforeEach(() => {
     mockRouter = jasmine.createSpyObj('Router', ['createUrlTree']);
     mockRouter.createUrlTree.and.returnValue({} as any);
 
-    mockAuthRequiredService = jasmine.createSpyObj('AuthRequiredService', ['requestAuthRequired']);
-    mockAuthRequiredService.requestAuthRequired.and.returnValue(of(false));
-
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: Router, useValue: mockRouter },
-        { provide: AuthRequiredService, useValue: mockAuthRequiredService },
-        { provide: PLATFORM_ID, useValue: 'browser' }
-      ]
-    });
-
-    localStorage.clear();
+    authStateSignal = signal<boolean>(false);
+    mockAuthService = {
+      isAuthenticated: authStateSignal
+    };
   });
 
-  afterEach(() => {
-    localStorage.clear();
-  });
-
-  it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
-  });
-
-  it('should allow navigation if token exists in localStorage', () => {
-    localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, 'test-token');
-
-    const result = executeGuard({} as any, {} as any);
-
-    expect(result).toBeTrue();
-  });
-
-  it('should ask for login confirmation if token does not exist', (done) => {
-    const result$ = executeGuard({} as any, { url: '/checkout' } as any) as any;
-
-    result$.subscribe((result: boolean | object) => {
-      expect(result).toBeFalse();
-      expect(mockAuthRequiredService.requestAuthRequired).toHaveBeenCalledWith('/checkout');
-      expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
-      done();
-    });
-  });
-
-  it('should redirect to login when confirmation is accepted', (done) => {
-    mockAuthRequiredService.requestAuthRequired.and.returnValue(of(true));
-
-    const result$ = executeGuard({} as any, { url: '/checkout' } as any) as any;
-
-    result$.subscribe((result: object) => {
-      expect(result).toBe(mockRouter.createUrlTree.calls.mostRecent().returnValue);
-      expect(mockRouter.createUrlTree).toHaveBeenCalledWith([NAV_ROUTES.LOGIN], {
-        queryParams: { returnUrl: '/checkout' }
+  describe('on Browser platform', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: Router, useValue: mockRouter },
+          { provide: AuthService, useValue: mockAuthService },
+          { provide: PLATFORM_ID, useValue: 'browser' }
+        ]
       });
-      done();
+    });
+
+    it('should be created', () => {
+      expect(executeGuard).toBeTruthy();
+    });
+
+    it('should allow navigation if user is authenticated', () => {
+      authStateSignal.set(true);
+
+      const result = executeGuard({} as any, { url: '/profile' } as any);
+
+      expect(result).toBeTrue();
+      expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
+    });
+
+    it('should immediately redirect to login with returnUrl if user is unauthenticated', () => {
+      authStateSignal.set(false);
+      const mockUrlTree = {} as any;
+      mockRouter.createUrlTree.and.returnValue(mockUrlTree);
+
+      const result = executeGuard({} as any, { url: '/profile' } as any);
+
+      expect(result).toBe(mockUrlTree);
+      expect(mockRouter.createUrlTree).toHaveBeenCalledWith([NAV_ROUTES.LOGIN], {
+        queryParams: { returnUrl: '/profile' }
+      });
+    });
+  });
+
+  describe('on Server platform (SSR/Prerendering)', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: Router, useValue: mockRouter },
+          { provide: AuthService, useValue: mockAuthService },
+          { provide: PLATFORM_ID, useValue: 'server' }
+        ]
+      });
+    });
+
+    it('should allow navigation on server side without checking auth', () => {
+      authStateSignal.set(false);
+
+      const result = executeGuard({} as any, { url: '/profile' } as any);
+
+      expect(result).toBeTrue();
+      expect(mockRouter.createUrlTree).not.toHaveBeenCalled();
     });
   });
 });
+
