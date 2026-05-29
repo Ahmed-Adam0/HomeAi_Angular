@@ -1,0 +1,11 @@
+@if (dialogState(); as dialog) {
+  <app-confirm-dialog
+    [visible]="dialog.visible"
+    [title]="dialog.title"
+    [message]="dialog.message"
+    [confirmText]="dialog.confirmText"
+    [cancelText]="dialog.cancelText"
+    (confirm)="onConfirm()"
+    (cancel)="onCancel()">
+  </app-confirm-dialog>
+}

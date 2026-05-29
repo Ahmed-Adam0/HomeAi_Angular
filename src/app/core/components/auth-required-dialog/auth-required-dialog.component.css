@@ -1,0 +1,4 @@
+/* Auth required dialog uses shared confirm dialog styles */
+:host {
+  display: contents;
+}

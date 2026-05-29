@@ -11,11 +11,13 @@
     <app-footer></app-footer>
   </footer>
 
+  <app-auth-required-dialog></app-auth-required-dialog>
+
   @if (uiState.activeAlert(); as alert) {
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100; max-width: 400px; width: 100%;">
-      <app-alert 
-        [type]="alert.type" 
-        [message]="alert.message" 
+      <app-alert
+        [type]="alert.type"
+        [message]="alert.message"
         (close)="uiState.dismissAlert()">
       </app-alert>
     </div>
