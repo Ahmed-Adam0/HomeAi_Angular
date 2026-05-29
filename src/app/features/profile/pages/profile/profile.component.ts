@@ -7,7 +7,6 @@ import { UiState } from '../../../../core/state/ui.state';
 import { AuthService } from '../../../auth/services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { ProfileSidebarCard } from '../../components/profile-sidebar-card/profile-sidebar-card.component';
-import { ProfileInfoCard } from '../../components/profile-info-card/profile-info-card.component';
 import { ProfileSettingsCard } from '../../components/profile-settings-card/profile-settings-card.component';
 import { EditableProfileForm } from '../../components/editable-profile-form/editable-profile-form.component';
 import { ChangePasswordForm } from '../../components/change-password-form/change-password-form.component';
@@ -15,6 +14,7 @@ import { IProfile } from '../../interfaces/iprofile';
 import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
 import { NAV_ROUTES } from '../../../../core/constants/app-routes';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-profile',
@@ -22,8 +22,8 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   imports: [
     CommonModule,
     RtlDirective,
+    TranslatePipe,
     ProfileSidebarCard,
-    ProfileInfoCard,
     ProfileSettingsCard,
     EditableProfileForm,
     ChangePasswordForm,
@@ -45,14 +45,28 @@ export class Profile {
 
   readonly profilePreview = computed(() => this.selectedImage() ?? this.profile()?.profileImage ?? null);
 
-  readonly actionItems: readonly { labelKey: string; route: string }[] = [
-    { labelKey: 'PROFILE.MY_ORDERS', route: NAV_ROUTES.ORDERS },
-    { labelKey: 'PROFILE.FAVORITES', route: NAV_ROUTES.FAVORITES },
-    { labelKey: 'PROFILE.ADDRESS', route: NAV_ROUTES.ADDRESSES },
-    { labelKey: 'PROFILE.NOTIFICATIONS', route: '/notifications' },
-    { labelKey: 'PROFILE.PRIVACY', route: '' },
-    { labelKey: 'PROFILE.DESIGN_PREFERENCES', route: '' },
-  ];
+  readonly actionItems = computed(() => {
+    const stats = this.profile()?.stats;
+    return [
+      { labelKey: 'PROFILE.MY_ORDERS', route: NAV_ROUTES.ORDERS, iconClass: 'bi-box-seam', badgeValue: 3, iconBg: 'rgba(13, 110, 253, 0.08)', iconColor: '#0d6efd' },
+      { labelKey: 'PROFILE.FAVORITES', route: NAV_ROUTES.FAVORITES, iconClass: 'bi-heart', badgeValue: 12, iconBg: 'rgba(220, 53, 69, 0.08)', iconColor: '#dc3545' },
+      { labelKey: 'PROFILE.AI_DESIGNS', route: NAV_ROUTES.AI_CHAT, iconClass: 'bi-sparkles', badgeValue: stats?.roomsDesigned ?? 5, iconBg: 'rgba(184, 147, 92, 0.1)', iconColor: '#b8935c' },
+      { labelKey: 'PROFILE.PAYMENT_METHODS', route: '', iconClass: 'bi-credit-card', iconBg: 'rgba(111, 66, 193, 0.08)', iconColor: '#6f42c1' },
+      { labelKey: 'PROFILE.ADDRESS', route: NAV_ROUTES.ADDRESSES, iconClass: 'bi-geo-alt', iconBg: 'rgba(25, 135, 84, 0.08)', iconColor: '#198754' },
+      { labelKey: 'PROFILE.NOTIFICATIONS', route: '/notifications', iconClass: 'bi-bell', iconBg: 'rgba(13, 202, 240, 0.08)', iconColor: '#0dcaf0' },
+      { labelKey: 'PROFILE.PRIVACY_SECURITY', route: '', iconClass: 'bi-shield-check', iconBg: 'rgba(108, 117, 125, 0.08)', iconColor: '#6c757d' },
+      { labelKey: 'PROFILE.DESIGN_PREFERENCES', route: '', iconClass: 'bi-palette', iconBg: 'rgba(253, 126, 20, 0.08)', iconColor: '#fd7e14' },
+    ];
+  });
+
+  readonly sidebarStats = computed(() => {
+    const stats = this.profile()?.stats;
+    return [
+      { labelKey: 'PROFILE.ORDERS_COUNT_LABEL', value: 12 },
+      { labelKey: 'PROFILE.DESIGNS_COUNT_LABEL', value: stats?.roomsDesigned ?? 5 },
+      { labelKey: 'PROFILE.SAVED_COUNT_LABEL', value: (stats?.recommendations ?? 12) * 2 },
+    ];
+  });
 
   readonly profileStats = computed(() => {
     const stats = this.profile()?.stats;

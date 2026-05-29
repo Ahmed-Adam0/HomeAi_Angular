@@ -1,4 +1,4 @@
-﻿{
+{
   "APP_TITLE": "FurniMind AI",
   "NAV_HOME": "Home",
   "NAV_PRODUCTS": "Products",
@@ -37,6 +37,14 @@
   "PROFILE.OLD_PASSWORD": "Old Password",
   "PROFILE.NEW_PASSWORD": "New Password",
   "PROFILE.CONFIRM_PASSWORD": "Confirm Password",
+  "PROFILE.ORDERS_COUNT_LABEL": "Orders",
+  "PROFILE.DESIGNS_COUNT_LABEL": "Designs",
+  "PROFILE.SAVED_COUNT_LABEL": "Saved",
+  "PROFILE.AI_DESIGNS": "AI Designs",
+  "PROFILE.PRIVACY_SECURITY": "Privacy & Security",
+  "PROFILE.AI_DESIGN_JOURNEY": "Your personalized design journey",
+  "PROFILE.AI_DESIGN_ACTIVITY": "AI Design Activity",
+  "PROFILE.AI_RECOMMENDATIONS": "AI Recommendations",
 
   "PROFILE.SAVE_CHANGES": "Save Changes",
   "PROFILE.PREFERRED_LANGUAGE": "Preferred Language",
