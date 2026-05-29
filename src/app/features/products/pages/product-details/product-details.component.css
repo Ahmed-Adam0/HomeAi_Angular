@@ -1,147 +1,548 @@
 .product-details-page {
-  background-color: var(--bg-white);
+  background-color: #FAF7F2 !important; /* Premium warm ivory catalog depth backdrop */
+  min-height: 100vh;
+}
+
+/* Breadcrumbs Logical flow styles */
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "→" !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 0.75rem !important;
+  color: #c5bba8 !important;
+  vertical-align: middle !important;
+  padding-right: 0.5rem !important;
+  padding-left: 0.5rem !important;
+}
+
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+  content: "←" !important;
+  direction: ltr !important;
+  display: inline-block !important;
 }
 
 .btn-back {
-  transition: var(--transition-smooth);
+  color: #111111 !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .btn-back:hover {
-  transform: translateX(-4px);
-  color: var(--secondary-color) !important;
+  color: #b8935c !important;
 }
 
-/* Gallery and Images */
+.btn-back:hover .back-arrow-icon {
+  transform: translateX(-4px);
+}
+
+[dir="rtl"] .btn-back:hover .back-arrow-icon {
+  transform: translateX(4px);
+}
+
+/* ==========================================================================
+   1. Dynamic Scroll Reveal Animation System
+   ========================================================================== */
+.scroll-reveal-item {
+  opacity: 0 !important;
+  transform: translateY(12px) !important;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform, opacity;
+}
+
+.scroll-reveal-item.reveal-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* ==========================================================================
+   2. Product Gallery & Thumbnails Display
+   ========================================================================== */
+.gallery-wrapper {
+  position: relative;
+}
+
 .active-image-container {
-  aspect-ratio: 4 / 3;
-  width: 100%;
+  aspect-ratio: 1 / 1 !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(184, 147, 92, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01) !important;
 }
 
 .active-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
+.active-image-container:hover .active-img {
+  transform: scale(1.03) rotate(0.01deg) !important; /* Premium slow cinematic zoom */
+}
+
+/* Luxury badging overlays */
+.ai-recommended-badge {
+  background-color: rgba(11, 15, 25, 0.75) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 0.68rem !important;
+  letter-spacing: 0.04em !important;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: 40px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+.text-gold {
+  color: #b8935c !important;
+}
+
+.discount-badge {
+  background-color: #e11d48 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 0.68rem !important;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.02em !important;
+  align-self: flex-start;
+}
+
+/* Absolute Actions Container */
+.favorite-btn, .share-btn {
+  width: 40px !important;
+  height: 40px !important;
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(184, 147, 92, 0.12) !important;
+  color: #8c857b !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.favorite-btn:hover, .share-btn:hover {
+  transform: scale(1.1) !important;
+  color: #b8935c !important;
+  border-color: rgba(184, 147, 92, 0.3) !important;
+  box-shadow: 0 6px 15px rgba(184, 147, 92, 0.12) !important;
+}
+
+.favorite-btn.is-fav {
+  color: #e11d48 !important;
+  background-color: rgba(225, 29, 72, 0.06) !important;
+  border-color: rgba(225, 29, 72, 0.15) !important;
+}
+
+.favorite-btn.is-fav svg {
+  fill: #e11d48 !important;
+  animation: heartPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes heartPop {
+  0% { transform: scale(0.7); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Gallery Thumbnails row */
 .thumbnail-container {
-  width: 80px;
-  height: 80px;
-  flex-shrink: 0;
-  background-color: #f1f5f9;
+  width: 80px !important;
+  height: 80px !important;
+  border: 1px solid rgba(184, 147, 92, 0.15) !important;
+  background-color: #ffffff !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .thumbnail-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: var(--transition-smooth);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.thumbnail-container:hover {
+  border-color: #b8935c !important;
 }
 
 .thumbnail-container:hover .thumbnail-img {
-  transform: scale(1.05);
+  transform: scale(1.05) !important;
 }
 
-/* Pricing box */
+.thumbnail-container.active-thumb {
+  border-color: #b8935c !important;
+  border-width: 2px !important;
+  box-shadow: 0 4px 12px rgba(184, 147, 92, 0.1) !important;
+}
+
+/* ==========================================================================
+   3. Product Core details
+   ========================================================================== */
+.text-brand-meta {
+  color: #b8935c !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+.product-main-title {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(1.8rem, 4vw, 2.5rem) !important;
+  color: #111111 !important;
+  line-height: 1.25 !important;
+}
+
+/* Ratings summary layout */
+.ratings-summary-row {
+  transition: color 0.3s ease;
+}
+
+.ratings-summary-row:hover {
+  color: #b8935c !important;
+}
+
+/* Premium Pricing display */
 .price-box {
-  background-color: #f8fafc !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(184, 147, 92, 0.08) !important;
+  border-radius: 12px !important;
 }
 
 .current-price-detail {
-  font-weight: 900;
+  font-weight: 700 !important;
+  font-family: var(--font-sans);
+  color: #111111 !important;
 }
 
 .old-price-detail {
-  color: #94a3b8 !important;
+  color: #8c857b !important;
 }
 
-/* Spatial AI Card widget */
+.discount-pill-text {
+  background-color: rgba(225, 29, 72, 0.08) !important;
+  color: #e11d48 !important;
+  border-radius: 4px !important;
+  letter-spacing: 0.04em !important;
+}
+
+.product-description {
+  font-size: 0.88rem !important;
+  color: #64748b !important;
+  line-height: 1.8 !important;
+}
+
+/* Spatial AI Recommendation Box */
 .ai-widget-card {
   background-color: #0b0f19 !important; /* Premium deep dark match */
-  border: 1px solid rgba(14, 165, 233, 0.25) !important;
-  box-shadow: 0 8px 30px rgba(14, 165, 233, 0.08) !important;
+  border: 1px solid rgba(14, 165, 233, 0.22) !important;
+  box-shadow: 0 10px 30px rgba(14, 165, 233, 0.06) !important;
+  transition: all 0.4s ease;
 }
 
 .text-info-glow {
   color: #38bdf8 !important;
-  font-weight: 800;
+  font-weight: 800 !important;
+  font-size: 0.88rem !important;
+  letter-spacing: 0.02em !important;
 }
 
 .text-secondary-color {
   color: #94a3b8 !important;
+  font-size: 0.78rem !important;
 }
 
-/* Premium Cyan/AI button */
-.btn-info-premium {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-  color: var(--bg-white);
-  border: none;
-  transition: var(--transition-smooth);
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+.widget-icon {
+  background-color: rgba(14, 165, 233, 0.12) !important;
+  transition: transform 0.4s ease;
 }
 
-.btn-info-premium:hover {
-  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
-  color: var(--bg-white) !important;
+.ai-widget-card:hover .widget-icon {
+  transform: scale(1.05) rotate(5deg);
 }
 
-.ar-badge-detail {
-  background-color: rgba(11, 15, 25, 0.8) !important;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-/* Custom quantity button posture */
+/* ==========================================================================
+   4. Add to Cart Tray & Features Row
+   ========================================================================== */
 .quantity-controller {
   height: 48px;
-  background-color: var(--bg-white);
-  border: 1.5px solid var(--primary-color) !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(184, 147, 92, 0.25) !important;
+  transition: border-color 0.3s ease;
+}
+
+.quantity-controller:focus-within {
+  border-color: #b8935c !important;
 }
 
 .quantity-controller .btn-link {
-  text-decoration: none;
-  font-weight: bold;
+  text-decoration: none !important;
+  font-weight: 700;
   font-size: 1.1rem;
+  color: #111111 !important;
 }
 
 .quantity-controller .btn-link:hover {
-  color: var(--secondary-color) !important;
+  color: #b8935c !important;
 }
 
-/* Focus outline helpers */
-.focus-none:focus {
-  outline: none !important;
-  box-shadow: none !important;
+.btn-premium {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+  border-radius: 40px !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* Colors choices button modifiers */
-.btn-outline-dark {
-  border-radius: var(--border-radius-sm);
-  border-color: #cbd5e1 !important;
-  color: var(--primary-color);
+.btn-premium:hover:not(:disabled) {
+  background-color: #b8935c !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(184, 147, 92, 0.25) !important;
 }
 
-.btn-outline-dark:hover {
-  background-color: var(--bg-light) !important;
-  color: var(--primary-color) !important;
-  border-color: var(--primary-color) !important;
+.btn-premium:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
-.btn-outline-dark.active {
-  background-color: var(--primary-color) !important;
-  color: var(--bg-white) !important;
-  border-color: var(--primary-color) !important;
+.btn-outline-premium {
+  background-color: transparent !important;
+  color: #111111 !important;
+  border: 1px solid rgba(184, 147, 92, 0.3) !important;
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.06em !important;
+  border-radius: 40px !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* Review Item adjustments */
-.review-item {
-  background-color: #f8fafc !important;
-  border: 1px solid rgba(0, 0, 0, 0.02) !important;
-  transition: var(--transition-smooth);
+.btn-outline-premium:hover {
+  border-color: #111111 !important;
+  background-color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02) !important;
 }
 
-.review-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04) !important;
+/* Features Metrics Columns */
+.features-metrics-row {
+  border-color: rgba(184, 147, 92, 0.08) !important;
+}
+
+.metric-card i {
+  color: #b8935c !important;
+  font-size: 1.2rem !important;
+  transition: transform 0.4s ease;
+}
+
+.metric-card:hover i {
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* ==========================================================================
+   5. Dynamic Tabs Custom layouts
+   ========================================================================== */
+.tabs-wrapper {
+  border-color: rgba(184, 147, 92, 0.08) !important;
+}
+
+.nav-tabs {
+  border-bottom: 1px solid rgba(184, 147, 92, 0.08) !important;
+}
+
+.nav-tabs .nav-link {
+  color: #8c857b !important;
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.08em !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+  padding: 1rem 1.5rem !important;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #111111 !important;
+}
+
+.nav-tabs .nav-link.active {
+  color: #b8935c !important;
+  border-bottom: 2px solid #b8935c !important;
+}
+
+.badge-count {
+  font-size: 0.72rem !important;
+  opacity: 0.8;
+}
+
+/* Tab panes animations */
+.tab-pane-fade {
+  animation: tabFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes tabFadeIn {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content {
+  padding-top: 1.5rem !important;
+}
+
+.tab-content h4 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+}
+
+/* Specifications tables styling */
+.table-responsive {
+  border-color: rgba(184, 147, 92, 0.08) !important;
+}
+
+.table {
+  margin-bottom: 0 !important;
+}
+
+.bg-light-ivory {
+  background-color: #FAF7F2 !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  border-right: 1px solid rgba(184, 147, 92, 0.05) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(184, 147, 92, 0.01) !important;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(184, 147, 92, 0.03) !important;
+}
+
+/* Reviews Panel styles */
+.rating-summary-card {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(184, 147, 92, 0.08) !important;
+}
+
+.product-rating-score {
+  font-family: var(--font-sans);
+  font-weight: 700 !important;
+  color: #111111 !important;
+}
+
+.progress-bar.bg-gold {
+  background-color: #b8935c !important;
+}
+
+/* Add review form */
+.add-review-section {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(184, 147, 92, 0.08) !important;
+}
+
+.form-control {
+  border: 1px solid rgba(184, 147, 92, 0.15) !important;
+  background-color: #FAF7F2 !important;
+  color: #111111 !important;
+  transition: all 0.4s ease !important;
+}
+
+.form-control:focus {
+  border-color: #b8935c !important;
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.1) !important;
+  background-color: #ffffff !important;
+}
+
+.btn-outline-premium {
+  border-color: rgba(184, 147, 92, 0.3) !important;
+  color: #b8935c !important;
+}
+
+.btn-outline-premium:hover {
+  background-color: #b8935c !important;
+  color: #ffffff !important;
+  border-color: #b8935c !important;
+}
+
+/* Empty Reviews State */
+.empty-reviews-state {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(184, 147, 92, 0.06) !important;
+}
+
+.empty-icon {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+/* ==========================================================================
+   6. Related Products Header Layout
+   ========================================================================== */
+.related-products-section {
+  border-color: rgba(184, 147, 92, 0.08) !important;
+}
+
+.PlayfairRelatedTitle {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700 !important;
+  font-size: 1.6rem !important;
+}
+
+/* ==========================================================================
+   7. Premium Arabic RTL Spacing balance overrides
+   ========================================================================== */
+[dir="rtl"] .product-details-page {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+[dir="rtl"] .text-start,
+[dir="rtl"] .tab-content,
+[dir="rtl"] .table,
+[dir="rtl"] .add-review-section,
+[dir="rtl"] .ratings-summary-row {
+  text-align: right !important;
+}
+
+[dir="rtl"] .btn-back .back-arrow-icon {
+  display: inline-block;
+  transform: rotate(180deg) !important;
+}
+
+[dir="rtl"] .btn-back:hover .back-arrow-icon {
+  transform: rotate(180deg) translateX(4px) !important;
+}
+
+[dir="rtl"] .absolute-badges-container {
+  left: auto !important;
+  right: 0 !important;
+}
+
+[dir="rtl"] .absolute-actions-container {
+  right: auto !important;
+  left: 0 !important;
+}
+
+/* Premium Review Submitted Confirmation Card */
+.review-submitted-card {
+  background: linear-gradient(135deg, #faf7f2 0%, #f5f0e8 100%) !important;
+  border: 1px solid rgba(184, 147, 92, 0.15) !important;
+  border-radius: 16px !important;
+}
+
+.submitted-icon-wrap svg {
+  color: #b8935c !important;
+  opacity: 0.9;
+}
+
+/* Inline Error Card (no alert() popup) */
+.review-error-card {
+  background-color: rgba(225, 29, 72, 0.04) !important;
+  border: 1px solid rgba(225, 29, 72, 0.12) !important;
+  border-radius: 10px !important;
+}
+
+.text-danger-soft {
+  color: #c0192f !important;
+  font-size: 0.78rem !important;
+  line-height: 1.6;
+}
+
+[dir="rtl"] .bg-light-ivory {
+  border-right: none !important;
+  border-left: 1px solid rgba(184, 147, 92, 0.05) !important;
 }

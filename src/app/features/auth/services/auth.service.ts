@@ -35,6 +35,7 @@ export class AuthService {
     if (!this.isAuthenticated()) return null;
 
     const fallbackUser = {
+      id: 'fallback-user-id',
       name: 'Alexander Wright',
       email: 'alexander@furnimind.ai',
       initials: 'AW',
@@ -48,6 +49,11 @@ export class AuthService {
           const parts = token.split('.');
           if (parts.length === 3) {
             const payload = JSON.parse(atob(parts[1]));
+            const id = payload['nameid'] ||
+                       payload['sub'] ||
+                       payload['id'] ||
+                       payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ||
+                       '';
             const email = payload['email'] ||
                           payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ||
                           fallbackUser.email;
@@ -63,6 +69,7 @@ export class AuthService {
               .toUpperCase() || 'FM';
 
             return {
+              id,
               name,
               email,
               initials,

@@ -1,96 +1,142 @@
 .categories-section {
   background-color: var(--bg-light) !important;
+  border-bottom: 1px solid rgba(184, 147, 92, 0.08) !important;
 }
 
-.letter-spacing-wide {
-  letter-spacing: 0.1em;
+.room-section-title {
+  font-family: 'Playfair Display', var(--font-serif), serif !important;
+  font-size: clamp(2rem, 4vw, 2.6rem) !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.room-section-subtitle {
+  color: #64748b !important;
+  font-size: clamp(0.9rem, 1.8vw, 1rem) !important;
+  max-width: 580px;
+  margin: 0 auto;
 }
 
 .category-card {
   aspect-ratio: 3 / 4;
   cursor: pointer;
-  background-color: #f1f5f9;
-  transition: var(--transition-smooth);
+  background-color: #f3f0ea;
+  border-radius: 24px !important; /* Premium softened corners */
+  overflow: hidden;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+/* Elegant luxury top light leak on hover */
+.category-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  z-index: 2;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
 }
 
 .category-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+  transform: translateY(-12px);
+  box-shadow: 0 25px 55px rgba(184, 147, 92, 0.12) !important; /* Soft warm glow outline shadow */
+}
+
+.category-card:hover::after {
+  opacity: 1;
 }
 
 .category-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .category-card:hover .category-img {
-  transform: scale(1.08);
+  transform: scale(1.05) rotate(0.01deg); /* Soft cinematic zoom */
 }
 
-/* Gradient dark overlay */
+/* Warm shifting dark/gold gradient overlay */
 .bg-gradient-dark {
-  background: linear-gradient(
-    to bottom,
-    rgba(15, 23, 42, 0.1) 0%,
-    rgba(15, 23, 42, 0.3) 50%,
-    rgba(15, 23, 42, 0.85) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(26, 21, 14, 0) 0%,
+      rgba(26, 21, 14, 0.25) 45%,
+      rgba(26, 21, 14, 0.85) 100%);
+  z-index: 1;
 }
 
 .card-overlay {
-  transition: var(--transition-smooth);
+  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .category-card:hover .card-overlay {
-  background: linear-gradient(
-    to bottom,
-    rgba(15, 23, 42, 0.1) 0%,
-    rgba(15, 23, 42, 0.4) 40%,
-    rgba(15, 23, 42, 0.95) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(26, 21, 14, 0) 0%,
+      rgba(184, 147, 92, 0.12) 40%, /* Subtle warm gold light leak on card base */
+      rgba(26, 21, 14, 0.95) 100%);
 }
 
-/* Meta text details */
+/* Meta text details slide reveals */
 .category-meta {
-  transform: translateY(12px);
-  transition: var(--transition-smooth);
+  transform: translateY(14px);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 3;
 }
 
 .category-card:hover .category-meta {
   transform: translateY(0);
 }
 
+.room-title {
+  font-family: 'Playfair Display', var(--font-serif), serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  color: #ffffff !important;
+}
+
+.room-count {
+  font-family: var(--font-sans);
+  color: rgba(250, 247, 242, 0.85) !important;
+}
+
 .category-meta p {
-  opacity: 0.7;
+  opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transition: var(--transition-smooth);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1), margin-top 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .category-card:hover .category-meta p {
   opacity: 1;
   max-height: 50px;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .font-xs {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
 }
 
-.truncate-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* RTL Layout supports */
+[dir="rtl"] .room-section-title {
+  font-family: 'Cairo', var(--font-serif), serif !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
 }
 
-.hover-btn:hover {
-  background-color: var(--primary-color) !important;
-  color: var(--bg-white) !important;
-  transform: translateY(-2px);
+[dir="rtl"] .room-section-subtitle,
+[dir="rtl"] .room-title,
+[dir="rtl"] .room-count {
+  font-family: 'Cairo', sans-serif !important;
 }
 
-.text-gold {
-  color: #b8935c !important;
+[dir="rtl"] .room-title {
+  font-weight: 700 !important;
 }

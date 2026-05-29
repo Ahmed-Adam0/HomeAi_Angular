@@ -1,0 +1,121 @@
+<section class="ai-feature-section py-5">
+  <div class="container py-4 py-lg-5">
+    <div class="row align-items-center g-5">
+      <!-- Left: Stacked Overlapping Mockup Composition -->
+      <div class="col-lg-6 position-relative order-2 order-lg-1 reveal-content">
+        <div class="mockup-composition-wrapper position-relative">
+          <!-- Background decorative golden-beige block -->
+          <div class="decor-block position-absolute rounded-5 bg-gold-tint opacity-10"></div>
+          
+          <!-- Image 1 (Behind): Empty room before design -->
+          <div class="before-image-container rounded-5 overflow-hidden shadow-md border border-white position-relative z-1">
+            <img src="/assets/images/ai_before.png" 
+                 [alt]="translate('HOME_AI_STEP1_TITLE', '1. Upload Your Room', '١. ارفع صورة لغرفتك')"
+                 class="w-100 h-100 object-fit-cover" />
+            <div class="image-label position-absolute top-0 start-0 m-3 px-3 py-1 rounded-pill bg-dark text-white font-xs fw-semibold">
+              Before
+            </div>
+          </div>
+
+          <!-- Image 2 (Foreground / overlapping): Beautiful furnished room after AI design -->
+          <div class="after-image-container rounded-5 overflow-hidden shadow-2xl border border-white border-opacity-40 position-absolute z-2">
+            <img src="/assets/images/ai_after.png" 
+                 [alt]="translate('HOME_AI_TITLE', 'Transform Any Room with AI-Powered Design', 'حوّل أي غرفة بلمسة واحدة من الذكاء الاصطناعي')"
+                 class="w-100 h-100 object-fit-cover hover-scale transition-all duration-1000" />
+            
+            <div class="image-label position-absolute top-0 start-0 m-3 px-3 py-1 rounded-pill bg-gold text-white font-xs fw-semibold">
+              {{ translate('HOME_HERO_AI_TAG', 'AI Generated Design', 'تصميم الذكاء الاصطناعي') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Editorial Steps & Explanations -->
+      <div class="col-lg-6 order-1 order-lg-2 text-dark text-start">
+        <div class="feature-text-content ps-lg-4">
+          <span class="badge badge-gold px-3 py-2 rounded-pill fw-bold mb-3 tracking-wide text-uppercase fs-7 d-inline-block">
+            {{ translate('HOME_AI_BADGE', '✨ How It Works', '✨ كيف يعمل') }}
+          </span>
+
+          <h2 class="display-5 fw-bold text-dark mb-3 editorial-heading reveal-title">
+            {{ translate('HOME_AI_TITLE', 'Transform Any Room with AI-Powered Design', 'حوّل أي غرفة بلمسة واحدة من الذكاء الاصطناعي') }}
+          </h2>
+
+          <p class="lead text-secondary-color fs-6 mb-5 editorial-description reveal-subtitle">
+            {{ translate('HOME_AI_SUBTITLE', 'Our advanced AI understands spatial relationships, lighting conditions, and design principles to create stunning, realistic interior designs tailored to your style.', 'يفهم نظام الذكاء الاصطناعي المتطور لدينا العلاقات المكانية وظروف الإضاءة وقواعد التصميم لإنشاء ديكورات داخلية مذهلة وواقعية مخصصة لأسلوبك.') }}
+          </p>
+
+          <!-- Steps Grid -->
+          <div class="steps-grid d-flex flex-column gap-4 mb-5 reveal-content">
+            <!-- Step 1 -->
+            <div class="step-card d-flex gap-3 reveal-stagger-1">
+              <div class="step-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-gold-light">
+                <i class="bi bi-cloud-arrow-up-fill text-gold fs-5"></i>
+              </div>
+              <div class="step-info">
+                <h5 class="fw-bold text-dark mb-1 fs-6">
+                  {{ translate('HOME_AI_STEP1_TITLE', '1. Upload Your Room', '١. ارفع صورة لغرفتك') }}
+                </h5>
+                <p class="font-xs text-secondary-color mb-0">
+                  {{ translate('HOME_AI_STEP1_DESC', 'Take a photo of your current room or upload an empty space you want to design.', 'التقط صورة لغرفتك الحالية أو ارفع صورة لمساحة فارغة ترغب في تصميمها.') }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card d-flex gap-3 reveal-stagger-2">
+              <div class="step-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-gold-light">
+                <i class="bi bi-sliders text-gold fs-5"></i>
+              </div>
+              <div class="step-info">
+                <h5 class="fw-bold text-dark mb-1 fs-6">
+                  {{ translate('HOME_AI_STEP2_TITLE', '2. Share Your Style', '٢. شاركنا ذوقك الخاص') }}
+                </h5>
+                <p class="font-xs text-secondary-color mb-0">
+                  {{ translate('HOME_AI_STEP2_DESC', 'Tell us your design preferences, budget, and functional requirements.', 'حدد تفضيلاتك في الديكور وميزانيتك والمتطلبات العملية التي تبحث عنها.') }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card d-flex gap-3 reveal-stagger-3">
+              <div class="step-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-gold-light">
+                <i class="bi bi-cpu-fill text-gold fs-5"></i>
+              </div>
+              <div class="step-info">
+                <h5 class="fw-bold text-dark mb-1 fs-6">
+                  {{ translate('HOME_AI_STEP3_TITLE', '3. AI Generates Design', '٣. ابتكار التصميم ذكياً') }}
+                </h5>
+                <p class="font-xs text-secondary-color mb-0">
+                  {{ translate('HOME_AI_STEP3_DESC', 'Our AI creates a personalized interior layout with compatible furniture and materials.', 'يقوم النظام بابتكار مخطط داخلي مخصص ومجهّز بقطع أثاث وخامات متطابقة.') }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card d-flex gap-3 reveal-stagger-4">
+              <div class="step-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-gold-light">
+                <i class="bi bi-bag-heart-fill text-gold fs-5"></i>
+              </div>
+              <div class="step-info">
+                <h5 class="fw-bold text-dark mb-1 fs-6">
+                  {{ translate('HOME_AI_STEP4_TITLE', '4. Shop the Look', '٤. تسوق المظهر الكامل') }}
+                </h5>
+                <p class="font-xs text-secondary-color mb-0">
+                  {{ translate('HOME_AI_STEP4_DESC', 'Purchase the exact furniture from your design with one click.', 'اشتري قطع الأثاث الدقيقة المستخدمة في التصميم بضغطة زر واحدة.') }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action CTA -->
+          <a routerLink="/ai-chat" class="btn btn-premium px-4 py-3 d-inline-flex align-items-center gap-2 reveal-content">
+            {{ translate('HOME_AI_CTA', 'Try AI Designer', 'جرب المصمم الذكي') }}
+            <i class="bi bi-arrow-right-short fs-5"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

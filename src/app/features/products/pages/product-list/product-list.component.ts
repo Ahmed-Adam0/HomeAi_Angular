@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, ElementRef, Renderer2, PLATFORM_ID, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ProductService } from '../../services/product.service';
@@ -32,12 +32,16 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })
-export class ProductList implements OnInit, OnDestroy {
+export class ProductList implements OnInit, OnDestroy, AfterViewInit {
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   readonly translationService = inject(TranslationService);
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
+  private platformId = inject(PLATFORM_ID);
+
 
   // States
   readonly products = signal<IProduct[]>([]);
@@ -259,4 +263,37 @@ export class ProductList implements OnInit, OnDestroy {
       queryParamsHandling: 'merge'
     });
   }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      // Delay observation to ensure browser layout coordinates and heights are fully calculated,
+      // preventing race conditions where observed items trigger immediately on initialization.
+      setTimeout(() => {
+        const revealItems = this.el.nativeElement.querySelectorAll(
+          '.filter-sidebar, .catalog-toolbar, .products-grid-row > div, app-pagination'
+        );
+
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px 0px -20% 0px', // Trigger precisely when approximately 20% of section enters viewport
+          threshold: 0.05
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.renderer.addClass(entry.target, 'reveal-visible');
+              observer.unobserve(entry.target); // Trigger exactly once
+            }
+          });
+        }, observerOptions);
+
+        revealItems.forEach((item: HTMLElement) => {
+          this.renderer.addClass(item, 'scroll-reveal-item');
+          observer.observe(item);
+        });
+      }, 100);
+    }
+  }
 }
+
