@@ -1,20 +1,25 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
 import { UiState } from '../../../../core/state/ui.state';
 import { AuthService } from '../../../auth/services/auth.service';
 import { ProfileService } from '../../services/profile.service';
+import { OrdersApiService } from '../../../orders/data-access/orders-api.service';
 import { ProfileSidebarCard } from '../../components/profile-sidebar-card/profile-sidebar-card.component';
 import { ProfileSettingsCard } from '../../components/profile-settings-card/profile-settings-card.component';
 import { EditableProfileForm } from '../../components/editable-profile-form/editable-profile-form.component';
 import { ChangePasswordForm } from '../../components/change-password-form/change-password-form.component';
+import { ProfileAddressList } from '../../components/profile-address-list/profile-address-list.component';
 import { IProfile } from '../../interfaces/iprofile';
 import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
+import { IAddressDto } from '../../interfaces/iaddress.dto';
 import { NAV_ROUTES } from '../../../../core/constants/app-routes';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -27,12 +32,14 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
     ProfileSettingsCard,
     EditableProfileForm,
     ChangePasswordForm,
+    ProfileAddressList,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
 export class Profile {
   private readonly profileService = inject(ProfileService);
+  private readonly ordersApiService = inject(OrdersApiService);
   private readonly translationService = inject(TranslationService);
   private readonly uiState = inject(UiState);
   private readonly authService = inject(AuthService);
@@ -43,14 +50,42 @@ export class Profile {
   readonly formSubmitting = signal(false);
   readonly selectedImage = signal<string | null>(null);
 
+  readonly ordersCount = signal<number>(0);
+  readonly favoritesCount = signal<number>(0);
+
   readonly profilePreview = computed(() => this.selectedImage() ?? this.profile()?.profileImage ?? null);
 
   readonly actionItems = computed(() => {
     const stats = this.profile()?.stats;
+    const orders = this.ordersCount();
+    const favorites = this.favoritesCount();
+    const designs = stats?.roomsDesigned ?? 0;
+
     return [
-      { labelKey: 'PROFILE.MY_ORDERS', route: NAV_ROUTES.ORDERS, iconClass: 'bi-box-seam', badgeValue: 3, iconBg: 'rgba(13, 110, 253, 0.08)', iconColor: '#0d6efd' },
-      { labelKey: 'PROFILE.FAVORITES', route: NAV_ROUTES.FAVORITES, iconClass: 'bi-heart', badgeValue: 12, iconBg: 'rgba(220, 53, 69, 0.08)', iconColor: '#dc3545' },
-      { labelKey: 'PROFILE.AI_DESIGNS', route: NAV_ROUTES.AI_CHAT, iconClass: 'bi-sparkles', badgeValue: stats?.roomsDesigned ?? 5, iconBg: 'rgba(184, 147, 92, 0.1)', iconColor: '#b8935c' },
+      { 
+        labelKey: 'PROFILE.MY_ORDERS', 
+        route: NAV_ROUTES.ORDERS, 
+        iconClass: 'bi-box-seam', 
+        badgeValue: orders > 0 ? orders : undefined, 
+        iconBg: 'rgba(13, 110, 253, 0.08)', 
+        iconColor: '#0d6efd' 
+      },
+      { 
+        labelKey: 'PROFILE.FAVORITES', 
+        route: NAV_ROUTES.FAVORITES, 
+        iconClass: 'bi-heart', 
+        badgeValue: favorites > 0 ? favorites : undefined, 
+        iconBg: 'rgba(220, 53, 69, 0.08)', 
+        iconColor: '#dc3545' 
+      },
+      { 
+        labelKey: 'PROFILE.AI_DESIGNS', 
+        route: NAV_ROUTES.AI_CHAT, 
+        iconClass: 'bi-sparkles', 
+        badgeValue: designs > 0 ? designs : undefined, 
+        iconBg: 'rgba(184, 147, 92, 0.1)', 
+        iconColor: '#b8935c' 
+      },
       { labelKey: 'PROFILE.PAYMENT_METHODS', route: '', iconClass: 'bi-credit-card', iconBg: 'rgba(111, 66, 193, 0.08)', iconColor: '#6f42c1' },
       { labelKey: 'PROFILE.ADDRESS', route: NAV_ROUTES.ADDRESSES, iconClass: 'bi-geo-alt', iconBg: 'rgba(25, 135, 84, 0.08)', iconColor: '#198754' },
       { labelKey: 'PROFILE.NOTIFICATIONS', route: '/notifications', iconClass: 'bi-bell', iconBg: 'rgba(13, 202, 240, 0.08)', iconColor: '#0dcaf0' },
@@ -61,10 +96,12 @@ export class Profile {
 
   readonly sidebarStats = computed(() => {
     const stats = this.profile()?.stats;
+    const orders = this.ordersCount();
+    const favorites = this.favoritesCount();
     return [
-      { labelKey: 'PROFILE.ORDERS_COUNT_LABEL', value: 12 },
-      { labelKey: 'PROFILE.DESIGNS_COUNT_LABEL', value: stats?.roomsDesigned ?? 5 },
-      { labelKey: 'PROFILE.SAVED_COUNT_LABEL', value: (stats?.recommendations ?? 12) * 2 },
+      { labelKey: 'PROFILE.ORDERS_COUNT_LABEL', value: orders },
+      { labelKey: 'PROFILE.DESIGNS_COUNT_LABEL', value: stats?.roomsDesigned ?? 0 },
+      { labelKey: 'PROFILE.SAVED_COUNT_LABEL', value: favorites },
     ];
   });
 
@@ -89,17 +126,69 @@ export class Profile {
       this.profile.set({
         ...profile,
         membership: profile.membership ?? 'Premium Member',
-        stats: profile.stats ?? {
-          roomsDesigned: 14,
-          productsViewed: 92,
-          recommendations: 18,
-          stylesExplored: 6,
-        },
+        stats: profile.stats || undefined,
       });
+
+      this.loadFavoritesCount();
+
+      // Fetch real orders count from API
+      try {
+        const orders = await firstValueFrom(this.ordersApiService.getMyOrders());
+        this.ordersCount.set(orders ? orders.length : 0);
+      } catch {
+        this.ordersCount.set(0);
+      }
     } catch (error) {
-      this.uiState.showAlert('danger', this.translationService.translate('PROFILE.PROFILE_LOAD_ERROR'));
+      if (!environment.production) {
+        console.error('Error loading profile:', error);
+      }
+
+      let errorMessage = this.translationService.translate('PROFILE.PROFILE_LOAD_ERROR');
+      if (error instanceof HttpErrorResponse) {
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.error?.errors) {
+          const validationErrors = error.error.errors;
+          const messages: string[] = [];
+          for (const key in validationErrors) {
+            if (validationErrors.hasOwnProperty(key)) {
+              const fieldErrors = validationErrors[key];
+              if (Array.isArray(fieldErrors)) {
+                messages.push(...fieldErrors);
+              } else {
+                messages.push(String(fieldErrors));
+              }
+            }
+          }
+          if (messages.length > 0) {
+            errorMessage = messages.join(' ');
+          }
+        }
+      }
+      this.uiState.showAlert('danger', errorMessage);
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  private loadFavoritesCount(): void {
+    try {
+      const raw = localStorage.getItem('furniture_favorites_list');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          this.favoritesCount.set(parsed.length);
+        } else if (parsed && typeof parsed === 'object') {
+          const items = parsed.items || [];
+          this.favoritesCount.set(items.length);
+        } else {
+          this.favoritesCount.set(0);
+        }
+      } else {
+        this.favoritesCount.set(0);
+      }
+    } catch {
+      this.favoritesCount.set(0);
     }
   }
 
@@ -124,7 +213,7 @@ export class Profile {
       const profileUpdate = {
         ...updated,
         membership: this.profile()?.membership ?? 'Premium Member',
-        stats: this.profile()?.stats ?? this.profile()?.stats,
+        stats: this.profile()?.stats,
       } as IProfile;
 
       this.profile.set(profileUpdate);
@@ -136,7 +225,91 @@ export class Profile {
 
       this.uiState.showAlert('success', this.translationService.translate('PROFILE.SAVE_CHANGES'));
     } catch (error) {
-      this.uiState.showAlert('danger', this.translationService.translate('PROFILE.PROFILE_UPDATE_ERROR'));
+      if (!environment.production) {
+        console.error('Error saving profile:', error);
+      }
+
+      let errorMessage = this.translationService.translate('PROFILE.PROFILE_UPDATE_ERROR');
+      if (error instanceof HttpErrorResponse) {
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.error?.errors) {
+          const validationErrors = error.error.errors;
+          const messages: string[] = [];
+          for (const key in validationErrors) {
+            if (validationErrors.hasOwnProperty(key)) {
+              const fieldErrors = validationErrors[key];
+              if (Array.isArray(fieldErrors)) {
+                messages.push(...fieldErrors);
+              } else {
+                messages.push(String(fieldErrors));
+              }
+            }
+          }
+          if (messages.length > 0) {
+            errorMessage = messages.join(' ');
+          }
+        }
+      }
+      this.uiState.showAlert('danger', errorMessage);
+    } finally {
+      this.formSubmitting.set(false);
+    }
+  }
+
+  async handleUpdateAddresses(addresses: IAddressDto[]): Promise<void> {
+    if (!this.profile()) {
+      return;
+    }
+
+    this.formSubmitting.set(true);
+    const currentProfile = this.profile()!;
+    const requestPayload: IUpdateProfileDto = {
+      fullName: currentProfile.fullName,
+      userName: currentProfile.userName ?? null,
+      email: currentProfile.email ?? null,
+      phoneNumber: currentProfile.phoneNumber ?? null,
+      preferredLanguage: currentProfile.preferredLanguage || 'en',
+      profileImage: currentProfile.profileImage ?? null,
+      addresses: addresses,
+    };
+
+    try {
+      const updated = await firstValueFrom(this.profileService.updateProfile(requestPayload));
+      this.profile.set({
+        ...updated,
+        membership: this.profile()?.membership ?? 'Premium Member',
+        stats: this.profile()?.stats,
+      });
+      this.uiState.showAlert('success', this.translationService.translate('PROFILE.ADDRESSES_UPDATED'));
+    } catch (error) {
+      if (!environment.production) {
+        console.error('Error updating addresses:', error);
+      }
+
+      let errorMessage = this.translationService.translate('PROFILE.ADDRESSES_UPDATE_ERROR');
+      if (error instanceof HttpErrorResponse) {
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.error?.errors) {
+          const validationErrors = error.error.errors;
+          const messages: string[] = [];
+          for (const key in validationErrors) {
+            if (validationErrors.hasOwnProperty(key)) {
+              const fieldErrors = validationErrors[key];
+              if (Array.isArray(fieldErrors)) {
+                messages.push(...fieldErrors);
+              } else {
+                messages.push(String(fieldErrors));
+              }
+            }
+          }
+          if (messages.length > 0) {
+            errorMessage = messages.join(' ');
+          }
+        }
+      }
+      this.uiState.showAlert('danger', errorMessage);
     } finally {
       this.formSubmitting.set(false);
     }

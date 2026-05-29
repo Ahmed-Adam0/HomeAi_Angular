@@ -37,6 +37,15 @@
           </app-profile-settings-card>
         </div>
 
+        <!-- Address List Card -->
+        <div class="col-12">
+          <app-profile-address-list
+            [addresses]="profile()?.addresses ?? []"
+            [submitting]="formSubmitting()"
+            (updateAddresses)="handleUpdateAddresses($event)">
+          </app-profile-address-list>
+        </div>
+
         <!-- AI Design Activity Card (Focal Point) -->
         <div class="col-12">
           <div class="ai-activity-card card border-0 rounded-4 overflow-hidden shadow-sm">
