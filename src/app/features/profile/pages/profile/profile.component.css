@@ -1,0 +1,22 @@
+.profile-page {
+  min-height: 100vh;
+}
+
+@media (max-width: 991.98px) {
+  .profile-page {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+}
+
+.card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}

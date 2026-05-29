@@ -3,7 +3,8 @@ import { TranslationService } from '../i18n/translation.service';
 
 @Pipe({
   name: 'translate',
-  pure: false
+  pure: false,
+  standalone: true
 })
 export class TranslatePipe implements PipeTransform {
   private translationService = inject(TranslationService);

@@ -1,20 +1,19 @@
-import { IAddressBookEntry } from './iaddress-book';
-
-export interface IUserPreferences {
-  theme: 'light' | 'dark' | 'system';
-  marketingEmails: boolean;
-  orderUpdates: boolean;
-  recommendations: boolean;
-}
+import { IAddressDto } from './iaddress.dto';
 
 export interface IProfile {
   userId: string;
-  firstName: string;
-  lastName: string;
+  userName?: string | null;
+  fullName: string;
   email: string;
-  phoneNumber?: string;
-  avatarUrl?: string;
-  addresses: IAddressBookEntry[];
-  preferences: IUserPreferences;
-  registeredAt: string;
+  phoneNumber?: string | null;
+  profileImage?: string | null;
+  preferredLanguage?: 'en' | 'ar';
+  membership?: string;
+  addresses: IAddressDto[];
+  stats?: {
+    roomsDesigned?: number;
+    productsViewed?: number;
+    recommendations?: number;
+    stylesExplored?: number;
+  };
 }

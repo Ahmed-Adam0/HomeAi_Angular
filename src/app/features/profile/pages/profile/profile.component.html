@@ -1,1 +1,41 @@
-<p>profile works!</p>
+<main class="profile-page container py-4" appRtl>
+  <div class="row gy-4">
+    <section class="col-12 col-xl-4">
+      <app-profile-sidebar-card
+        [profile]="profile()"
+        [avatarPreview]="profilePreview()"
+        [stats]="profileStats()"
+        (logout)="onLogout()"
+        (createAiDesign)="onCreateAiDesign()"
+        (fileSelected)="handleImageSelected($event)">
+      </app-profile-sidebar-card>
+    </section>
+
+    <section class="col-12 col-xl-8">
+      <div class="row g-4">
+        <div class="col-12">
+          <app-profile-info-card [profile]="profile()"></app-profile-info-card>
+        </div>
+
+        <div class="col-12">
+          <app-editable-profile-form
+            [profile]="profile()"
+            [submitting]="formSubmitting()"
+            (saveProfile)="handleSaveProfile($event)">
+          </app-editable-profile-form>
+        </div>
+
+        <div class="col-12">
+          <app-profile-settings-card
+            [actions]="actionItems"
+            (selectAction)="handleAction($event)">
+          </app-profile-settings-card>
+        </div>
+
+        <div class="col-12">
+          <app-change-password-form></app-change-password-form>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
