@@ -16,6 +16,11 @@ export const authRoutes: Routes = [
       import('./pages/register/register.component').then((m) => m.Register),
   },
   {
+    path: APP_ROUTES.GOOGLE_SUCCESS,
+    loadComponent: () =>
+      import('./pages/google-success/google-success.component').then((m) => m.GoogleSuccess),
+  },
+  {
     path: APP_ROUTES.FORGOT_PASSWORD,
     loadComponent: () =>
       import('./pages/forgot-password/forgot-password.component').then((m) => m.ForgotPassword),
