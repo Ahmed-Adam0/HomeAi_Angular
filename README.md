@@ -5,6 +5,19 @@ This documentation provides an in-depth analysis and onboarding guide for the en
 
 ---
 
+## 👥 Meet The Full Stack Team
+
+| Name | Role | GitHub Profile |
+| :--- | :--- | :--- |
+| **Ahmed Adam** | Full Stack  Lead | [@Ahmed-Adam0](https://github.com/Ahmed-Adam0) |
+| **Saleh** | Full Stack  Developer | [@salehmohamed99](https://github.com/salehmohamed99) |
+| **Sultan** | Full Stack  Developer | [@SultanBashier](https://github.com/SultanBashier) |
+| **Mayar** | Full Stack  Developer |   [@may20030](https://github.com/may20030) |
+| **Ashraf** | Full Stack Developer | [@MohamedAshraf144](https://github.com/MohamedAshraf144)|
+| **Ayat** | Full Stack  Developer |  [@ayatahmed30](https://github.com/ayatahmed30) |
+
+---
+
 ## 1. Project Overview
 
 ### Project Purpose & Business Idea
