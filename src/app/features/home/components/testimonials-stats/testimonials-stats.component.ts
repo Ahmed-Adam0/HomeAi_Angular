@@ -1,16 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
 @Component({
-  selector: 'app-hero',
+  selector: 'app-testimonials-stats',
   standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: './hero.component.html',
-  styleUrl: './hero.component.css'
+  imports: [CommonModule],
+  templateUrl: './testimonials-stats.component.html',
+  styleUrl: './testimonials-stats.component.css'
 })
-export class HeroComponent {
+export class TestimonialsStatsComponent {
   readonly translationService = inject(TranslationService);
 
   /**

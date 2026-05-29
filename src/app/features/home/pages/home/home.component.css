@@ -1,0 +1,344 @@
+/* Scoped Premium Visual Overrides for Homepage Components */
+
+/* Cinematic Scroll-Reveal Transition System */
+:host ::ng-deep .scroll-reveal-item {
+  opacity: 0 !important;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: opacity;
+}
+
+:host ::ng-deep .scroll-reveal-item.reveal-visible {
+  opacity: 1 !important;
+}
+
+/* Staggered Children Initial States with minimal translation offsets */
+:host ::ng-deep .scroll-reveal-item .reveal-title,
+:host ::ng-deep .scroll-reveal-item .reveal-subtitle,
+:host ::ng-deep .scroll-reveal-item .reveal-content,
+:host ::ng-deep .scroll-reveal-item [class*="reveal-stagger-"] {
+  opacity: 0 !important;
+  transform: translateY(12px) !important;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform, opacity;
+}
+
+/* Specific content and index staggering delays */
+:host ::ng-deep .scroll-reveal-item .reveal-subtitle {
+  transition-delay: 0.12s !important;
+}
+
+:host ::ng-deep .scroll-reveal-item .reveal-content {
+  transition-delay: 0.24s !important;
+}
+
+:host ::ng-deep .scroll-reveal-item .reveal-stagger-1 { transition-delay: 0.15s !important; }
+:host ::ng-deep .scroll-reveal-item .reveal-stagger-2 { transition-delay: 0.25s !important; }
+:host ::ng-deep .scroll-reveal-item .reveal-stagger-3 { transition-delay: 0.35s !important; }
+:host ::ng-deep .scroll-reveal-item .reveal-stagger-4 { transition-delay: 0.45s !important; }
+
+/* Dynamic Featured Products Grid nth-child staggers */
+:host ::ng-deep .scroll-reveal-item .featured-section .row.g-4 > div {
+  opacity: 0 !important;
+  transform: translateY(12px) !important;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform, opacity;
+}
+
+:host ::ng-deep .scroll-reveal-item .featured-section .row.g-4 > div:nth-child(1) { transition-delay: 0.15s !important; }
+:host ::ng-deep .scroll-reveal-item .featured-section .row.g-4 > div:nth-child(2) { transition-delay: 0.25s !important; }
+:host ::ng-deep .scroll-reveal-item .featured-section .row.g-4 > div:nth-child(3) { transition-delay: 0.35s !important; }
+:host ::ng-deep .scroll-reveal-item .featured-section .row.g-4 > div:nth-child(4) { transition-delay: 0.45s !important; }
+
+/* Dynamic Featured Products Header and Button staggers */
+:host ::ng-deep .scroll-reveal-item .featured-section .row.mb-5 span.text-gold,
+:host ::ng-deep .scroll-reveal-item .featured-section .row.mb-5 h2,
+:host ::ng-deep .scroll-reveal-item .featured-section .row.mb-5 a.btn-premium {
+  opacity: 0 !important;
+  transform: translateY(12px) !important;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform, opacity;
+}
+
+:host ::ng-deep .scroll-reveal-item .featured-section .row.mb-5 span.text-gold {
+  transition-delay: 0.05s !important;
+}
+
+:host ::ng-deep .scroll-reveal-item .featured-section .row.mb-5 h2 {
+  transition-delay: 0.15s !important;
+}
+
+:host ::ng-deep .scroll-reveal-item .featured-section .row.mb-5 a.btn-premium {
+  transition-delay: 0.25s !important;
+}
+
+/* Active Reveal States */
+:host ::ng-deep .scroll-reveal-item.reveal-visible .reveal-title,
+:host ::ng-deep .scroll-reveal-item.reveal-visible .reveal-subtitle,
+:host ::ng-deep .scroll-reveal-item.reveal-visible .reveal-content,
+:host ::ng-deep .scroll-reveal-item.reveal-visible [class*="reveal-stagger-"],
+:host ::ng-deep .scroll-reveal-item.reveal-visible .featured-section .row.g-4 > div,
+:host ::ng-deep .scroll-reveal-item.reveal-visible .featured-section .row.mb-5 span.text-gold,
+:host ::ng-deep .scroll-reveal-item.reveal-visible .featured-section .row.mb-5 h2,
+:host ::ng-deep .scroll-reveal-item.reveal-visible .featured-section .row.mb-5 a.btn-premium {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Scoped override for the featured products section */
+
+:host ::ng-deep .featured-section {
+  background-color: #FAF7F2 !important; /* Premium Warm Ivory Background */
+  border-top: 1px solid rgba(184, 147, 92, 0.08) !important;
+  border-bottom: 1px solid rgba(184, 147, 92, 0.08) !important;
+  padding-top: 5.5rem !important;
+  padding-bottom: 5.5rem !important;
+}
+
+/* Scoped layout alignment for featured section headers */
+:host ::ng-deep .featured-section .row.mb-5 {
+  margin-bottom: 3.5rem !important;
+}
+
+:host ::ng-deep .featured-section h2 {
+  font-family: 'Playfair Display', var(--font-serif), serif !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  font-size: 2.5rem !important;
+  letter-spacing: -0.02em !important;
+}
+
+:host ::ng-deep .featured-section .text-gold {
+  color: #b8935c !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Scoped Upgrade for Homepage Product Cards */
+:host ::ng-deep .featured-section .product-card {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(184, 147, 92, 0.08) !important;
+  border-radius: 24px !important; /* Premium softened corner cards */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01) !important;
+  overflow: hidden !important;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Luxury card elevations & shadows on hover */
+:host ::ng-deep .featured-section .product-card:hover {
+  transform: translateY(-10px) !important;
+  box-shadow: 0 25px 50px rgba(184, 147, 92, 0.1) !important; /* Warm gold-accented drop shadow */
+  border-color: rgba(184, 147, 92, 0.25) !important;
+}
+
+/* Image framing & slow zoom transition */
+:host ::ng-deep .featured-section .product-card .image-wrapper {
+  aspect-ratio: 1 / 1 !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background-color: #faf8f5 !important;
+  border-radius: 23px 23px 0 0 !important;
+  flex-shrink: 0 !important;
+  cursor: pointer;
+}
+
+:host ::ng-deep .featured-section .product-card .product-img {
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+:host ::ng-deep .featured-section .product-card:hover .product-img {
+  transform: scale(1.04) rotate(0.01deg) !important; /* Subtle premium zoom */
+}
+
+/* Quick View Overlay cinematic reveal */
+:host ::ng-deep .featured-section .product-card .quick-view-overlay {
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.6s ease !important;
+  background-color: rgba(17, 17, 17, 0.25) !important;
+}
+
+:host ::ng-deep .featured-section .product-card:hover .quick-view-overlay {
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .featured-section .product-card .quick-view-overlay .btn-premium {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #111111 !important;
+  border: none !important;
+  font-weight: 700 !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.06em !important;
+  border-radius: 40px !important;
+  padding: 0.7rem 1.6rem !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+:host ::ng-deep .featured-section .product-card .quick-view-overlay .btn-premium:hover {
+  background-color: #b8935c !important;
+  color: #ffffff !important;
+  transform: scale(1.05) translateY(-1px) !important;
+}
+
+/* Card details and content spacing */
+:host ::ng-deep .featured-section .product-card .card-body {
+  padding: 1.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  text-align: start !important;
+}
+
+/* Brand label */
+:host ::ng-deep .featured-section .product-card .product-brand {
+  color: #b8935c !important; /* Gold label brand */
+  font-weight: 700 !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+:host ::ng-deep .featured-section .product-card .product-category {
+  color: #8c8c8c !important;
+  font-size: 0.7rem !important;
+}
+
+/* Product title typography and visual hierarchy */
+:host ::ng-deep .featured-section .product-card .product-title {
+  font-family: 'Playfair Display', var(--font-serif), serif !important;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+  color: #111111 !important;
+  margin-bottom: 0.5rem !important;
+  line-height: 1.4 !important;
+  cursor: pointer;
+  transition: color 0.4s ease !important;
+}
+
+:host ::ng-deep .featured-section .product-card .product-title:hover {
+  color: #b8935c !important;
+}
+
+/* Divider border above price */
+:host ::ng-deep .featured-section .product-card .border-top {
+  border-color: rgba(184, 147, 92, 0.08) !important;
+  padding-top: 1rem !important;
+}
+
+/* Price & ratings formatting */
+:host ::ng-deep .featured-section .product-card .current-price {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  color: #111111 !important;
+}
+
+/* Favorite/Wishlist Button Overlay */
+:host ::ng-deep .featured-section .product-card .favorite-btn {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(184, 147, 92, 0.12) !important;
+  color: #8c857b !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+:host ::ng-deep .featured-section .product-card .favorite-btn:hover {
+  transform: scale(1.1) !important;
+  color: #b8935c !important;
+  border-color: rgba(184, 147, 92, 0.3) !important;
+  box-shadow: 0 6px 15px rgba(184, 147, 92, 0.12) !important;
+}
+
+/* Active favorite heart scale pop & crimson fill */
+:host ::ng-deep .featured-section .product-card .favorite-btn.is-fav {
+  color: #e11d48 !important;
+  background-color: rgba(225, 29, 72, 0.06) !important;
+  border-color: rgba(225, 29, 72, 0.15) !important;
+}
+
+:host ::ng-deep .featured-section .product-card .favorite-btn.is-fav svg {
+  fill: #e11d48 !important;
+  animation: heartPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes heartPop {
+  0% { transform: scale(0.7); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Add to Cart button glowing and rotate hover overrides */
+:host ::ng-deep .featured-section .product-card .add-to-cart-btn {
+  background-color: #111111 !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
+}
+
+:host ::ng-deep .featured-section .product-card .add-to-cart-btn:hover {
+  background-color: #b8935c !important;
+  transform: scale(1.1) rotate(15deg) !important;
+  box-shadow: 0 6px 15px rgba(184, 147, 92, 0.25) !important;
+}
+
+/* "Shop Full Catalog" header action button */
+:host ::ng-deep .featured-section .btn-premium {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border: 1px solid #111111 !important;
+  border-radius: 40px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.82rem !important;
+  padding: 0.85rem 2rem !important;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+:host ::ng-deep .featured-section .btn-premium:hover {
+  background-color: #b8935c !important;
+  border-color: #b8935c !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(184, 147, 92, 0.15) !important;
+}
+
+/* RTL Support overrides for product card properties */
+[dir="rtl"] :host ::ng-deep .featured-section h2 {
+  font-family: 'Cairo', var(--font-serif), serif !important;
+  font-weight: 800 !important;
+  line-height: 1.4 !important;
+}
+
+[dir="rtl"] :host ::ng-deep .featured-section .text-gold,
+[dir="rtl"] :host ::ng-deep .featured-section .btn-premium,
+[dir="rtl"] :host ::ng-deep .featured-section .product-card .product-brand,
+[dir="rtl"] :host ::ng-deep .featured-section .product-card .product-category,
+[dir="rtl"] :host ::ng-deep .featured-section .product-card .product-title,
+[dir="rtl"] :host ::ng-deep .featured-section .product-card .current-price,
+[dir="rtl"] :host ::ng-deep .featured-section .product-card .quick-view-overlay .btn-premium {
+  font-family: 'Cairo', sans-serif !important;
+}
+
+[dir="rtl"] :host ::ng-deep .featured-section .product-card .product-title {
+  font-weight: 700 !important;
+}
+
+[dir="rtl"] :host ::ng-deep .featured-section .product-card .favorite-btn {
+  right: auto !important;
+  left: 0 !important;
+}
+

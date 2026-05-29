@@ -1,47 +1,45 @@
-<section class="categories-section py-5 bg-white">
-  <div class="container py-4">
+<section class="categories-section py-5">
+  <div class="container py-4 py-lg-5">
     <!-- Header -->
-    <div class="row mb-5 align-items-end">
-      <div class="col-md-8 text-start">
-        <span class="text-gold fw-bold text-uppercase letter-spacing-wide fs-7 mb-2 d-inline-block">
-          {{ 'CAT_STRIP_BADGE' | translate }}
-        </span>
-        <h2 class="display-5 fw-extrabold text-dark tracking-tight mb-0">
-          {{ 'CAT_STRIP_TITLE' | translate }}
+    <div class="row mb-5 justify-content-center text-center">
+      <div class="col-lg-8">
+        <h2 class="display-5 fw-bold text-dark mb-2 room-section-title reveal-title">
+          {{ translate('HOME_ROOM_TITLE', 'Shop by Room', 'تسوق حسب الغرفة') }}
         </h2>
-      </div>
-      <div class="col-md-4 text-md-end mt-3 mt-md-0">
-        <a routerLink="/categories" class="btn btn-outline-dark rounded-pill px-4 fw-bold transition-all hover-btn">
-          {{ 'CAT_STRIP_VIEW_ALL' | translate }}
-        </a>
+        <p class="text-secondary-color fs-6 room-section-subtitle mb-0 reveal-subtitle">
+          {{ translate('HOME_ROOM_SUBTITLE', 'Explore custom furniture curated for every space in your home', 'اكتشف قطع أثاث مخصصة ومصممة لكل زاوية في منزلك') }}
+        </p>
       </div>
     </div>
 
-    <!-- Responsive Grid -->
+    <!-- Curated Dynamic Grid from REAL Categories API -->
     <div class="row g-4 justify-content-center">
       <div 
-        *ngFor="let cat of categories(); let idx = index" 
-        class="col-md-6 col-lg-3"
+        *ngFor="let cat of categories(); let i = index" 
+        class="col-md-6 col-lg-3 reveal-stagger-{{ (i % 4) + 1 }}"
       >
         <div 
-          class="category-card rounded-4 overflow-hidden shadow-sm border-0 position-relative"
+          class="category-card rounded-5 overflow-hidden shadow-sm border-0 position-relative cursor-pointer"
           [routerLink]="['/products']"
           [queryParams]="{ categoryId: cat.id }"
         >
-          <!-- Background image from API -->
+          <!-- Optimized Dynamic/Local Image -->
           <img 
-            [src]="cat.imageUrl || 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80'" 
+            [src]="cat.imageUrl" 
             [alt]="translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn"
-            class="category-img w-100 h-100 object-fit-cover transition-all duration-700"
+            class="category-img w-100 h-100 object-fit-cover transition-all duration-1000"
           />
 
           <!-- Translucent Gradient Overlay -->
           <div class="card-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4 bg-gradient-dark transition-all">
-            <!-- Title at bottom -->
+            <!-- Room Meta & Spacing -->
             <div class="category-meta text-white text-start">
-              <h4 class="fw-bold mb-0 fs-5 tracking-tight">
+              <h4 class="fw-bold mb-1 fs-5 tracking-tight room-title">
                 {{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}
               </h4>
+              <p class="font-xs text-light-beige mb-0 tracking-wide room-count">
+                {{ getCategoryProductCount(cat.id) }} {{ translate('HOME_ROOM_PRODUCTS_COUNT', 'products', 'منتجات') }}
+              </p>
             </div>
           </div>
         </div>

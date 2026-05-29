@@ -1,7 +1,7 @@
 <div class="catalog-page py-5">
   <div class="container py-4">
     <!-- Catalog Header -->
-    <div class="row mb-5 text-start">
+    <div class="row mb-5 header-section">
       <div class="col-12">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb mb-2 font-xs">
@@ -15,28 +15,28 @@
             </li>
           </ol>
         </nav>
-        <h1 class="display-5 fw-extrabold text-dark tracking-tight">
+        <h1 class="display-5 fw-extrabold text-dark tracking-tight main-title">
           {{ 'CATALOG_TITLE' | translate }}
         </h1>
-        <p class="lead text-secondary fs-6">
+        <p class="lead text-secondary fs-6 subtitle-desc">
           {{ 'CATALOG_SUBTITLE' | translate }}
         </p>
       </div>
     </div>
 
     <!-- Main Workspace Split -->
-    <div class="row g-4">
+    <div class="row g-5">
       <!-- 1. Left Sidebar: Integrated Interactive Filters (col-lg-3) -->
-      <div class="col-lg-3 text-start">
+      <div class="col-lg-3">
         <div class="filter-sidebar">
           <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-light">
-            <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+            <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2 sidebar-header-title">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
               </svg>
               {{ 'FILTER_TITLE' | translate }}
             </h5>
-            <button class="btn btn-link text-secondary font-xs text-decoration-none p-0" (click)="clearFilters()">
+            <button class="btn btn-link text-secondary font-xs text-decoration-none p-0 clear-all-btn" (click)="clearFilters()">
               {{ 'FILTER_CLEAR_ALL' | translate }}
             </button>
           </div>
@@ -46,7 +46,7 @@
             <div class="search-input-wrapper position-relative">
               <input 
                 type="text" 
-                class="sidebar-search-input font-xs text-dark shadow-none" 
+                class="sidebar-search-input font-xs text-dark shadow-none w-100" 
                 [placeholder]="'NAV_SEARCH_PLACEHOLDER' | translate" 
                 [(ngModel)]="activeFilters.query"
                 (input)="applyFilters()"
@@ -69,7 +69,7 @@
 
           <!-- Space Categories Filter -->
           <div class="filter-group mb-4">
-            <label class="form-label text-dark fs-7 mb-2">
+            <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider">
               {{ 'FILTER_SPACE' | translate }}
             </label>
             <div class="d-flex flex-column gap-2">
@@ -104,9 +104,27 @@
             </div>
           </div>
 
+          <!-- AI Features Checklist -->
+          <div class="filter-group mb-4">
+            <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider">
+              {{ translationService.currentLang() === 'ar' ? 'ميزات الذكاء الاصطناعي' : 'AI Features' }}
+            </label>
+            <div class="form-check text-start d-flex align-items-center gap-2">
+              <input
+                class="form-check-input ai-checkbox"
+                type="checkbox"
+                id="ai-recommended"
+              />
+              <label class="form-check-label font-xs text-dark cursor-pointer d-flex align-items-center gap-1" for="ai-recommended">
+                <i class="bi bi-sparkles text-gold fs-8"></i>
+                <span>{{ translationService.currentLang() === 'ar' ? 'مقترح بالذكاء الاصطناعي فقط' : 'AI Recommended Only' }}</span>
+              </label>
+            </div>
+          </div>
+
           <!-- Price Thresholds Filter -->
           <div class="filter-group mb-4">
-            <label class="form-label text-dark fs-7 mb-2">
+            <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider">
               {{ 'FILTER_PRICE' | translate }}
             </label>
             <div class="d-flex gap-2">
@@ -136,11 +154,47 @@
               </div>
             </div>
           </div>
+
+
+
+          <!-- Star Ratings Section -->
+          <div class="filter-group mb-4">
+            <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider">
+              {{ translationService.currentLang() === 'ar' ? 'التقييم' : 'Rating' }}
+            </label>
+            <div class="d-flex flex-column gap-2">
+              <div class="form-check text-start d-flex align-items-center" *ngFor="let stars of [5,4,3,2,1]; let rIdx = index">
+                <input
+                  class="form-check-input rating-checkbox cursor-pointer"
+                  type="checkbox"
+                  [id]="'rating-' + rIdx"
+                  [checked]="activeFilters.minRating === stars"
+                  (change)="toggleRatingFilter(stars)"
+                />
+                <label class="form-check-label font-xs text-dark d-flex align-items-center gap-1 cursor-pointer" [for]="'rating-' + rIdx">
+                  <span class="stars-gold d-flex gap-1">
+                    <i *ngFor="let star of [1,2,3,4,5]" 
+                       class="bi fs-8" 
+                       [class.bi-star-fill]="star <= stars"
+                       [class.bi-star]="star > stars"
+                       [class.text-gold]="star <= stars"
+                       [class.text-secondary-color]="star > stars">
+                    </i>
+                  </span>
+                  @if (stars < 5) {
+                    <span class="ms-1 font-xxs opacity-75">
+                      {{ translationService.currentLang() === 'ar' ? 'فما فوق' : '& up' }}
+                    </span>
+                  }
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- 2. Right Panel: Dynamic Catalogue Listing (col-lg-9) -->
-      <div class="col-lg-9 text-start">
+      <div class="col-lg-9">
         <!-- Integrated Control Header Row -->
         <div class="catalog-toolbar d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-light">
           <div class="catalog-totals font-xs text-secondary fw-semibold">
@@ -183,11 +237,11 @@
           (actionClick)="clearFilters()"
         ></app-empty-state>
 
-        <!-- Product Cards Grid -->
-        <div *ngIf="!isLoading() && products().length > 0" class="row g-4 mb-5">
+        <!-- Product Cards Grid with dynamic staggered reveals -->
+        <div *ngIf="!isLoading() && products().length > 0" class="row g-4 mb-5 products-grid-row">
           <div
-            *ngFor="let prod of products()"
-            class="col-sm-6 col-md-6 col-xl-4"
+            *ngFor="let prod of products(); let i = index"
+            class="col-sm-6 col-md-6 col-xl-4 reveal-stagger-{{ (i % 3) + 1 }}"
           >
             <app-product-card [product]="prod"></app-product-card>
           </div>

@@ -1,1 +1,271 @@
-<p>favorites works!</p>
+<div class="favorites-page">
+  <div class="container py-5">
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="favorites-header mb-5">
+      <!-- Back arrow -->
+      <a routerLink="/products" class="fav-back-link d-inline-flex align-items-center gap-2 mb-3 text-decoration-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="fav-back-arrow">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
+        </svg>
+        <span class="font-xs fw-semibold">
+          {{ translationService.currentLang() === 'ar' ? 'العودة إلى المنتجات' : 'Back to Products' }}
+        </span>
+      </a>
+
+      <!-- Title row + Add All CTA -->
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+        <div>
+          <h1 class="fav-page-title fw-black mb-1">
+            {{ translationService.currentLang() === 'ar' ? 'مفضلتي' : 'My Favorites' }}
+          </h1>
+          <p class="fav-subtitle text-secondary mb-0" *ngIf="!isLoading()">
+            @if (favCount() > 0) {
+              <span class="fav-count-badge me-2">{{ favCount() }}</span>
+              {{ translationService.currentLang() === 'ar' ? 'قطعة محفوظة' : (favCount() === 1 ? 'item saved' : 'items saved') }}
+              <span class="sep-dot mx-2">•</span>
+              {{ translationService.currentLang() === 'ar' ? 'إجمالي القيمة:' : 'Total value:' }}
+              <strong class="text-dark ms-1">{{ totalValue() | currencyFormat }}</strong>
+            } @else {
+              {{ translationService.currentLang() === 'ar' ? 'لا توجد مفضلات بعد' : 'No favorites yet' }}
+            }
+          </p>
+        </div>
+
+        <!-- Add All to Cart CTA -->
+        <button
+          *ngIf="!isLoading() && favCount() > 0"
+          class="btn-add-all d-inline-flex align-items-center gap-2"
+          [disabled]="isAddingAll() || cartService.cartBusy()"
+          (click)="addAllToCart()"
+          id="add-all-to-cart-btn"
+        >
+          @if (isAddingAll()) {
+            <span class="spinner-border spinner-border-sm" role="status"></span>
+            {{ translationService.currentLang() === 'ar' ? 'جارٍ الإضافة...' : 'Adding...' }}
+          } @else if (addAllSuccess()) {
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+            </svg>
+            {{ translationService.currentLang() === 'ar' ? 'تمت الإضافة للسلة' : 'Added to Cart!' }}
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            {{ translationService.currentLang() === 'ar' ? 'إضافة الكل للسلة' : 'Add All to Cart' }}
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== SKELETON LOADING ===== -->
+    <div *ngIf="isLoading()" class="row g-4">
+      <div class="col-sm-6 col-md-4 col-lg-3" *ngFor="let i of [1,2,3,4]">
+        <div class="fav-card-skeleton rounded-4 overflow-hidden">
+          <div class="skeleton-img skeleton-shimmer"></div>
+          <div class="p-3">
+            <div class="skeleton-line skeleton-shimmer mb-2" style="width: 60%"></div>
+            <div class="skeleton-line skeleton-shimmer mb-2" style="width: 90%"></div>
+            <div class="skeleton-line skeleton-shimmer" style="width: 40%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MAIN LAYOUT (Grid + Sidebar) ===== -->
+    <div *ngIf="!isLoading()" class="row g-4 align-items-start">
+
+      <!-- ===== LEFT: FAVORITES GRID ===== -->
+      <div class="col-lg-8 favorites-grid-area">
+
+        <!-- Empty State -->
+        @if (favCount() === 0) {
+          <div class="empty-state text-center py-5 px-3 rounded-4">
+            <div class="empty-icon mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </div>
+            <h3 class="fw-bold text-dark mb-2 fs-5">
+              {{ translationService.currentLang() === 'ar' ? 'مفضلتك فارغة' : 'Your wishlist is empty' }}
+            </h3>
+            <p class="text-secondary font-xs mb-4">
+              {{ translationService.currentLang() === 'ar'
+                ? 'احفظ القطع التي تعجبك بالضغط على أيقونة القلب ليسهل عليك الوصول إليها لاحقاً.'
+                : 'Save pieces you love by tapping the heart icon on any product for easy access later.' }}
+            </p>
+            <a routerLink="/products" class="btn-browse-catalog">
+              {{ translationService.currentLang() === 'ar' ? 'استعرض الكتالوج' : 'Browse Catalog' }}
+            </a>
+          </div>
+        }
+
+        <!-- Favorites Grid -->
+        @if (favCount() > 0) {
+          <div class="row g-4">
+            <div
+              *ngFor="let fav of favorites()"
+              class="col-sm-6 col-md-6 col-lg-4"
+            >
+              <div class="fav-card rounded-4 overflow-hidden position-relative" [class.is-removing]="isRemoving(fav)">
+
+                <!-- Remove Button -->
+                <button
+                  class="fav-remove-btn position-absolute z-3"
+                  [disabled]="isRemoving(fav)"
+                  (click)="removeFavorite(fav, $event)"
+                  [attr.aria-label]="translationService.currentLang() === 'ar' ? 'إزالة من المفضلة' : 'Remove from favorites'"
+                >
+                  @if (isRemoving(fav)) {
+                    <span class="spinner-border spinner-border-sm" style="width:14px;height:14px" role="status"></span>
+                  } @else {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                  }
+                </button>
+
+                <!-- AI Pick Badge (for first 3 items) -->
+                <span
+                  class="fav-ai-badge position-absolute z-2"
+                  *ngIf="favorites().indexOf(fav) < 3"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" viewBox="0 0 24 24" class="me-1">
+                    <path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z"/>
+                  </svg>
+                  AI Pick
+                </span>
+
+                <!-- Product Image -->
+                <div
+                  class="fav-card-img-wrap overflow-hidden"
+                  [routerLink]="['/products', fav.productId]"
+                  style="cursor:pointer"
+                >
+                  <img
+                    [src]="fav.productImage || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80'"
+                    [alt]="translationService.currentLang() === 'ar' ? (fav.productNameAr || fav.productName) : (fav.productNameEn || fav.productName)"
+                    class="fav-card-img w-100 h-100 object-fit-cover"
+                    loading="lazy"
+                  />
+                </div>
+
+                <!-- Card Body -->
+                <div class="fav-card-body p-3">
+                  <p class="fav-category font-xxs text-secondary text-uppercase mb-1">
+                    {{ translationService.currentLang() === 'ar' ? 'قطعة فاخرة' : 'Premium Piece' }}
+                  </p>
+                  <h3
+                    class="fav-card-title font-xs fw-bold text-dark mb-2 lh-sm"
+                    [routerLink]="['/products', fav.productId]"
+                    style="cursor:pointer"
+                  >
+                    {{ translationService.currentLang() === 'ar' ? (fav.productNameAr || fav.productName) : (fav.productNameEn || fav.productName) }}
+                  </h3>
+
+                  <!-- Price Row -->
+                  <div class="d-flex align-items-baseline gap-2 flex-wrap">
+                    <span class="fav-current-price fw-black">
+                      {{ (fav.salePrice ?? fav.price) | currencyFormat }}
+                    </span>
+                    <span class="fav-old-price text-decoration-line-through font-xxs text-secondary" *ngIf="fav.salePrice && fav.salePrice < fav.price">
+                      {{ fav.price | currencyFormat }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- ===== RIGHT: SIDEBAR ===== -->
+      <div class="col-lg-4 sidebar-panel" *ngIf="favCount() > 0 || suggestions().length > 0">
+
+        <!-- AI Suggestions Panel -->
+        <div class="sidebar-card rounded-4 p-4 mb-4" *ngIf="suggestions().length > 0">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="ai-icon-wrap d-flex align-items-center justify-content-center rounded-circle flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0 font-xs">
+                {{ translationService.currentLang() === 'ar' ? 'اقتراحات الذكاء الاصطناعي' : 'AI Suggestions' }}
+              </h5>
+              <p class="font-xxs text-secondary mb-0">
+                {{ translationService.currentLang() === 'ar' ? 'بناءً على مفضلتك' : 'Based on your favorites' }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Suggestion Items -->
+          <div class="d-flex flex-column gap-3 mb-3">
+            <div
+              *ngFor="let sug of suggestions()"
+              class="suggestion-item d-flex gap-3 align-items-center"
+              [routerLink]="['/products', sug.id]"
+              style="cursor:pointer"
+            >
+              <div class="sug-img-wrap flex-shrink-0 rounded-3 overflow-hidden">
+                <img
+                  [src]="sug.mainImageUrl || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=200&q=80'"
+                  [alt]="translationService.currentLang() === 'ar' ? sug.nameAr : sug.nameEn"
+                  class="sug-img w-100 h-100 object-fit-cover"
+                  loading="lazy"
+                />
+              </div>
+              <div class="overflow-hidden">
+                <p class="fw-bold text-dark font-xs mb-0 text-truncate">
+                  {{ translationService.currentLang() === 'ar' ? sug.nameAr : sug.nameEn }}
+                </p>
+                <p class="sug-price fw-black mb-0">{{ sug.price | currencyFormat }}</p>
+                <p class="font-xxs text-secondary mb-0 text-truncate">
+                  {{ translationService.currentLang() === 'ar' ? sug.categoryNameAr : sug.categoryNameEn }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <a routerLink="/products" class="btn-get-suggestions w-100 d-flex align-items-center justify-content-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+            </svg>
+            {{ translationService.currentLang() === 'ar' ? 'استعرض المزيد من الاقتراحات' : 'Get More Suggestions' }}
+          </a>
+        </div>
+
+        <!-- Quick Actions Panel -->
+        <div class="sidebar-card rounded-4 p-4" *ngIf="favCount() > 0">
+          <h5 class="fw-bold font-xs mb-3">
+            {{ translationService.currentLang() === 'ar' ? 'إجراءات سريعة' : 'Quick Actions' }}
+          </h5>
+          <div class="d-flex flex-column gap-2">
+            <a routerLink="/ai-chat" class="quick-action-btn d-flex align-items-center gap-2 text-decoration-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              <span class="font-xs">
+                {{ translationService.currentLang() === 'ar' ? 'تصميم غرفة بمفضلتك' : 'Design a Room with Favorites' }}
+              </span>
+            </a>
+            <button
+              class="quick-action-btn d-flex align-items-center gap-2 border-0 w-100 text-start"
+              (click)="addAllToCart()"
+              [disabled]="isAddingAll()"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              <span class="font-xs">
+                {{ translationService.currentLang() === 'ar' ? 'مشاركة قائمة الأمنيات' : 'Share Wishlist' }}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /row -->
+  </div>
+</div>

@@ -1,61 +1,90 @@
-<section class="hero-section position-relative overflow-hidden py-5 d-flex align-items-center bg-dark">
-  <!-- Gradient Ambient Backdrops -->
+<section class="hero-section position-relative overflow-hidden py-5 d-flex align-items-center">
+  <!-- Soft Ambient Glow Backdrops -->
   <div class="ambient-glow-1 position-absolute rounded-circle filter-blur z-0"></div>
   <div class="ambient-glow-2 position-absolute rounded-circle filter-blur z-0"></div>
 
-  <div class="container position-relative z-1 py-5">
+  <div class="container position-relative z-1 py-4 py-lg-5">
     <div class="row align-items-center g-5">
-      <!-- Text & Call to Action -->
+      <!-- Left Column: Editorial Headline & Actions -->
       <div class="col-lg-6 text-dark text-start">
-        <span
-          class="badge badge-gold px-3 py-2 rounded-pill fw-bold mb-4 tracking-wide text-uppercase fs-7 animate-fade-in-down d-inline-block">
-          {{ 'HERO_BADGE' | translate }}
-        </span>
+        <div class="hero-text-content">
+          <span class="badge badge-gold px-3 py-2 rounded-pill fw-bold mb-4 tracking-wide text-uppercase fs-7 animate-fade-in-down d-inline-block">
+            {{ translate('HOME_HERO_BADGE', '✨ AI-Powered Design', '✨ تصميم بالذكاء الاصطناعي') }}
+          </span>
 
-        <h1 class="display-3 fw-extrabold mb-3 tracking-tight lh-sm animate-fade-in-left">
-          {{ 'HERO_TITLE_PART1' | translate }} <br /> {{ 'HERO_TITLE_PART2' | translate }} <span
-            class="text-gradient">{{ 'HERO_TITLE_SPATIAL_AI' | translate }}</span>
-        </h1>
+          <h1 class="display-3 fw-extrabold mb-3 tracking-tight lh-sm animate-fade-in-left hero-headline">
+            {{ translate('HOME_HERO_TITLE', 'Design Your Room Before You Buy', 'صمّم غرفتك بالكامل قبل الشراء') }}
+          </h1>
 
-        <p class="lead text-secondary-color fs-5 mb-5 animate-fade-in-left duration-700">
-          {{ 'HERO_DESCRIPTION' | translate }}
-        </p>
+          <p class="lead text-secondary-color fs-5 mb-5 animate-fade-in-left duration-700 hero-description">
+            {{ translate('HOME_HERO_DESC', 'Upload your room, share your style preferences, and let our AI create the perfect interior design with real, purchasable furniture.', 'ارفع صورة لغرفتك، وحدد تفضيلاتك في التصميم، ودع الذكاء الاصطناعي يبتكر لك الديكور المثالي بقطع أثاث حقيقية قابلة للشراء.') }}
+          </p>
 
-        <!-- Call To Actions -->
-        <div class="d-flex flex-wrap gap-3 animate-fade-in-up">
-          <a routerLink="/products" class="btn btn-premium px-4 py-3 d-flex align-items-center gap-2">
-            {{ 'HERO_EXPLORE_CATALOG' | translate }}
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </a>
-          <a routerLink="/ai-chat"
-            class="btn btn-outline-dark px-4 py-3 rounded-pill fw-bold d-flex align-items-center gap-2 backdrop-blur transition-all btn-ai">
-            <span class="ai-spark-dot"></span>
-            {{ 'HERO_SCAN_ROOM' | translate }}
-          </a>
+          <!-- Primary & Secondary CTA Buttons -->
+          <div class="d-flex flex-wrap gap-3 mb-5 animate-fade-in-up">
+            <a routerLink="/ai-chat" class="btn btn-premium px-4 py-3 d-flex align-items-center gap-2">
+              <i class="bi bi-camera-fill fs-6"></i>
+              {{ translate('HOME_HERO_CTA_UPLOAD', 'Upload Your Room', 'ارفع صورة غرفتك') }}
+            </a>
+            <a routerLink="/products" class="btn btn-ai px-4 py-3 d-flex align-items-center gap-2">
+              <i class="bi bi-sparkles fs-6"></i>
+              {{ translate('HOME_HERO_CTA_TRY', 'Try for Free', 'جرب مجاناً') }}
+            </a>
+          </div>
+
+          <!-- Statistics Row -->
+          <div class="row g-4 animate-fade-in-up duration-700 hero-stats-row">
+            <div class="col-4 col-md-4 text-start border-end border-light-beige">
+              <h3 class="fw-extrabold text-dark mb-0 fs-3 tracking-tight">50K+</h3>
+              <p class="font-xs text-secondary-color mb-0 tracking-wide">{{ translate('HOME_HERO_STAT_ROOMS', 'Rooms Designed', 'غرفة صُممت') }}</p>
+            </div>
+            <div class="col-4 col-md-4 text-start border-end border-light-beige">
+              <h3 class="fw-extrabold text-dark mb-0 fs-3 tracking-tight">10K+</h3>
+              <p class="font-xs text-secondary-color mb-0 tracking-wide">{{ translate('HOME_HERO_STAT_PRODUCTS', 'Products Used', 'منتج مستخدم') }}</p>
+            </div>
+            <div class="col-4 col-md-4 text-start">
+              <h3 class="fw-extrabold text-dark mb-0 fs-3 tracking-tight">98%</h3>
+              <p class="font-xs text-secondary-color mb-0 tracking-wide">{{ translate('HOME_HERO_STAT_CUSTOMERS', 'Happy Customers', 'عملاء سعداء') }}</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Gorgeous Cinematic Furniture Image Showcase -->
+      <!-- Right Column: Layered Editorial Graphic & Floating Badges -->
       <div class="col-lg-6 position-relative animate-fade-in-right">
-        <div class="image-showcase-wrapper">
-          <!-- Back shadow decoration -->
-          <div class="showcase-shadow position-absolute rounded-4 w-100 h-100 bg-info opacity-10"></div>
+        <div class="hero-graphic-wrapper">
+          <!-- Back Decorative Layered Shadow -->
+          <div class="showcase-shadow position-absolute rounded-5 w-100 h-100 bg-gold-tint opacity-10"></div>
 
-          <!-- Core showcase image -->
-          <div
-            class="main-image-container rounded-4 overflow-hidden shadow-2xl border border-white border-opacity-10 position-relative z-2">
-            <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80"
-              [alt]="'HERO_SHOWCASE_ALT' | translate"
-              class="w-100 h-100 object-fit-cover hover-scale transition-all duration-1000" />
+          <!-- Main Core Showcase Image -->
+          <div class="main-image-container rounded-5 overflow-hidden shadow-2xl border border-white border-opacity-40 position-relative z-2">
+            <img src="/assets/images/hero_interior.png" 
+                 [alt]="translate('HOME_HERO_TITLE', 'Design Your Room Before You Buy', 'صمّم غرفتك بالكامل قبل الشراء')"
+                 class="w-100 h-100 object-fit-cover hover-scale transition-all duration-1000" />
+            
+            <!-- Elegant Centered Circular Play Overlay Button -->
+            <div class="play-btn-overlay position-absolute top-50 start-50 translate-middle z-3">
+              <button class="btn btn-play rounded-circle d-flex align-items-center justify-content-center border-0" aria-label="Play product video">
+                <i class="bi bi-play-fill fs-3 text-gold"></i>
+              </button>
+            </div>
 
-            <!-- Sophisticated Caption Label -->
-            <div class="caption-label position-absolute bottom-0 start-0 m-4 px-3 py-2 rounded-2 text-dark text-start z-3 border border-dark border-opacity-10 shadow-sm bg-white">
-              <span class="fs-8 fw-semibold tracking-wider text-uppercase text-secondary">
-                {{ 'HERO_COORDINATES_DETAILS' | translate }}
-              </span>
+            <!-- Floating Premium Card 1: Modern Sofa tag (top-left) -->
+            <div class="floating-badge-sofa position-absolute top-0 start-0 m-4 px-3 py-2 rounded-3 text-dark text-start z-3 border border-dark border-opacity-5 shadow-lg bg-white d-flex align-items-center gap-2 backdrop-blur">
+              <span class="fs-7 fw-bold text-dark">{{ translate('HOME_HERO_SOFA_LABEL', 'Modern Sofa', 'أريكة عصرية') }}</span>
+              <span class="badge bg-gold-light text-gold font-xs px-2 py-1 rounded">{{ translate('HOME_HERO_SOFA_PRICE', '$1,200', '١,٢٠٠ $') }}</span>
+            </div>
+
+            <!-- Floating Tag 2: AI Generated (bottom-left) -->
+            <div class="floating-badge-ai position-absolute bottom-0 start-0 m-4 px-3 py-2 rounded-pill text-dark text-start z-3 border border-dark border-opacity-5 shadow-lg bg-white d-flex align-items-center gap-2 backdrop-blur">
+              <span class="ai-spark-dot"></span>
+              <span class="fs-8 fw-semibold text-secondary-color tracking-wide">{{ translate('HOME_HERO_AI_TAG', 'AI Generated Design', 'تصميم الذكاء الاصطناعي') }}</span>
+            </div>
+
+            <!-- Floating Tag 3: Smart Layout Preview (bottom-right) -->
+            <div class="floating-badge-mobile position-absolute bottom-0 end-0 m-4 px-3 py-2 rounded-pill text-dark text-start z-3 border border-dark border-opacity-5 shadow-lg bg-white d-flex align-items-center gap-2 backdrop-blur">
+              <i class="bi bi-cpu-fill text-gold fs-7"></i>
+              <span class="fs-8 fw-semibold text-secondary-color tracking-wide">{{ translate('HOME_HERO_LAYOUT_TAG', 'Smart Layout Preview', 'معاينة المخطط الذكي') }}</span>
             </div>
           </div>
         </div>

@@ -4,13 +4,13 @@ import { RouterLink } from '@angular/router';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
 @Component({
-  selector: 'app-hero',
+  selector: 'app-ai-how-it-works',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './hero.component.html',
-  styleUrl: './hero.component.css'
+  templateUrl: './ai-how-it-works.component.html',
+  styleUrl: './ai-how-it-works.component.css'
 })
-export class HeroComponent {
+export class AiHowItWorksComponent {
   readonly translationService = inject(TranslationService);
 
   /**

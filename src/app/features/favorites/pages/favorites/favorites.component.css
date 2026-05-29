@@ -1,0 +1,423 @@
+/* ==========================================================================
+   Favorites Page — Luxury Marketplace Edition
+   ========================================================================== */
+
+/* Page background */
+.favorites-page {
+  background-color: #FAF7F2;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   Reveal Animations
+   ========================================================================== */
+.fav-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.fav-reveal.fav-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.fav-page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: #111111;
+  line-height: 1.2;
+}
+
+.fav-subtitle {
+  font-size: 0.88rem;
+  color: #6b7280;
+}
+
+.fav-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background-color: #b8935c;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  border-radius: 50%;
+}
+
+.sep-dot {
+  color: #d1d5db;
+}
+
+/* Back Arrow Link */
+.fav-back-link {
+  color: #6b7280;
+  font-size: 0.8rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.fav-back-link:hover {
+  color: #b8935c;
+}
+
+.fav-back-arrow {
+  transition: transform 0.2s ease;
+}
+
+.fav-back-link:hover .fav-back-arrow {
+  transform: translateX(-3px);
+}
+
+[dir="rtl"] .fav-back-arrow {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .fav-back-link:hover .fav-back-arrow {
+  transform: scaleX(-1) translateX(-3px);
+}
+
+/* Add All to Cart Button */
+.btn-add-all {
+  background-color: #111111;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 40px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.btn-add-all:hover:not(:disabled) {
+  background-color: #b8935c;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(184, 147, 92, 0.3);
+}
+
+.btn-add-all:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Skeleton Loaders
+   ========================================================================== */
+.fav-card-skeleton {
+  background: #ffffff;
+  border: 1px solid rgba(184, 147, 92, 0.06);
+}
+
+.skeleton-img {
+  height: 220px;
+  background: #e9ecef;
+}
+
+.skeleton-line {
+  height: 12px;
+  background: #e9ecef;
+  border-radius: 6px;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ==========================================================================
+   Favorite Cards
+   ========================================================================== */
+.fav-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(184, 147, 92, 0.08);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.fav-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+  border-color: rgba(184, 147, 92, 0.15);
+}
+
+.fav-card.is-removing {
+  opacity: 0.4;
+  pointer-events: none;
+  transform: scale(0.96);
+}
+
+/* Remove Button */
+.fav-remove-btn {
+  top: 10px;
+  inset-inline-end: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fav-remove-btn:hover {
+  background: #fee2e2;
+  color: #e11d48;
+  border-color: rgba(225, 29, 72, 0.2);
+  transform: scale(1.1);
+}
+
+/* AI Badge */
+.fav-ai-badge {
+  top: 10px;
+  inset-inline-start: 10px;
+  background: rgba(11, 15, 25, 0.78);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 40px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Image Wrapper */
+.fav-card-img-wrap {
+  height: 220px;
+}
+
+.fav-card-img {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fav-card:hover .fav-card-img {
+  transform: scale(1.04);
+}
+
+/* Card Body */
+.fav-card-body {
+  border-top: 1px solid rgba(184, 147, 92, 0.06);
+}
+
+.fav-category {
+  letter-spacing: 0.06em;
+  color: #b8935c;
+}
+
+.fav-card-title {
+  font-size: 0.88rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.fav-card-title:hover {
+  color: #b8935c;
+  transition: color 0.2s;
+}
+
+.fav-current-price {
+  font-size: 1rem;
+  color: #111111;
+}
+
+.fav-old-price {
+  font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+.empty-state {
+  background: #ffffff;
+  border: 1px solid rgba(184, 147, 92, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.empty-icon svg {
+  color: #d1bfa0;
+}
+
+.btn-browse-catalog {
+  display: inline-flex;
+  align-items: center;
+  background-color: #111111;
+  color: #ffffff;
+  padding: 0.75rem 2rem;
+  border-radius: 40px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-browse-catalog:hover {
+  background-color: #b8935c;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(184, 147, 92, 0.25);
+}
+
+/* ==========================================================================
+   Sidebar Cards
+   ========================================================================== */
+.sidebar-card {
+  background: #ffffff;
+  border: 1px solid rgba(184, 147, 92, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* AI Icon */
+.ai-icon-wrap {
+  width: 40px;
+  height: 40px;
+  background: rgba(14, 165, 233, 0.1);
+  color: #0ea5e9;
+  flex-shrink: 0;
+}
+
+/* Suggestion Items */
+.suggestion-item {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(184, 147, 92, 0.06);
+  transition: opacity 0.2s ease;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  opacity: 0.8;
+}
+
+.sug-img-wrap {
+  width: 52px;
+  height: 52px;
+  background: #f3f4f6;
+}
+
+.sug-img {
+  transition: transform 0.5s ease;
+}
+
+.suggestion-item:hover .sug-img {
+  transform: scale(1.05);
+}
+
+.sug-price {
+  font-size: 0.82rem;
+  color: #111111;
+}
+
+/* Get More Suggestions Button */
+.btn-get-suggestions {
+  border: 1px solid rgba(184, 147, 92, 0.2);
+  background: transparent;
+  color: #6b7280;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-get-suggestions:hover {
+  border-color: #b8935c;
+  color: #b8935c;
+  background: rgba(184, 147, 92, 0.04);
+}
+
+/* Quick Action Buttons */
+.quick-action-btn {
+  background: rgba(184, 147, 92, 0.04);
+  border: 1px solid rgba(184, 147, 92, 0.1) !important;
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  color: #374151;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.quick-action-btn:hover:not(:disabled) {
+  background: rgba(184, 147, 92, 0.08);
+  border-color: rgba(184, 147, 92, 0.25) !important;
+  color: #111111;
+  transform: translateX(-2px);
+}
+
+.quick-action-btn svg {
+  color: #b8935c;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   RTL Overrides
+   ========================================================================== */
+[dir="rtl"] .favorites-page {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .fav-ai-badge {
+  left: auto;
+  right: 10px;
+}
+
+[dir="rtl"] .fav-remove-btn {
+  right: auto;
+  left: 10px;
+}
+
+[dir="rtl"] .quick-action-btn:hover:not(:disabled) {
+  transform: translateX(2px);
+}
+
+[dir="rtl"] .btn-add-all {
+  flex-direction: row-reverse;
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 767px) {
+  .fav-card-img-wrap {
+    height: 180px;
+  }
+
+  .fav-page-title {
+    font-size: 1.6rem;
+  }
+
+  .sidebar-panel {
+    margin-top: 1.5rem;
+  }
+}

@@ -45,7 +45,6 @@
   "PROFILE.AI_DESIGN_JOURNEY": "Your personalized design journey",
   "PROFILE.AI_DESIGN_ACTIVITY": "AI Design Activity",
   "PROFILE.AI_RECOMMENDATIONS": "AI Recommendations",
-
   "PROFILE.SAVE_CHANGES": "Save Changes",
   "PROFILE.PREFERRED_LANGUAGE": "Preferred Language",
   "PROFILE.USERNAME": "Username",
@@ -211,7 +210,6 @@
   "CHECKOUT_ERROR_VALIDATION": "Please verify your input. Some fields in the checkout form are invalid.",
   "CHECKOUT_ERROR_NETWORK": "A network error occurred. Please check your internet connection.",
   "CHECKOUT_ERROR_GENERIC": "An error occurred while placing your order. Please try again.",
-
   "ORDERS_TITLE": "Orders",
   "ORDERS_SUBTITLE": "Track your purchases with real-time status and delivery insights.",
   "ORDERS_LOADING": "Loading orders...",
@@ -224,27 +222,22 @@
   "ORDERS_COL_STATUS": "Status",
   "ORDERS_COL_ACTION": "Action",
   "ORDERS_VIEW_DETAILS": "View details",
-
   "ORDERS_PAYMENT_PENDING": "Payment pending",
   "ORDERS_PAYMENT_PAID": "Paid",
   "ORDERS_PAYMENT_FAILED": "Payment failed",
   "ORDERS_PAYMENT_REFUNDED": "Refunded",
-
   "ORDERS_STATUS_PENDING": "Pending",
   "ORDERS_STATUS_PROCESSING": "Processing",
   "ORDERS_STATUS_SHIPPED": "Shipped",
   "ORDERS_STATUS_DELIVERED": "Delivered",
   "ORDERS_STATUS_CANCELLED": "Cancelled",
   "ORDERS_STATUS_REFUNDED": "Refunded",
-
   "ORDERS_TIMELINE_PENDING": "Pending",
   "ORDERS_TIMELINE_PROCESSING": "Processing",
   "ORDERS_TIMELINE_SHIPPED": "Shipped",
   "ORDERS_TIMELINE_DELIVERED": "Delivered",
-
   "ORDERS_ERROR_LOAD_LIST": "We couldn't load your orders right now.",
   "ORDERS_ERROR_LOAD_DETAILS": "We couldn't load this order right now.",
-
   "ORDER_DETAILS_TITLE": "Order details",
   "ORDER_DETAILS_SUBTITLE": "Timeline, items, shipping, invoice, and payment summary.",
   "ORDER_DETAILS_BACK": "Back to orders",
@@ -253,20 +246,17 @@
   "ORDER_DETAILS_NOT_FOUND_DESC": "This order may have been removed or you may not have access to it.",
   "ORDER_DETAILS_GO_TO_ORDERS": "Go to orders",
   "ORDER_DETAILS_PLACED_ON": "Placed on",
-
   "ORDER_DETAILS_ITEMS_TITLE": "Ordered items",
   "ORDER_DETAILS_ITEMS_COUNT": "items",
   "ORDER_DETAILS_QTY": "Qty",
   "ORDER_DETAILS_COLOR": "Color",
   "ORDER_DETAILS_MATERIAL": "Material",
-
   "ORDER_DETAILS_SHIPPING_TITLE": "Shipping information",
   "ORDER_DETAILS_TRACKING": "Tracking",
   "ORDER_DETAILS_CARRIER": "Carrier",
   "ORDER_DETAILS_ESTIMATED_DELIVERY": "Estimated delivery",
   "ORDER_DETAILS_ADDRESS": "Address",
   "ORDER_DETAILS_UNKNOWN": "Not available",
-
   "ORDER_DETAILS_INVOICE_TITLE": "Invoice summary",
   "ORDER_DETAILS_INVOICE_SUBTITLE": "A transparent breakdown of your total.",
   "ORDER_DETAILS_SUBTOTAL": "Subtotal",
@@ -274,7 +264,6 @@
   "ORDER_DETAILS_TAX": "Tax",
   "ORDER_DETAILS_DISCOUNT": "Discount",
   "ORDER_DETAILS_TOTAL": "Total",
-
   "ORDER_DETAILS_PAYMENT_TITLE": "Payment summary",
   "ORDER_DETAILS_PAYMENT_SUBTITLE": "Method and current payment status.",
   "ORDER_DETAILS_PAYMENT_METHOD": "Payment method",

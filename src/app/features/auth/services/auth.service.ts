@@ -15,6 +15,7 @@ import { IAuthResponse } from '../interfaces/iauth-response';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
 
 interface AuthProfile {
+  id?: string;
   name: string;
   email: string;
   initials: string;
@@ -119,6 +120,7 @@ export class AuthService {
 
   private decodeToken(token: string): AuthProfile {
     const fallbackUser: AuthProfile = {
+      id: '',
       name: 'Alexander Wright',
       email: 'alexander@furnimind.ai',
       initials: 'AW',
@@ -132,6 +134,12 @@ export class AuthService {
       }
 
       const payload = JSON.parse(atob(parts[1]));
+      const id =
+        payload['nameid'] ||
+        payload['sub'] ||
+        payload['id'] ||
+        payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ||
+        '';
       const email =
         payload['email'] ||
         payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ||
@@ -149,6 +157,7 @@ export class AuthService {
         .toUpperCase() || 'FM';
 
       return {
+        id,
         name,
         email,
         initials,

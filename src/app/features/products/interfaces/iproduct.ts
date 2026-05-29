@@ -13,6 +13,8 @@ export interface IProduct {
   workshopNameEn: string;
   createdAt: string;
   mainImageUrl: string;
+  averageRating?: number;
+  totalReviews?: number;
 }
 
 export interface IProductResponse {
