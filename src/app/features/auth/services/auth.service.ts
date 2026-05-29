@@ -2,7 +2,15 @@ import { Injectable, inject, signal, computed, PLATFORM_ID } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { ILoginRequest, IRegisterRequest } from '../interfaces/iauth-request';
+import { environment } from '../../../../environments/environment';
+import { API_URLS } from '../../../core/constants/api-urls';
+import {
+  ILoginRequest,
+  IRegisterRequest,
+  IForgotPasswordRequest,
+  IVerifyOtpRequest,
+  IResetPasswordRequest
+} from '../interfaces/iauth-request';
 import { IAuthResponse } from '../interfaces/iauth-response';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
 
@@ -12,7 +20,7 @@ import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
 export class AuthService {
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
-  private baseUrl = 'http://home-ai.runasp.net/api/Auth';
+  private baseUrl = environment.apiUrl;
 
   // SSR-safe browser check
   private get isBrowser(): boolean {
@@ -76,11 +84,11 @@ export class AuthService {
   }
 
   register(data: IRegisterRequest): Observable<IAuthResponse> {
-    return this.http.post<IAuthResponse>(`${this.baseUrl}/register`, data);
+    return this.http.post<IAuthResponse>(`${this.baseUrl}${API_URLS.AUTH.REGISTER}`, data);
   }
 
   login(data: ILoginRequest): Observable<IAuthResponse> {
-    return this.http.post<IAuthResponse>(`${this.baseUrl}/login`, data).pipe(
+    return this.http.post<IAuthResponse>(`${this.baseUrl}${API_URLS.AUTH.LOGIN}`, data).pipe(
       tap(response => {
         const token = this.getAuthToken(response);
 
@@ -95,6 +103,29 @@ export class AuthService {
         this.isAuthenticated.set(true);
       })
     );
+  }
+
+  redirectToGoogleOAuth(returnUrl?: string): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const url = `${this.baseUrl}${API_URLS.AUTH.GOOGLE}`;
+    window.location.href = returnUrl
+      ? `${url}?returnUrl=${encodeURIComponent(returnUrl)}`
+      : url;
+  }
+
+  forgotPassword(data: IForgotPasswordRequest) {
+    return this.http.post(`${this.baseUrl}${API_URLS.AUTH.FORGOT_PASSWORD}`, data);
+  }
+
+  verifyOtp(data: IVerifyOtpRequest) {
+    return this.http.post(`${this.baseUrl}${API_URLS.AUTH.VERIFY_OTP}`, data);
+  }
+
+  resetPassword(data: IResetPasswordRequest) {
+    return this.http.post(`${this.baseUrl}${API_URLS.AUTH.RESET_PASSWORD}`, data);
   }
 
   logout(): void {

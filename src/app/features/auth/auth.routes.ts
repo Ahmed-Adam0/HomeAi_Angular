@@ -12,4 +12,19 @@ export const authRoutes: Routes = [
     loadComponent: () =>
       import('./pages/register/register.component').then((m) => m.Register),
   },
+  {
+    path: APP_ROUTES.FORGOT_PASSWORD,
+    loadComponent: () =>
+      import('./pages/forgot-password/forgot-password.component').then((m) => m.ForgotPassword),
+  },
+  {
+    path: APP_ROUTES.VERIFY_OTP,
+    loadComponent: () =>
+      import('./pages/verify-otp/verify-otp.component').then((m) => m.VerifyOtp),
+  },
+  {
+    path: APP_ROUTES.RESET_PASSWORD,
+    loadComponent: () =>
+      import('./pages/reset-password/reset-password.component').then((m) => m.ResetPassword),
+  },
 ];

@@ -1,8 +1,9 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
 @Component({
@@ -16,12 +17,15 @@ export class Login {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
 
   loginForm: FormGroup;
   isLoading = false;
   errorMessage = '';
+  returnUrl = '';
 
+  readonly navRoutes = NAV_ROUTES;
   readonly currentLang = this.translationService.currentLang;
   readonly direction = computed(() => this.currentLang() === 'ar' ? 'rtl' : 'ltr');
   readonly t = computed(() => this.translations[this.currentLang()]);
@@ -45,7 +49,6 @@ export class Login {
       visualHeading: 'صمّم مساحة أحلامك',
       visualSubtitle: 'استخدم الذكاء الاصطناعي لتصور الأثاث في غرفتك قبل الشراء. احصل على توصيات مخصصة بناءً على ذوقك وتفضيلاتك الفريدة.',
       socialGoogle: 'Google',
-      socialGithub: 'GitHub',
       defaultLoginError: 'بيانات الدخول غير صحيحة، حاول مجدداً.'
     },
     en: {
@@ -66,7 +69,6 @@ export class Login {
       visualHeading: 'Design your dream space',
       visualSubtitle: 'Use AI to preview furniture in your room before purchase. Get personalized recommendations based on your unique taste and preferences.',
       socialGoogle: 'Google',
-      socialGithub: 'GitHub',
       defaultLoginError: 'Login failed. Please check your credentials and try again.'
     }
   } as const;
@@ -94,6 +96,8 @@ export class Login {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '';
   }
 
   onSubmit(): void {
@@ -108,13 +112,18 @@ export class Login {
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/']);
+        const destination = this.returnUrl || NAV_ROUTES.HOME;
+        this.router.navigateByUrl(destination, { replaceUrl: true });
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = this.localizeBackendError(err.error);
       }
     });
+  }
+
+  onGoogleLogin(): void {
+    this.authService.redirectToGoogleOAuth(this.returnUrl);
   }
 
   private localizeBackendError(errorPayload: any): string {
