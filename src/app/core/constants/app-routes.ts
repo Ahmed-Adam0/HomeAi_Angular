@@ -3,6 +3,7 @@ export const APP_ROUTES = {
 
   LOGIN: 'login',
   REGISTER: 'register',
+  GOOGLE_SUCCESS: 'google-success',
 
   PROFILE: 'profile',
 
@@ -40,6 +41,7 @@ export const NAV_ROUTES = {
 
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
+  GOOGLE_SUCCESS: '/auth/google-success',
 
   PROFILE: '/profile',
 

@@ -1,0 +1,111 @@
+<div class="auth-wrapper google-success-mirror" [attr.dir]="direction()" [attr.lang]="currentLang()">
+
+  <div class="auth-form-side">
+    <div class="auth-form-inner">
+
+      <div class="brand-logo">
+        <div class="logo-icon-small">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span class="logo-text">FurniMind AI</span>
+      </div>
+
+      <!-- LOADING STATE -->
+      <div class="oauth-state" *ngIf="isLoading && !hasError">
+        <div class="spinner-wrapper">
+          <div class="spinner-ring"></div>
+          <div class="spinner-core"></div>
+        </div>
+
+        <div class="state-header">
+          <h1>{{ t().processingTitle }}</h1>
+          <p>{{ t().processingOAuth }}</p>
+        </div>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="oauth-state" *ngIf="!isLoading && !hasError">
+        <div class="success-icon-wrapper">
+          <div class="success-checkmark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="state-header">
+          <h1>{{ t().processingTitle }}</h1>
+          <p>{{ currentLang() === 'ar' ? 'جاري التوجيه...' : 'Redirecting...' }}</p>
+        </div>
+      </div>
+
+      <!-- ERROR STATE -->
+      <div class="oauth-state" *ngIf="hasError">
+        <div class="error-icon-wrapper">
+          <div class="error-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="state-header">
+          <h1>{{ t().errorTitle }}</h1>
+          <p>{{ errorMessage }}</p>
+        </div>
+
+        <div class="error-actions">
+          <button class="btn-action primary" type="button" (click)="onRetry()">
+            {{ t().retryButton }}
+          </button>
+          <button class="btn-action secondary" type="button" (click)="onContactSupport()">
+            {{ t().contactSupport }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VISUAL SIDE (Right) -->
+  <div class="auth-visual-side">
+    <div class="visual-content">
+      <h2 class="visual-heading">{{ currentLang() === 'ar' ? 'مرحباً بك في FurniMind' : 'Welcome to FurniMind' }}</h2>
+      <p class="visual-subtitle">
+        {{ currentLang() === 'ar' 
+          ? 'استمتع بتجربة التسوق الذكية والتوصيات المخصصة حسب ذوقك.'
+          : 'Enjoy a smart shopping experience with personalized recommendations tailored to your taste.' }}
+      </p>
+      <div class="visual-features">
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"/>
+            <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>{{ currentLang() === 'ar' ? 'حساب آمن' : 'Secure Account' }}</span>
+        </div>
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"/>
+            <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>{{ currentLang() === 'ar' ? 'تجربة ذكية' : 'Smart Experience' }}</span>
+        </div>
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"/>
+            <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>{{ currentLang() === 'ar' ? 'توصيات شخصية' : 'Personal Touches' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
