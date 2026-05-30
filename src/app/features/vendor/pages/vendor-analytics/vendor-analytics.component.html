@@ -1,4 +1,202 @@
-<section class="vendor-analytics" aria-label="Vendor analytics">
-  <h1>Analytics &amp; Metrics</h1>
-  <app-analytics-cards />
-</section>
+<main class="vendor-analytics" aria-label="Vendor analytics and performance">
+  <header class="vendor-analytics__header">
+    <div class="vendor-analytics__header-content">
+      <p class="vendor-analytics__eyebrow">Vendor Portal</p>
+      <h1 class="vendor-analytics__title">Analytics &amp; Performance</h1>
+      <p class="vendor-analytics__description">
+        Track business performance, monitor sales activity, and gain deeper insights into vendor
+        growth and customer engagement.
+      </p>
+    </div>
+
+    <div class="vendor-analytics__meta" aria-label="Analytics dashboard metadata">
+      <span class="vendor-analytics__meta-badge">Analytics Overview</span>
+      <span class="vendor-analytics__meta-note">Performance dashboard</span>
+    </div>
+  </header>
+
+  <div class="vendor-analytics__content">
+    <section
+      class="vendor-analytics__section"
+      aria-labelledby="vendor-analytics-kpi-heading"
+    >
+      <header class="vendor-analytics__section-head">
+        <h2 id="vendor-analytics-kpi-heading" class="vendor-analytics__section-title">
+          Performance Overview
+        </h2>
+      </header>
+
+      @if (analytics(); as analyticsData) {
+        <app-analytics-cards [analytics]="analyticsData" />
+      } @else {
+        <div
+          class="vendor-analytics__placeholder"
+          role="status"
+          aria-label="Loading performance overview"
+          [attr.aria-busy]="isAnalyticsLoading()"
+        >
+          <div
+            class="vendor-analytics__skeleton-grid vendor-analytics__skeleton-grid--kpis"
+            aria-hidden="true"
+          >
+            @for (slot of kpiSkeletonSlots; track slot) {
+              <div class="vendor-analytics__skeleton-card">
+                <div class="vendor-analytics__skeleton-icon fm-skeleton"></div>
+                <div
+                  class="vendor-analytics__skeleton-line fm-skeleton fm-skeleton-text short"
+                ></div>
+                <div
+                  class="vendor-analytics__skeleton-line fm-skeleton fm-skeleton-text title"
+                ></div>
+                <div
+                  class="vendor-analytics__skeleton-line fm-skeleton fm-skeleton-text medium"
+                ></div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </section>
+
+    <section
+      class="vendor-analytics__section"
+      aria-labelledby="vendor-analytics-insights-heading"
+    >
+      <header class="vendor-analytics__section-head">
+        <h2 id="vendor-analytics-insights-heading" class="vendor-analytics__section-title">
+          Performance Insights &amp; Trends
+        </h2>
+      </header>
+
+      <article class="vendor-analytics__insights-card">
+        <div class="vendor-analytics__insights-body">
+          <div class="vendor-analytics__insights-copy">
+            <div class="vendor-analytics__insights-icon" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+            </div>
+
+            <h3 class="vendor-analytics__insights-title">
+              Advanced analytics charts and performance trends will appear here once analytics data
+              is connected.
+            </h3>
+            <p class="vendor-analytics__insights-description">
+              This area will support future visualizations including sales trends, customer activity
+              metrics, order performance tracking, and growth analytics.
+            </p>
+          </div>
+
+          <div
+            class="vendor-analytics__insights-visual"
+            role="presentation"
+            aria-hidden="true"
+          >
+            <div class="vendor-analytics__insights-chart-surface">
+              @for (slot of insightsPlaceholderSlots; track slot) {
+                <div class="vendor-analytics__insights-skeleton-row">
+                  <div
+                    class="vendor-analytics__insights-skeleton-line fm-skeleton fm-skeleton-text long"
+                  ></div>
+                  <div
+                    class="vendor-analytics__insights-skeleton-line fm-skeleton fm-skeleton-text medium"
+                  ></div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section
+      class="vendor-analytics__section"
+      aria-labelledby="vendor-analytics-products-heading"
+    >
+      <header class="vendor-analytics__section-head">
+        <h2 id="vendor-analytics-products-heading" class="vendor-analytics__section-title">
+          Top Products &amp; Sales Breakdown
+        </h2>
+      </header>
+
+      <article class="vendor-analytics__products-card">
+        <div class="vendor-analytics__products-body">
+          <div class="vendor-analytics__products-copy">
+            <div class="vendor-analytics__products-icon" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+              </svg>
+            </div>
+
+            <h3 class="vendor-analytics__products-title">
+              Top-performing products and sales breakdowns will appear here.
+            </h3>
+            <p class="vendor-analytics__products-description">
+              Future analytics will highlight best-selling products, revenue contribution by product,
+              and category performance metrics.
+            </p>
+          </div>
+
+          <div
+            class="vendor-analytics__products-visual"
+            role="presentation"
+            aria-hidden="true"
+          >
+            <div class="vendor-analytics__products-table-surface">
+              <div class="vendor-analytics__products-table-head">
+                <div
+                  class="vendor-analytics__products-skeleton-cell fm-skeleton fm-skeleton-text short"
+                ></div>
+                <div
+                  class="vendor-analytics__products-skeleton-cell fm-skeleton fm-skeleton-text short"
+                ></div>
+                <div
+                  class="vendor-analytics__products-skeleton-cell fm-skeleton fm-skeleton-text short"
+                ></div>
+              </div>
+
+              @for (slot of productsPlaceholderSlots; track slot) {
+                <div class="vendor-analytics__products-table-row">
+                  <div
+                    class="vendor-analytics__products-skeleton-cell fm-skeleton fm-skeleton-text medium"
+                  ></div>
+                  <div
+                    class="vendor-analytics__products-skeleton-cell fm-skeleton fm-skeleton-text long"
+                  ></div>
+                  <div
+                    class="vendor-analytics__products-skeleton-cell fm-skeleton fm-skeleton-text short"
+                  ></div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+</main>
