@@ -211,11 +211,6 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private syncFavoritesState(productId: number): void {
-    if (!this.authService.isLoggedIn()) {
-      this.isFavorite.set(false);
-      return;
-    }
-
     this.favoritesService.getFavorites().subscribe({
       next: (favs) => {
         const hasFav = favs.some((f) => Number(f.productId) === productId);
@@ -223,7 +218,7 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
         this.syncLocalStorageFavorites(favs);
       },
       error: (err) => {
-        console.error('Failed to sync favorites from API on initialization', err);
+        console.error('Failed to sync favorites on initialization', err);
         // Fallback to local storage cache if API is offline
         if (this.isBrowser) {
           const raw = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITES);
@@ -342,12 +337,6 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
 
   toggleFavorite(event: Event): void {
     event.stopPropagation();
-    
-    // Redirect to login if user is unauthenticated
-    if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
-      return;
-    }
 
     const prod = this.product();
     if (!prod) return;

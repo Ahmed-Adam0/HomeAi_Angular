@@ -62,11 +62,6 @@ export class ProductCard implements OnInit {
   }
 
   private syncFavoriteState(): void {
-    if (!this.authService.isLoggedIn()) {
-      this.isFavorite.set(false);
-      return;
-    }
-
     // Fast sync from localStorage cache
     if (this.isBrowser) {
       try {
@@ -90,12 +85,6 @@ export class ProductCard implements OnInit {
   toggleFavorite(event: Event): void {
     event.stopPropagation();
     event.preventDefault();
-
-    if (!this.authService.isLoggedIn()) {
-      // Redirect happens upstream — just do a local optimistic toggle for guest UX
-      this.isFavorite.update((v) => !v);
-      return;
-    }
 
     if (this.isTogglingFav()) return;
     this.isTogglingFav.set(true);
