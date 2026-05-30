@@ -7,6 +7,7 @@ import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslationService } from '../../../shared/i18n/translation.service';
+import { AuthService } from '../../../features/auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class FavoritesService {
   private apiUrl = environment.apiUrl;
   private platformId = inject(PLATFORM_ID);
   private translationService = inject(TranslationService);
+  private authService = inject(AuthService);
 
   /** Shared signal — authoritative source for all components */
   readonly favorites = signal<IFavoriteItem[]>([]);
@@ -25,6 +27,22 @@ export class FavoritesService {
   }
 
   getFavorites(): Observable<IFavoriteItem[]> {
+    if (!this.authService.isLoggedIn()) {
+      if (!this.isBrowser) {
+        return of([]);
+      }
+      try {
+        const raw = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITES);
+        if (raw) {
+          const parsed = this.parseResponse(JSON.parse(raw));
+          this.favorites.set(parsed);
+          return of(parsed);
+        }
+      } catch {}
+      this.favorites.set([]);
+      return of([]);
+    }
+
     return this.http.get<any>(`${this.apiUrl}Favorites`).pipe(
       map(res => this.parseResponse(res)),
       switchMap(favs => {
@@ -75,6 +93,33 @@ export class FavoritesService {
   }
 
   addFavorite(productId: number): Observable<any> {
+    if (!this.authService.isLoggedIn()) {
+      return this.http.get<any>(`${this.apiUrl}Products/${productId}`).pipe(
+        map(prod => {
+          const favItem: IFavoriteItem = {
+            id: `guest_${productId}_${Date.now()}`,
+            productId: String(productId),
+            productName: prod.nameEn || prod.name || '',
+            productNameEn: prod.nameEn || prod.name || '',
+            productNameAr: prod.nameAr || prod.name || '',
+            productImage: prod.mainImageUrl || prod.imageUrl || '',
+            price: Number(prod.price || 0),
+            salePrice: prod.salePrice ? Number(prod.salePrice) : undefined,
+            addedAt: new Date().toISOString(),
+            inStock: prod.inStock ?? true,
+          };
+          
+          const current = [...this.favorites()];
+          if (!current.some(f => Number(f.productId) === productId)) {
+            current.push(favItem);
+            this.favorites.set(current);
+            this.syncToLocalStorage(current);
+          }
+          return { success: true };
+        })
+      );
+    }
+
     return this.http.post<any>(`${this.apiUrl}Favorites/${productId}`, {}).pipe(
       tap(() => {
         // Refresh signal from backend after successful add
@@ -84,6 +129,13 @@ export class FavoritesService {
   }
 
   removeFavorite(productId: number): Observable<any> {
+    if (!this.authService.isLoggedIn()) {
+      const updated = this.favorites().filter(f => Number(f.productId) !== productId);
+      this.favorites.set(updated);
+      this.syncToLocalStorage(updated);
+      return of({ success: true });
+    }
+
     return this.http.delete<any>(`${this.apiUrl}Favorites/${productId}`).pipe(
       tap(() => {
         // Optimistic local removal immediately
