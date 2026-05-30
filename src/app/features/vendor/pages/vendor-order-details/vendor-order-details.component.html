@@ -1,5 +1,334 @@
-<section class="vendor-order-details" aria-label="Vendor order details">
-  <h1>Order Details</h1>
-  <app-order-status-badge />
-  <!-- Phase 2: order details & status management -->
-</section>
+<main class="vendor-order-details" aria-label="Vendor order details">
+  <!-- Header -->
+  <header class="order-details__header">
+    <div class="order-details__header-content">
+      <p class="order-details__eyebrow">Vendor Portal</p>
+      <h1 class="order-details__title">Order Details</h1>
+      <p class="order-details__subtitle">
+        @if (order()) {
+          Order #{{ order()!.orderNumber }}
+        } @else {
+          <span class="skeleton-text skeleton-text--short"></span>
+        }
+      </p>
+    </div>
+    <div class="order-details__header-actions">
+      <button class="order-details__back-button" disabled aria-label="Back to orders">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Orders
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <div class="order-details__container">
+    <!-- Left Column -->
+    <div class="order-details__main">
+      <!-- Products Section -->
+      <section class="order-details__section" aria-labelledby="ordered-products-title">
+        <h2 id="ordered-products-title" class="order-details__section-title">Ordered Products</h2>
+        <div class="order-details__section-content">
+          @if (order()) {
+            <div class="order-details__products">
+              @for (item of order()!.items; track item.id) {
+                <div class="order-details__product-row">
+                  <div class="order-details__product-image">
+                    @if (item.thumbnailUrl) {
+                      <img
+                        [src]="item.thumbnailUrl"
+                        [alt]="item.productName"
+                        class="order-details__product-img"
+                      />
+                    } @else {
+                      <div class="order-details__product-img-placeholder" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                          <path d="M21 15l-5-5L5 21"></path>
+                        </svg>
+                      </div>
+                    }
+                  </div>
+                  <div class="order-details__product-info">
+                    <h3 class="order-details__product-name">{{ item.productName }}</h3>
+                    @if (item.sku) {
+                      <p class="order-details__product-sku">SKU: {{ item.sku }}</p>
+                    }
+                  </div>
+                  <div class="order-details__product-quantity">
+                    <span class="order-details__product-label">Qty</span>
+                    <span class="order-details__product-value">{{ item.quantity }}</span>
+                  </div>
+                  <div class="order-details__product-price">
+                    <span class="order-details__product-label">Price</span>
+                    <span class="order-details__product-value">{{ item.unitPrice | currency }}</span>
+                  </div>
+                  <div class="order-details__product-total">
+                    <span class="order-details__product-label">Total</span>
+                    <span class="order-details__product-value">{{ item.lineTotal | currency }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="order-details__skeleton-products">
+              @for (item of skeletonItems; track $index) {
+                <div class="order-details__product-row">
+                  <div class="order-details__product-image">
+                    <div class="skeleton-image"></div>
+                  </div>
+                  <div class="order-details__product-info">
+                    <div class="skeleton-text skeleton-text--medium"></div>
+                    <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
+                  </div>
+                  <div class="order-details__product-quantity">
+                    <span class="order-details__product-label">Qty</span>
+                    <div class="skeleton-text skeleton-text--xs"></div>
+                  </div>
+                  <div class="order-details__product-price">
+                    <span class="order-details__product-label">Price</span>
+                    <div class="skeleton-text skeleton-text--xs"></div>
+                  </div>
+                  <div class="order-details__product-total">
+                    <span class="order-details__product-label">Total</span>
+                    <div class="skeleton-text skeleton-text--xs"></div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Shipping Information Card -->
+      <section class="order-details__card" aria-labelledby="shipping-info-title">
+        <h2 id="shipping-info-title" class="order-details__card-title">Shipping Information</h2>
+        <div class="order-details__card-content">
+          @if (order()) {
+            <div class="order-details__info-grid">
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Delivery Address</span>
+                <div class="order-details__info-value">
+                  {{ order()!.shippingAddress.addressLine1 }}
+                  @if (order()!.shippingAddress.addressLine2) {
+                    <div>{{ order()!.shippingAddress.addressLine2 }}</div>
+                  }
+                  <div>
+                    {{ order()!.shippingAddress.city }}
+                    @if (order()!.shippingAddress.state) {
+                      , {{ order()!.shippingAddress.state }}
+                    }
+                    {{ order()!.shippingAddress.postalCode }}
+                  </div>
+                  <div>{{ order()!.shippingAddress.country }}</div>
+                </div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Shipping Method</span>
+                <div class="order-details__info-value">
+                  @if (order()!.carrier) {
+                    {{ order()!.carrier }}
+                  } @else {
+                    <span class="order-details__placeholder">Not specified</span>
+                  }
+                </div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Tracking Number</span>
+                <div class="order-details__info-value">
+                  @if (order()!.trackingNumber) {
+                    <code class="order-details__code">{{ order()!.trackingNumber }}</code>
+                  } @else {
+                    <span class="order-details__placeholder">Not available</span>
+                  }
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="order-details__info-grid">
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Delivery Address</span>
+                <div class="skeleton-text skeleton-text--medium" style="margin-top: 0.5rem;"></div>
+                <div class="skeleton-text skeleton-text--medium" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Shipping Method</span>
+                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Tracking Number</span>
+                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column -->
+    <aside class="order-details__sidebar">
+      <!-- Customer Information Card -->
+      <section class="order-details__card order-details__card--sticky" aria-labelledby="customer-info-title">
+        <h2 id="customer-info-title" class="order-details__card-title">Customer Information</h2>
+        <div class="order-details__card-content">
+          @if (order()) {
+            <div class="order-details__info-list">
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Name</span>
+                <div class="order-details__info-value">{{ order()!.customer.fullName }}</div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Email</span>
+                <div class="order-details__info-value order-details__email">{{ order()!.customer.email }}</div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Phone</span>
+                <div class="order-details__info-value">
+                  @if (order()!.customer.phone) {
+                    {{ order()!.customer.phone }}
+                  } @else {
+                    <span class="order-details__placeholder">Not provided</span>
+                  }
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="order-details__info-list">
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Name</span>
+                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Email</span>
+                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Phone</span>
+                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Order Summary Card -->
+      <section class="order-details__card" aria-labelledby="order-summary-title">
+        <h2 id="order-summary-title" class="order-details__card-title">Order Summary</h2>
+        <div class="order-details__card-content">
+          @if (order()) {
+            <div class="order-details__summary">
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Order Number</span>
+                <code class="order-details__summary-value">{{ order()!.orderNumber }}</code>
+              </div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Order Date</span>
+                <span class="order-details__summary-value">{{ order()!.placedAt | date: 'short' }}</span>
+              </div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Status</span>
+                <div class="order-details__summary-value" style="margin-top: 0.25rem;">
+                  <app-order-status-badge [status]="order()!.status"></app-order-status-badge>
+                </div>
+              </div>
+              <div class="order-details__summary-divider"></div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Subtotal</span>
+                <span class="order-details__summary-value">{{ order()!.subtotal | currency }}</span>
+              </div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Shipping</span>
+                <span class="order-details__summary-value">{{ order()!.shippingCost | currency }}</span>
+              </div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Tax</span>
+                <span class="order-details__summary-value">{{ order()!.taxAmount | currency }}</span>
+              </div>
+              @if (order()!.discountAmount > 0) {
+                <div class="order-details__summary-row">
+                  <span class="order-details__summary-label">Discount</span>
+                  <span class="order-details__summary-value order-details__summary-discount">-{{ order()!.discountAmount | currency }}</span>
+                </div>
+              }
+              <div class="order-details__summary-divider"></div>
+              <div class="order-details__summary-row order-details__summary-row--total">
+                <span class="order-details__summary-label">Total</span>
+                <span class="order-details__summary-value order-details__summary-total">{{ order()!.totalAmount | currency }}</span>
+              </div>
+            </div>
+          } @else {
+            <div class="order-details__summary">
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Order Number</span>
+                <div class="skeleton-text skeleton-text--xs"></div>
+              </div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Order Date</span>
+                <div class="skeleton-text skeleton-text--xs"></div>
+              </div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Status</span>
+                <div class="skeleton-text skeleton-text--xs" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="order-details__summary-divider"></div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Subtotal</span>
+                <div class="skeleton-text skeleton-text--xs"></div>
+              </div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Shipping</span>
+                <div class="skeleton-text skeleton-text--xs"></div>
+              </div>
+              <div class="order-details__summary-row">
+                <span class="order-details__summary-label">Tax</span>
+                <div class="skeleton-text skeleton-text--xs"></div>
+              </div>
+              <div class="order-details__summary-divider"></div>
+              <div class="order-details__summary-row order-details__summary-row--total">
+                <span class="order-details__summary-label">Total</span>
+                <div class="skeleton-text skeleton-text--xs"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Payment Information Card -->
+      <section class="order-details__card" aria-labelledby="payment-info-title">
+        <h2 id="payment-info-title" class="order-details__card-title">Payment Information</h2>
+        <div class="order-details__card-content">
+          @if (order()) {
+            <div class="order-details__info-list">
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Payment Method</span>
+                <div class="order-details__info-value">
+                  <span class="order-details__placeholder">N/A</span>
+                </div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Payment Status</span>
+                <div class="order-details__info-value">
+                  <span class="order-details__payment-status" [attr.data-status]="order()!.paymentStatus">{{ order()!.paymentStatus }}</span>
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="order-details__info-list">
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Payment Method</span>
+                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="order-details__info-item">
+                <span class="order-details__info-label">Payment Status</span>
+                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    </aside>
+  </div>
+</main>
