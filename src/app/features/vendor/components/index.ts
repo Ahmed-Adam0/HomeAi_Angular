@@ -1,0 +1,7 @@
+export { OrdersTable } from './orders-table/orders-table.component';
+export { OrderStatusBadge } from './order-status-badge/order-status-badge.component';
+export { RevenueCards } from './revenue-cards/revenue-cards.component';
+export { AnalyticsCards } from './analytics-cards/analytics-cards.component';
+export { NotificationsList } from './notifications-list/notifications-list.component';
+export { WorkshopProfileForm } from './workshop-profile-form/workshop-profile-form.component';
+export { VendorStatsOverview } from './vendor-stats-overview/vendor-stats-overview.component';

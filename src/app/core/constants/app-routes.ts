@@ -29,6 +29,15 @@ export const APP_ROUTES = {
   ORDERS: 'orders',
   ORDER_DETAILS: 'orders/:id',
 
+  VENDOR: 'vendor',
+  VENDOR_ORDERS: 'orders',
+  VENDOR_ORDER_DETAILS: 'orders/:id',
+  VENDOR_ORDER_DETAILS_FULL: 'vendor/orders/:id',
+  VENDOR_REVENUE: 'revenue',
+  VENDOR_ANALYTICS: 'analytics',
+  VENDOR_PROFILE: 'profile',
+  VENDOR_NOTIFICATIONS: 'notifications',
+
   AI_CHAT: 'ai-chat',
 
   NOT_FOUND: '404',
@@ -63,6 +72,14 @@ export const NAV_ROUTES = {
   FAVORITES: '/favorites',
 
   ORDERS: '/orders',
+
+  VENDOR: '/vendor',
+  VENDOR_ORDERS: '/vendor/orders',
+  vendorOrderDetails: (id: string | number) => `/vendor/orders/${id}`,
+  VENDOR_REVENUE: '/vendor/revenue',
+  VENDOR_ANALYTICS: '/vendor/analytics',
+  VENDOR_PROFILE: '/vendor/profile',
+  VENDOR_NOTIFICATIONS: '/vendor/notifications',
 
   AI_CHAT: '/ai-chat'
 } as const;

@@ -1,0 +1,44 @@
+<section class="vendor-dashboard" aria-label="Vendor dashboard">
+  <header class="vendor-dashboard__header">
+    <h1>Vendor Dashboard</h1>
+    <p class="vendor-dashboard__subtitle">Summary hub — detailed management lives on dedicated pages.</p>
+  </header>
+
+  <app-vendor-stats-overview />
+
+  <div class="vendor-dashboard__grid">
+    <section class="vendor-dashboard__section" aria-label="Revenue summary">
+      <h2>Revenue Summary</h2>
+      <app-revenue-cards />
+    </section>
+
+    <section class="vendor-dashboard__section" aria-label="Analytics summary">
+      <h2>Analytics Summary</h2>
+      <app-analytics-cards />
+    </section>
+  </div>
+
+  <section class="vendor-dashboard__section" aria-label="Recent orders preview">
+    <div class="vendor-dashboard__section-header">
+      <h2>Recent Orders</h2>
+      <a [routerLink]="routes.VENDOR_ORDERS">View all orders</a>
+    </div>
+    <app-orders-table />
+  </section>
+
+  <section class="vendor-dashboard__section" aria-label="Recent notifications preview">
+    <div class="vendor-dashboard__section-header">
+      <h2>Recent Notifications</h2>
+      <a [routerLink]="routes.VENDOR_NOTIFICATIONS">View all notifications</a>
+    </div>
+    <app-notifications-list />
+  </section>
+
+  <nav class="vendor-dashboard__quick-actions" aria-label="Quick navigation">
+    <a [routerLink]="routes.VENDOR_ORDERS">Manage Orders</a>
+    <a [routerLink]="routes.VENDOR_REVENUE">Revenue</a>
+    <a [routerLink]="routes.VENDOR_ANALYTICS">Analytics</a>
+    <a [routerLink]="routes.VENDOR_PROFILE">Workshop Profile</a>
+    <a [routerLink]="routes.VENDOR_NOTIFICATIONS">Notifications</a>
+  </nav>
+</section>

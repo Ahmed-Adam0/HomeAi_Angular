@@ -97,6 +97,15 @@ export const routes: Routes = [
           ),
       },
 
+      // Vendor
+      {
+        path: '',
+        loadChildren: () =>
+          import('./features/vendor/vendor.routes').then(
+            (m) => m.vendorRoutes
+          ),
+      },
+
       // AI Chat
       {
         path: '',
