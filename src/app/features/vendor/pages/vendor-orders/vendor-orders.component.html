@@ -1,4 +1,125 @@
-<section class="vendor-orders" aria-label="Vendor orders">
-  <h1>Vendor Orders</h1>
-  <app-orders-table />
-</section>
+<main class="vendor-orders" aria-label="Vendor orders management">
+  <header class="vendor-orders__header">
+    <div class="vendor-orders__header-content">
+      <p class="vendor-orders__eyebrow">Vendor Portal</p>
+      <h1 class="vendor-orders__title">Orders Management</h1>
+      <p class="vendor-orders__description">
+        Manage customer orders, track fulfillment progress, and monitor order activity.
+      </p>
+    </div>
+  </header>
+
+  <section class="vendor-orders__filters" aria-label="Order filters">
+    <div class="vendor-orders__filters-toolbar">
+      <div class="vendor-orders__search-field">
+        <label class="vendor-orders__filter-label" for="vendor-orders-search">
+          Search orders
+        </label>
+        <div class="vendor-orders__search-control">
+          <span class="vendor-orders__search-icon" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </span>
+          <input
+            id="vendor-orders-search"
+            class="vendor-orders__search-input"
+            type="search"
+            name="orderSearch"
+            placeholder="Search orders..."
+            autocomplete="off"
+            [value]="searchTerm()"
+            (input)="onSearchInput($event)"
+          />
+        </div>
+      </div>
+
+      <div class="vendor-orders__status-field">
+        <label class="vendor-orders__filter-label" for="vendor-orders-status">
+          Order status
+        </label>
+        <div class="vendor-orders__select-control">
+          <select
+            id="vendor-orders-status"
+            class="vendor-orders__status-select"
+            name="orderStatus"
+            [value]="selectedStatus()"
+            (change)="onStatusChange($event)"
+          >
+            @for (option of statusFilterOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+          <span class="vendor-orders__select-chevron" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="vendor-orders__table-section"
+    aria-labelledby="vendor-orders-table-heading"
+  >
+    <header class="vendor-orders__section-head">
+      <h2 id="vendor-orders-table-heading" class="vendor-orders__section-title">
+        Recent Orders
+      </h2>
+    </header>
+
+    @if (filteredOrders().length) {
+      <app-orders-table
+        [orders]="filteredOrders()"
+        (viewOrder)="onViewOrder($event)"
+      />
+    } @else {
+      <div class="vendor-orders__empty-state" role="status">
+        <div class="vendor-orders__empty-icon" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </div>
+        <h3 class="vendor-orders__empty-title">No orders found</h3>
+        <p class="vendor-orders__empty-description">
+          Orders will appear here once customers start placing purchases.
+        </p>
+      </div>
+    }
+  </section>
+</main>

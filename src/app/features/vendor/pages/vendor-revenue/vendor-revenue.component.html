@@ -1,4 +1,123 @@
-<section class="vendor-revenue" aria-label="Vendor revenue">
-  <h1>Revenue Overview</h1>
-  <app-revenue-cards />
-</section>
+<main class="vendor-revenue" aria-label="Vendor revenue overview">
+  <header class="vendor-revenue__header">
+    <div class="vendor-revenue__header-content">
+      <p class="vendor-revenue__eyebrow">Vendor Portal</p>
+      <h1 class="vendor-revenue__title">Revenue Overview</h1>
+      <p class="vendor-revenue__description">
+        Monitor revenue performance, financial growth, and upcoming business insights from one
+        centralized dashboard.
+      </p>
+    </div>
+
+    <div class="vendor-revenue__meta" aria-label="Revenue dashboard metadata">
+      <span class="vendor-revenue__meta-badge">Financial Overview</span>
+      <span class="vendor-revenue__meta-note">Revenue dashboard</span>
+    </div>
+  </header>
+
+  <div class="vendor-revenue__content">
+    <section
+      class="vendor-revenue__section"
+      aria-labelledby="vendor-revenue-summary-heading"
+    >
+      <header class="vendor-revenue__section-head">
+        <h2 id="vendor-revenue-summary-heading" class="vendor-revenue__section-title">
+          Revenue Summary
+        </h2>
+      </header>
+
+      @if (revenue(); as revenueData) {
+        <app-revenue-cards [revenue]="revenueData" />
+      } @else {
+        <div
+          class="vendor-revenue__placeholder"
+          role="status"
+          aria-label="Loading revenue summary"
+          [attr.aria-busy]="isRevenueLoading()"
+        >
+          <div
+            class="vendor-revenue__skeleton-grid vendor-revenue__skeleton-grid--kpis"
+            aria-hidden="true"
+          >
+            @for (slot of kpiSkeletonSlots; track slot) {
+              <div class="vendor-revenue__skeleton-card">
+                <div class="vendor-revenue__skeleton-icon fm-skeleton"></div>
+                <div
+                  class="vendor-revenue__skeleton-line fm-skeleton fm-skeleton-text short"
+                ></div>
+                <div
+                  class="vendor-revenue__skeleton-line fm-skeleton fm-skeleton-text title"
+                ></div>
+                <div
+                  class="vendor-revenue__skeleton-line fm-skeleton fm-skeleton-text medium"
+                ></div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </section>
+
+    <section
+      class="vendor-revenue__section"
+      aria-labelledby="vendor-revenue-insights-heading"
+    >
+      <header class="vendor-revenue__section-head">
+        <h2 id="vendor-revenue-insights-heading" class="vendor-revenue__section-title">
+          Revenue Insights &amp; Trends
+        </h2>
+      </header>
+
+      <article class="vendor-revenue__insights-card">
+        <div class="vendor-revenue__insights-body">
+          <div class="vendor-revenue__insights-copy">
+            <div class="vendor-revenue__insights-icon" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+
+            <h3 class="vendor-revenue__insights-title">
+              Revenue charts and trends will appear here once analytics data is connected.
+            </h3>
+            <p class="vendor-revenue__insights-description">
+              Future revenue visualizations, growth comparisons, and performance forecasting
+              widgets will be displayed in this area.
+            </p>
+          </div>
+
+          <div
+            class="vendor-revenue__insights-visual"
+            role="presentation"
+            aria-hidden="true"
+          >
+            <div class="vendor-revenue__insights-chart-surface">
+              @for (slot of insightsPlaceholderSlots; track slot) {
+                <div class="vendor-revenue__insights-skeleton-row">
+                  <div
+                    class="vendor-revenue__insights-skeleton-line fm-skeleton fm-skeleton-text long"
+                  ></div>
+                  <div
+                    class="vendor-revenue__insights-skeleton-line fm-skeleton fm-skeleton-text medium"
+                  ></div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+</main>
