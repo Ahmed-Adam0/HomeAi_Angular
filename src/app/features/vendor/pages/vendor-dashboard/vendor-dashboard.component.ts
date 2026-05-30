@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { NAV_ROUTES } from '../../../../core/constants/app-routes';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+} from '@angular/core';
 import {
   AnalyticsCards,
   NotificationsList,
@@ -8,12 +11,17 @@ import {
   RevenueCards,
   VendorStatsOverview,
 } from '../../components';
+import {
+  IVendorAnalytics,
+  IVendorNotification,
+  IVendorOrder,
+  IVendorRevenue,
+} from '../../interfaces';
 
 @Component({
   selector: 'app-vendor-dashboard',
   standalone: true,
   imports: [
-    RouterLink,
     VendorStatsOverview,
     RevenueCards,
     AnalyticsCards,
@@ -22,7 +30,14 @@ import {
   ],
   templateUrl: './vendor-dashboard.component.html',
   styleUrl: './vendor-dashboard.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VendorDashboard {
-  readonly routes = NAV_ROUTES;
+  readonly analytics = signal<IVendorAnalytics | null>(null);
+  readonly revenue = signal<IVendorRevenue | null>(null);
+  readonly orders = signal<IVendorOrder[]>([]);
+  readonly notifications = signal<IVendorNotification[]>([]);
+
+  readonly hasOrders = computed(() => this.orders().length > 0);
+  readonly hasNotifications = computed(() => this.notifications().length > 0);
 }

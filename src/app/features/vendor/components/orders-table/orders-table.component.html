@@ -1,3 +1,79 @@
 <section class="orders-table" aria-label="Vendor orders table">
-  <!-- Phase 2: orders table -->
+  @if (!orders().length) {
+    <div class="orders-table__empty card-premium">
+      <div class="orders-table__empty-inner">
+        <div class="orders-table__empty-icon" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </div>
+        <h3 class="orders-table__empty-title">No Orders Found</h3>
+        <p class="orders-table__empty-description">
+          Orders will appear here once customers start placing purchases.
+        </p>
+      </div>
+    </div>
+  } @else {
+    <div class="orders-table__card card-premium">
+      <div class="table-responsive">
+        <table class="orders-table__table table align-middle mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Order ID</th>
+              <th scope="col">Customer Name</th>
+              <th scope="col">Order Date</th>
+              <th scope="col">Total Amount</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orders(); track order.id) {
+              <tr class="orders-table__row">
+                <td>
+                  <div class="orders-table__order-id">
+                    <span class="orders-table__order-number">{{ order.orderNumber }}</span>
+                    <span class="orders-table__order-meta">#{{ order.id }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="orders-table__customer">{{ order.customer.fullName }}</span>
+                </td>
+                <td>
+                  <span class="orders-table__date">{{ order.placedAt | date: 'mediumDate' }}</span>
+                </td>
+                <td>
+                  <span class="orders-table__amount">{{ order.totalAmount | currencyFormat }}</span>
+                </td>
+                <td>
+                  <app-order-status-badge [status]="order.status"></app-order-status-badge>
+                </td>
+                <td class="text-end">
+                  <button
+                    type="button"
+                    class="orders-table__action-btn"
+                    (click)="onViewOrder(order.id)"
+                  >
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
 </section>

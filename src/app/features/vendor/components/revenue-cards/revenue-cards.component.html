@@ -1,3 +1,111 @@
 <section class="revenue-cards" aria-label="Vendor revenue cards">
-  <!-- Phase 2: revenue cards -->
+  <div class="row g-3 g-lg-4">
+    @for (card of cards(); track card.title) {
+      <div class="col-12 col-md-6 col-xl-3">
+        <article
+          class="revenue-card"
+          [class]="'revenue-card--' + card.variant"
+        >
+          <div class="revenue-card__icon" aria-hidden="true">
+            @switch (card.icon) {
+              @case ('revenue') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              }
+              @case ('calendar') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              }
+              @case ('orders') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              }
+              @case ('analytics') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              }
+            }
+          </div>
+
+          <h3 class="revenue-card__title">{{ card.title }}</h3>
+          <p class="revenue-card__value">{{ card.value }}</p>
+
+          @if (card.trend !== undefined) {
+            <p
+              class="revenue-card__trend"
+              [class.revenue-card__trend--up]="getTrendDirection(card.trend) === 'up'"
+              [class.revenue-card__trend--down]="getTrendDirection(card.trend) === 'down'"
+              [class.revenue-card__trend--neutral]="getTrendDirection(card.trend) === 'neutral'"
+            >
+              @switch (getTrendDirection(card.trend)) {
+                @case ('up') {
+                  <span aria-hidden="true">↑</span>
+                  {{ getTrendMagnitude(card.trend) | number: '1.1-1' }}%
+                }
+                @case ('down') {
+                  <span aria-hidden="true">↓</span>
+                  {{ getTrendMagnitude(card.trend) | number: '1.1-1' }}%
+                }
+                @case ('neutral') {
+                  0%
+                }
+              }
+            </p>
+          }
+        </article>
+      </div>
+    }
+  </div>
 </section>

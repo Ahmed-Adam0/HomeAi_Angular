@@ -1,3 +1,7 @@
-<span class="order-status-badge">
-  <!-- Phase 2: order status badge -->
+<span
+  class="status-badge"
+  [class]="badgeClass()"
+  [attr.aria-label]="'Order status: ' + statusLabel()"
+>
+  {{ statusLabel() }}
 </span>

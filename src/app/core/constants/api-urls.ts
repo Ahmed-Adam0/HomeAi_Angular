@@ -43,5 +43,17 @@ export const API_URLS = {
     GET: 'profile',
     UPDATE: 'profile',
     CHANGE_PASSWORD: 'profile/change-password',
-  }
+  },
+  VENDOR: {
+    ORDERS: 'vendor/orders',
+    ORDER_DETAILS: (id: string | number) => `vendor/orders/${id}`,
+    REVENUE: 'vendor/revenue',
+    ANALYTICS: 'vendor/analytics',
+    NOTIFICATIONS: 'vendor/notifications',
+    WORKSHOP_PROFILE: 'vendor/workshop-profile',
+    UPDATE_ORDER_STATUS: (id: string | number) => `vendor/orders/${id}/status`,
+  },
 } as const;
+
+export type ApiUrls = typeof API_URLS;
+export type VendorApiUrls = typeof API_URLS.VENDOR;

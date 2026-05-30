@@ -1,3 +1,97 @@
-<section class="vendor-stats-overview" aria-label="Vendor stats overview">
-  <!-- Phase 2: vendor stats overview -->
+<section class="vendor-stats-overview" aria-labelledby="vendor-stats-overview-heading">
+  <h2 id="vendor-stats-overview-heading" class="vendor-stats-overview__heading">
+    Vendor Statistics
+  </h2>
+
+  <div class="vendor-stats-overview__grid" role="list">
+    @for (card of cards(); track card.id) {
+      <article class="stat-card" [class]="'stat-card--' + card.icon" role="listitem">
+        <div class="stat-card__top">
+          <div class="stat-card__icon" aria-hidden="true">
+            @switch (card.icon) {
+              @case ('orders') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              }
+              @case ('revenue') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              }
+              @case ('active-orders') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              }
+              @case ('notifications') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+              }
+            }
+          </div>
+
+          @if (card.trend) {
+            <span
+              class="stat-card__trend"
+              [class.stat-card__trend--up]="card.trendTone === 'up'"
+              [class.stat-card__trend--down]="card.trendTone === 'down'"
+              [class.stat-card__trend--neutral]="card.trendTone === 'neutral'"
+            >
+              {{ card.trend }}
+            </span>
+          }
+        </div>
+
+        <p class="stat-card__value">{{ card.value }}</p>
+        <h3 class="stat-card__label">{{ card.label }}</h3>
+      </article>
+    }
+  </div>
 </section>

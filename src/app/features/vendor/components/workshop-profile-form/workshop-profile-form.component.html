@@ -1,3 +1,176 @@
-<section class="workshop-profile-form" aria-label="Workshop profile form">
-  <!-- Phase 2: reactive workshop profile form -->
-</section>
+<div class="workshop-profile-form">
+  <div class="workshop-profile-form__container">
+    <article class="workshop-profile-card" aria-labelledby="workshop-profile-title">
+      <header class="workshop-profile-card__header">
+        <div class="workshop-profile-card__avatar" aria-hidden="true">
+          <i class="bi bi-shop"></i>
+        </div>
+        <div class="workshop-profile-card__heading">
+          <h2 id="workshop-profile-title" class="workshop-profile-card__title">Workshop Profile</h2>
+          <p class="workshop-profile-card__subtitle">
+            Manage your workshop information and contact details
+          </p>
+        </div>
+      </header>
+
+      <form
+        class="workshop-profile-card__form"
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+        novalidate
+      >
+        <div class="workshop-profile-card__body">
+          <section class="workshop-profile-section" aria-labelledby="workshop-details-heading">
+            <h3 id="workshop-details-heading" class="workshop-profile-section__title">
+              Workshop details
+            </h3>
+
+            <div class="row g-4">
+              <div class="col-12 col-md-6">
+                <label class="workshop-field__label" for="workshopName">Workshop Name</label>
+                <input
+                  id="workshopName"
+                  type="text"
+                  class="workshop-field__control form-control"
+                  formControlName="workshopName"
+                  autocomplete="organization"
+                  [class.is-invalid]="
+                    (form.controls.workshopName.touched || submitted()) &&
+                    form.controls.workshopName.invalid
+                  "
+                />
+                @if (
+                  (form.controls.workshopName.touched || submitted()) &&
+                  form.controls.workshopName.errors?.['required']
+                ) {
+                  <p class="workshop-field__error" role="alert">Workshop name is required</p>
+                }
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="workshop-field__label" for="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  class="workshop-field__control form-control"
+                  formControlName="email"
+                  autocomplete="email"
+                  [class.is-invalid]="
+                    (form.controls.email.touched || submitted()) && form.controls.email.invalid
+                  "
+                />
+                @if (
+                  (form.controls.email.touched || submitted()) &&
+                  form.controls.email.errors?.['required']
+                ) {
+                  <p class="workshop-field__error" role="alert">Email is required</p>
+                }
+                @if (
+                  (form.controls.email.touched || submitted()) &&
+                  form.controls.email.errors?.['email']
+                ) {
+                  <p class="workshop-field__error" role="alert">Please enter a valid email address</p>
+                }
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="workshop-field__label" for="phone">Phone</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  class="workshop-field__control form-control"
+                  formControlName="phone"
+                  autocomplete="tel"
+                  [class.is-invalid]="
+                    (form.controls.phone.touched || submitted()) && form.controls.phone.invalid
+                  "
+                />
+                @if (
+                  (form.controls.phone.touched || submitted()) &&
+                  form.controls.phone.errors?.['required']
+                ) {
+                  <p class="workshop-field__error" role="alert">Phone number is required</p>
+                }
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="workshop-field__label" for="address">Address</label>
+                <input
+                  id="address"
+                  type="text"
+                  class="workshop-field__control form-control"
+                  formControlName="address"
+                  autocomplete="street-address"
+                  [class.is-invalid]="
+                    (form.controls.address.touched || submitted()) && form.controls.address.invalid
+                  "
+                />
+                @if (
+                  (form.controls.address.touched || submitted()) &&
+                  form.controls.address.errors?.['required']
+                ) {
+                  <p class="workshop-field__error" role="alert">Address is required</p>
+                }
+              </div>
+
+              <div class="col-12">
+                <label class="workshop-field__label" for="description">Description</label>
+                <textarea
+                  id="description"
+                  class="workshop-field__control workshop-field__control--textarea form-control"
+                  formControlName="description"
+                  rows="4"
+                  [class.is-invalid]="
+                    (form.controls.description.touched || submitted()) &&
+                    form.controls.description.invalid
+                  "
+                ></textarea>
+                @if (
+                  (form.controls.description.touched || submitted()) &&
+                  form.controls.description.errors?.['required']
+                ) {
+                  <p class="workshop-field__error" role="alert">Description is required</p>
+                }
+              </div>
+
+              <div class="col-12">
+                <label class="workshop-field__label" for="logo">
+                  Logo URL
+                  <span class="workshop-field__optional">(optional)</span>
+                </label>
+                <input
+                  id="logo"
+                  type="url"
+                  class="workshop-field__control form-control"
+                  formControlName="logo"
+                  placeholder="https://example.com/logo.png"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <footer class="workshop-profile-card__footer">
+          <div class="workshop-profile-card__actions">
+            <button
+              type="button"
+              class="btn btn-outline-secondary workshop-profile-card__btn-cancel"
+              (click)="onCancel()"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-gradient workshop-profile-card__btn-save"
+              [disabled]="form.invalid"
+            >
+              <i class="bi bi-check2-circle" aria-hidden="true"></i>
+              Save Profile
+            </button>
+          </div>
+        </footer>
+      </form>
+    </article>
+  </div>
+</div>

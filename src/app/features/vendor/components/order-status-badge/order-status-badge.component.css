@@ -1,1 +1,54 @@
-/* Phase 2: order status badge styles */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--fm-radius-pill, 9999px);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  padding: 0.25rem 0.625rem;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+  white-space: nowrap;
+}
+
+.status-badge--warning {
+  background: rgba(176, 129, 73, 0.12);
+  border-color: rgba(176, 129, 73, 0.2);
+  color: var(--fm-color-warning-600, #8c6333);
+}
+
+.status-badge--info {
+  background: rgba(92, 127, 147, 0.12);
+  border-color: rgba(92, 127, 147, 0.2);
+  color: var(--fm-color-info-600, #446072);
+}
+
+.status-badge--primary {
+  background: var(--fm-color-primary-soft, rgba(184, 147, 92, 0.12));
+  border-color: rgba(184, 147, 92, 0.22);
+  color: var(--fm-color-primary-700, #8a683d);
+}
+
+.status-badge--success {
+  background: rgba(101, 126, 93, 0.12);
+  border-color: rgba(101, 126, 93, 0.22);
+  color: var(--fm-color-success-600, #4a5f44);
+}
+
+.status-badge--danger {
+  background: rgba(173, 92, 81, 0.12);
+  border-color: rgba(173, 92, 81, 0.22);
+  color: var(--fm-color-danger-600, #87443a);
+}
+
+@media (min-width: 768px) {
+  .status-badge {
+    font-size: 0.8125rem;
+    padding: 0.3125rem 0.75rem;
+  }
+}

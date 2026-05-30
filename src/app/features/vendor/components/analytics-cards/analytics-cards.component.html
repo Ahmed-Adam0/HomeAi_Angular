@@ -1,3 +1,111 @@
 <section class="analytics-cards" aria-label="Vendor analytics cards">
-  <!-- Phase 2: analytics cards -->
+  <div class="row g-3 g-lg-4">
+    @for (card of cards(); track card.title) {
+      <div class="col-12 col-md-6 col-xl-3">
+        <article
+          class="analytics-card"
+          [class]="'analytics-card--' + card.variant"
+        >
+          <div class="analytics-card__icon" aria-hidden="true">
+            @switch (card.icon) {
+              @case ('sales') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                  <polyline points="17 6 23 6 23 12"></polyline>
+                </svg>
+              }
+              @case ('check-circle') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              }
+              @case ('active-orders') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              }
+              @case ('top-products') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                  <path d="M4 22h16"></path>
+                  <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                  <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                  <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                </svg>
+              }
+            }
+          </div>
+
+          <h3 class="analytics-card__title">{{ card.title }}</h3>
+          <p class="analytics-card__value">{{ card.value }}</p>
+
+          @if (card.trend !== undefined) {
+            <p
+              class="analytics-card__trend"
+              [class.analytics-card__trend--up]="getTrendDirection(card.trend) === 'up'"
+              [class.analytics-card__trend--down]="getTrendDirection(card.trend) === 'down'"
+              [class.analytics-card__trend--neutral]="getTrendDirection(card.trend) === 'neutral'"
+            >
+              @switch (getTrendDirection(card.trend)) {
+                @case ('up') {
+                  <span aria-hidden="true">↑</span>
+                  {{ getTrendMagnitude(card.trend) | number: '1.1-1' }}%
+                }
+                @case ('down') {
+                  <span aria-hidden="true">↓</span>
+                  {{ getTrendMagnitude(card.trend) | number: '1.1-1' }}%
+                }
+                @case ('neutral') {
+                  0%
+                }
+              }
+            </p>
+          }
+        </article>
+      </div>
+    }
+  </div>
 </section>
