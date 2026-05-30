@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, tap, forkJoin, of, switchMap, catchError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -21,6 +21,20 @@ export class FavoritesService {
 
   /** Shared signal — authoritative source for all components */
   readonly favorites = signal<IFavoriteItem[]>([]);
+
+  constructor() {
+    effect(() => {
+      const loggedIn = this.authService.isAuthenticated();
+      if (loggedIn) {
+        this.mergeGuestFavorites().subscribe();
+      } else {
+        if (this.isBrowser) {
+          localStorage.removeItem(LOCAL_STORAGE_KEYS.FAVORITES);
+        }
+        this.favorites.set([]);
+      }
+    });
+  }
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -203,5 +217,60 @@ export class FavoritesService {
         newValue: JSON.stringify(favs),
       }));
     } catch {}
+  }
+
+  mergeGuestFavorites(): Observable<any> {
+    if (!this.isBrowser || !this.authService.isLoggedIn()) {
+      return of({ success: true });
+    }
+
+    try {
+      const raw = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITES);
+      if (!raw) {
+        return of({ success: true });
+      }
+
+      const parsed: IFavoriteItem[] = this.parseResponse(JSON.parse(raw));
+      const guestItems = parsed.filter(item => item.id && item.id.startsWith('guest_'));
+      
+      if (guestItems.length === 0) {
+        return of({ success: true });
+      }
+
+      return this.http.get<any>(`${this.apiUrl}Favorites`).pipe(
+        map(res => this.parseResponse(res)),
+        switchMap(backendFavs => {
+          const backendProductIds = new Set(backendFavs.map(f => Number(f.productId)));
+          const itemsToSync = guestItems.filter(item => !backendProductIds.has(Number(item.productId)));
+
+          if (itemsToSync.length === 0) {
+            this.syncToLocalStorage(backendFavs);
+            return of({ success: true });
+          }
+
+          const syncRequests = itemsToSync.map(item => 
+            this.http.post<any>(`${this.apiUrl}Favorites/${item.productId}`, {}).pipe(
+              catchError(err => {
+                console.error(`Failed to sync guest favorite ${item.productId}:`, err);
+                return of(null);
+              })
+            )
+          );
+
+          return forkJoin(syncRequests).pipe(
+            switchMap(() => {
+              return this.getFavorites().pipe(
+                tap(finalFavs => {
+                  this.syncToLocalStorage(finalFavs);
+                })
+              );
+            })
+          );
+        })
+      );
+    } catch (e) {
+      console.error('Failed to merge guest favorites:', e);
+      return of({ success: false });
+    }
   }
 }
