@@ -19,7 +19,12 @@
       class="vendor-dashboard__section vendor-dashboard__section--stats"
       [attr.aria-label]="'VENDOR.DASHBOARD.STATS_ARIA' | translate"
     >
-      @if (analytics(); as analyticsData) {
+      @if (analyticsError()) {
+        <div class="vendor-dashboard__section-error" role="alert">
+          <h3 class="vendor-dashboard__error-title">Failed to load analytics</h3>
+          <p class="vendor-dashboard__error-description">{{ analyticsError() }}</p>
+        </div>
+      } @else if (analytics(); as analyticsData) {
         <app-vendor-stats-overview [analytics]="analyticsData" />
       } @else {
         <div
@@ -49,7 +54,12 @@
           </h2>
         </header>
 
-        @if (revenue(); as revenueData) {
+        @if (revenueError()) {
+          <div class="vendor-dashboard__section-error" role="alert">
+            <h3 class="vendor-dashboard__error-title">Failed to load revenue</h3>
+            <p class="vendor-dashboard__error-description">{{ revenueError() }}</p>
+          </div>
+        } @else if (revenue(); as revenueData) {
           <app-revenue-cards [revenue]="revenueData" />
         } @else {
           <div
@@ -80,7 +90,12 @@
           </h2>
         </header>
 
-        @if (analytics(); as analyticsData) {
+        @if (analyticsError()) {
+          <div class="vendor-dashboard__section-error" role="alert">
+            <h3 class="vendor-dashboard__error-title">Failed to load analytics</h3>
+            <p class="vendor-dashboard__error-description">{{ analyticsError() }}</p>
+          </div>
+        } @else if (analytics(); as analyticsData) {
           <app-analytics-cards [analytics]="analyticsData" />
         } @else {
           <div
@@ -112,7 +127,28 @@
         </h2>
       </header>
 
-      @if (hasOrders()) {
+      @if (ordersLoading()) {
+        <div
+          class="vendor-dashboard__placeholder"
+          role="status"
+          aria-label="Loading recent orders..."
+        >
+          <div class="vendor-dashboard__skeleton-grid vendor-dashboard__skeleton-grid--cards">
+            @for (slot of [0, 1, 2, 3]; track slot) {
+              <div class="vendor-dashboard__skeleton-card" aria-hidden="true">
+                <div class="vendor-dashboard__skeleton-icon fm-skeleton"></div>
+                <div class="vendor-dashboard__skeleton-line fm-skeleton fm-skeleton-text short"></div>
+                <div class="vendor-dashboard__skeleton-line fm-skeleton fm-skeleton-text title"></div>
+              </div>
+            }
+          </div>
+        </div>
+      } @else if (ordersError()) {
+        <div class="vendor-dashboard__section-error" role="alert">
+          <h3 class="vendor-dashboard__error-title">Failed to load orders</h3>
+          <p class="vendor-dashboard__error-description">{{ ordersError() }}</p>
+        </div>
+      } @else if (hasOrders()) {
         <app-orders-table [orders]="orders()" />
       } @else {
         <div class="vendor-dashboard__empty-state" role="status">

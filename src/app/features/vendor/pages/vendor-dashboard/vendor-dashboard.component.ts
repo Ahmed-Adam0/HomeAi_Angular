@@ -1,12 +1,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs';
 import {
   AnalyticsCards,
   NotificationsList,
@@ -16,12 +18,14 @@ import {
 } from '../../components';
 import {
   IVendorAnalytics,
+  IVendorDashboardMetrics,
   IVendorNotification,
   IVendorOrderSummary,
   IVendorRevenue,
 } from '../../interfaces';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { VendorService } from '../../services/vendor.service';
+import { mapVendorDashboardMetrics } from '../../data-access/mappers/vendor-order.mapper';
 
 @Component({
   selector: 'app-vendor-dashboard',
@@ -38,46 +42,115 @@ import { VendorService } from '../../services/vendor.service';
   styleUrl: './vendor-dashboard.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VendorDashboard {
+export class VendorDashboard implements OnInit {
   private readonly vendorService = inject(VendorService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  readonly analytics = signal<IVendorAnalytics | null>(null);
+  readonly dashboardMetrics = signal<IVendorDashboardMetrics | null>(null);
   readonly revenue = signal<IVendorRevenue | null>(null);
   readonly orders = signal<IVendorOrderSummary[]>([]);
   readonly notifications = signal<IVendorNotification[]>([]);
 
-  readonly loading = signal<boolean>(false);
-  readonly error = signal<string | null>(null);
+  readonly analyticsLoading = signal<boolean>(false);
+  readonly revenueLoading = signal<boolean>(false);
+  readonly ordersLoading = signal<boolean>(false);
+
+  readonly analyticsError = signal<string | null>(null);
+  readonly revenueError = signal<string | null>(null);
+  readonly ordersError = signal<string | null>(null);
 
   readonly hasOrders = computed(() => this.orders().length > 0);
   readonly hasNotifications = computed(() => this.notifications().length > 0);
 
-  constructor() {
-    this.loadDashboardMetrics();
+  /**
+   * Computed signal that transforms dashboardMetrics to IVendorAnalytics
+   * for backward compatibility with VendorStatsOverview and AnalyticsCards components
+   */
+  readonly analytics = computed((): IVendorAnalytics | null => {
+    const metrics = this.dashboardMetrics();
+    if (!metrics) return null;
+
+    return mapVendorDashboardMetrics({
+      totalOrders: metrics.totalOrders,
+      activeOrders: metrics.activeOrders,
+      completedOrders: metrics.completedOrders,
+      totalRevenue: metrics.totalRevenue,
+      newCustomersCount: metrics.newCustomersCount,
+      orderGrowthPercentage: metrics.orderGrowthPercentage,
+      averageOrderValue: metrics.averageOrderValue,
+    });
+  });
+
+  ngOnInit(): void {
+    this.loadAnalytics();
+    this.loadRevenue();
+    this.loadOrders();
   }
 
-  private loadDashboardMetrics(): void {
-    this.loading.set(true);
-    this.error.set(null);
+  private loadAnalytics(): void {
+    this.analyticsLoading.set(true);
+    this.analyticsError.set(null);
 
-    forkJoin({
-      analytics: this.vendorService.getDashboardMetrics(),
-      revenue: this.vendorService.getRevenue(),
-      orders: this.vendorService.getOrders(),
-    })
-      .pipe(takeUntilDestroyed())
+    this.vendorService
+      .getDashboardMetrics()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.analyticsLoading.set(false))
+      )
       .subscribe({
-        next: ({ analytics, revenue, orders }) => {
-          this.analytics.set(analytics);
-          this.revenue.set(revenue);
+        next: (metrics) => this.dashboardMetrics.set(metrics),
+        error: (err) => {
+          console.error('Failed to load vendor analytics:', err);
+          this.analyticsError.set(
+            err?.message ?? 'Failed to load analytics data.'
+          );
+        },
+      });
+  }
+
+  private loadRevenue(): void {
+    this.revenueLoading.set(true);
+    this.revenueError.set(null);
+
+    this.vendorService
+      .getRevenue()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.revenueLoading.set(false))
+      )
+      .subscribe({
+        next: (revenue) => this.revenue.set(revenue),
+        error: (err) => {
+          console.error('Failed to load vendor revenue:', err);
+          this.revenueError.set(
+            err?.message ?? 'Failed to load revenue data.'
+          );
+        },
+      });
+  }
+
+  private loadOrders(): void {
+    this.ordersLoading.set(true);
+    this.ordersError.set(null);
+
+    this.vendorService
+      .getOrders()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.ordersLoading.set(false))
+      )
+      .subscribe({
+        next: (orders) => {
+          console.log('VendorDashboard.loadOrders orders received:', orders);
+          console.log('VendorDashboard.loadOrders orders.length:', orders.length);
           this.orders.set(orders);
-          this.loading.set(false);
         },
         error: (err) => {
-          console.error('Failed to load vendor dashboard metrics:', err);
-          this.error.set(err.message || 'An error occurred while loading dashboard metrics.');
-          this.loading.set(false);
-        }
+          console.error('Failed to load vendor orders:', err);
+          this.ordersError.set(
+            err?.message ?? 'Failed to load recent orders.'
+          );
+        },
       });
   }
 }

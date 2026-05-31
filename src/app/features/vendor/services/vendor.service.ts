@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants';
 import { IVendorOrdersFilterRequestDto } from '../data-access/dto/vendor-orders-filter-request.dto';
@@ -14,12 +14,13 @@ import { VendorOrderStatus } from '../models/vendor-order-status.enum';
 import {
   mapVendorOrdersFilterResponse,
   mapVendorOrderDetails,
-  mapVendorDashboardMetrics,
+  mapVendorDashboardMetricsDtoToViewModel,
   mapVendorOrderAnalytics,
 } from '../data-access/mappers/vendor-order.mapper';
 import { mapVendorRevenueStatistics } from '../data-access/mappers/vendor-revenue.mapper';
 import {
   IVendorAnalytics,
+  IVendorDashboardMetrics,
   IVendorNotification,
   IVendorOrder,
   IVendorOrderSummary,
@@ -49,7 +50,13 @@ export class VendorService {
         request
       )
       .pipe(
-        map(mapVendorOrdersFilterResponse)
+        tap((response) => {
+          console.log('VendorService.getOrders raw API response:', response);
+        }),
+        map(mapVendorOrdersFilterResponse),
+        tap((mappedOrders) => {
+          console.log('VendorService.getOrders mapped response:', mappedOrders);
+        })
       );
   }
 
@@ -93,13 +100,13 @@ export class VendorService {
     }
   }
 
-  getDashboardMetrics(): Observable<IVendorAnalytics> {
+  getDashboardMetrics(): Observable<IVendorDashboardMetrics> {
     return this.http
       .get<IVendorDashboardMetricsDto>(
         `${this.apiUrl}${API_URLS.VENDOR.DASHBOARD_METRICS}`
       )
       .pipe(
-        map(mapVendorDashboardMetrics)
+        map(mapVendorDashboardMetricsDtoToViewModel)
       );
   }
 

@@ -24,7 +24,8 @@ interface RevenueCardVm {
 @Component({
   selector: 'app-revenue-cards',
   standalone: true,
-  imports: [DecimalPipe, TranslatePipe],
+  imports: [DecimalPipe, TranslatePipe, CurrencyFormatPipe],
+  providers: [CurrencyFormatPipe],
   templateUrl: './revenue-cards.component.html',
   styleUrl: './revenue-cards.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

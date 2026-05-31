@@ -91,6 +91,8 @@ export class VendorOrders implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (summaries) => {
+          console.log('VendorOrders.loadOrders orders received:', summaries);
+          console.log('VendorOrders.loadOrders orders.length:', summaries.length);
           this.orders.set(summaries);
           this.loading.set(false);
         },

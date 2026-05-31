@@ -26,7 +26,8 @@ interface AnalyticsCardVm {
 @Component({
   selector: 'app-analytics-cards',
   standalone: true,
-  imports: [DecimalPipe, TranslatePipe],
+  imports: [DecimalPipe, TranslatePipe, CurrencyFormatPipe],
+  providers: [CurrencyFormatPipe],
   templateUrl: './analytics-cards.component.html',
   styleUrl: './analytics-cards.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -5,6 +5,7 @@ import { IVendorDashboardMetricsDto } from '../dto/vendor-dashboard-metrics.dto'
 import { IVendorOrderAnalyticsDto } from '../dto/vendor-order-analytics.dto';
 import { IVendorOrder, IVendorOrderSummary } from '../../interfaces/ivendor-order';
 import { IVendorAnalytics } from '../../interfaces/ivendor-analytics';
+import { IVendorDashboardMetrics } from '../../interfaces/ivendor-dashboard-metrics';
 import { VendorOrderStatus } from '../../models/vendor-order-status.enum';
 import { VendorMetricType } from '../../models/vendor-metric-type.enum';
 
@@ -182,6 +183,24 @@ export function mapVendorDashboardMetrics(
     ],
     trends: [],
     topProducts: [],
+  };
+}
+
+/**
+ * Maps VendorDashboardMetricsDto directly to IVendorDashboardMetrics model.
+ * Used by the dashboard component for dedicated dashboard metrics display.
+ */
+export function mapVendorDashboardMetricsDtoToViewModel(
+  dto: IVendorDashboardMetricsDto
+): IVendorDashboardMetrics {
+  return {
+    totalOrders: dto.totalOrders,
+    activeOrders: dto.activeOrders,
+    completedOrders: dto.completedOrders,
+    totalRevenue: dto.totalRevenue,
+    newCustomersCount: dto.newCustomersCount,
+    orderGrowthPercentage: dto.orderGrowthPercentage,
+    averageOrderValue: dto.averageOrderValue,
   };
 }
 

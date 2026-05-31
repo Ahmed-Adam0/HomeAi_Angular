@@ -27,7 +27,8 @@ interface VendorStatCardVm {
 @Component({
   selector: 'app-vendor-stats-overview',
   standalone: true,
-  imports: [DecimalPipe, TranslatePipe],
+  imports: [DecimalPipe, TranslatePipe, CurrencyFormatPipe],
+  providers: [CurrencyFormatPipe],
   templateUrl: './vendor-stats-overview.component.html',
   styleUrl: './vendor-stats-overview.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
