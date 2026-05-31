@@ -45,13 +45,12 @@ export const API_URLS = {
     CHANGE_PASSWORD: 'profile/change-password',
   },
   VENDOR: {
-    ORDERS: 'vendor/orders',
-    ORDER_DETAILS: (id: string | number) => `vendor/orders/${id}`,
-    REVENUE: 'vendor/revenue',
-    ANALYTICS: 'vendor/analytics',
-    NOTIFICATIONS: 'vendor/notifications',
-    WORKSHOP_PROFILE: 'vendor/workshop-profile',
-    UPDATE_ORDER_STATUS: (id: string | number) => `vendor/orders/${id}/status`,
+    ORDERS_FILTER: 'VendorOrders/orders/filter',
+    ORDER_DETAILS: (orderId: number | string) => `VendorOrders/orders/${orderId}`,
+    UPDATE_ORDER_STATUS: (orderId: number | string) => `VendorOrders/orders/${orderId}/status`,
+    REVENUE_ANALYTICS: 'VendorOrders/analytics/revenue',
+    ORDERS_ANALYTICS: 'VendorOrders/analytics/orders',
+    DASHBOARD_METRICS: 'VendorOrders/dashboard/metrics',
   },
 } as const;
 

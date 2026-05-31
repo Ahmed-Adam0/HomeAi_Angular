@@ -23,6 +23,34 @@
   </header>
 
   <div class="order-details__container">
+    @if (error()) {
+      <div class="order-details__error" role="alert" style="grid-column: 1 / -1;">
+        <div class="order-details__error-icon" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="order-details__error-content">
+          <h3 class="order-details__error-title">Failed to load order details</h3>
+          <p class="order-details__error-description">
+            {{ error() }}
+          </p>
+        </div>
+      </div>
+    }
+
     <div class="order-details__main">
       <section class="order-details__section" aria-labelledby="ordered-products-title">
         <h2 id="ordered-products-title" class="order-details__section-title">{{ 'VENDOR.ORDER_DETAILS.ORDERED_PRODUCTS' | translate }}</h2>

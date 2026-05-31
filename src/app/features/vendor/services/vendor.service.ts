@@ -1,9 +1,28 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { API_URLS } from '../../../core/constants';
+import { IVendorOrdersFilterRequestDto } from '../data-access/dto/vendor-orders-filter-request.dto';
+import { IVendorOrdersFilterResponseDto } from '../data-access/dto/vendor-orders-filter-response.dto';
+import { IVendorOrderDetailsDto } from '../data-access/dto/vendor-order-details.dto';
+import { IVendorUpdateOrderStatusRequestDto } from '../data-access/dto/vendor-update-order-status-request.dto';
+import { IVendorDashboardMetricsDto } from '../data-access/dto/vendor-dashboard-metrics.dto';
+import { IVendorRevenueStatisticsDto } from '../data-access/dto/vendor-revenue-statistics.dto';
+import { IVendorOrderAnalyticsDto } from '../data-access/dto/vendor-order-analytics.dto';
+import { VendorOrderStatus } from '../models/vendor-order-status.enum';
+import {
+  mapVendorOrdersFilterResponse,
+  mapVendorOrderDetails,
+  mapVendorDashboardMetrics,
+  mapVendorOrderAnalytics,
+} from '../data-access/mappers/vendor-order.mapper';
+import { mapVendorRevenueStatistics } from '../data-access/mappers/vendor-revenue.mapper';
 import {
   IVendorAnalytics,
   IVendorNotification,
   IVendorOrder,
+  IVendorOrderSummary,
   IVendorOrderStatusUpdate,
   IVendorRevenue,
   IWorkshopProfile,
@@ -14,24 +33,90 @@ import {
   providedIn: 'root',
 })
 export class VendorService {
-  getOrders(): Observable<IVendorOrder[]> {
-    throw new Error('VendorService.getOrders() is not implemented');
+  private http = inject(HttpClient);
+  private apiUrl = environment.apiUrl;
+
+  getOrders(): Observable<IVendorOrderSummary[]> {
+    const request: IVendorOrdersFilterRequestDto = {
+      pageNumber: 1,
+      pageSize: 20,
+      sortDescending: true,
+    };
+
+    return this.http
+      .post<IVendorOrdersFilterResponseDto>(
+        `${this.apiUrl}${API_URLS.VENDOR.ORDERS_FILTER}`,
+        request
+      )
+      .pipe(
+        map(mapVendorOrdersFilterResponse)
+      );
   }
 
   getOrderById(orderId: string): Observable<IVendorOrder> {
-    throw new Error('VendorService.getOrderById() is not implemented');
+    return this.http
+      .get<IVendorOrderDetailsDto>(
+        `${this.apiUrl}${API_URLS.VENDOR.ORDER_DETAILS(orderId)}`
+      )
+      .pipe(map(mapVendorOrderDetails));
   }
 
   updateOrderStatus(payload: IVendorOrderStatusUpdate): Observable<IVendorOrder> {
-    throw new Error('VendorService.updateOrderStatus() is not implemented');
+    const requestBody: IVendorUpdateOrderStatusRequestDto = {
+      newStatus: this.mapStatusToString(payload.status),
+    };
+
+    return this.http
+      .put<IVendorOrderDetailsDto>(
+        `${this.apiUrl}${API_URLS.VENDOR.UPDATE_ORDER_STATUS(payload.orderId)}`,
+        requestBody
+      )
+      .pipe(map(mapVendorOrderDetails));
+  }
+
+  private mapStatusToString(status: VendorOrderStatus): string {
+    switch (status) {
+      case VendorOrderStatus.Pending:
+        return 'Pending';
+      case VendorOrderStatus.Confirmed:
+        return 'Confirmed';
+      case VendorOrderStatus.Processing:
+        return 'In Progress';
+      case VendorOrderStatus.Shipped:
+        return 'Ready for Pickup';
+      case VendorOrderStatus.Delivered:
+        return 'Delivered';
+      case VendorOrderStatus.Cancelled:
+        return 'Cancelled';
+      default:
+        return 'Pending';
+    }
+  }
+
+  getDashboardMetrics(): Observable<IVendorAnalytics> {
+    return this.http
+      .get<IVendorDashboardMetricsDto>(
+        `${this.apiUrl}${API_URLS.VENDOR.DASHBOARD_METRICS}`
+      )
+      .pipe(
+        map(mapVendorDashboardMetrics)
+      );
   }
 
   getRevenue(): Observable<IVendorRevenue> {
-    throw new Error('VendorService.getRevenue() is not implemented');
+    return this.http
+      .get<IVendorRevenueStatisticsDto>(
+        `${this.apiUrl}${API_URLS.VENDOR.REVENUE_ANALYTICS}`
+      )
+      .pipe(map(mapVendorRevenueStatistics));
   }
 
   getAnalytics(): Observable<IVendorAnalytics> {
-    throw new Error('VendorService.getAnalytics() is not implemented');
+    return this.http
+      .get<IVendorOrderAnalyticsDto>(
+        `${this.apiUrl}${API_URLS.VENDOR.ORDERS_ANALYTICS}`
+      )
+      .pipe(map(mapVendorOrderAnalytics));
   }
 
   getWorkshopProfile(): Observable<IWorkshopProfile> {
