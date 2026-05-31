@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { IWorkshopProfileFormValue } from '../../interfaces/iworkshop-profile-form';
 
 @Component({
   selector: 'app-workshop-profile-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslatePipe],
   templateUrl: './workshop-profile-form.component.html',
   styleUrl: './workshop-profile-form.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

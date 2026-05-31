@@ -17,6 +17,7 @@ import {
   IVendorOrder,
   IVendorRevenue,
 } from '../../interfaces';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-vendor-dashboard',
@@ -27,6 +28,7 @@ import {
     AnalyticsCards,
     OrdersTable,
     NotificationsList,
+    TranslatePipe,
   ],
   templateUrl: './vendor-dashboard.component.html',
   styleUrl: './vendor-dashboard.component.css',

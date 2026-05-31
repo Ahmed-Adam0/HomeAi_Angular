@@ -1,4 +1,4 @@
-<section class="orders-table" aria-label="Vendor orders table">
+<section class="orders-table" [attr.aria-label]="'VENDOR.ORDERS.TABLE_ARIA' | translate">
   @if (!orders().length) {
     <div class="orders-table__empty card-premium">
       <div class="orders-table__empty-inner">
@@ -19,9 +19,9 @@
             <path d="M16 10a4 4 0 0 1-8 0"></path>
           </svg>
         </div>
-        <h3 class="orders-table__empty-title">No Orders Found</h3>
+        <h3 class="orders-table__empty-title">{{ 'VENDOR.ORDERS.TABLE_EMPTY_TITLE' | translate }}</h3>
         <p class="orders-table__empty-description">
-          Orders will appear here once customers start placing purchases.
+          {{ 'VENDOR.ORDERS.TABLE_EMPTY_DESC' | translate }}
         </p>
       </div>
     </div>
@@ -31,12 +31,12 @@
         <table class="orders-table__table table align-middle mb-0">
           <thead>
             <tr>
-              <th scope="col">Order ID</th>
-              <th scope="col">Customer Name</th>
-              <th scope="col">Order Date</th>
-              <th scope="col">Total Amount</th>
-              <th scope="col">Status</th>
-              <th scope="col" class="text-end">Actions</th>
+              <th scope="col">{{ 'VENDOR.ORDERS.COL_ORDER_ID' | translate }}</th>
+              <th scope="col">{{ 'VENDOR.ORDERS.COL_CUSTOMER' | translate }}</th>
+              <th scope="col">{{ 'VENDOR.ORDERS.COL_DATE' | translate }}</th>
+              <th scope="col">{{ 'VENDOR.ORDERS.COL_TOTAL' | translate }}</th>
+              <th scope="col">{{ 'VENDOR.ORDERS.COL_STATUS' | translate }}</th>
+              <th scope="col" class="text-end">{{ 'VENDOR.ORDERS.COL_ACTIONS' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -45,7 +45,7 @@
                 <td>
                   <div class="orders-table__order-id">
                     <span class="orders-table__order-number">{{ order.orderNumber }}</span>
-                    <span class="orders-table__order-meta">#{{ order.id }}</span>
+                    <span class="orders-table__order-meta">{{ 'VENDOR.COMMON.ORDER_HASH' | translate }}{{ order.id }}</span>
                   </div>
                 </td>
                 <td>
@@ -66,7 +66,7 @@
                     class="orders-table__action-btn"
                     (click)="onViewOrder(order.id)"
                   >
-                    View Details
+                    {{ 'VENDOR.COMMON.VIEW_DETAILS' | translate }}
                   </button>
                 </td>
               </tr>

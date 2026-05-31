@@ -1,23 +1,23 @@
-<main class="vendor-dashboard" aria-label="Vendor dashboard">
+<main class="vendor-dashboard" [attr.aria-label]="'VENDOR.DASHBOARD.ARIA_LABEL' | translate">
   <header class="vendor-dashboard__header">
     <div class="vendor-dashboard__header-content">
-      <p class="vendor-dashboard__eyebrow">Vendor Portal</p>
-      <h1 class="vendor-dashboard__title">Welcome Back</h1>
+      <p class="vendor-dashboard__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
+      <h1 class="vendor-dashboard__title">{{ 'VENDOR.DASHBOARD.TITLE' | translate }}</h1>
       <p class="vendor-dashboard__description">
-        Manage orders, revenue, analytics, and workshop activity from one place.
+        {{ 'VENDOR.DASHBOARD.DESCRIPTION' | translate }}
       </p>
     </div>
 
-    <div class="vendor-dashboard__meta" aria-label="Dashboard metadata">
-      <span class="vendor-dashboard__meta-badge">Live Overview</span>
-      <span class="vendor-dashboard__meta-note">Workshop dashboard</span>
+    <div class="vendor-dashboard__meta" [attr.aria-label]="'VENDOR.DASHBOARD.META_ARIA' | translate">
+      <span class="vendor-dashboard__meta-badge">{{ 'VENDOR.DASHBOARD.LIVE_OVERVIEW' | translate }}</span>
+      <span class="vendor-dashboard__meta-note">{{ 'VENDOR.DASHBOARD.WORKSHOP_DASHBOARD' | translate }}</span>
     </div>
   </header>
 
   <div class="vendor-dashboard__content">
     <section
       class="vendor-dashboard__section vendor-dashboard__section--stats"
-      aria-label="Business statistics overview"
+      [attr.aria-label]="'VENDOR.DASHBOARD.STATS_ARIA' | translate"
     >
       @if (analytics(); as analyticsData) {
         <app-vendor-stats-overview [analytics]="analyticsData" />
@@ -25,7 +25,7 @@
         <div
           class="vendor-dashboard__skeleton-grid vendor-dashboard__skeleton-grid--stats"
           role="status"
-          aria-label="Loading business statistics"
+          [attr.aria-label]="'VENDOR.DASHBOARD.LOADING_STATS_ARIA' | translate"
         >
           @for (slot of [0, 1, 2, 3]; track slot) {
             <div class="vendor-dashboard__skeleton-card" aria-hidden="true">
@@ -45,7 +45,7 @@
       >
         <header class="vendor-dashboard__section-head">
           <h2 id="vendor-dashboard-revenue-heading" class="vendor-dashboard__section-title">
-            Revenue Overview
+            {{ 'VENDOR.DASHBOARD.REVENUE_SECTION' | translate }}
           </h2>
         </header>
 
@@ -55,7 +55,7 @@
           <div
             class="vendor-dashboard__placeholder"
             role="status"
-            aria-label="Loading revenue overview"
+            [attr.aria-label]="'VENDOR.DASHBOARD.LOADING_REVENUE_ARIA' | translate"
           >
             <div class="vendor-dashboard__skeleton-grid vendor-dashboard__skeleton-grid--cards">
               @for (slot of [0, 1, 2, 3]; track slot) {
@@ -76,7 +76,7 @@
       >
         <header class="vendor-dashboard__section-head">
           <h2 id="vendor-dashboard-analytics-heading" class="vendor-dashboard__section-title">
-            Analytics &amp; Performance
+            {{ 'VENDOR.DASHBOARD.ANALYTICS_SECTION' | translate }}
           </h2>
         </header>
 
@@ -86,7 +86,7 @@
           <div
             class="vendor-dashboard__placeholder"
             role="status"
-            aria-label="Loading analytics overview"
+            [attr.aria-label]="'VENDOR.DASHBOARD.LOADING_ANALYTICS_ARIA' | translate"
           >
             <div class="vendor-dashboard__skeleton-grid vendor-dashboard__skeleton-grid--cards">
               @for (slot of [0, 1, 2, 3]; track slot) {
@@ -108,7 +108,7 @@
     >
       <header class="vendor-dashboard__section-head">
         <h2 id="vendor-dashboard-orders-heading" class="vendor-dashboard__section-title">
-          Recent Orders
+          {{ 'VENDOR.DASHBOARD.RECENT_ORDERS' | translate }}
         </h2>
       </header>
 
@@ -133,9 +133,9 @@
               <path d="M16 10a4 4 0 0 1-8 0"></path>
             </svg>
           </div>
-          <h3 class="vendor-dashboard__empty-title">No orders available yet</h3>
+          <h3 class="vendor-dashboard__empty-title">{{ 'VENDOR.DASHBOARD.ORDERS_EMPTY_TITLE' | translate }}</h3>
           <p class="vendor-dashboard__empty-description">
-            New customer orders will appear here as soon as they are placed.
+            {{ 'VENDOR.DASHBOARD.ORDERS_EMPTY_DESC' | translate }}
           </p>
         </div>
       }
@@ -147,7 +147,7 @@
     >
       <header class="vendor-dashboard__section-head">
         <h2 id="vendor-dashboard-notifications-heading" class="vendor-dashboard__section-title">
-          Notifications
+          {{ 'VENDOR.DASHBOARD.NOTIFICATIONS_SECTION' | translate }}
         </h2>
       </header>
 
@@ -171,10 +171,9 @@
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
           </div>
-          <h3 class="vendor-dashboard__empty-title">No notifications at the moment</h3>
+          <h3 class="vendor-dashboard__empty-title">{{ 'VENDOR.DASHBOARD.NOTIFICATIONS_EMPTY_TITLE' | translate }}</h3>
           <p class="vendor-dashboard__empty-description">
-            You are all caught up. Updates about orders, revenue, and workshop activity will show
-            up here.
+            {{ 'VENDOR.DASHBOARD.NOTIFICATIONS_EMPTY_DESC' | translate }}
           </p>
         </div>
       }

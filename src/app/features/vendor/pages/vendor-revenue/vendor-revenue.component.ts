@@ -6,11 +6,12 @@ import {
 } from '@angular/core';
 import { RevenueCards } from '../../components';
 import { IVendorRevenue } from '../../interfaces';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-vendor-revenue',
   standalone: true,
-  imports: [RevenueCards],
+  imports: [RevenueCards, TranslatePipe],
   templateUrl: './vendor-revenue.component.html',
   styleUrl: './vendor-revenue.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

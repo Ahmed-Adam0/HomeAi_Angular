@@ -1,7 +1,7 @@
 <span
   class="status-badge"
   [class]="badgeClass()"
-  [attr.aria-label]="'Order status: ' + statusLabel()"
+  [attr.aria-label]="statusAriaLabel()"
 >
   {{ statusLabel() }}
 </span>

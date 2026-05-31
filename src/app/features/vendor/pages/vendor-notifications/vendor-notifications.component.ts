@@ -6,11 +6,12 @@ import {
 } from '@angular/core';
 import { NotificationsList } from '../../components';
 import { IVendorNotification } from '../../interfaces';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-vendor-notifications',
   standalone: true,
-  imports: [NotificationsList],
+  imports: [NotificationsList, TranslatePipe],
   templateUrl: './vendor-notifications.component.html',
   styleUrl: './vendor-notifications.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

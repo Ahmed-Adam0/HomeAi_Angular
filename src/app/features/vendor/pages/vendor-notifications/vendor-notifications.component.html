@@ -1,19 +1,17 @@
-<main class="vendor-notifications" aria-label="Vendor notifications center">
+<main class="vendor-notifications" [attr.aria-label]="'VENDOR.NOTIFICATIONS.ARIA_LABEL' | translate">
   <header class="vendor-notifications__hero">
     <div class="vendor-notifications__hero-copy">
-      <p class="vendor-notifications__eyebrow">Vendor Portal</p>
-      <h1 class="vendor-notifications__title">Notifications</h1>
+      <p class="vendor-notifications__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
+      <h1 class="vendor-notifications__title">{{ 'VENDOR.NOTIFICATIONS.TITLE' | translate }}</h1>
       <p class="vendor-notifications__subtitle">
-        Stay updated with order activity, customer interactions, revenue updates, and important
-        vendor alerts from a centralized notification center.
+        {{ 'VENDOR.NOTIFICATIONS.SUBTITLE' | translate }}
       </p>
     </div>
 
-    <aside class="vendor-notifications__hero-panel" aria-label="Activity center summary">
-      <span class="vendor-notifications__hero-badge">Activity Center</span>
+    <aside class="vendor-notifications__hero-panel" [attr.aria-label]="'VENDOR.NOTIFICATIONS.HERO_ARIA' | translate">
+      <span class="vendor-notifications__hero-badge">{{ 'VENDOR.NOTIFICATIONS.ACTIVITY_CENTER' | translate }}</span>
       <p class="vendor-notifications__hero-text">
-        A premium notification space that surfaces orders, customer signals, and vendor alerts in
-        a refined dashboard-ready experience.
+        {{ 'VENDOR.NOTIFICATIONS.HERO_TEXT' | translate }}
       </p>
     </aside>
   </header>
@@ -25,10 +23,10 @@
     <div class="vendor-notifications__section-head">
       <div>
         <h2 id="vendor-notifications-recent-heading" class="vendor-notifications__section-title">
-          Recent Notifications
+          {{ 'VENDOR.NOTIFICATIONS.RECENT_SECTION' | translate }}
         </h2>
         <p class="vendor-notifications__section-copy">
-          Review the latest vendor activity and system alerts from your notification hub.
+          {{ 'VENDOR.NOTIFICATIONS.RECENT_DESC' | translate }}
         </p>
       </div>
     </div>
@@ -65,11 +63,10 @@
           </div>
 
           <h3 id="vendor-notifications-empty-title" class="vendor-notifications__empty-title">
-            No notifications available
+            {{ 'VENDOR.NOTIFICATIONS.EMPTY_TITLE' | translate }}
           </h3>
           <p class="vendor-notifications__empty-description">
-            You're all caught up. New order updates, customer activity, and vendor alerts will
-            appear here once they become available.
+            {{ 'VENDOR.NOTIFICATIONS.EMPTY_DESC' | translate }}
           </p>
         </div>
       </article>

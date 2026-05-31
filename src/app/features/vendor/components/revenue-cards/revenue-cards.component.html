@@ -1,6 +1,6 @@
-<section class="revenue-cards" aria-label="Vendor revenue cards">
+<section class="revenue-cards" [attr.aria-label]="'VENDOR.REVENUE.CARDS_ARIA' | translate">
   <div class="row g-3 g-lg-4">
-    @for (card of cards(); track card.title) {
+    @for (card of cards(); track card.titleKey) {
       <div class="col-12 col-md-6 col-xl-3">
         <article
           class="revenue-card"
@@ -79,7 +79,7 @@
             }
           </div>
 
-          <h3 class="revenue-card__title">{{ card.title }}</h3>
+          <h3 class="revenue-card__title">{{ card.titleKey | translate }}</h3>
           <p class="revenue-card__value">{{ card.value }}</p>
 
           @if (card.trend !== undefined) {

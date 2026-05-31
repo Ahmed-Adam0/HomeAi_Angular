@@ -1,17 +1,16 @@
-<main class="vendor-revenue" aria-label="Vendor revenue overview">
+<main class="vendor-revenue" [attr.aria-label]="'VENDOR.REVENUE_PAGE.ARIA_LABEL' | translate">
   <header class="vendor-revenue__header">
     <div class="vendor-revenue__header-content">
-      <p class="vendor-revenue__eyebrow">Vendor Portal</p>
-      <h1 class="vendor-revenue__title">Revenue Overview</h1>
+      <p class="vendor-revenue__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
+      <h1 class="vendor-revenue__title">{{ 'VENDOR.REVENUE_PAGE.TITLE' | translate }}</h1>
       <p class="vendor-revenue__description">
-        Monitor revenue performance, financial growth, and upcoming business insights from one
-        centralized dashboard.
+        {{ 'VENDOR.REVENUE_PAGE.DESCRIPTION' | translate }}
       </p>
     </div>
 
-    <div class="vendor-revenue__meta" aria-label="Revenue dashboard metadata">
-      <span class="vendor-revenue__meta-badge">Financial Overview</span>
-      <span class="vendor-revenue__meta-note">Revenue dashboard</span>
+    <div class="vendor-revenue__meta" [attr.aria-label]="'VENDOR.REVENUE_PAGE.META_ARIA' | translate">
+      <span class="vendor-revenue__meta-badge">{{ 'VENDOR.REVENUE_PAGE.FINANCIAL_OVERVIEW' | translate }}</span>
+      <span class="vendor-revenue__meta-note">{{ 'VENDOR.REVENUE_PAGE.REVENUE_DASHBOARD' | translate }}</span>
     </div>
   </header>
 
@@ -22,7 +21,7 @@
     >
       <header class="vendor-revenue__section-head">
         <h2 id="vendor-revenue-summary-heading" class="vendor-revenue__section-title">
-          Revenue Summary
+          {{ 'VENDOR.REVENUE_PAGE.SUMMARY_SECTION' | translate }}
         </h2>
       </header>
 
@@ -32,7 +31,7 @@
         <div
           class="vendor-revenue__placeholder"
           role="status"
-          aria-label="Loading revenue summary"
+          [attr.aria-label]="'VENDOR.REVENUE_PAGE.LOADING_SUMMARY_ARIA' | translate"
           [attr.aria-busy]="isRevenueLoading()"
         >
           <div
@@ -64,7 +63,7 @@
     >
       <header class="vendor-revenue__section-head">
         <h2 id="vendor-revenue-insights-heading" class="vendor-revenue__section-title">
-          Revenue Insights &amp; Trends
+          {{ 'VENDOR.REVENUE_PAGE.INSIGHTS_SECTION' | translate }}
         </h2>
       </header>
 
@@ -90,11 +89,10 @@
             </div>
 
             <h3 class="vendor-revenue__insights-title">
-              Revenue charts and trends will appear here once analytics data is connected.
+              {{ 'VENDOR.REVENUE_PAGE.INSIGHTS_TITLE' | translate }}
             </h3>
             <p class="vendor-revenue__insights-description">
-              Future revenue visualizations, growth comparisons, and performance forecasting
-              widgets will be displayed in this area.
+              {{ 'VENDOR.REVENUE_PAGE.INSIGHTS_DESC' | translate }}
             </p>
           </div>
 

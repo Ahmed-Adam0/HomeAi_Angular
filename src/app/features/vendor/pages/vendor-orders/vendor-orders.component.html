@@ -1,19 +1,19 @@
-<main class="vendor-orders" aria-label="Vendor orders management">
+<main class="vendor-orders" [attr.aria-label]="'VENDOR.ORDERS.ARIA_LABEL' | translate">
   <header class="vendor-orders__header">
     <div class="vendor-orders__header-content">
-      <p class="vendor-orders__eyebrow">Vendor Portal</p>
-      <h1 class="vendor-orders__title">Orders Management</h1>
+      <p class="vendor-orders__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
+      <h1 class="vendor-orders__title">{{ 'VENDOR.ORDERS.TITLE' | translate }}</h1>
       <p class="vendor-orders__description">
-        Manage customer orders, track fulfillment progress, and monitor order activity.
+        {{ 'VENDOR.ORDERS.DESCRIPTION' | translate }}
       </p>
     </div>
   </header>
 
-  <section class="vendor-orders__filters" aria-label="Order filters">
+  <section class="vendor-orders__filters" [attr.aria-label]="'VENDOR.ORDERS.FILTERS_ARIA' | translate">
     <div class="vendor-orders__filters-toolbar">
       <div class="vendor-orders__search-field">
         <label class="vendor-orders__filter-label" for="vendor-orders-search">
-          Search orders
+          {{ 'VENDOR.ORDERS.SEARCH_LABEL' | translate }}
         </label>
         <div class="vendor-orders__search-control">
           <span class="vendor-orders__search-icon" aria-hidden="true">
@@ -37,7 +37,7 @@
             class="vendor-orders__search-input"
             type="search"
             name="orderSearch"
-            placeholder="Search orders..."
+            [placeholder]="'VENDOR.ORDERS.SEARCH_PLACEHOLDER' | translate"
             autocomplete="off"
             [value]="searchTerm()"
             (input)="onSearchInput($event)"
@@ -47,7 +47,7 @@
 
       <div class="vendor-orders__status-field">
         <label class="vendor-orders__filter-label" for="vendor-orders-status">
-          Order status
+          {{ 'VENDOR.ORDERS.STATUS_LABEL' | translate }}
         </label>
         <div class="vendor-orders__select-control">
           <select
@@ -58,7 +58,7 @@
             (change)="onStatusChange($event)"
           >
             @for (option of statusFilterOptions; track option.value) {
-              <option [value]="option.value">{{ option.label }}</option>
+              <option [value]="option.value">{{ option.labelKey | translate }}</option>
             }
           </select>
           <span class="vendor-orders__select-chevron" aria-hidden="true">
@@ -87,7 +87,7 @@
   >
     <header class="vendor-orders__section-head">
       <h2 id="vendor-orders-table-heading" class="vendor-orders__section-title">
-        Recent Orders
+        {{ 'VENDOR.ORDERS.RECENT_ORDERS' | translate }}
       </h2>
     </header>
 
@@ -115,9 +115,9 @@
             <path d="M16 10a4 4 0 0 1-8 0"></path>
           </svg>
         </div>
-        <h3 class="vendor-orders__empty-title">No orders found</h3>
+        <h3 class="vendor-orders__empty-title">{{ 'VENDOR.ORDERS.EMPTY_TITLE' | translate }}</h3>
         <p class="vendor-orders__empty-description">
-          Orders will appear here once customers start placing purchases.
+          {{ 'VENDOR.ORDERS.EMPTY_DESC' | translate }}
         </p>
       </div>
     }

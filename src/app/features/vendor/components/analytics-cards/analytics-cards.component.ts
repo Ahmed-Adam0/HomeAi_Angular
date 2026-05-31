@@ -6,6 +6,8 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { IVendorAnalytics, IVendorMetric } from '../../interfaces';
 import { VendorMetricType } from '../../models/vendor-metric-type.enum';
@@ -14,7 +16,7 @@ type AnalyticsCardIcon = 'sales' | 'check-circle' | 'active-orders' | 'top-produ
 type AnalyticsCardVariant = 'success' | 'primary' | 'warning' | 'info';
 
 interface AnalyticsCardVm {
-  title: string;
+  titleKey: string;
   value: string | number;
   icon: AnalyticsCardIcon;
   trend?: number;
@@ -24,17 +26,19 @@ interface AnalyticsCardVm {
 @Component({
   selector: 'app-analytics-cards',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, TranslatePipe],
   templateUrl: './analytics-cards.component.html',
   styleUrl: './analytics-cards.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnalyticsCards {
   private readonly currencyFormat = inject(CurrencyFormatPipe);
+  private readonly translationService = inject(TranslationService);
 
   readonly analytics = input.required<IVendorAnalytics>();
 
   readonly cards = computed((): AnalyticsCardVm[] => {
+    this.translationService.currentLang();
     const data = this.analytics();
     const salesMetric = this.findMetric(data, VendorMetricType.Sales);
     const ordersMetric = this.findMetric(data, VendorMetricType.Orders);
@@ -42,28 +46,28 @@ export class AnalyticsCards {
 
     return [
       {
-        title: 'Total Sales',
+        titleKey: 'VENDOR.ANALYTICS.TOTAL_SALES',
         value: this.formatMetricValue(salesMetric),
         icon: 'sales',
         trend: salesMetric?.changePercent,
         variant: 'success',
       },
       {
-        title: 'Orders Completed',
+        titleKey: 'VENDOR.ANALYTICS.ORDERS_COMPLETED',
         value: this.formatMetricValue(ordersMetric),
         icon: 'check-circle',
         trend: ordersMetric?.changePercent,
         variant: 'primary',
       },
       {
-        title: 'Active Orders',
+        titleKey: 'VENDOR.ANALYTICS.ACTIVE_ORDERS',
         value: '0',
         icon: 'active-orders',
         variant: 'warning',
       },
       {
-        title: 'Top Performing Products',
-        value: topProduct?.productName ?? '—',
+        titleKey: 'VENDOR.ANALYTICS.TOP_PRODUCTS',
+        value: topProduct?.productName ?? this.translationService.translate('VENDOR.COMMON.NO_DATA'),
         icon: 'top-products',
         variant: 'info',
       },

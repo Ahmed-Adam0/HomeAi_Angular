@@ -6,6 +6,7 @@ import {
   input,
   output,
 } from '@angular/core';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { IVendorNotification } from '../../interfaces';
 import { VendorNotificationType } from '../../models/vendor-notification-type.enum';
 
@@ -24,17 +25,17 @@ interface NotificationVm {
   message: string;
   createdAt: string;
   isRead: boolean;
-  typeLabel: string;
+  typeLabelKey: string;
   typeClass: string;
   icon: NotificationIcon;
 }
 
-const NOTIFICATION_TYPE_LABELS: Record<VendorNotificationType, string> = {
-  [VendorNotificationType.Order]: 'Order',
-  [VendorNotificationType.Revenue]: 'Revenue',
-  [VendorNotificationType.System]: 'System',
-  [VendorNotificationType.Review]: 'Review',
-  [VendorNotificationType.Alert]: 'Alert',
+const NOTIFICATION_TYPE_KEYS: Record<VendorNotificationType, string> = {
+  [VendorNotificationType.Order]: 'VENDOR.NOTIFICATIONS.TYPE.ORDER',
+  [VendorNotificationType.Revenue]: 'VENDOR.NOTIFICATIONS.TYPE.REVENUE',
+  [VendorNotificationType.System]: 'VENDOR.NOTIFICATIONS.TYPE.SYSTEM',
+  [VendorNotificationType.Review]: 'VENDOR.NOTIFICATIONS.TYPE.REVIEW',
+  [VendorNotificationType.Alert]: 'VENDOR.NOTIFICATIONS.TYPE.ALERT',
 };
 
 const NOTIFICATION_TYPE_VARIANTS: Record<VendorNotificationType, NotificationTypeVariant> = {
@@ -56,7 +57,7 @@ const NOTIFICATION_TYPE_ICONS: Record<VendorNotificationType, NotificationIcon> 
 @Component({
   selector: 'app-notifications-list',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, TranslatePipe],
   templateUrl: './notifications-list.component.html',
   styleUrl: './notifications-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -72,7 +73,7 @@ export class NotificationsList {
       message: notification.message,
       createdAt: notification.createdAt,
       isRead: notification.isRead,
-      typeLabel: NOTIFICATION_TYPE_LABELS[notification.type],
+      typeLabelKey: NOTIFICATION_TYPE_KEYS[notification.type],
       typeClass: `notification-type--${NOTIFICATION_TYPE_VARIANTS[notification.type]}`,
       icon: NOTIFICATION_TYPE_ICONS[notification.type],
     }))

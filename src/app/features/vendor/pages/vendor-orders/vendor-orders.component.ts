@@ -4,18 +4,19 @@ import {
   computed,
   signal,
 } from '@angular/core';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { OrdersTable } from '../../components';
 import { IVendorOrder } from '../../interfaces';
 
 interface OrderStatusFilterOption {
   readonly value: string;
-  readonly label: string;
+  readonly labelKey: string;
 }
 
 @Component({
   selector: 'app-vendor-orders',
   standalone: true,
-  imports: [OrdersTable],
+  imports: [OrdersTable, TranslatePipe],
   templateUrl: './vendor-orders.component.html',
   styleUrl: './vendor-orders.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,12 +27,12 @@ export class VendorOrders {
   readonly selectedStatus = signal<string>('all');
 
   readonly statusFilterOptions: readonly OrderStatusFilterOption[] = [
-    { value: 'all', label: 'All statuses' },
-    { value: 'pending', label: 'Pending' },
-    { value: 'processing', label: 'Processing' },
-    { value: 'shipped', label: 'Shipped' },
-    { value: 'delivered', label: 'Delivered' },
-    { value: 'cancelled', label: 'Cancelled' },
+    { value: 'all', labelKey: 'VENDOR.ORDERS.FILTER_ALL_STATUSES' },
+    { value: 'pending', labelKey: 'VENDOR.STATUS.PENDING' },
+    { value: 'processing', labelKey: 'VENDOR.STATUS.PROCESSING' },
+    { value: 'shipped', labelKey: 'VENDOR.STATUS.SHIPPED' },
+    { value: 'delivered', labelKey: 'VENDOR.STATUS.DELIVERED' },
+    { value: 'cancelled', labelKey: 'VENDOR.STATUS.CANCELLED' },
   ];
 
   readonly filteredOrders = computed(() => {

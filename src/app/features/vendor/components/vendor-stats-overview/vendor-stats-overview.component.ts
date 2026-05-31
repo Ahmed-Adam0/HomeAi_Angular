@@ -5,6 +5,8 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { IVendorAnalytics, IVendorMetric } from '../../interfaces';
 import { VendorMetricType } from '../../models/vendor-metric-type.enum';
@@ -15,9 +17,9 @@ type VendorStatTrendTone = 'up' | 'down' | 'neutral';
 
 interface VendorStatCardVm {
   readonly id: string;
-  readonly label: string;
+  readonly labelKey: string;
   readonly value: string;
-  readonly trend?: string;
+  readonly trendPercent?: number;
   readonly trendTone?: VendorStatTrendTone;
   readonly icon: VendorStatIcon;
 }
@@ -25,6 +27,7 @@ interface VendorStatCardVm {
 @Component({
   selector: 'app-vendor-stats-overview',
   standalone: true,
+  imports: [DecimalPipe, TranslatePipe],
   templateUrl: './vendor-stats-overview.component.html',
   styleUrl: './vendor-stats-overview.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,32 +45,48 @@ export class VendorStatsOverview {
     return [
       {
         id: 'total-orders',
-        label: 'Total Orders',
+        labelKey: 'VENDOR.STATS.TOTAL_ORDERS',
         value: this.formatCount(ordersMetric),
         ...this.buildTrend(ordersMetric?.changePercent),
         icon: 'orders',
       },
       {
         id: 'revenue',
-        label: 'Revenue',
+        labelKey: 'VENDOR.STATS.REVENUE',
         value: this.formatRevenue(revenueMetric),
         ...this.buildTrend(revenueMetric?.changePercent),
         icon: 'revenue',
       },
       {
         id: 'active-orders',
-        label: 'Active Orders',
+        labelKey: 'VENDOR.STATS.ACTIVE_ORDERS',
         value: '0',
         icon: 'active-orders',
       },
       {
         id: 'notifications',
-        label: 'Notifications',
+        labelKey: 'VENDOR.STATS.NOTIFICATIONS',
         value: '0',
         icon: 'notifications',
       },
     ];
   });
+
+  protected getTrendDirection(trend: number): VendorStatTrendTone {
+    if (trend > 0) {
+      return 'up';
+    }
+
+    if (trend < 0) {
+      return 'down';
+    }
+
+    return 'neutral';
+  }
+
+  protected getTrendMagnitude(trend: number): number {
+    return Math.abs(trend);
+  }
 
   private findMetric(
     data: IVendorAnalytics | undefined,
@@ -93,7 +112,7 @@ export class VendorStatsOverview {
   }
 
   private buildTrend(changePercent: number | undefined): {
-    trend?: string;
+    trendPercent?: number;
     trendTone?: VendorStatTrendTone;
   } {
     if (changePercent === undefined || changePercent === null) {
@@ -102,20 +121,20 @@ export class VendorStatsOverview {
 
     if (changePercent > 0) {
       return {
-        trend: `↑ ${Math.abs(changePercent).toFixed(1)}%`,
+        trendPercent: changePercent,
         trendTone: 'up',
       };
     }
 
     if (changePercent < 0) {
       return {
-        trend: `↓ ${Math.abs(changePercent).toFixed(1)}%`,
+        trendPercent: changePercent,
         trendTone: 'down',
       };
     }
 
     return {
-      trend: '0%',
+      trendPercent: 0,
       trendTone: 'neutral',
     };
   }

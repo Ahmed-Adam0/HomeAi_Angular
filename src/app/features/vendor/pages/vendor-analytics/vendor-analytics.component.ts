@@ -6,11 +6,12 @@ import {
 } from '@angular/core';
 import { AnalyticsCards } from '../../components';
 import { IVendorAnalytics } from '../../interfaces';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-vendor-analytics',
   standalone: true,
-  imports: [AnalyticsCards],
+  imports: [AnalyticsCards, TranslatePipe],
   templateUrl: './vendor-analytics.component.html',
   styleUrl: './vendor-analytics.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

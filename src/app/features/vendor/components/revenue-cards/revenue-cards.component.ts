@@ -6,6 +6,7 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { IVendorRevenue } from '../../interfaces';
 
@@ -13,7 +14,7 @@ type RevenueCardIcon = 'revenue' | 'calendar' | 'orders' | 'analytics';
 type RevenueCardVariant = 'success' | 'primary' | 'warning' | 'info';
 
 interface RevenueCardVm {
-  title: string;
+  titleKey: string;
   value: string;
   icon: RevenueCardIcon;
   trend?: number;
@@ -23,7 +24,7 @@ interface RevenueCardVm {
 @Component({
   selector: 'app-revenue-cards',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, TranslatePipe],
   templateUrl: './revenue-cards.component.html',
   styleUrl: './revenue-cards.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,25 +39,25 @@ export class RevenueCards {
 
     return [
       {
-        title: 'Total Revenue',
+        titleKey: 'VENDOR.REVENUE.TOTAL',
         value: this.toCurrency(data?.grossRevenue),
         icon: 'revenue',
         variant: 'success',
       },
       {
-        title: 'Monthly Revenue',
+        titleKey: 'VENDOR.REVENUE.MONTHLY',
         value: this.toCurrency(data?.netRevenue),
         icon: 'calendar',
         variant: 'primary',
       },
       {
-        title: 'Total Orders',
+        titleKey: 'VENDOR.REVENUE.TOTAL_ORDERS',
         value: this.toCount(undefined),
         icon: 'orders',
         variant: 'warning',
       },
       {
-        title: 'Average Order Value',
+        titleKey: 'VENDOR.REVENUE.AVG_ORDER_VALUE',
         value: this.toCurrency(undefined),
         icon: 'analytics',
         variant: 'info',

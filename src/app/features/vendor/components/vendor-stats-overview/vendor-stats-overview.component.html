@@ -1,6 +1,6 @@
 <section class="vendor-stats-overview" aria-labelledby="vendor-stats-overview-heading">
   <h2 id="vendor-stats-overview-heading" class="vendor-stats-overview__heading">
-    Vendor Statistics
+    {{ 'VENDOR.STATS.TITLE' | translate }}
   </h2>
 
   <div class="vendor-stats-overview__grid" role="list">
@@ -77,20 +77,32 @@
             }
           </div>
 
-          @if (card.trend) {
+          @if (card.trendPercent !== undefined) {
             <span
               class="stat-card__trend"
               [class.stat-card__trend--up]="card.trendTone === 'up'"
               [class.stat-card__trend--down]="card.trendTone === 'down'"
               [class.stat-card__trend--neutral]="card.trendTone === 'neutral'"
             >
-              {{ card.trend }}
+              @switch (getTrendDirection(card.trendPercent)) {
+                @case ('up') {
+                  <span aria-hidden="true">↑</span>
+                  {{ getTrendMagnitude(card.trendPercent) | number: '1.1-1' }}%
+                }
+                @case ('down') {
+                  <span aria-hidden="true">↓</span>
+                  {{ getTrendMagnitude(card.trendPercent) | number: '1.1-1' }}%
+                }
+                @case ('neutral') {
+                  0%
+                }
+              }
             </span>
           }
         </div>
 
         <p class="stat-card__value">{{ card.value }}</p>
-        <h3 class="stat-card__label">{{ card.label }}</h3>
+        <h3 class="stat-card__label">{{ card.labelKey | translate }}</h3>
       </article>
     }
   </div>

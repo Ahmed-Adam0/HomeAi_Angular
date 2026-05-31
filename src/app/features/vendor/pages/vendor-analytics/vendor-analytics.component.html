@@ -1,17 +1,16 @@
-<main class="vendor-analytics" aria-label="Vendor analytics and performance">
+<main class="vendor-analytics" [attr.aria-label]="'VENDOR.ANALYTICS_PAGE.ARIA_LABEL' | translate">
   <header class="vendor-analytics__header">
     <div class="vendor-analytics__header-content">
-      <p class="vendor-analytics__eyebrow">Vendor Portal</p>
-      <h1 class="vendor-analytics__title">Analytics &amp; Performance</h1>
+      <p class="vendor-analytics__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
+      <h1 class="vendor-analytics__title">{{ 'VENDOR.ANALYTICS_PAGE.TITLE' | translate }}</h1>
       <p class="vendor-analytics__description">
-        Track business performance, monitor sales activity, and gain deeper insights into vendor
-        growth and customer engagement.
+        {{ 'VENDOR.ANALYTICS_PAGE.DESCRIPTION' | translate }}
       </p>
     </div>
 
-    <div class="vendor-analytics__meta" aria-label="Analytics dashboard metadata">
-      <span class="vendor-analytics__meta-badge">Analytics Overview</span>
-      <span class="vendor-analytics__meta-note">Performance dashboard</span>
+    <div class="vendor-analytics__meta" [attr.aria-label]="'VENDOR.ANALYTICS_PAGE.META_ARIA' | translate">
+      <span class="vendor-analytics__meta-badge">{{ 'VENDOR.ANALYTICS_PAGE.OVERVIEW_BADGE' | translate }}</span>
+      <span class="vendor-analytics__meta-note">{{ 'VENDOR.ANALYTICS_PAGE.PERFORMANCE_DASHBOARD' | translate }}</span>
     </div>
   </header>
 
@@ -22,7 +21,7 @@
     >
       <header class="vendor-analytics__section-head">
         <h2 id="vendor-analytics-kpi-heading" class="vendor-analytics__section-title">
-          Performance Overview
+          {{ 'VENDOR.ANALYTICS_PAGE.KPI_SECTION' | translate }}
         </h2>
       </header>
 
@@ -32,7 +31,7 @@
         <div
           class="vendor-analytics__placeholder"
           role="status"
-          aria-label="Loading performance overview"
+          [attr.aria-label]="'VENDOR.ANALYTICS_PAGE.LOADING_KPI_ARIA' | translate"
           [attr.aria-busy]="isAnalyticsLoading()"
         >
           <div
@@ -64,7 +63,7 @@
     >
       <header class="vendor-analytics__section-head">
         <h2 id="vendor-analytics-insights-heading" class="vendor-analytics__section-title">
-          Performance Insights &amp; Trends
+          {{ 'VENDOR.ANALYTICS_PAGE.INSIGHTS_SECTION' | translate }}
         </h2>
       </header>
 
@@ -88,12 +87,10 @@
             </div>
 
             <h3 class="vendor-analytics__insights-title">
-              Advanced analytics charts and performance trends will appear here once analytics data
-              is connected.
+              {{ 'VENDOR.ANALYTICS_PAGE.INSIGHTS_TITLE' | translate }}
             </h3>
             <p class="vendor-analytics__insights-description">
-              This area will support future visualizations including sales trends, customer activity
-              metrics, order performance tracking, and growth analytics.
+              {{ 'VENDOR.ANALYTICS_PAGE.INSIGHTS_DESC' | translate }}
             </p>
           </div>
 
@@ -125,7 +122,7 @@
     >
       <header class="vendor-analytics__section-head">
         <h2 id="vendor-analytics-products-heading" class="vendor-analytics__section-title">
-          Top Products &amp; Sales Breakdown
+          {{ 'VENDOR.ANALYTICS_PAGE.PRODUCTS_SECTION' | translate }}
         </h2>
       </header>
 
@@ -154,11 +151,10 @@
             </div>
 
             <h3 class="vendor-analytics__products-title">
-              Top-performing products and sales breakdowns will appear here.
+              {{ 'VENDOR.ANALYTICS_PAGE.PRODUCTS_TITLE' | translate }}
             </h3>
             <p class="vendor-analytics__products-description">
-              Future analytics will highlight best-selling products, revenue contribution by product,
-              and category performance metrics.
+              {{ 'VENDOR.ANALYTICS_PAGE.PRODUCTS_DESC' | translate }}
             </p>
           </div>
 

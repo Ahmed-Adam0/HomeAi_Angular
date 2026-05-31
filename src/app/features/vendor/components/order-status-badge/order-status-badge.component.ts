@@ -1,15 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { VendorOrderStatus } from '../../models/vendor-order-status.enum';
 
 type OrderStatusBadgeVariant = 'warning' | 'info' | 'primary' | 'success' | 'danger';
 
-const STATUS_LABELS: Record<VendorOrderStatus, string> = {
-  [VendorOrderStatus.Pending]: 'Pending',
-  [VendorOrderStatus.Confirmed]: 'Confirmed',
-  [VendorOrderStatus.Processing]: 'Processing',
-  [VendorOrderStatus.Shipped]: 'Shipped',
-  [VendorOrderStatus.Delivered]: 'Delivered',
-  [VendorOrderStatus.Cancelled]: 'Cancelled',
+const STATUS_KEYS: Record<VendorOrderStatus, string> = {
+  [VendorOrderStatus.Pending]: 'VENDOR.STATUS.PENDING',
+  [VendorOrderStatus.Confirmed]: 'VENDOR.STATUS.CONFIRMED',
+  [VendorOrderStatus.Processing]: 'VENDOR.STATUS.PROCESSING',
+  [VendorOrderStatus.Shipped]: 'VENDOR.STATUS.SHIPPED',
+  [VendorOrderStatus.Delivered]: 'VENDOR.STATUS.DELIVERED',
+  [VendorOrderStatus.Cancelled]: 'VENDOR.STATUS.CANCELLED',
 };
 
 const STATUS_VARIANTS: Record<VendorOrderStatus, OrderStatusBadgeVariant> = {
@@ -29,9 +30,19 @@ const STATUS_VARIANTS: Record<VendorOrderStatus, OrderStatusBadgeVariant> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderStatusBadge {
+  private readonly translationService = inject(TranslationService);
+
   readonly status = input.required<VendorOrderStatus>();
 
-  readonly statusLabel = computed(() => STATUS_LABELS[this.status()]);
+  readonly statusLabel = computed(() => {
+    this.translationService.currentLang();
+    return this.translationService.translate(STATUS_KEYS[this.status()]);
+  });
+
+  readonly statusAriaLabel = computed(() => {
+    this.translationService.currentLang();
+    return `${this.translationService.translate('VENDOR.COMMON.STATUS')} ${this.statusLabel()}`;
+  });
 
   readonly badgeClass = computed(
     () => `status-badge--${STATUS_VARIANTS[this.status()]}`
