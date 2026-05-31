@@ -7,11 +7,13 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { OrdersTable } from '../../components';
 import { IVendorOrderSummary } from '../../interfaces';
 import { VendorService } from '../../services/vendor.service';
+import { APP_ROUTES } from '../../../../core/constants';
 
 interface OrderStatusFilterOption {
   readonly value: string;
@@ -46,6 +48,8 @@ export class VendorOrders implements OnInit {
     { value: 'cancelled', labelKey: 'VENDOR.STATUS.CANCELLED' },
   ];
 
+  private readonly router = inject(Router);
+
   readonly filteredOrders = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();
     const status = this.selectedStatus();
@@ -76,7 +80,9 @@ export class VendorOrders implements OnInit {
     this.selectedStatus.set(value);
   }
 
-  onViewOrder(_id: string): void {}
+  onViewOrder(id: string): void {
+    this.router.navigate([APP_ROUTES.VENDOR, APP_ROUTES.VENDOR_ORDERS, id]);
+  }
 
   ngOnInit(): void {
     this.loadOrders();

@@ -149,7 +149,7 @@
           <p class="vendor-dashboard__error-description">{{ ordersError() }}</p>
         </div>
       } @else if (hasOrders()) {
-        <app-orders-table [orders]="orders()" />
+        <app-orders-table [orders]="orders()" (viewOrder)="onViewOrder($event)" />
       } @else {
         <div class="vendor-dashboard__empty-state" role="status">
           <div class="vendor-dashboard__empty-icon" aria-hidden="true">

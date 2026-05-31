@@ -7,6 +7,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import {
@@ -23,6 +24,7 @@ import {
   IVendorOrderSummary,
   IVendorRevenue,
 } from '../../interfaces';
+import { APP_ROUTES } from '../../../../core/constants';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { VendorService } from '../../services/vendor.service';
 import { mapVendorDashboardMetrics } from '../../data-access/mappers/vendor-order.mapper';
@@ -59,8 +61,14 @@ export class VendorDashboard implements OnInit {
   readonly revenueError = signal<string | null>(null);
   readonly ordersError = signal<string | null>(null);
 
+  private readonly router = inject(Router);
+
   readonly hasOrders = computed(() => this.orders().length > 0);
   readonly hasNotifications = computed(() => this.notifications().length > 0);
+
+  protected onViewOrder(id: string): void {
+    this.router.navigate([APP_ROUTES.VENDOR, APP_ROUTES.VENDOR_ORDERS, id]);
+  }
 
   /**
    * Computed signal that transforms dashboardMetrics to IVendorAnalytics
