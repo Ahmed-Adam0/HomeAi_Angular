@@ -1,140 +1,416 @@
-<main class="vendor-order-details" [attr.aria-label]="'VENDOR.ORDER_DETAILS.ARIA_LABEL' | translate">
-  <header class="order-details__header">
-    <div class="order-details__header-content">
-      <p class="order-details__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
-      <h1 class="order-details__title">{{ 'VENDOR.ORDER_DETAILS.TITLE' | translate }}</h1>
-      <p class="order-details__subtitle">
-        @if (order()) {
-          {{ 'VENDOR.COMMON.ORDER_NUMBER_PREFIX' | translate }} {{ order()!.orderNumber }}
-        } @else {
-          <span class="skeleton-text skeleton-text--short"></span>
-        }
-      </p>
-    </div>
-    <div class="order-details__header-actions">
-      <button class="order-details__back-button" disabled [attr.aria-label]="'VENDOR.ORDER_DETAILS.BACK_ARIA' | translate">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-        {{ 'VENDOR.ORDER_DETAILS.BACK' | translate }}
-      </button>
-    </div>
-  </header>
+<main class="vendor-order-details py-4" [attr.aria-label]="'VENDOR.ORDER_DETAILS.ARIA_LABEL' | translate">
+  <!-- Page Top Header Banner -->
+  <app-page-header
+    [title]="'VENDOR.ORDER_DETAILS.TITLE' | translate"
+    [subtitle]="order() ? ('VENDOR.COMMON.ORDER_NUMBER_PREFIX' | translate) + ' ' + order()!.orderNumber : ''"
+    [breadcrumbs]="breadcrumbs()"
+  ></app-page-header>
 
-  <div class="order-details__container">
-    @if (error()) {
-      <div class="order-details__error" role="alert" style="grid-column: 1 / -1;">
-        <div class="order-details__error-icon" aria-hidden="true">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.75"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
+  <!-- API Loading state -->
+  @if (loading()) {
+    <div class="container-fluid px-3 px-md-4">
+      <div class="skeleton-wrapper">
+        <!-- Top header bar skeleton -->
+        <div class="d-flex justify-content-between align-items-center py-3 mb-4 border-bottom border-neutral-200">
+          <div class="skeleton-line fm-skeleton w-25" style="height: 32px; background: rgba(0,0,0,0.06); border-radius: 4px;"></div>
+          <div class="d-flex gap-2">
+            <div class="skeleton-line fm-skeleton" style="width: 100px; height: 38px; border-radius: 8px; background: rgba(0,0,0,0.06);"></div>
+            <div class="skeleton-line fm-skeleton" style="width: 120px; height: 38px; border-radius: 8px; background: rgba(0,0,0,0.06);"></div>
+          </div>
         </div>
-        <div class="order-details__error-content">
-          <h3 class="order-details__error-title">Failed to load order details</h3>
-          <p class="order-details__error-description">
-            {{ error() }}
-          </p>
-        </div>
-      </div>
-    }
 
-    <div class="order-details__main">
-      <section class="order-details__section" aria-labelledby="ordered-products-title">
-        <h2 id="ordered-products-title" class="order-details__section-title">{{ 'VENDOR.ORDER_DETAILS.ORDERED_PRODUCTS' | translate }}</h2>
-        <div class="order-details__section-content">
-          @if (order()) {
-            <div class="order-details__products">
-              @for (item of order()!.items; track item.id) {
-                <div class="order-details__product-row">
-                  <div class="order-details__product-image">
-                    @if (item.thumbnailUrl) {
-                      <img
-                        [src]="item.thumbnailUrl"
-                        [alt]="item.productName"
-                        class="order-details__product-img"
-                      />
-                    } @else {
-                      <div class="order-details__product-img-placeholder" aria-hidden="true">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                          <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                          <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                          <path d="M21 15l-5-5L5 21"></path>
-                        </svg>
-                      </div>
-                    }
-                  </div>
-                  <div class="order-details__product-info">
-                    <h3 class="order-details__product-name">{{ item.productName }}</h3>
-                    @if (item.sku) {
-                      <p class="order-details__product-sku">{{ 'VENDOR.COMMON.SKU' | translate }} {{ item.sku }}</p>
-                    }
-                  </div>
-                  <div class="order-details__product-quantity">
-                    <span class="order-details__product-label">{{ 'VENDOR.COMMON.QTY' | translate }}</span>
-                    <span class="order-details__product-value">{{ item.quantity }}</span>
-                  </div>
-                  <div class="order-details__product-price">
-                    <span class="order-details__product-label">{{ 'VENDOR.COMMON.PRICE' | translate }}</span>
-                    <span class="order-details__product-value">{{ item.unitPrice | currency }}</span>
-                  </div>
-                  <div class="order-details__product-total">
-                    <span class="order-details__product-label">{{ 'VENDOR.COMMON.TOTAL' | translate }}</span>
-                    <span class="order-details__product-value">{{ item.lineTotal | currency }}</span>
-                  </div>
+        <!-- Dashboard grid skeleton -->
+        <div class="row g-3 mb-4">
+          @for (x of [1, 2, 3, 4]; track $index) {
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="card-premium p-3 d-flex align-items-center justify-content-between" style="height: 90px;">
+                <div class="w-75">
+                  <div class="skeleton-line fm-skeleton mb-2 w-50" style="height: 12px; background: rgba(0,0,0,0.06); border-radius: 4px;"></div>
+                  <div class="skeleton-line fm-skeleton w-75" style="height: 24px; background: rgba(0,0,0,0.06); border-radius: 4px;"></div>
                 </div>
-              }
-            </div>
-          } @else {
-            <div class="order-details__skeleton-products">
-              @for (item of skeletonItems; track $index) {
-                <div class="order-details__product-row">
-                  <div class="order-details__product-image">
-                    <div class="skeleton-image"></div>
-                  </div>
-                  <div class="order-details__product-info">
-                    <div class="skeleton-text skeleton-text--medium"></div>
-                    <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
-                  </div>
-                  <div class="order-details__product-quantity">
-                    <span class="order-details__product-label">{{ 'VENDOR.COMMON.QTY' | translate }}</span>
-                    <div class="skeleton-text skeleton-text--xs"></div>
-                  </div>
-                  <div class="order-details__product-price">
-                    <span class="order-details__product-label">{{ 'VENDOR.COMMON.PRICE' | translate }}</span>
-                    <div class="skeleton-text skeleton-text--xs"></div>
-                  </div>
-                  <div class="order-details__product-total">
-                    <span class="order-details__product-label">{{ 'VENDOR.COMMON.TOTAL' | translate }}</span>
-                    <div class="skeleton-text skeleton-text--xs"></div>
-                  </div>
-                </div>
-              }
+                <div class="skeleton-line fm-skeleton rounded-circle" style="width: 40px; height: 40px; background: rgba(0,0,0,0.06);"></div>
+              </div>
             </div>
           }
         </div>
-      </section>
 
-      <section class="order-details__card" aria-labelledby="shipping-info-title">
-        <h2 id="shipping-info-title" class="order-details__card-title">{{ 'VENDOR.ORDER_DETAILS.SHIPPING_INFO' | translate }}</h2>
-        <div class="order-details__card-content">
-          @if (order()) {
-            <div class="order-details__info-grid">
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.ORDER_DETAILS.DELIVERY_ADDRESS' | translate }}</span>
-                <div class="order-details__info-value">
+        <!-- Main content grid skeleton -->
+        <div class="row g-4">
+          <!-- Left side skeleton -->
+          <div class="col-12 col-lg-8">
+            <div class="card-premium p-4 mb-4">
+              <div class="skeleton-line fm-skeleton mb-4 w-25" style="height: 20px; background: rgba(0,0,0,0.06); border-radius: 4px;"></div>
+              <app-skeleton-loader type="list" [count]="4"></app-skeleton-loader>
+            </div>
+            <div class="card-premium p-4">
+              <div class="skeleton-line fm-skeleton mb-4 w-25" style="height: 20px; background: rgba(0,0,0,0.06); border-radius: 4px;"></div>
+              <app-skeleton-loader type="text" [count]="3"></app-skeleton-loader>
+            </div>
+          </div>
+          <!-- Right side skeleton -->
+          <div class="col-12 col-lg-4">
+            <div class="card-premium p-4 mb-4">
+              <div class="skeleton-line fm-skeleton mb-3 w-50" style="height: 20px; background: rgba(0,0,0,0.06); border-radius: 4px;"></div>
+              <app-skeleton-loader type="text" [count]="3"></app-skeleton-loader>
+            </div>
+            <div class="card-premium p-4 mb-4">
+              <div class="skeleton-line fm-skeleton mb-3 w-50" style="height: 20px; background: rgba(0,0,0,0.06); border-radius: 4px;"></div>
+              <app-skeleton-loader type="text" [count]="2"></app-skeleton-loader>
+            </div>
+            <div class="card-premium p-4">
+              <div class="skeleton-line fm-skeleton mb-3 w-50" style="height: 20px; background: rgba(0,0,0,0.06); border-radius: 4px;"></div>
+              <app-skeleton-loader type="text" [count]="2"></app-skeleton-loader>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  
+  <!-- API Error state -->
+  @else if (error()) {
+    <div class="container-fluid px-3 px-md-4">
+      <app-alert type="danger" [message]="error() || 'An error occurred while loading order details.'" [dismissible]="false"></app-alert>
+    </div>
+  }
+  
+  <!-- Main content layout when loaded -->
+  @else if (order()) {
+    <!-- 1. TOP HEADER BAR (Sticky Style) -->
+    <header class="top-header-bar sticky-top shadow-sm px-3 px-md-4 py-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3 flex-wrap">
+        <h2 class="mb-0 fs-4 fw-bold text-heading d-flex align-items-center gap-2">
+          {{ 'VENDOR.COMMON.ORDER_NUMBER_PREFIX' | translate }}
+          <span class="text-primary">{{ order()!.orderNumber }}</span>
+        </h2>
+        <app-order-status-badge [status]="order()!.status"></app-order-status-badge>
+      </div>
+
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <app-button
+          variant="outline"
+          size="md"
+          routerLink="/vendor/orders"
+        >
+          <div class="d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="me-2" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            {{ 'VENDOR.ORDER_DETAILS.BACK' | translate }}
+          </div>
+        </app-button>
+        
+        <app-button
+          variant="outline"
+          size="md"
+          (clicked)="printInvoice()"
+        >
+          <div class="d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="me-2" aria-hidden="true">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Print Invoice
+          </div>
+        </app-button>
+
+        <!-- Quick Status Transitions -->
+        @if (order()!.status === 'Accepted') {
+          <app-button
+            variant="premium"
+            size="md"
+            [disabled]="isUpdatingStatus()"
+            (clicked)="setQuickStatus(VendorOrderStatus.InProgress)"
+          >
+            Start Processing
+          </app-button>
+        } @else if (order()!.status === 'In Progress') {
+          <app-button
+            variant="premium"
+            size="md"
+            [disabled]="isUpdatingStatus()"
+            (clicked)="setQuickStatus(VendorOrderStatus.ReadyForPickup)"
+          >
+            Mark as Shipped
+          </app-button>
+        } @else if (order()!.status === 'Ready for Pickup') {
+          <app-button
+            variant="premium"
+            size="md"
+            [disabled]="isUpdatingStatus()"
+            (clicked)="setQuickStatus(VendorOrderStatus.Delivered)"
+          >
+            Mark as Delivered
+          </app-button>
+        }
+      </div>
+    </header>
+
+    <div class="container-fluid px-3 px-md-4">
+      <!-- 2. DASHBOARD GRID (4 cards row) -->
+      <div class="row g-3 mb-4">
+        <!-- Total Price Card -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="card-premium h-100 p-3 d-flex align-items-center justify-content-between gap-3">
+            <div>
+              <span class="text-muted small fw-bold text-uppercase tracking-wider">Total Value</span>
+              <h3 class="fw-bold mb-0 text-primary mt-1">{{ order()!.totalAmount | currency }}</h3>
+            </div>
+            <div class="icon-shape bg-primary-soft rounded-circle p-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Payment Status Card -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="card-premium h-100 p-3 d-flex align-items-center justify-content-between gap-3">
+            <div>
+              <span class="text-muted small fw-bold text-uppercase tracking-wider">Payment Status</span>
+              <div class="mt-2">
+                <span class="order-details__payment-status px-2.5 py-1 small rounded text-center" [attr.data-status]="order()!.paymentStatus">
+                  {{ 'VENDOR.PAYMENT.' + (order()!.paymentStatus | uppercase) | translate }}
+                </span>
+              </div>
+            </div>
+            <div class="icon-shape bg-primary-soft rounded-circle p-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Shipping Status Card -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="card-premium h-100 p-3 d-flex align-items-center justify-content-between gap-3">
+            <div>
+              <span class="text-muted small fw-bold text-uppercase tracking-wider">Fulfillment Status</span>
+              <div class="mt-2">
+                <app-order-status-badge [status]="order()!.status" class="align-self-start"></app-order-status-badge>
+              </div>
+            </div>
+            <div class="icon-shape bg-primary-soft rounded-circle p-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Order Date Card -->
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="card-premium h-100 p-3 d-flex align-items-center justify-content-between gap-3">
+            <div>
+              <span class="text-muted small fw-bold text-uppercase tracking-wider">Order Date</span>
+              <h4 class="fw-bold mb-0 text-heading mt-1 text-truncate">{{ order()!.placedAt | date: 'mediumDate' }}</h4>
+            </div>
+            <div class="icon-shape bg-primary-soft rounded-circle p-2 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. MAIN CONTENT GRID (70% Left / 30% Right) -->
+      <div class="row g-4 mb-4">
+        <!-- Left Side (70%) -->
+        <div class="col-12 col-lg-8">
+          <!-- Order Items Table Card -->
+          <div class="card-premium p-4 mb-4">
+            <h5 class="card-title fw-bold mb-4 text-heading d-flex align-items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+              {{ 'VENDOR.ORDER_DETAILS.ORDERED_PRODUCTS' | translate }}
+            </h5>
+            
+            <div class="table-responsive">
+              <table class="table table-hover align-middle custom-table">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width: 80px;">Image</th>
+                    <th scope="col" style="min-width: 180px;">Product details</th>
+                    <th scope="col" class="text-center" style="width: 100px;">Quantity</th>
+                    <th scope="col" class="text-end" style="width: 130px;">Unit price</th>
+                    <th scope="col" class="text-end" style="width: 130px;">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of order()!.items; track item.id) {
+                    <tr class="product-item-row">
+                      <td>
+                        <div class="product-thumbnail-container bg-light rounded overflow-hidden d-flex justify-content-center align-items-center shadow-sm">
+                          @if (item.thumbnailUrl) {
+                            <img [src]="item.thumbnailUrl" [alt]="item.productName" class="product-thumbnail-img" />
+                          } @else {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-muted" aria-hidden="true">
+                              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                              <path d="M21 15l-5-5L5 21"></path>
+                            </svg>
+                          }
+                        </div>
+                      </td>
+                      <td>
+                        <div class="fw-bold text-heading text-truncate" style="max-width: 250px;">{{ item.productName }}</div>
+                        @if (item.sku) {
+                          <span class="badge bg-neutral-200 text-neutral-700 font-monospace tracking-wide small mt-1">SKU: {{ item.sku }}</span>
+                        }
+                      </td>
+                      <td class="text-center fw-bold text-heading">{{ item.quantity }}</td>
+                      <td class="text-end fw-semibold text-heading">{{ item.unitPrice | currency }}</td>
+                      <td class="text-end fw-extrabold text-primary">{{ item.lineTotal | currency }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Cost breakdown inside items card -->
+            <div class="mt-4 pt-3 border-top border-neutral-200">
+              <div class="row justify-content-end">
+                <div class="col-12 col-md-6 col-lg-5">
+                  <div class="d-flex flex-column gap-2.5">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="text-muted small">{{ 'VENDOR.COMMON.SUBTOTAL' | translate }}</span>
+                      <span class="fw-semibold text-heading">{{ order()!.subtotal | currency }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="text-muted small">{{ 'VENDOR.COMMON.SHIPPING' | translate }}</span>
+                      <span class="fw-semibold text-heading">{{ order()!.shippingCost | currency }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="text-muted small">{{ 'VENDOR.COMMON.TAX' | translate }}</span>
+                      <span class="fw-semibold text-heading">{{ order()!.taxAmount | currency }}</span>
+                    </div>
+                    @if (order()!.discountAmount > 0) {
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted small">{{ 'VENDOR.COMMON.DISCOUNT' | translate }}</span>
+                        <span class="fw-bold text-success">-{{ order()!.discountAmount | currency }}</span>
+                      </div>
+                    }
+                    <hr class="my-2 border-neutral-200">
+                    <div class="d-flex justify-content-between align-items-center py-1">
+                      <span class="fw-bold text-heading">{{ 'VENDOR.COMMON.TOTAL' | translate }}</span>
+                      <span class="fw-extrabold text-primary fs-5">{{ order()!.totalAmount | currency }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. ORDER TIMELINE SECTION (Vertical Stepper) -->
+          <div class="card-premium p-4">
+            <h5 class="card-title fw-bold mb-4 text-heading d-flex align-items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              Order Progress Timeline
+            </h5>
+            
+            <div class="vertical-timeline ps-3">
+              @for (step of timelineSteps(); track step.status; let last = $last) {
+                <div class="timeline-item d-flex gap-3 position-relative" 
+                     [class.completed]="step.completed" 
+                     [class.active]="step.active" 
+                     [class.cancelled]="step.isCancelled">
+                  <div class="timeline-badge-container d-flex flex-column align-items-center">
+                    <div class="timeline-badge d-flex align-items-center justify-content-center rounded-circle border">
+                      @if (step.completed) {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      } @else if (step.isCancelled) {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      } @else {
+                        <span>{{ $index + 1 }}</span>
+                      }
+                    </div>
+                    @if (!last) {
+                      <div class="timeline-line"></div>
+                    }
+                  </div>
+                  <div class="timeline-content ms-2 pb-4">
+                    <h6 class="timeline-title fw-bold text-uppercase tracking-wider small mb-1" 
+                        [class.text-primary]="step.active" 
+                        [class.text-success]="step.completed" 
+                        [class.text-danger]="step.isCancelled">
+                      {{ step.labelKey | translate }}
+                    </h6>
+                    <p class="timeline-description text-muted small mb-0">
+                      @if (step.completed) {
+                        Completed
+                      } @else if (step.active) {
+                        Active Processing
+                      } @else if (step.isCancelled) {
+                        Cancelled
+                      } @else {
+                        Pending Status
+                      }
+                    </p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side (30%) -->
+        <div class="col-12 col-lg-4">
+          <!-- Customer Info Card -->
+          <div class="card-premium p-4 mb-4">
+            <h5 class="card-title fw-bold mb-3 text-heading d-flex align-items-center gap-2 pb-2 border-bottom border-neutral-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              {{ 'VENDOR.ORDER_DETAILS.CUSTOMER_INFO' | translate }}
+            </h5>
+            
+            <div class="d-flex flex-column gap-3 mt-3">
+              <div>
+                <span class="text-muted small d-block mb-1">Full Name</span>
+                <span class="fw-bold text-heading fs-6">{{ order()!.customer.fullName }}</span>
+              </div>
+              <div>
+                <span class="text-muted small d-block mb-1">Email Address</span>
+                <span class="fw-semibold text-primary text-break small">{{ order()!.customer.email }}</span>
+              </div>
+              <div>
+                <span class="text-muted small d-block mb-1">Phone Number</span>
+                <span class="fw-semibold text-heading small">
+                  @if (order()!.customer.phone) {
+                    {{ order()!.customer.phone }}
+                  } @else {
+                    <span class="text-muted italic">{{ 'VENDOR.COMMON.NOT_PROVIDED' | translate }}</span>
+                  }
+                </span>
+              </div>
+              <div>
+                <span class="text-muted small d-block mb-1">{{ 'VENDOR.ORDER_DETAILS.DELIVERY_ADDRESS' | translate }}</span>
+                <div class="fw-medium text-heading small lh-base rounded bg-neutral-50 p-2 border border-neutral-200">
                   {{ order()!.shippingAddress.addressLine1 }}
                   @if (order()!.shippingAddress.addressLine2) {
                     <div>{{ order()!.shippingAddress.addressLine2 }}</div>
@@ -146,208 +422,173 @@
                     }
                     {{ order()!.shippingAddress.postalCode }}
                   </div>
-                  <div>{{ order()!.shippingAddress.country }}</div>
+                  <div class="fw-semibold text-muted mt-1">{{ order()!.shippingAddress.country }}</div>
                 </div>
               </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.ORDER_DETAILS.SHIPPING_METHOD' | translate }}</span>
-                <div class="order-details__info-value">
+            </div>
+          </div>
+
+          <!-- Shipping Info Card -->
+          <div class="card-premium p-4 mb-4">
+            <h5 class="card-title fw-bold mb-3 text-heading d-flex align-items-center gap-2 pb-2 border-bottom border-neutral-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+              Shipping details
+            </h5>
+            
+            <div class="d-flex flex-column gap-3 mt-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Shipping Carrier</span>
+                <span class="fw-bold text-heading small">
                   @if (order()!.carrier) {
                     {{ order()!.carrier }}
                   } @else {
-                    <span class="order-details__placeholder">{{ 'VENDOR.COMMON.NOT_SPECIFIED' | translate }}</span>
+                    <span class="text-muted italic">{{ 'VENDOR.COMMON.NOT_SPECIFIED' | translate }}</span>
                   }
-                </div>
+                </span>
               </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.TRACKING_NUMBER' | translate }}</span>
-                <div class="order-details__info-value">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Tracking Number</span>
+                <span class="fw-semibold text-heading small">
                   @if (order()!.trackingNumber) {
-                    <code class="order-details__code">{{ order()!.trackingNumber }}</code>
+                    <code class="tracking-code rounded px-2 py-1 bg-neutral-100 text-primary border border-neutral-200 font-monospace">{{ order()!.trackingNumber }}</code>
                   } @else {
-                    <span class="order-details__placeholder">{{ 'VENDOR.COMMON.NOT_AVAILABLE' | translate }}</span>
+                    <span class="text-muted italic">{{ 'VENDOR.COMMON.NOT_AVAILABLE' | translate }}</span>
                   }
-                </div>
+                </span>
               </div>
             </div>
-          } @else {
-            <div class="order-details__info-grid">
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.ORDER_DETAILS.DELIVERY_ADDRESS' | translate }}</span>
-                <div class="skeleton-text skeleton-text--medium" style="margin-top: 0.5rem;"></div>
-                <div class="skeleton-text skeleton-text--medium" style="margin-top: 0.5rem;"></div>
-              </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.ORDER_DETAILS.SHIPPING_METHOD' | translate }}</span>
-                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
-              </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.TRACKING_NUMBER' | translate }}</span>
-                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
-              </div>
-            </div>
-          }
-        </div>
-      </section>
-    </div>
+          </div>
 
-    <aside class="order-details__sidebar">
-      <section class="order-details__card order-details__card--sticky" aria-labelledby="customer-info-title">
-        <h2 id="customer-info-title" class="order-details__card-title">{{ 'VENDOR.ORDER_DETAILS.CUSTOMER_INFO' | translate }}</h2>
-        <div class="order-details__card-content">
-          @if (order()) {
-            <div class="order-details__info-list">
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.NAME' | translate }}</span>
-                <div class="order-details__info-value">{{ order()!.customer.fullName }}</div>
+          <!-- Payment Info Card -->
+          <div class="card-premium p-4">
+            <h5 class="card-title fw-bold mb-3 text-heading d-flex align-items-center gap-2 pb-2 border-bottom border-neutral-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+              Payment specifications
+            </h5>
+            
+            <div class="d-flex flex-column gap-3 mt-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Payment Gateway</span>
+                <span class="fw-bold text-heading small">Stripe Credit/Debit</span>
               </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.EMAIL' | translate }}</span>
-                <div class="order-details__info-value order-details__email">{{ order()!.customer.email }}</div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Payment Status</span>
+                <span class="order-details__payment-status px-2.5 py-1 small rounded text-center" [attr.data-status]="order()!.paymentStatus">
+                  {{ 'VENDOR.PAYMENT.' + (order()!.paymentStatus | uppercase) | translate }}
+                </span>
               </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.PHONE' | translate }}</span>
-                <div class="order-details__info-value">
-                  @if (order()!.customer.phone) {
-                    {{ order()!.customer.phone }}
-                  } @else {
-                    <span class="order-details__placeholder">{{ 'VENDOR.COMMON.NOT_PROVIDED' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. ACTION PANEL (Sticky Bottom Card) -->
+      <div class="card-premium p-4 mt-4 action-panel-card shadow border-primary-glow">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-4">
+          <div>
+            <h5 class="fw-bold mb-1 text-heading">Fulfillment Controls</h5>
+            <p class="text-muted small mb-0">Update the current tracking state or cancel this order if needed.</p>
+          </div>
+          
+          <div class="d-flex flex-wrap align-items-center gap-3">
+            @if (canModifyStatus()) {
+              <div class="d-flex align-items-center gap-2">
+                <label for="order-status-select" class="text-muted small fw-bold mb-0 me-2">
+                  {{ 'VENDOR.ORDER_DETAILS.NEW_STATUS' | translate }}:
+                </label>
+                <select
+                  id="order-status-select"
+                  class="form-select custom-select py-2 px-3 border border-neutral-300 rounded"
+                  style="min-width: 180px;"
+                  [disabled]="isUpdatingStatus()"
+                  (change)="onStatusSelection($event)"
+                >
+                  @for (option of availableStatusOptions(); track option.value) {
+                    <option
+                      [value]="option.value"
+                      [selected]="option.value === selectedStatus()"
+                    >
+                      {{ option.labelKey | translate }}
+                    </option>
                   }
-                </div>
+                </select>
               </div>
-            </div>
-          } @else {
-            <div class="order-details__info-list">
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.NAME' | translate }}</span>
-                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
-              </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.EMAIL' | translate }}</span>
-                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
-              </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.PHONE' | translate }}</span>
-                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
-              </div>
-            </div>
-          }
-        </div>
-      </section>
-
-      <section class="order-details__card" aria-labelledby="order-summary-title">
-        <h2 id="order-summary-title" class="order-details__card-title">{{ 'VENDOR.ORDER_DETAILS.ORDER_SUMMARY' | translate }}</h2>
-        <div class="order-details__card-content">
-          @if (order()) {
-            <div class="order-details__summary">
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.ORDER_DETAILS.ORDER_NUMBER' | translate }}</span>
-                <code class="order-details__summary-value">{{ order()!.orderNumber }}</code>
-              </div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.ORDER_DETAILS.ORDER_DATE' | translate }}</span>
-                <span class="order-details__summary-value">{{ order()!.placedAt | date: 'short' }}</span>
-              </div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.STATUS' | translate }}</span>
-                <div class="order-details__summary-value" style="margin-top: 0.25rem;">
-                  <app-order-status-badge [status]="order()!.status"></app-order-status-badge>
-                </div>
-              </div>
-              <div class="order-details__summary-divider"></div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.SUBTOTAL' | translate }}</span>
-                <span class="order-details__summary-value">{{ order()!.subtotal | currency }}</span>
-              </div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.SHIPPING' | translate }}</span>
-                <span class="order-details__summary-value">{{ order()!.shippingCost | currency }}</span>
-              </div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.TAX' | translate }}</span>
-                <span class="order-details__summary-value">{{ order()!.taxAmount | currency }}</span>
-              </div>
-              @if (order()!.discountAmount > 0) {
-                <div class="order-details__summary-row">
-                  <span class="order-details__summary-label">{{ 'VENDOR.COMMON.DISCOUNT' | translate }}</span>
-                  <span class="order-details__summary-value order-details__summary-discount">-{{ order()!.discountAmount | currency }}</span>
-                </div>
+              
+              <app-button
+                variant="primary"
+                size="md"
+                [disabled]="isUpdateButtonDisabled()"
+                [isLoading]="isUpdatingStatus()"
+                (clicked)="openStatusUpdateConfirmation()"
+              >
+                {{ isUpdatingStatus()
+                  ? ('VENDOR.ORDER_DETAILS.UPDATE_STATUS_IN_PROGRESS' | translate)
+                  : ('VENDOR.ORDER_DETAILS.UPDATE_STATUS' | translate)
+                }}
+              </app-button>
+              
+              <!-- Direct cancel button (available when transitions permit) -->
+              @for (option of availableStatusOptions(); track option.value) {
+                @if (option.value === 'Cancelled') {
+                  <app-button
+                    variant="danger"
+                    size="md"
+                    [disabled]="isUpdatingStatus()"
+                    (clicked)="setQuickStatus(VendorOrderStatus.Cancelled)"
+                  >
+                    Cancel Order
+                  </app-button>
+                }
               }
-              <div class="order-details__summary-divider"></div>
-              <div class="order-details__summary-row order-details__summary-row--total">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.TOTAL' | translate }}</span>
-                <span class="order-details__summary-value order-details__summary-total">{{ order()!.totalAmount | currency }}</span>
-              </div>
-            </div>
-          } @else {
-            <div class="order-details__summary">
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.ORDER_DETAILS.ORDER_NUMBER' | translate }}</span>
-                <div class="skeleton-text skeleton-text--xs"></div>
-              </div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.ORDER_DETAILS.ORDER_DATE' | translate }}</span>
-                <div class="skeleton-text skeleton-text--xs"></div>
-              </div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.STATUS' | translate }}</span>
-                <div class="skeleton-text skeleton-text--xs" style="margin-top: 0.5rem;"></div>
-              </div>
-              <div class="order-details__summary-divider"></div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.SUBTOTAL' | translate }}</span>
-                <div class="skeleton-text skeleton-text--xs"></div>
-              </div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.SHIPPING' | translate }}</span>
-                <div class="skeleton-text skeleton-text--xs"></div>
-              </div>
-              <div class="order-details__summary-row">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.TAX' | translate }}</span>
-                <div class="skeleton-text skeleton-text--xs"></div>
-              </div>
-              <div class="order-details__summary-divider"></div>
-              <div class="order-details__summary-row order-details__summary-row--total">
-                <span class="order-details__summary-label">{{ 'VENDOR.COMMON.TOTAL' | translate }}</span>
-                <div class="skeleton-text skeleton-text--xs"></div>
-              </div>
-            </div>
-          }
+            } @else {
+              <p class="text-muted italic small mb-0">
+                {{ 'VENDOR.ORDER_DETAILS.UPDATE_STATUS_DISABLED' | translate }}
+              </p>
+            }
+          </div>
         </div>
-      </section>
+        
+        @if (statusUpdateError()) {
+          <div class="mt-3">
+            <app-alert type="danger" [message]="statusUpdateError()!" [dismissible]="true" (close)="statusUpdateError.set(null)"></app-alert>
+          </div>
+        }
+      </div>
+    </div>
+  }
+  
+  <!-- Fallback Empty state -->
+  @else {
+    <div class="container-fluid px-3 px-md-4">
+      <app-empty-state
+        title="No Order Details Found"
+        description="We could not retrieve details for this order."
+        icon="📦"
+      ></app-empty-state>
+    </div>
+  }
 
-      <section class="order-details__card" aria-labelledby="payment-info-title">
-        <h2 id="payment-info-title" class="order-details__card-title">{{ 'VENDOR.ORDER_DETAILS.PAYMENT_INFO' | translate }}</h2>
-        <div class="order-details__card-content">
-          @if (order()) {
-            <div class="order-details__info-list">
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.ORDER_DETAILS.PAYMENT_METHOD' | translate }}</span>
-                <div class="order-details__info-value">
-                  <span class="order-details__placeholder">{{ 'VENDOR.COMMON.NA' | translate }}</span>
-                </div>
-              </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.PAYMENT_STATUS' | translate }}</span>
-                <div class="order-details__info-value">
-                  <span class="order-details__payment-status" [attr.data-status]="order()!.paymentStatus">{{ 'VENDOR.PAYMENT.' + (order()!.paymentStatus | uppercase) | translate }}</span>
-                </div>
-              </div>
-            </div>
-          } @else {
-            <div class="order-details__info-list">
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.ORDER_DETAILS.PAYMENT_METHOD' | translate }}</span>
-                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
-              </div>
-              <div class="order-details__info-item">
-                <span class="order-details__info-label">{{ 'VENDOR.COMMON.PAYMENT_STATUS' | translate }}</span>
-                <div class="skeleton-text skeleton-text--small" style="margin-top: 0.5rem;"></div>
-              </div>
-            </div>
-          }
-        </div>
-      </section>
-    </aside>
-  </div>
+  <!-- Status update loading spinner overlay -->
+  @if (isUpdatingStatus()) {
+    <app-loading-spinner [overlay]="true" message="Updating order status..."></app-loading-spinner>
+  }
+
+  <!-- Confirm Update Dialog -->
+  <app-confirm-dialog
+    [visible]="isConfirmDialogVisible()"
+    [title]="'VENDOR.ORDER_DETAILS.UPDATE_STATUS_CONFIRM_TITLE' | translate"
+    [message]="confirmDialogMessage()"
+    [confirmText]="'VENDOR.ORDER_DETAILS.UPDATE_STATUS' | translate"
+    [cancelText]="'COMMON.CANCEL' | translate"
+    (confirm)="confirmStatusUpdate()"
+    (cancel)="closeConfirmDialog()"
+  ></app-confirm-dialog>
 </main>

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants';
 import { IVendorOrdersFilterRequestDto } from '../data-access/dto/vendor-orders-filter-request.dto';
@@ -50,13 +50,7 @@ export class VendorService {
         request
       )
       .pipe(
-        tap((response) => {
-          console.log('VendorService.getOrders raw API response:', response);
-        }),
-        map(mapVendorOrdersFilterResponse),
-        tap((mappedOrders) => {
-          console.log('VendorService.getOrders mapped response:', mappedOrders);
-        })
+        map(mapVendorOrdersFilterResponse)
       );
   }
 
@@ -68,36 +62,35 @@ export class VendorService {
       .pipe(map(mapVendorOrderDetails));
   }
 
-  updateOrderStatus(payload: IVendorOrderStatusUpdate): Observable<IVendorOrder> {
+  updateOrderStatus(orderId: number, newStatus: string): Observable<IVendorOrder>;
+  updateOrderStatus(payload: IVendorOrderStatusUpdate): Observable<IVendorOrder>;
+  updateOrderStatus(
+    orderIdOrPayload: number | IVendorOrderStatusUpdate,
+    newStatus?: string
+  ): Observable<IVendorOrder> {
+    if (typeof orderIdOrPayload === 'number') {
+      const requestBody: IVendorUpdateOrderStatusRequestDto = {
+        newStatus: newStatus ?? '',
+      };
+
+      return this.http
+        .put<IVendorOrderDetailsDto>(
+          `${this.apiUrl}${API_URLS.VENDOR.UPDATE_ORDER_STATUS(orderIdOrPayload)}`,
+          requestBody
+        )
+        .pipe(map(mapVendorOrderDetails));
+    }
+
     const requestBody: IVendorUpdateOrderStatusRequestDto = {
-      newStatus: this.mapStatusToString(payload.status),
+      newStatus: orderIdOrPayload.status,
     };
 
     return this.http
       .put<IVendorOrderDetailsDto>(
-        `${this.apiUrl}${API_URLS.VENDOR.UPDATE_ORDER_STATUS(payload.orderId)}`,
+        `${this.apiUrl}${API_URLS.VENDOR.UPDATE_ORDER_STATUS(orderIdOrPayload.orderId)}`,
         requestBody
       )
       .pipe(map(mapVendorOrderDetails));
-  }
-
-  private mapStatusToString(status: VendorOrderStatus): string {
-    switch (status) {
-      case VendorOrderStatus.Pending:
-        return 'Pending';
-      case VendorOrderStatus.Confirmed:
-        return 'Confirmed';
-      case VendorOrderStatus.Processing:
-        return 'In Progress';
-      case VendorOrderStatus.Shipped:
-        return 'Ready for Pickup';
-      case VendorOrderStatus.Delivered:
-        return 'Delivered';
-      case VendorOrderStatus.Cancelled:
-        return 'Cancelled';
-      default:
-        return 'Pending';
-    }
   }
 
   getDashboardMetrics(): Observable<IVendorDashboardMetrics> {
@@ -146,3 +139,4 @@ export class VendorService {
     throw new Error('VendorService.markAllNotificationsAsRead() is not implemented');
   }
 }
+

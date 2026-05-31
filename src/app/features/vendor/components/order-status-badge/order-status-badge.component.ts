@@ -5,19 +5,17 @@ import { VendorOrderStatus } from '../../models/vendor-order-status.enum';
 type OrderStatusBadgeVariant = 'warning' | 'info' | 'primary' | 'success' | 'danger';
 
 const STATUS_KEYS: Record<VendorOrderStatus, string> = {
-  [VendorOrderStatus.Pending]: 'VENDOR.STATUS.PENDING',
-  [VendorOrderStatus.Confirmed]: 'VENDOR.STATUS.CONFIRMED',
-  [VendorOrderStatus.Processing]: 'VENDOR.STATUS.PROCESSING',
-  [VendorOrderStatus.Shipped]: 'VENDOR.STATUS.SHIPPED',
+  [VendorOrderStatus.Accepted]: 'VENDOR.STATUS.CONFIRMED',
+  [VendorOrderStatus.InProgress]: 'VENDOR.STATUS.PROCESSING',
+  [VendorOrderStatus.ReadyForPickup]: 'VENDOR.STATUS.SHIPPED',
   [VendorOrderStatus.Delivered]: 'VENDOR.STATUS.DELIVERED',
   [VendorOrderStatus.Cancelled]: 'VENDOR.STATUS.CANCELLED',
 };
 
 const STATUS_VARIANTS: Record<VendorOrderStatus, OrderStatusBadgeVariant> = {
-  [VendorOrderStatus.Pending]: 'warning',
-  [VendorOrderStatus.Confirmed]: 'info',
-  [VendorOrderStatus.Processing]: 'info',
-  [VendorOrderStatus.Shipped]: 'primary',
+  [VendorOrderStatus.Accepted]: 'info',
+  [VendorOrderStatus.InProgress]: 'info',
+  [VendorOrderStatus.ReadyForPickup]: 'primary',
   [VendorOrderStatus.Delivered]: 'success',
   [VendorOrderStatus.Cancelled]: 'danger',
 };

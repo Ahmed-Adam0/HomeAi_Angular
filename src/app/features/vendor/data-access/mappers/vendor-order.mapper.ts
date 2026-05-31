@@ -15,37 +15,11 @@ import { VendorMetricType } from '../../models/vendor-metric-type.enum';
 export function mapVendorOrderDashboard(
   dto: IVendorOrderDashboardDto
 ): IVendorOrderSummary {
-  let mappedStatus: VendorOrderStatus;
-
-  switch (dto.status) {
-    case 'Pending':
-      mappedStatus = VendorOrderStatus.Pending;
-      break;
-    case 'Confirmed':
-      mappedStatus = VendorOrderStatus.Confirmed;
-      break;
-    case 'In Progress':
-      mappedStatus = VendorOrderStatus.Processing;
-      break;
-    case 'Ready for Pickup':
-      mappedStatus = VendorOrderStatus.Shipped;
-      break;
-    case 'Delivered':
-      mappedStatus = VendorOrderStatus.Delivered;
-      break;
-    case 'Cancelled':
-      mappedStatus = VendorOrderStatus.Cancelled;
-      break;
-    default:
-      mappedStatus = VendorOrderStatus.Pending;
-      break;
-  }
-
   return {
     id: dto.id.toString(),
     orderNumber: `ORD-${dto.id}`,
     customerName: dto.customerName,
-    status: mappedStatus,
+    status: mapStringToStatus(dto.status),
     totalAmount: dto.totalPrice,
     currency: 'EGP',
     itemCount: dto.itemCount,
@@ -67,20 +41,19 @@ export function mapVendorOrdersFilterResponse(
  */
 function mapStringToStatus(status: string): VendorOrderStatus {
   switch (status) {
-    case 'Pending':
-      return VendorOrderStatus.Pending;
-    case 'Confirmed':
-      return VendorOrderStatus.Confirmed;
+    case 'Accepted':
+      return VendorOrderStatus.Accepted;
     case 'In Progress':
-      return VendorOrderStatus.Processing;
+      return VendorOrderStatus.InProgress;
     case 'Ready for Pickup':
-      return VendorOrderStatus.Shipped;
+      return VendorOrderStatus.ReadyForPickup;
     case 'Delivered':
       return VendorOrderStatus.Delivered;
     case 'Cancelled':
       return VendorOrderStatus.Cancelled;
     default:
-      return VendorOrderStatus.Pending;
+      console.warn(`[VendorOrderMapper] Unknown status received from API: "${status}". Falling back to "Accepted".`);
+      return VendorOrderStatus.Accepted;
   }
 }
 

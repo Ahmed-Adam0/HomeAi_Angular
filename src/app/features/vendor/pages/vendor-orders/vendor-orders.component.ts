@@ -14,6 +14,7 @@ import { OrdersTable } from '../../components';
 import { IVendorOrderSummary } from '../../interfaces';
 import { VendorService } from '../../services/vendor.service';
 import { APP_ROUTES } from '../../../../core/constants';
+import { VendorOrderStatus } from '../../models/vendor-order-status.enum';
 
 interface OrderStatusFilterOption {
   readonly value: string;
@@ -41,11 +42,11 @@ export class VendorOrders implements OnInit {
 
   readonly statusFilterOptions: readonly OrderStatusFilterOption[] = [
     { value: 'all', labelKey: 'VENDOR.ORDERS.FILTER_ALL_STATUSES' },
-    { value: 'pending', labelKey: 'VENDOR.STATUS.PENDING' },
-    { value: 'processing', labelKey: 'VENDOR.STATUS.PROCESSING' },
-    { value: 'shipped', labelKey: 'VENDOR.STATUS.SHIPPED' },
-    { value: 'delivered', labelKey: 'VENDOR.STATUS.DELIVERED' },
-    { value: 'cancelled', labelKey: 'VENDOR.STATUS.CANCELLED' },
+    { value: VendorOrderStatus.Accepted, labelKey: 'VENDOR.STATUS.CONFIRMED' },
+    { value: VendorOrderStatus.InProgress, labelKey: 'VENDOR.STATUS.PROCESSING' },
+    { value: VendorOrderStatus.ReadyForPickup, labelKey: 'VENDOR.STATUS.SHIPPED' },
+    { value: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED' },
+    { value: VendorOrderStatus.Cancelled, labelKey: 'VENDOR.STATUS.CANCELLED' },
   ];
 
   private readonly router = inject(Router);
