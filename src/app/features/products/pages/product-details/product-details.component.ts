@@ -74,10 +74,22 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
   // Images Gallery
   readonly productImages = computed<string[]>(() => {
     const prod = this.product();
-    if (!prod || !prod.mainImageUrl) {
+    if (!prod) {
       return [];
     }
-    return [prod.mainImageUrl];
+    const list: string[] = [];
+    if (prod.mainImageUrl) {
+      list.push(prod.mainImageUrl);
+    }
+    if (prod.images && Array.isArray(prod.images)) {
+      prod.images.forEach((img: any) => {
+        const url = typeof img === 'string' ? img : img.imageUrl;
+        if (url && !list.includes(url)) {
+          list.push(url);
+        }
+      });
+    }
+    return list;
   });
 
   readonly itemQuantity = signal<number>(1);

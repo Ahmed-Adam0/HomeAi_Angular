@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 
 import { APP_ROUTES } from './core/constants';
 
+console.log('[app.routes.ts] loaded!');
+
 import { MainLayoutComponent } from './core/layouts/main-layout/main-layout.component';
 import { AuthLayoutComponent } from './core/layouts/auth-layout/auth-layout.component';
 import { EmptyLayoutComponent } from './core/layouts/empty-layout/empty-layout.component';

@@ -15,6 +15,16 @@ export interface IProduct {
   mainImageUrl: string;
   averageRating?: number;
   totalReviews?: number;
+  isActive?: boolean;
+  status?: string;
+  images?: IProductImage[];
+}
+
+export interface IProductImage {
+  id: number;
+  productId: number;
+  imageUrl: string;
+  isPrimary: boolean;
 }
 
 export interface IProductResponse {

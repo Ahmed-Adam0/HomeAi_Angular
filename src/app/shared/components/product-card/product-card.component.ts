@@ -1,4 +1,4 @@
-import { Component, Input, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IProduct } from '../../../features/products/interfaces/iproduct';
@@ -21,6 +21,10 @@ import { ReviewsService, IRatingStats } from '../../../features/products/service
 })
 export class ProductCard implements OnInit {
   @Input({ required: true }) product!: IProduct;
+  @Input() mode: 'customer' | 'vendor' = 'customer';
+
+  @Output() delete = new EventEmitter<number>();
+  @Output() statusChange = new EventEmitter<{ id: number; isActive: boolean }>();
 
   readonly translationService = inject(TranslationService);
   readonly cartService = inject(CartService);
@@ -130,5 +134,39 @@ export class ProductCard implements OnInit {
         // so the navbar counter updates automatically
       },
     });
+  }
+
+  onDeleteClick(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.delete.emit(this.product.id);
+  }
+
+  onStatusToggle(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const checkbox = event.target as HTMLInputElement;
+    const newStatus = checkbox.checked;
+    
+    const isAr = this.translationService.currentLang() === 'ar';
+    if (!newStatus) {
+      const msg = isAr 
+        ? 'هل أنت متأكد من رغبتك في أرشفة هذا المنتج؟ سيتم إزالته من المتجر العام وإخفائه عن العملاء.' 
+        : 'Are you sure you want to archive this product? It will be removed from the public marketplace and hidden from customers.';
+      if (!confirm(msg)) {
+        checkbox.checked = true;
+        return;
+      }
+    } else {
+      const msg = isAr 
+        ? 'هل ترغب في إعادة تفعيل هذا المنتج وعرضه في المتجر للعملاء؟' 
+        : 'Do you want to re-activate this product and show it in the marketplace to customers?';
+      if (!confirm(msg)) {
+        checkbox.checked = false;
+        return;
+      }
+    }
+    
+    this.statusChange.emit({ id: this.product.id, isActive: newStatus });
   }
 }

@@ -5,3 +5,5 @@ export { AnalyticsCards } from './analytics-cards/analytics-cards.component';
 export { NotificationsList } from './notifications-list/notifications-list.component';
 export { WorkshopProfileForm } from './workshop-profile-form/workshop-profile-form.component';
 export { VendorStatsOverview } from './vendor-stats-overview/vendor-stats-overview.component';
+export { ProductForm } from './product-form/product-form.component';
+export { ImageUploader } from './image-uploader/image-uploader.component';

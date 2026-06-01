@@ -39,7 +39,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           case 401:
             userMessage = 'Your session has expired. Please log in again.';
             if (isPlatformBrowser(platformId)) {
-              localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
+              localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
               router.navigate(['/auth/login']);
             }
             break;

@@ -1,0 +1,145 @@
+<div class="image-uploader-wrapper bg-white p-4 rounded-4 shadow-sm" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  <h4 class="h6 text-dark fw-bold mb-3 d-flex align-items-center gap-2">
+    <i class="bi bi-images text-gold fs-5"></i>
+    {{ translationService.currentLang() === 'ar' ? 'معرض صور المنتج' : 'Product Image Gallery' }}
+  </h4>
+
+  <!-- Standard File Pick Input (Styler) -->
+  <div class="file-pick-container text-center p-4 border border-dashed rounded-4 bg-light mb-4 transition-all">
+    <label class="btn btn-premium rounded-pill px-4 py-2 cursor-pointer shadow-sm m-0">
+      <i class="bi bi-plus-circle me-1"></i>
+      {{ translationService.currentLang() === 'ar' ? 'اختر صور من جهازك' : 'Choose Images from Device' }}
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        (change)="onFileSelected($event)"
+        hidden
+      />
+    </label>
+    <p class="mb-0 text-muted fs-8 mt-2">
+      {{ translationService.currentLang() === 'ar' ? 'الحد الأقصى لحجم الصورة 5 ميجابايت (PNG, JPG)' : 'Maximum image size is 5MB (PNG, JPG)' }}
+    </p>
+  </div>
+
+  <!-- Local Previews Queue (Images selected but NOT uploaded yet) -->
+  <div *ngIf="localPreviews().length > 0" class="local-previews-section mb-4 p-3 rounded-4 border border-warning-subtle" style="background-color: rgba(253, 126, 20, 0.02)">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="fs-7 fw-bold text-dark d-flex align-items-center gap-2">
+        <span class="badge bg-warning text-dark rounded-circle" style="width: 20px; height: 20px; padding: 2px 0 0 0; font-size: 0.7rem;">
+          {{ localPreviews().length }}
+        </span>
+        {{ translationService.currentLang() === 'ar' ? 'صور جديدة بانتظار الرفع' : 'New Images Pending Upload' }}
+      </span>
+      
+      <!-- Upload Trigger Button (Only shown if productId exists) -->
+      <button
+        *ngIf="productId"
+        type="button"
+        (click)="onUploadClick($event)"
+        class="btn btn-dark btn-sm rounded-pill px-3 py-1 fs-7 fw-semibold shadow-sm d-flex align-items-center gap-2 border-0"
+        [disabled]="isUploading"
+      >
+        <span *ngIf="isUploading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <i *ngIf="!isUploading" class="bi bi-cloud-arrow-up-fill fs-6"></i>
+        {{ translationService.currentLang() === 'ar' ? 'رفع الصور الآن' : 'Upload Images Now' }}
+      </button>
+
+      <!-- Auto Upload Info (Shown if no productId) -->
+      <span *ngIf="!productId" class="text-warning fs-8 fw-semibold">
+        {{ translationService.currentLang() === 'ar' ? 'سيتم رفعها تلقائياً عند حفظ المنتج' : 'Will be uploaded automatically on save' }}
+      </span>
+    </div>
+
+    <div class="row g-2">
+      <div *ngFor="let local of localPreviews(); let i = index" class="col-4 col-sm-3 col-md-2 position-relative">
+        <div class="thumbnail-wrapper rounded-3 overflow-hidden border border-2 aspect-ratio-1-1 position-relative bg-light" [class.border-warning]="primaryIndex() === i" [class.border-light-subtle]="primaryIndex() !== i">
+          <img [src]="local.previewUrl" alt="Local Preview" class="w-100 h-100 object-fit-cover" />
+          
+          <!-- Delete Local Preview Button -->
+          <button
+            type="button"
+            (click)="removeLocalPreview(i, $event)"
+            class="btn btn-danger btn-sm rounded-circle p-1 d-flex align-items-center justify-content-center position-absolute top-0 end-0 m-1 shadow-sm opacity-90 transition-all border-0 z-3"
+            style="width: 22px; height: 22px;"
+          >
+            <i class="bi bi-x fs-8 fw-bold"></i>
+          </button>
+
+          <!-- Local Primary Cover indicator / button -->
+          <button
+            type="button"
+            (click)="onSetPrimaryLocal(i, $event)"
+            class="btn btn-sm rounded-pill px-2 py-1 position-absolute bottom-0 start-0 m-1 z-3 shadow-sm border-0 font-xxs fw-bold d-flex align-items-center gap-1 transition-all"
+            [class.badge-primary-cover]="primaryIndex() === i"
+            [class.btn-light]="primaryIndex() !== i"
+            style="opacity: 0.95; font-size: 0.65rem;"
+          >
+            <i class="bi bi-star-fill text-gold fs-9"></i>
+            <span *ngIf="primaryIndex() === i">{{ translationService.currentLang() === 'ar' ? 'الرئيسية' : 'Cover' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Existing Uploaded Images Gallery -->
+  <div *ngIf="productId" class="existing-gallery-section">
+    <span class="fs-7 fw-bold text-dark d-block mb-3">
+      {{ translationService.currentLang() === 'ar' ? 'الصور المرفوعة حالياً' : 'Currently Uploaded Images' }}
+      <span class="text-muted fw-normal ms-1 fs-8">({{ existingImages.length }})</span>
+    </span>
+
+    <!-- Empty State for Gallery -->
+    <div *ngIf="existingImages.length === 0" class="text-center py-4 bg-light rounded-4 border border-light-subtle">
+      <i class="bi bi-images text-muted display-6 d-block mb-2"></i>
+      <p class="mb-0 text-muted fs-7">
+        {{ translationService.currentLang() === 'ar' ? 'لا توجد صور مرفوعة لهذا المنتج بعد' : 'No images uploaded for this product yet.' }}
+      </p>
+    </div>
+
+    <!-- Active Gallery Grid -->
+    <div class="row g-3">
+      <div *ngFor="let image of existingImages" class="col-6 col-sm-4 col-md-3">
+        <div class="card gallery-item-card border-0 rounded-4 overflow-hidden shadow-sm h-100 position-relative bg-light">
+          <!-- Thumbnail Image -->
+          <div class="aspect-ratio-1-1 overflow-hidden bg-light position-relative">
+            <img [src]="image.imageUrl" alt="Product Image" class="w-100 h-100 object-fit-cover transition-all" />
+            
+            <!-- Delete Image Button overlay -->
+            <button
+              type="button"
+              (click)="onDeleteUploaded(image.id, $event)"
+              class="btn btn-danger btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center position-absolute top-0 end-0 m-2 shadow transition-all border-0 opacity-0-hover z-3"
+              style="width: 32px; height: 32px;"
+              [title]="translationService.currentLang() === 'ar' ? 'حذف الصورة' : 'Delete Image'"
+            >
+              <i class="bi bi-trash fs-7"></i>
+            </button>
+
+            <!-- Primary Cover Badge (If Primary) -->
+            <span *ngIf="image.isPrimary" class="badge-primary-cover position-absolute top-0 start-0 m-2 px-2 py-1 rounded-pill z-3 shadow-sm font-xxs fw-bold d-flex align-items-center gap-1">
+              <i class="bi bi-star-fill text-gold fs-9"></i>
+              {{ translationService.currentLang() === 'ar' ? 'الصورة الرئيسية' : 'Primary Cover' }}
+            </span>
+          </div>
+
+          <!-- Cover Setter Row -->
+          <div class="card-body p-2 text-center bg-white border-top border-light mt-auto">
+            <button
+              *ngIf="!image.isPrimary"
+              type="button"
+              (click)="onSetPrimaryUploaded(image.id, $event)"
+              class="btn btn-link btn-xs text-gold text-decoration-none fw-semibold font-xxs p-0 w-100"
+            >
+              {{ translationService.currentLang() === 'ar' ? 'تعيين كرئيسية' : 'Set as Primary' }}
+            </button>
+            <span *ngIf="image.isPrimary" class="text-muted font-xxs fw-semibold d-block py-0">
+              {{ translationService.currentLang() === 'ar' ? 'الغلاف النشط' : 'Active Cover' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,168 @@
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form-container" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-header bg-dark text-white p-4">
+      <h3 class="h5 mb-0 fw-semibold">
+        {{ (initialData ? (translationService.currentLang() === 'ar' ? 'تعديل تفاصيل المنتج' : 'Edit Product Details') : (translationService.currentLang() === 'ar' ? 'إضافة منتج جديد' : 'Add New Product')) }}
+      </h3>
+      <p class="mb-0 text-white-50 fs-7 mt-1">
+        {{ translationService.currentLang() === 'ar' ? 'يرجى ملء الحقول المطلوبة أدناه لحفظ المنتج' : 'Please fill in the required fields below to save the product' }}
+      </p>
+    </div>
+
+    <div class="card-body p-4 bg-white">
+      <div class="row g-3">
+        <!-- English Name -->
+        <div class="col-md-6">
+          <label for="nameEn" class="form-label fs-7 fw-bold text-dark">
+            {{ translationService.currentLang() === 'ar' ? 'اسم المنتج (بالإنجليزي) *' : 'Product Name (English) *' }}
+          </label>
+          <input
+            type="text"
+            id="nameEn"
+            formControlName="nameEn"
+            class="form-control rounded-pill px-3 py-2 fs-7"
+            [class.is-invalid]="isInvalid('nameEn')"
+            [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل اسم المنتج بالإنجليزية' : 'Enter product name in English'"
+          />
+          <div class="invalid-feedback fs-8 px-2">
+            {{ translationService.currentLang() === 'ar' ? 'الاسم بالإنجليزية مطلوب (3 أحرف على الأقل)' : 'English name is required (min 3 characters)' }}
+          </div>
+        </div>
+
+        <!-- Arabic Name -->
+        <div class="col-md-6">
+          <label for="nameAr" class="form-label fs-7 fw-bold text-dark">
+            {{ translationService.currentLang() === 'ar' ? 'اسم المنتج (بالعربي) *' : 'Product Name (Arabic) *' }}
+          </label>
+          <input
+            type="text"
+            id="nameAr"
+            formControlName="nameAr"
+            class="form-control rounded-pill px-3 py-2 fs-7"
+            [class.is-invalid]="isInvalid('nameAr')"
+            [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل اسم المنتج بالعربية' : 'Enter product name in Arabic'"
+          />
+          <div class="invalid-feedback fs-8 px-2">
+            {{ translationService.currentLang() === 'ar' ? 'الاسم بالعربية مطلوب (3 أحرف على الأقل)' : 'Arabic name is required (min 3 characters)' }}
+          </div>
+        </div>
+
+        <!-- English Description -->
+        <div class="col-md-6">
+          <label for="descriptionEn" class="form-label fs-7 fw-bold text-dark">
+            {{ translationService.currentLang() === 'ar' ? 'وصف المنتج (بالإنجليزي) *' : 'Product Description (English) *' }}
+          </label>
+          <textarea
+            id="descriptionEn"
+            formControlName="descriptionEn"
+            class="form-control rounded-4 px-3 py-2 fs-7"
+            rows="4"
+            [class.is-invalid]="isInvalid('descriptionEn')"
+            [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل وصف المنتج بالإنجليزية...' : 'Enter product description in English...'"
+          ></textarea>
+          <div class="invalid-feedback fs-8 px-2">
+            {{ translationService.currentLang() === 'ar' ? 'الوصف بالإنجليزية مطلوب (5 أحرف على الأقل)' : 'English description is required (min 5 characters)' }}
+          </div>
+        </div>
+
+        <!-- Arabic Description -->
+        <div class="col-md-6">
+          <label for="descriptionAr" class="form-label fs-7 fw-bold text-dark">
+            {{ translationService.currentLang() === 'ar' ? 'وصف المنتج (بالعربي) *' : 'Product Description (Arabic) *' }}
+          </label>
+          <textarea
+            id="descriptionAr"
+            formControlName="descriptionAr"
+            class="form-control rounded-4 px-3 py-2 fs-7"
+            rows="4"
+            [class.is-invalid]="isInvalid('descriptionAr')"
+            [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل وصف المنتج بالعربية...' : 'Enter product description in Arabic...'"
+          ></textarea>
+          <div class="invalid-feedback fs-8 px-2">
+            {{ translationService.currentLang() === 'ar' ? 'الوصف بالعربية مطلوب (5 أحرف على الأقل)' : 'Arabic description is required (min 5 characters)' }}
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div class="col-md-6">
+          <label for="price" class="form-label fs-7 fw-bold text-dark">
+            {{ translationService.currentLang() === 'ar' ? 'السعر (جنية مصري) *' : 'Price (EGP) *' }}
+          </label>
+          <input
+            type="number"
+            id="price"
+            formControlName="price"
+            class="form-control rounded-pill px-3 py-2 fs-7"
+            [class.is-invalid]="isInvalid('price')"
+            [placeholder]="translationService.currentLang() === 'ar' ? 'مثال: 4500' : 'Example: 4500'"
+          />
+          <div class="invalid-feedback fs-8 px-2">
+            {{ translationService.currentLang() === 'ar' ? 'السعر مطلوب ويجب أن يكون أكبر من 0' : 'Price is required and must be greater than 0' }}
+          </div>
+        </div>
+
+        <!-- Category select list -->
+        <div class="col-md-6">
+          <label for="categoryId" class="form-label fs-7 fw-bold text-dark">
+            {{ translationService.currentLang() === 'ar' ? 'القسم *' : 'Category *' }}
+          </label>
+          <select
+            id="categoryId"
+            formControlName="categoryId"
+            class="form-select rounded-pill px-3 py-2 fs-7 cursor-pointer"
+            [class.is-invalid]="isInvalid('categoryId')"
+          >
+            <option value="" disabled selected>
+              {{ translationService.currentLang() === 'ar' ? 'اختر قسم المنتج' : 'Select a category' }}
+            </option>
+            <option *ngFor="let cat of categories()" [value]="cat.id">
+              {{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}
+            </option>
+          </select>
+          <div class="invalid-feedback fs-8 px-2">
+            {{ translationService.currentLang() === 'ar' ? 'يرجى اختيار قسم للمنتج' : 'Please select a category' }}
+          </div>
+        </div>
+
+        <!-- Active Status Toggle -->
+        <div class="col-12 mt-3">
+          <div class="form-check form-switch cursor-pointer d-flex align-items-center gap-2">
+            <input
+              type="checkbox"
+              id="isActive"
+              formControlName="isActive"
+              role="switch"
+              class="form-check-input cursor-pointer"
+              style="width: 2.4em; height: 1.2em;"
+            />
+            <label class="form-check-label fs-7 fw-bold text-dark cursor-pointer" for="isActive">
+              {{ translationService.currentLang() === 'ar' ? 'تفعيل المنتج للظهور في الماركت بليس' : 'Activate product in marketplace' }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Footer Actions -->
+    <div class="card-footer bg-light p-4 d-flex justify-content-end gap-3 border-0">
+      <button
+        type="button"
+        (click)="onCancel()"
+        class="btn btn-outline-dark rounded-pill px-4 py-2 fs-7 fw-semibold shadow-sm border-0"
+        style="background-color: rgba(31,28,24,0.06)"
+        [disabled]="isSubmitting"
+      >
+        {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+      </button>
+
+      <button
+        type="submit"
+        class="btn btn-dark rounded-pill px-4 py-2 fs-7 fw-semibold shadow-sm d-flex align-items-center gap-2 border-0"
+        [disabled]="isSubmitting"
+      >
+        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        {{ translationService.currentLang() === 'ar' ? 'حفظ الحقول' : 'Save Details' }}
+      </button>
+    </div>
+  </div>
+</form>

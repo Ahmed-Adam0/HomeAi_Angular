@@ -1,0 +1,82 @@
+.image-uploader-wrapper {
+  border: 1px solid rgba(31, 28, 24, 0.08);
+}
+
+.file-pick-container {
+  border-style: dashed !important;
+  border-width: 2px !important;
+  border-color: rgba(31, 28, 24, 0.15) !important;
+  background-color: #faf9f6 !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.file-pick-container:hover {
+  border-color: #b8935c !important;
+  background-color: rgba(184, 147, 92, 0.02) !important;
+}
+
+.btn-premium {
+  background-color: #b8935c !important;
+  color: #ffffff !important;
+  border: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-premium:hover {
+  background-color: #a47f4b !important;
+  transform: scale(1.03);
+  box-shadow: 0 6px 15px rgba(184, 147, 92, 0.3);
+}
+
+.aspect-ratio-1-1 {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+}
+
+.thumbnail-wrapper {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.gallery-item-card {
+  border: 1px solid rgba(31, 28, 24, 0.06) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Delete button overlay on hover */
+.gallery-item-card .btn-danger {
+  opacity: 0.85;
+  transition: all 0.2s ease-in-out;
+}
+
+.gallery-item-card:hover .btn-danger {
+  opacity: 1;
+}
+
+.badge-primary-cover {
+  background-color: rgba(31, 28, 24, 0.85);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  border: 1px solid rgba(184, 147, 92, 0.4);
+}
+
+.text-gold {
+  color: #b8935c !important;
+}
+
+.font-xxs {
+  font-size: 0.7rem !important;
+}
+
+.font-xxs.btn-link:hover {
+  color: #a47f4b !important;
+}
+
+/* RTL Support */
+[dir="rtl"] .file-pick-container p {
+  text-align: center;
+}

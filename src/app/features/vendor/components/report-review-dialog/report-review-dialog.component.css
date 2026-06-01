@@ -1,0 +1,60 @@
+.report-dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(31, 28, 24, 0.45);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+.report-dialog-card {
+  width: 100%;
+  max-width: 520px;
+  margin: 1.5rem;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(31, 28, 24, 0.15);
+  transform: translateY(20px) scale(0.96);
+  opacity: 0;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+}
+
+.report-dialog-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.report-dialog-header .btn-close-white {
+  opacity: 0.85;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.report-dialog-header .btn-close-white:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}

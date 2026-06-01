@@ -1,0 +1,51 @@
+<div class="vendor-edit-container py-5 px-3 px-md-5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  <!-- Top Navigation / Header -->
+  <div class="mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-1 font-xxs">
+        <li class="breadcrumb-item"><a [routerLink]="['/vendor']" class="text-gold text-decoration-none fw-semibold">{{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}</a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/vendor/products']" class="text-gold text-decoration-none fw-semibold">{{ translationService.currentLang() === 'ar' ? 'المنتجات' : 'Products' }}</a></li>
+        <li class="breadcrumb-item active text-muted" aria-current="page">{{ translationService.currentLang() === 'ar' ? 'تعديل المنتج' : 'Edit Product' }}</li>
+      </ol>
+    </nav>
+    <h1 class="h3 fw-extrabold text-dark mb-0 letter-spacing-tight">
+      {{ translationService.currentLang() === 'ar' ? 'تعديل تفاصيل المنتج' : 'Edit Product Details' }}
+    </h1>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="row justify-content-center py-5">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-gold" style="width: 3rem; height: 3rem; border-width: 4px;" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 text-muted fs-7">{{ translationService.currentLang() === 'ar' ? 'جاري تحميل تفاصيل المنتج...' : 'Loading product details...' }}</p>
+    </div>
+  </div>
+
+  <!-- Main Grid Content -->
+  <div *ngIf="!loading() && product()" class="row g-4 justify-content-center">
+    <!-- Form Details Column -->
+    <div class="col-lg-10 col-xl-8">
+      <div class="d-flex flex-column gap-4">
+        <!-- Reusable Reactive Form Component -->
+        <app-product-form
+          [initialData]="product()"
+          [isSubmitting]="submitting()"
+          (formSubmit)="onFormSubmit($event)"
+          (cancel)="onCancel()"
+        ></app-product-form>
+
+        <!-- Reusable Image Upload Component -->
+        <app-image-uploader
+          [productId]="productId()"
+          [existingImages]="product()?.images || []"
+          [isUploading]="uploading()"
+          (uploadFiles)="onUploadImages($event)"
+          (deleteImage)="onDeleteImage($event)"
+          (setPrimary)="onSetPrimaryImage($event)"
+        ></app-image-uploader>
+      </div>
+    </div>
+  </div>
+</div>

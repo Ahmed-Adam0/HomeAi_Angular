@@ -1,6 +1,7 @@
 <div class="card card-premium product-card h-100 overflow-hidden border-0 shadow-sm position-relative">
   <!-- Favorite Button -->
   <button
+    *ngIf="mode === 'customer'"
     class="favorite-btn btn btn-light rounded-circle shadow-sm border-0 position-absolute top-0 end-0 m-3 z-3 d-flex align-items-center justify-content-center transition-all"
     [class.is-fav]="isFavorite()"
     [disabled]="isTogglingFav()"
@@ -17,7 +18,7 @@
   </button>
 
   <!-- Image Section -->
-  <div class="image-wrapper overflow-hidden bg-light position-relative" [routerLink]="['/products', product.id]">
+  <div class="image-wrapper overflow-hidden bg-light position-relative" [routerLink]="mode === 'customer' ? ['/products', product.id] : ['/vendor/products/edit', product.id]">
     <img
       [src]="product.mainImageUrl || 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80'"
       [alt]="translationService.currentLang() === 'ar' ? product.nameAr : product.nameEn"
@@ -28,7 +29,7 @@
     <!-- Quick View Overlay -->
     <div class="quick-view-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-40 transition-all opacity-0">
       <span class="btn btn-premium btn-sm px-4 py-2 shadow-lg fs-7">
-        {{ 'PRODUCT_VIEW_DETAILS' | translate }}
+        {{ (mode === 'customer' ? 'PRODUCT_VIEW_DETAILS' : 'EDIT') | translate }}
       </span>
     </div>
   </div>
@@ -45,7 +46,7 @@
         </span>
       </div>
 
-      <h5 class="product-title fw-bold text-dark mb-2 transition-all fs-6" [routerLink]="['/products', product.id]">
+      <h5 class="product-title fw-bold text-dark mb-2 transition-all fs-6" [routerLink]="mode === 'customer' ? ['/products', product.id] : ['/vendor/products/edit', product.id]">
         {{ translationService.currentLang() === 'ar' ? product.nameAr : product.nameEn }}
       </h5>
 
@@ -87,8 +88,9 @@
         </span>
       </div>
 
-      <!-- Action Button -->
+      <!-- Action Button for Customer -->
       <button
+        *ngIf="mode === 'customer'"
         type="button"
         class="add-to-cart-btn btn btn-dark rounded-circle d-flex align-items-center justify-content-center p-2 transition-all border-0 shadow-sm"
         aria-label="Add to cart"
@@ -103,6 +105,45 @@
           </svg>
         }
       </button>
+
+      <!-- Action Buttons for Vendor -->
+      <div *ngIf="mode === 'vendor'" class="d-flex gap-2 align-items-center">
+        <a
+          [routerLink]="['/vendor/products/edit', product.id]"
+          class="btn btn-outline-dark btn-sm rounded-circle d-flex align-items-center justify-content-center transition-all shadow-sm"
+          style="width: 36px; height: 36px; border-color: rgba(31,28,24,0.15)"
+          title="Edit Product"
+        >
+          <i class="bi bi-pencil fs-6"></i>
+        </a>
+        <button
+          type="button"
+          (click)="onDeleteClick($event)"
+          class="btn btn-outline-danger btn-sm rounded-circle d-flex align-items-center justify-content-center transition-all shadow-sm"
+          style="width: 36px; height: 36px;"
+          title="Delete Product"
+        >
+          <i class="bi bi-trash fs-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Toggle Switch for Vendor -->
+    <div *ngIf="mode === 'vendor'" class="d-flex align-items-center mt-3 pt-2 border-top border-light-subtle">
+      <div class="form-check form-switch m-0 d-flex align-items-center gap-2 cursor-pointer">
+        <input
+          class="form-check-input cursor-pointer"
+          type="checkbox"
+          role="switch"
+          [id]="'statusSwitch-' + product.id"
+          [checked]="product.isActive ?? true"
+          (change)="onStatusToggle($event)"
+          style="width: 2.2em; height: 1.1em;"
+        />
+        <label class="form-check-label fs-7 fw-semibold text-muted" [for]="'statusSwitch-' + product.id">
+          {{ translationService.currentLang() === 'ar' ? ((product.isActive ?? true) ? 'نشط' : 'مؤرشف') : ((product.isActive ?? true) ? 'Active' : 'Archived') }}
+        </label>
+      </div>
     </div>
   </div>
 </div>

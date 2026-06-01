@@ -6,6 +6,7 @@ import { IProduct } from '../interfaces/iproduct';
 import { IProductFilter } from '../interfaces/iproduct-filter';
 import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants';
+import { unwrap, normalizeProduct } from '../../../core/utils/api-utils';
 
 @Injectable({
   providedIn: 'root',
@@ -38,9 +39,9 @@ export class ProductService {
 
     return this.http.get<any>(`${this.apiUrl}${API_URLS.PRODUCTS.LIST}`, { params }).pipe(
       map((res) => {
-        if (res && res.items) return res.items;
-        if (Array.isArray(res)) return res;
-        return [];
+        const unwrapped = unwrap<any>(res);
+        const items = Array.isArray(unwrapped) ? unwrapped : (unwrapped && Array.isArray(unwrapped.items) ? unwrapped.items : []);
+        return items.map((p: any) => normalizeProduct(p));
       }),
       tap((data: IProduct[]) => {
         if (data) {
@@ -58,7 +59,8 @@ export class ProductService {
    * Get single product details by id.
    */
   getProductById(id: string | number): Observable<IProduct> {
-    return this.http.get<IProduct>(`${this.apiUrl}${API_URLS.PRODUCTS.DETAILS(id)}`).pipe(
+    return this.http.get<any>(`${this.apiUrl}${API_URLS.PRODUCTS.DETAILS(id)}`).pipe(
+      map(res => normalizeProduct(unwrap<IProduct>(res))),
       catchError((error) => {
         console.error(`Product Details API failed for ID: ${id}:`, error);
         return throwError(() => error);
@@ -73,9 +75,9 @@ export class ProductService {
     const params = new HttpParams().set('isFeatured', 'true');
     return this.http.get<any>(`${this.apiUrl}${API_URLS.PRODUCTS.FEATURED}`, { params }).pipe(
       map((res) => {
-        if (res && res.items) return res.items;
-        if (Array.isArray(res)) return res;
-        return [];
+        const unwrapped = unwrap<any>(res);
+        const items = Array.isArray(unwrapped) ? unwrapped : (unwrapped && Array.isArray(unwrapped.items) ? unwrapped.items : []);
+        return items.map((p: any) => normalizeProduct(p));
       }),
       tap((data: IProduct[]) => {
         if (data) {
@@ -96,9 +98,9 @@ export class ProductService {
     let params = new HttpParams().set('query', query);
     return this.http.get<any>(`${this.apiUrl}${API_URLS.PRODUCTS.SEARCH}`, { params }).pipe(
       map((res) => {
-        if (res && res.items) return res.items;
-        if (Array.isArray(res)) return res;
-        return [];
+        const unwrapped = unwrap<any>(res);
+        const items = Array.isArray(unwrapped) ? unwrapped : (unwrapped && Array.isArray(unwrapped.items) ? unwrapped.items : []);
+        return items.map((p: any) => normalizeProduct(p));
       }),
       catchError((error) => {
         console.error(`Search Products API request failed for: ${query}:`, error);
@@ -107,3 +109,4 @@ export class ProductService {
     );
   }
 }
+

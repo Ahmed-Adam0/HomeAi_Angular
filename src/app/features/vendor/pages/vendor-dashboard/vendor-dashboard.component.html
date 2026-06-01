@@ -1,182 +1,406 @@
-<main class="vendor-dashboard" [attr.aria-label]="'VENDOR.DASHBOARD.ARIA_LABEL' | translate">
-  <header class="vendor-dashboard__header">
+<main class="vendor-dashboard py-5 px-3 px-md-5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  <!-- Header -->
+  <header class="vendor-dashboard__header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5">
     <div class="vendor-dashboard__header-content">
-      <p class="vendor-dashboard__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
-      <h1 class="vendor-dashboard__title">{{ 'VENDOR.DASHBOARD.TITLE' | translate }}</h1>
-      <p class="vendor-dashboard__description">
-        {{ 'VENDOR.DASHBOARD.DESCRIPTION' | translate }}
+      <p class="vendor-dashboard__eyebrow text-gold fw-bold mb-1 letter-spacing-wide">{{ translationService.currentLang() === 'ar' ? 'بوابة الشركاء' : 'Vendor Portal' }}</p>
+      <h1 class="vendor-dashboard__title fw-extrabold text-dark mb-0">{{ translationService.currentLang() === 'ar' ? 'مرحباً بك مجدداً' : 'Welcome Back' }}</h1>
+      <p class="vendor-dashboard__description text-muted fs-7 mt-1">
+        {{ translationService.currentLang() === 'ar' ? 'إدارة المنتجات، الطلبات، تقييمات العملاء، وأداء ورشتك من مكان واحد.' : 'Manage products, orders, customer reviews, and your workshop performance from one central dashboard.' }}
       </p>
     </div>
-
-    <div class="vendor-dashboard__meta" [attr.aria-label]="'VENDOR.DASHBOARD.META_ARIA' | translate">
-      <span class="vendor-dashboard__meta-badge">{{ 'VENDOR.DASHBOARD.LIVE_OVERVIEW' | translate }}</span>
-      <span class="vendor-dashboard__meta-note">{{ 'VENDOR.DASHBOARD.WORKSHOP_DASHBOARD' | translate }}</span>
+    <div class="vendor-dashboard__meta align-self-start align-self-md-center">
+      <span class="vendor-dashboard__meta-badge bg-gold-soft text-gold px-3 py-1.5 rounded-pill font-xxs fw-bold uppercase">Live Overview</span>
     </div>
   </header>
 
-  <div class="vendor-dashboard__content">
-    <section
-      class="vendor-dashboard__section vendor-dashboard__section--stats"
-      [attr.aria-label]="'VENDOR.DASHBOARD.STATS_ARIA' | translate"
-    >
-      @if (analytics(); as analyticsData) {
-        <app-vendor-stats-overview [analytics]="analyticsData" />
-      } @else {
-        <div
-          class="vendor-dashboard__skeleton-grid vendor-dashboard__skeleton-grid--stats"
-          role="status"
-          [attr.aria-label]="'VENDOR.DASHBOARD.LOADING_STATS_ARIA' | translate"
-        >
-          @for (slot of [0, 1, 2, 3]; track slot) {
-            <div class="vendor-dashboard__skeleton-card" aria-hidden="true">
-              <div class="vendor-dashboard__skeleton-icon fm-skeleton"></div>
-              <div class="vendor-dashboard__skeleton-line fm-skeleton fm-skeleton-text title"></div>
-              <div class="vendor-dashboard__skeleton-line fm-skeleton fm-skeleton-text medium"></div>
-            </div>
-          }
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="row g-4 py-5 justify-content-center">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-gold" style="width: 3rem; height: 3rem; border-width: 4px;" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 text-muted fs-7">{{ translationService.currentLang() === 'ar' ? 'جاري تحميل لوحة التحكم...' : 'Loading portal dashboard...' }}</p>
+    </div>
+  </div>
+
+  <!-- Dashboard Main Content -->
+  <div class="vendor-dashboard__content mt-4" *ngIf="!loading()">
+    
+    <!-- Premium CTA Callout Banner Card -->
+    <div class="card card-cta-banner rounded-4 border-0 p-4 p-md-5 mb-5 shadow-xs position-relative overflow-hidden">
+      <div class="row align-items-center g-4 position-relative z-2">
+        <div class="col-md-8">
+          <span class="badge bg-gold-soft text-gold font-xxs mb-2 px-2.5 py-1 rounded-pill fw-bold">{{ translationService.currentLang() === 'ar' ? 'إجراء سريع' : 'Quick Access' }}</span>
+          <h2 class="h4 fw-extrabold text-dark mb-2">
+            {{ translationService.currentLang() === 'ar' ? 'إدارة كتالوج المنتجات الخاص بك' : 'Manage Your Storefront Product Catalog' }}
+          </h2>
+          <p class="text-secondary-color font-xs mb-0" style="max-width: 580px; line-height: 1.6;">
+            {{ translationService.currentLang() === 'ar' ? 'أضف منتجات جديدة، قم بتحديث الأسعار، تحكم في حالة التفعيل، أو ارفع صوراً عالية الجودة لعرض تصاميمك المتميزة للعملاء.' : 'Add new items, adjust prices, toggle active listings, or upload luxury product photos to showcase your outstanding craftsmanship to potential buyers.' }}
+          </p>
         </div>
-      }
-    </section>
-
-    <div class="vendor-dashboard__snapshots">
-      <section
-        class="vendor-dashboard__section"
-        aria-labelledby="vendor-dashboard-revenue-heading"
-      >
-        <header class="vendor-dashboard__section-head">
-          <h2 id="vendor-dashboard-revenue-heading" class="vendor-dashboard__section-title">
-            {{ 'VENDOR.DASHBOARD.REVENUE_SECTION' | translate }}
-          </h2>
-        </header>
-
-        @if (revenue(); as revenueData) {
-          <app-revenue-cards [revenue]="revenueData" />
-        } @else {
-          <div
-            class="vendor-dashboard__placeholder"
-            role="status"
-            [attr.aria-label]="'VENDOR.DASHBOARD.LOADING_REVENUE_ARIA' | translate"
-          >
-            <div class="vendor-dashboard__skeleton-grid vendor-dashboard__skeleton-grid--cards">
-              @for (slot of [0, 1, 2, 3]; track slot) {
-                <div class="vendor-dashboard__skeleton-card" aria-hidden="true">
-                  <div class="vendor-dashboard__skeleton-icon fm-skeleton"></div>
-                  <div class="vendor-dashboard__skeleton-line fm-skeleton fm-skeleton-text short"></div>
-                  <div class="vendor-dashboard__skeleton-line fm-skeleton fm-skeleton-text title"></div>
-                </div>
-              }
-            </div>
-          </div>
-        }
-      </section>
-
-      <section
-        class="vendor-dashboard__section"
-        aria-labelledby="vendor-dashboard-analytics-heading"
-      >
-        <header class="vendor-dashboard__section-head">
-          <h2 id="vendor-dashboard-analytics-heading" class="vendor-dashboard__section-title">
-            {{ 'VENDOR.DASHBOARD.ANALYTICS_SECTION' | translate }}
-          </h2>
-        </header>
-
-        @if (analytics(); as analyticsData) {
-          <app-analytics-cards [analytics]="analyticsData" />
-        } @else {
-          <div
-            class="vendor-dashboard__placeholder"
-            role="status"
-            [attr.aria-label]="'VENDOR.DASHBOARD.LOADING_ANALYTICS_ARIA' | translate"
-          >
-            <div class="vendor-dashboard__skeleton-grid vendor-dashboard__skeleton-grid--cards">
-              @for (slot of [0, 1, 2, 3]; track slot) {
-                <div class="vendor-dashboard__skeleton-card" aria-hidden="true">
-                  <div class="vendor-dashboard__skeleton-icon fm-skeleton"></div>
-                  <div class="vendor-dashboard__skeleton-line fm-skeleton fm-skeleton-text short"></div>
-                  <div class="vendor-dashboard__skeleton-line fm-skeleton fm-skeleton-text title"></div>
-                </div>
-              }
-            </div>
-          </div>
-        }
-      </section>
+        <div class="col-md-4 text-md-end">
+          <a routerLink="/vendor/products" class="btn btn-dark rounded-pill px-4 py-2.5 font-xs fw-bold border-0 shadow-sm transition-all hover-lift d-inline-flex align-items-center gap-2">
+            <i class="bi bi-box-seam-fill"></i>
+            {{ translationService.currentLang() === 'ar' ? 'إدارة المنتجات' : 'Manage Products' }}
+          </a>
+        </div>
+      </div>
+      <div class="cta-background-decor position-absolute"></div>
     </div>
 
-    <section
-      class="vendor-dashboard__section"
-      aria-labelledby="vendor-dashboard-orders-heading"
-    >
-      <header class="vendor-dashboard__section-head">
-        <h2 id="vendor-dashboard-orders-heading" class="vendor-dashboard__section-title">
-          {{ 'VENDOR.DASHBOARD.RECENT_ORDERS' | translate }}
-        </h2>
-      </header>
+    <!-- Live Statistics Overview Section -->
+    <section class="vendor-dashboard__section mb-5">
+      <h2 class="h5 fw-bold text-dark mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-speedometer2 text-gold"></i>
+        {{ translationService.currentLang() === 'ar' ? 'إحصائيات الأداء المباشرة' : 'Live Performance Metrics' }}
+      </h2>
 
-      @if (hasOrders()) {
-        <app-orders-table [orders]="orders()" />
-      } @else {
-        <div class="vendor-dashboard__empty-state" role="status">
-          <div class="vendor-dashboard__empty-icon" aria-hidden="true">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <path d="M16 10a4 4 0 0 1-8 0"></path>
-            </svg>
+      <!-- Row 1: Sales & Orders KPI Metrics -->
+      <div class="row g-4 mb-4">
+        <!-- Total Orders Card -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'إجمالي الطلبات' : 'Total Orders' }}</span>
+              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-cart-check text-gold fs-5"></i>
+              </div>
+            </div>
+            <h3 class="display-6 fw-extrabold text-dark m-0">{{ metrics()?.totalOrders ?? 0 }}</h3>
+            <p class="font-xxs text-muted mt-2 mb-0">
+              {{ translationService.currentLang() === 'ar' ? 'الطلبات المستلمة' : 'Orders received' }}
+            </p>
           </div>
-          <h3 class="vendor-dashboard__empty-title">{{ 'VENDOR.DASHBOARD.ORDERS_EMPTY_TITLE' | translate }}</h3>
-          <p class="vendor-dashboard__empty-description">
-            {{ 'VENDOR.DASHBOARD.ORDERS_EMPTY_DESC' | translate }}
-          </p>
+
         </div>
-      }
+
+        <!-- Total Revenue Card -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue' }}</span>
+              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-currency-dollar text-gold fs-5"></i>
+              </div>
+            </div>
+            <h3 class="display-6 fw-extrabold text-dark m-0">{{ (metrics()?.totalRevenue ?? 0) | currencyFormat }}</h3>
+            <p class="font-xxs text-muted mt-2 mb-0">
+              {{ translationService.currentLang() === 'ar' ? 'إجمالي المبيعات' : 'Gross sales' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Pending Orders Card -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'طلبات قيد الانتظار' : 'Pending Orders' }}</span>
+              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-clock-history text-gold fs-5"></i>
+              </div>
+            </div>
+            <h3 class="display-6 fw-extrabold text-dark m-0">{{ metrics()?.pendingOrdersCount ?? 0 }}</h3>
+            <p class="font-xxs text-muted mt-2 mb-0">
+              {{ translationService.currentLang() === 'ar' ? 'بانتظار المعالجة' : 'Awaiting processing' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Completed Orders Card -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'الطلب المكتمل' : 'Completed Orders' }}</span>
+              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-check2-all text-gold fs-5"></i>
+              </div>
+            </div>
+            <h3 class="display-6 fw-extrabold text-dark m-0">{{ metrics()?.completedOrdersCount ?? 0 }}</h3>
+            <p class="font-xxs text-muted mt-2 mb-0">
+              {{ translationService.currentLang() === 'ar' ? 'تم توصيلها بنجاح' : 'Successfully delivered' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Catalog & Products Stats -->
+      <div class="row g-4">
+        <!-- Total Products Card -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs transition-all h-100 cursor-pointer bg-white" routerLink="/vendor/products">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'إجمالي المنتجات' : 'Total Products' }}</span>
+              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-box-seam text-gold fs-5"></i>
+              </div>
+            </div>
+            <h3 class="display-6 fw-extrabold text-dark m-0">{{ totalProducts() }}</h3>
+            <p class="font-xxs text-gold fw-bold mt-2 mb-0">
+              {{ translationService.currentLang() === 'ar' ? 'عرض الكتالوج بالكامل ←' : 'Browse full catalog →' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Active Products Card -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'المنتجات النشطة' : 'Active Products' }}</span>
+              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-check-circle text-success fs-5"></i>
+              </div>
+            </div>
+            <h3 class="display-6 fw-extrabold text-dark m-0">{{ activeProducts() }}</h3>
+            <p class="font-xxs text-success mt-2 mb-0">
+              <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
+              {{ translationService.currentLang() === 'ar' ? 'تظهر للعملاء في المتجر' : 'Visible in the marketplace' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Archived Products Card -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'المنتجات المؤرشفة' : 'Archived Products' }}</span>
+              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-archive text-danger fs-5"></i>
+              </div>
+            </div>
+            <h3 class="display-6 fw-extrabold text-dark m-0">{{ archivedProducts() }}</h3>
+            <p class="font-xxs text-danger mt-2 mb-0">
+              <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
+              {{ translationService.currentLang() === 'ar' ? 'تمت إزالتها من المتجر' : 'Removed from marketplace' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Top Rated Product Card -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'المنتج الأعلى تقييماً' : 'Top Rated Product' }}</span>
+              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-star-fill text-gold fs-5"></i>
+              </div>
+            </div>
+            <ng-container *ngIf="topRatedProduct(); else noTopRated">
+              <h4 class="font-xs fw-bold text-dark text-truncate mb-2" style="max-width: 100%;">
+                {{ translationService.currentLang() === 'ar' ? topRatedProduct()!.nameAr : topRatedProduct()!.nameEn }}
+              </h4>
+              <div class="d-flex align-items-center gap-1">
+                <i class="bi bi-star-fill text-gold font-xxs"></i>
+                <span class="font-xs fw-extrabold text-dark">{{ topRatedProduct()!.averageRating }}</span>
+                <span class="font-xxs text-muted">/ 5.0</span>
+              </div>
+            </ng-container>
+            <ng-template #noTopRated>
+              <h4 class="font-xs text-muted mb-2">-</h4>
+              <span class="font-xxs text-muted">{{ translationService.currentLang() === 'ar' ? 'لا توجد تقييمات بعد' : 'No ratings yet' }}</span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section
-      class="vendor-dashboard__section"
-      aria-labelledby="vendor-dashboard-notifications-heading"
-    >
-      <header class="vendor-dashboard__section-head">
-        <h2 id="vendor-dashboard-notifications-heading" class="vendor-dashboard__section-title">
-          {{ 'VENDOR.DASHBOARD.NOTIFICATIONS_SECTION' | translate }}
-        </h2>
-      </header>
+    <!-- Quick Actions Panel -->
+    <div class="row g-4 mb-5">
+      <div class="col-12">
+        <div class="card border-0 rounded-4 p-4 shadow-xs bg-white">
+          <h3 class="h6 fw-extrabold text-dark mb-4 pb-2 border-bottom border-light uppercase letter-spacing-wide">
+            {{ translationService.currentLang() === 'ar' ? 'إجراءات سريعة' : 'Quick Actions' }}
+          </h3>
+          <div class="row g-3">
+            <!-- Add Product -->
+            <div class="col-md-4">
+              <a routerLink="/vendor/products/add" class="quick-action-link d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none transition-all h-100">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="action-icon rounded-circle bg-dark text-white d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; flex-shrink: 0;">
+                    <i class="bi bi-plus-lg fs-6"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-xs fw-bold text-dark m-0">{{ translationService.currentLang() === 'ar' ? 'إضافة منتج جديد' : 'Add New Product' }}</h4>
+                    <p class="font-xxs text-muted m-0 mt-1">{{ translationService.currentLang() === 'ar' ? 'أنشئ منتجاً جديداً للكتالوج' : 'Register a new item' }}</p>
+                  </div>
+                </div>
+                <i class="bi text-muted font-xs" [ngClass]="translationService.currentLang() === 'ar' ? 'bi-chevron-left' : 'bi-chevron-right'"></i>
+              </a>
+            </div>
 
-      @if (hasNotifications()) {
-        <app-notifications-list [notifications]="notifications()" />
-      } @else {
-        <div class="vendor-dashboard__empty-state" role="status">
-          <div class="vendor-dashboard__empty-icon" aria-hidden="true">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
+            <!-- Manage Products -->
+            <div class="col-md-4">
+              <a routerLink="/vendor/products" class="quick-action-link d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none transition-all h-100">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="action-icon rounded-circle bg-dark text-white d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; flex-shrink: 0;">
+                    <i class="bi bi-box-seam fs-6"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-xs fw-bold text-dark m-0">{{ translationService.currentLang() === 'ar' ? 'إدارة المنتجات' : 'Manage Products' }}</h4>
+                    <p class="font-xxs text-muted m-0 mt-1">{{ translationService.currentLang() === 'ar' ? 'تعديل، تفعيل أو حذف المنتجات' : 'Edit, toggle, or delete items' }}</p>
+                  </div>
+                </div>
+                <i class="bi text-muted font-xs" [ngClass]="translationService.currentLang() === 'ar' ? 'bi-chevron-left' : 'bi-chevron-right'"></i>
+              </a>
+            </div>
+
+            <!-- View Reviews -->
+            <div class="col-md-4">
+              <a routerLink="/vendor/reviews" class="quick-action-link d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none transition-all h-100">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="action-icon rounded-circle bg-dark text-white d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; flex-shrink: 0;">
+                    <i class="bi bi-chat-left-heart fs-6"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-xs fw-bold text-dark m-0">{{ translationService.currentLang() === 'ar' ? 'عرض التقييمات' : 'View Customer Reviews' }}</h4>
+                    <p class="font-xxs text-muted m-0 mt-1">{{ translationService.currentLang() === 'ar' ? 'الرد على العملاء وإدارة التقييمات' : 'Reply and flag comments' }}</p>
+                  </div>
+                </div>
+                <i class="bi text-muted font-xs" [ngClass]="translationService.currentLang() === 'ar' ? 'bi-chevron-left' : 'bi-chevron-right'"></i>
+              </a>
+            </div>
           </div>
-          <h3 class="vendor-dashboard__empty-title">{{ 'VENDOR.DASHBOARD.NOTIFICATIONS_EMPTY_TITLE' | translate }}</h3>
-          <p class="vendor-dashboard__empty-description">
-            {{ 'VENDOR.DASHBOARD.NOTIFICATIONS_EMPTY_DESC' | translate }}
-          </p>
         </div>
-      }
+      </div>
+    </div>
+
+    <!-- Recent Reviews & Moderation System Section -->
+    <section class="vendor-dashboard__section mb-5">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="h5 fw-bold text-dark d-flex align-items-center gap-2 m-0">
+          <i class="bi bi-chat-left-heart-fill text-gold"></i>
+          {{ translationService.currentLang() === 'ar' ? 'آخر المراجعات وإدارة التقييمات' : 'Recent Reviews & Moderation Shortcuts' }}
+        </h2>
+        
+        <!-- Reported review indicator badge -->
+        <span *ngIf="reportedReviewsCount() > 0" class="badge bg-danger-soft text-danger border border-danger-subtle rounded-pill font-xxs px-3 py-1.5 d-inline-flex align-items-center gap-1.5">
+          <i class="bi bi-flag-fill"></i>
+          {{ reportedReviewsCount() }} {{ translationService.currentLang() === 'ar' ? 'تقييمات مبلغ عنها' : 'Reported Reviews' }}
+        </span>
+      </div>
+
+      <div class="row g-4" *ngIf="recentReviews().length > 0">
+        <!-- Loop for latest 3 reviews -->
+        <div class="col-12" *ngFor="let review of recentReviews()">
+          <div class="card card-review p-4 border-0 shadow-xs rounded-4 bg-white transition-all">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+              <!-- Reviewer Content -->
+              <div class="d-flex gap-3">
+                <div class="avatar-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center border" style="width: 48px; height: 48px; flex-shrink: 0;">
+                  <img *ngIf="review.userAvatarUrl" [src]="review.userAvatarUrl" [alt]="review.userName" class="w-100 h-100 object-fit-cover rounded-circle" />
+                  <span *ngIf="!review.userAvatarUrl" class="fw-bold text-secondary font-sm">
+                    {{ (review.userName || 'C').substring(0, 1).toUpperCase() }}
+                  </span>
+                </div>
+
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <h5 class="reviewer-name font-sm fw-bold text-dark m-0">{{ review.userName }}</h5>
+                    <span *ngIf="review.isReported" class="badge bg-danger-soft text-danger border border-danger-subtle rounded-pill font-xxs px-2 py-0.5 d-inline-flex align-items-center gap-1">
+                      <i class="bi bi-flag-fill"></i>
+                      {{ translationService.currentLang() === 'ar' ? 'تم الإبلاغ عنها' : 'Reported' }}
+                    </span>
+                  </div>
+
+                  <div class="stars-container d-flex gap-1 mb-2">
+                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                      <i class="bi bi-star-fill font-xxs" [class.text-gold]="star <= review.rating" [class.text-light-gray]="star > review.rating"></i>
+                    }
+                    <span class="font-xxs text-muted ms-1">({{ review.rating }}/5)</span>
+                  </div>
+
+                  <p class="product-tag font-xxs text-muted mb-2">
+                    <i class="bi bi-tag-fill me-1"></i>
+                    {{ translationService.currentLang() === 'ar' ? 'على منتج: ' : 'On Product: ' }}
+                    <span class="fw-bold text-dark">{{ translationService.currentLang() === 'ar' ? (review.productNameAr || review.productName) : (review.productNameEn || review.productName) }}</span>
+                  </p>
+
+                  <p class="review-comment font-xs text-secondary mt-2 mb-0" style="line-height: 1.5;">
+                    "{{ review.comment }}"
+                  </p>
+                </div>
+              </div>
+
+              <!-- Shortcut actions -->
+              <div class="d-flex flex-row flex-md-column gap-2 align-self-start justify-content-end w-100 w-md-auto ms-auto border-top border-top-md-0 pt-3 pt-md-0 mt-2 mt-md-0">
+                <button
+                  type="button"
+                  (click)="toggleReplyForm(review.id)"
+                  class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1.5 font-xxs fw-bold d-inline-flex align-items-center justify-content-center gap-1 border-0"
+                  style="background-color: rgba(31,28,24,0.06)"
+                >
+                  <i class="bi bi-reply-fill fs-7"></i>
+                  {{ review.replyText ? (translationService.currentLang() === 'ar' ? 'تعديل الرد' : 'Edit Reply') : (translationService.currentLang() === 'ar' ? 'رد سريع' : 'Quick Reply') }}
+                </button>
+                <button
+                  type="button"
+                  [disabled]="review.isReported"
+                  (click)="openReportModal(review.id)"
+                  class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1.5 font-xxs fw-bold d-inline-flex align-items-center justify-content-center gap-1 border-0"
+                  [style.background-color]="review.isReported ? 'transparent' : 'rgba(220,53,69,0.06)'"
+                >
+                  <i class="bi bi-flag-fill"></i>
+                  {{ review.isReported ? (translationService.currentLang() === 'ar' ? 'تم الإبلاغ' : 'Reported') : (translationService.currentLang() === 'ar' ? 'إبلاغ عن إساءة' : 'Report') }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Existing Reply text -->
+            <div *ngIf="review.replyText && activeReplyReviewId() !== review.id" class="vendor-reply-box bg-light rounded-3 p-3 mt-4 border border-light-subtle position-relative">
+              <span class="badge bg-gold-soft text-gold font-xxs mb-1 d-inline-block">{{ translationService.currentLang() === 'ar' ? 'رد الورشة' : 'Workshop Reply' }}</span>
+              <p class="font-xs text-secondary mb-0">{{ review.replyText }}</p>
+            </div>
+
+            <!-- Inline Reply form -->
+            <div *ngIf="activeReplyReviewId() === review.id" class="vendor-reply-form bg-light rounded-3 p-3 mt-4 border border-light-subtle">
+              <label class="form-label fs-8 fw-bold text-dark mb-2">{{ translationService.currentLang() === 'ar' ? 'ردك السريع:' : 'Your Quick Response:' }}</label>
+              <textarea
+                [ngModel]="replyText()"
+                (ngModelChange)="replyText.set($event)"
+                class="form-control rounded-3 px-3 py-2 fs-7 mb-2 border-0 bg-white"
+                rows="3"
+              ></textarea>
+              <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-dark rounded-pill px-3 py-1 font-xxs border-0" style="background-color: rgba(31,28,24,0.04)" (click)="toggleReplyForm(review.id)">
+                  {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+                </button>
+                <button type="button" class="btn btn-dark rounded-pill px-3 py-1 font-xxs d-flex align-items-center gap-1 border-0 shadow-sm" [disabled]="submittingReply() || !replyText().trim()" (click)="submitReply(review.id)">
+                  <span *ngIf="submittingReply()" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  {{ translationService.currentLang() === 'ar' ? 'إرسال الرد' : 'Send Reply' }}
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- CTA to all reviews page -->
+        <div class="col-12 text-center mt-2">
+          <a routerLink="/vendor/reviews" class="btn btn-outline-dark rounded-pill px-4 py-2 fs-7 fw-bold border-0" style="background-color: rgba(31,28,24,0.06)">
+            {{ translationService.currentLang() === 'ar' ? 'عرض جميع التقييمات ←' : 'View All Customer Reviews →' }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Reviews Empty state -->
+      <div *ngIf="recentReviews().length === 0" class="vendor-dashboard__empty-state p-5 bg-white rounded-4 shadow-xs text-center">
+        <div class="vendor-dashboard__empty-icon mx-auto mb-3" style="background: rgba(184, 147, 92, 0.1); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <i class="bi bi-chat-left-heart text-gold display-6"></i>
+        </div>
+        <h3 class="h6 fw-bold text-dark mb-1">{{ translationService.currentLang() === 'ar' ? 'لا توجد تقييمات لمنتجاتك بعد' : 'No Reviews Yet' }}</h3>
+        <p class="font-xs text-muted mb-0 mx-auto" style="max-width: 320px;">
+          {{ translationService.currentLang() === 'ar' ? 'بمجرد أن يبدأ العملاء في كتابة تعليقات على منتجاتك، ستظهر التقييمات وخيارات الرد السريع والإبلاغ هنا.' : 'Once customers leave feedback on your products, their reviews and quick moderation shortcuts will pop up here.' }}
+        </p>
+      </div>
     </section>
+
   </div>
 </main>
+
+<!-- Moderation Flag Modal Dialog -->
+<app-report-review-dialog
+  [visible]="reportModalVisible()"
+  [reviewId]="selectedReportReviewId()"
+  [isSubmitting]="submittingReport()"
+  (close)="closeReportModal()"
+  (submitReport)="onSubmitReport($event)"
+></app-report-review-dialog>

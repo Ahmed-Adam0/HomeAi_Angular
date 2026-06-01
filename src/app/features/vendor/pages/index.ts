@@ -5,3 +5,7 @@ export { VendorRevenue } from './vendor-revenue/vendor-revenue.component';
 export { VendorAnalytics } from './vendor-analytics/vendor-analytics.component';
 export { VendorWorkshopProfile } from './vendor-workshop-profile/vendor-workshop-profile.component';
 export { VendorNotifications } from './vendor-notifications/vendor-notifications.component';
+export { VendorProducts } from './vendor-products/vendor-products.component';
+export { VendorProductAdd } from './vendor-product-add/vendor-product-add.component';
+export { VendorProductEdit } from './vendor-product-edit/vendor-product-edit.component';
+export { VendorReviews } from './vendor-reviews/vendor-reviews.component';

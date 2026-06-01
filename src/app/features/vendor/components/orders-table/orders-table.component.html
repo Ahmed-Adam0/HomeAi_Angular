@@ -36,7 +36,7 @@
               <th scope="col">{{ 'VENDOR.ORDERS.COL_DATE' | translate }}</th>
               <th scope="col">{{ 'VENDOR.ORDERS.COL_TOTAL' | translate }}</th>
               <th scope="col">{{ 'VENDOR.ORDERS.COL_STATUS' | translate }}</th>
-              <th scope="col" class="text-end">{{ 'VENDOR.ORDERS.COL_ACTIONS' | translate }}</th>
+              <th scope="col" class="text-end" style="width: 48px;"></th>
             </tr>
           </thead>
           <tbody>
@@ -64,9 +64,11 @@
                   <button
                     type="button"
                     class="orders-table__action-btn"
+                    [attr.aria-label]="'VENDOR.COMMON.VIEW_DETAILS' | translate"
+                    [title]="'VENDOR.COMMON.VIEW_DETAILS' | translate"
                     (click)="onViewOrder(order.id)"
                   >
-                    {{ 'VENDOR.COMMON.VIEW_DETAILS' | translate }}
+                    <i class="bi bi-eye"></i>
                   </button>
                 </td>
               </tr>

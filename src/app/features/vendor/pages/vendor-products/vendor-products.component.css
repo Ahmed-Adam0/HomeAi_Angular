@@ -1,0 +1,106 @@
+.vendor-products-container {
+  min-height: 80vh;
+  max-width: 88rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  color: #94a3b8;
+}
+
+.text-gold {
+  color: #b8935c !important;
+}
+
+.bg-gold-soft {
+  background-color: rgba(184, 147, 92, 0.08) !important;
+}
+
+.products-count-badge {
+  border: 1px solid rgba(184, 147, 92, 0.15) !important;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.search-input {
+  border: 1px solid rgba(31, 28, 24, 0.12);
+  background-color: #faf9f6;
+  color: var(--primary-color, #1f1c18);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-input:focus {
+  border-color: #b8935c;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.15);
+  outline: 0;
+}
+
+.search-icon {
+  z-index: 5;
+}
+
+.btn-premium {
+  background-color: #b8935c !important;
+  color: #ffffff !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-premium:hover {
+  background-color: #a47f4b !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(184, 147, 92, 0.3) !important;
+}
+
+.btn-dark {
+  background-color: var(--primary-color, #1f1c18);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-dark:hover {
+  background-color: #333333;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.font-xxs {
+  font-size: 0.7rem !important;
+}
+
+.font-xs {
+  font-size: 0.8rem !important;
+}
+
+/* Custom High-Performance Responsive CSS Grid for Products */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 2.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Centering grid elements naturally on low card count to avoid giant blank right spaces */
+.products-grid--centered {
+  justify-content: center;
+}
+
+/* Product Card Wrapper Sizing Polish */
+.products-grid app-product-card {
+  width: 100%;
+  max-width: 360px; /* Limits giant growth on wide column spans */
+  justify-self: center; /* Perfectly centers card within the grid column */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Animations */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
+}

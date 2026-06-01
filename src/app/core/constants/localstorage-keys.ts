@@ -3,7 +3,7 @@
  * Prevents magic strings and ensures consistent storage access.
  */
 export const LOCAL_STORAGE_KEYS = {
-  TOKEN: 'furniture_access_token',
+  ACCESS_TOKEN: 'furniture_access_token',
   REFRESH_TOKEN: 'furniture_refresh_token',
   USER: 'furniture_user_profile',
   THEME: 'furniture_theme_mode',

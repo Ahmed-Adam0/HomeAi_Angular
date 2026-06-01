@@ -11,26 +11,35 @@ import { AuthService } from '../../features/auth/services/auth.service';
  * If the user is authenticated, it allows navigation to proceed.
  * Otherwise, it immediately redirects the user to the login page
  * while preserving the intended URL as a redirect parameter.
- *
- * For SSR/Prerender execution, the guard allows navigation since localStorage/client state is unavailable,
- * relying on initial client hydration to enforce auth check instantly.
  */
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const platformId = inject(PLATFORM_ID);
   const authService = inject(AuthService);
 
+  console.log('[authGuard] - Guard run on URL:', state.url);
+  console.log('[authGuard] - Is Platform Browser:', isPlatformBrowser(platformId));
+
   if (!isPlatformBrowser(platformId)) {
     return true;
   }
 
-  if (authService.isAuthenticated()) {
+  const authenticated = authService.isAuthenticated();
+  const token = localStorage.getItem('furniture_access_token');
+  
+  console.log('Current URL:', state.url);
+  console.log('Token:', token);
+  console.log('Auth result:', authenticated);
+
+  if (authenticated) {
+    console.log('[authGuard] - Authentication check passed. Allowing navigation.');
     return true;
   }
 
+  console.warn('[authGuard] - Authentication check failed. Redirecting to login.');
+  
   // Instantly redirect to login page, preserving the intended URL for post-login redirect
   return router.createUrlTree([NAV_ROUTES.LOGIN], {
     queryParams: { returnUrl: state.url }
   });
 };
-

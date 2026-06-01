@@ -20,6 +20,7 @@ interface AuthProfile {
   email: string;
   initials: string;
   tier: string;
+  workshopId?: number;
 }
 
 @Injectable({
@@ -41,7 +42,7 @@ export class AuthService {
 
   constructor() {
     if (this.isBrowser) {
-      const savedToken = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN);
+      const savedToken = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
       if (savedToken) {
         this.setAuthState(savedToken);
       }
@@ -54,14 +55,48 @@ export class AuthService {
 
   login(data: ILoginRequest): Observable<IAuthResponse> {
     return this.http.post<IAuthResponse>(`${this.baseUrl}${API_URLS.AUTH.LOGIN}`, data).pipe(
+      tap((response: any) => {
+        const token = this.getAuthToken(response);
+        if (!token) {
+          return;
+        }
+        const workshopId = response.workshopId || response.workshop?.id || (response.user && response.user.workshopId) || (response.data && response.data.workshopId) || (response.result && response.result.workshopId);
+        if (workshopId && this.isBrowser) {
+          localStorage.setItem('workshopId', String(workshopId));
+        }
+        this.setAuthState(token);
+      })
+    );
+  }
+
+  vendorLogin(data: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}Vendors/login`, data).pipe(
       tap((response) => {
         const token = this.getAuthToken(response);
         if (!token) {
           return;
         }
+        const workshopId = response.workshopId || response.workshop?.id || (response.user && response.user.workshopId) || (response.data && response.data.workshopId) || (response.result && response.result.workshopId);
+        if (workshopId && this.isBrowser) {
+          localStorage.setItem('workshopId', String(workshopId));
+        }
         this.setAuthState(token);
       })
     );
+  }
+
+  getWorkshopId(): number | null {
+    const user = this.currentUser();
+    if (user?.workshopId) {
+      return user.workshopId;
+    }
+    if (this.isBrowser) {
+      const stored = localStorage.getItem('workshopId') || localStorage.getItem('workshop_id');
+      if (stored) {
+        return Number(stored);
+      }
+    }
+    return null;
   }
 
   redirectToGoogleOAuth(returnUrl?: string): void {
@@ -89,7 +124,7 @@ export class AuthService {
 
   logout(): void {
     if (this.isBrowser) {
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
     }
     this.clearAuthState();
   }
@@ -107,9 +142,9 @@ export class AuthService {
     }
 
     if (token) {
-      localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, token);
     } else {
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
     }
   }
 
@@ -156,16 +191,44 @@ export class AuthService {
         .substring(0, 2)
         .toUpperCase() || 'FM';
 
+      let workshopId: number | undefined;
+      const workshopIdRaw =
+        payload['workshopId'] ||
+        payload['WorkshopId'] ||
+        payload['workshop_id'] ||
+        payload['workshop'] ||
+        payload['sid'] ||
+        payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid'];
+      if (workshopIdRaw) {
+        workshopId = Number(workshopIdRaw);
+      } else if (this.isBrowser) {
+        const stored = localStorage.getItem('workshopId') || localStorage.getItem('workshop_id');
+        if (stored) {
+          workshopId = Number(stored);
+        }
+      }
+
       return {
         id,
         name,
         email,
         initials,
-        tier: fallbackUser.tier
+        tier: fallbackUser.tier,
+        workshopId
       };
     } catch (error) {
       console.warn('Failed to decode auth token payload.', error);
-      return fallbackUser;
+      let workshopId: number | undefined;
+      if (this.isBrowser) {
+        const stored = localStorage.getItem('workshopId') || localStorage.getItem('workshop_id');
+        if (stored) {
+          workshopId = Number(stored);
+        }
+      }
+      return {
+        ...fallbackUser,
+        workshopId
+      };
     }
   }
 

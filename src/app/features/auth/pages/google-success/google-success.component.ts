@@ -90,7 +90,7 @@ export class GoogleSuccess implements OnInit {
       }
 
       // Store token in localStorage using the established constant
-      localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, token);
 
       // Decode token and update global auth state
       const userProfile = this.decodeToken(token);

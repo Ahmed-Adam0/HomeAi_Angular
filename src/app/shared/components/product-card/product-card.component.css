@@ -176,3 +176,31 @@
   font-family: var(--font-primary, sans-serif);
   line-height: 1;
 }
+
+/* Vendor Action Styles */
+.btn-outline-dark {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--primary-color);
+}
+.btn-outline-dark:hover {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #ffffff !important;
+  transform: scale(1.08);
+}
+.btn-outline-danger {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-color: rgba(239, 68, 68, 0.2) !important;
+  color: #ef4444 !important;
+}
+.btn-outline-danger:hover {
+  background-color: #ef4444 !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
+  transform: scale(1.08);
+}
+.form-check-input:checked {
+  background-color: #b8935c !important;
+  border-color: #b8935c !important;
+}
+

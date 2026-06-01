@@ -24,7 +24,14 @@ export const guestGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: 
     return true;
   }
 
-  if (!authService.isAuthenticated()) {
+  const authenticated = authService.isAuthenticated();
+  const token = localStorage.getItem('furniture_access_token');
+  
+  console.log('Current URL:', state.url);
+  console.log('Token:', token);
+  console.log('Auth result:', authenticated);
+
+  if (!authenticated) {
     return true;
   }
 
