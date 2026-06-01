@@ -7,39 +7,87 @@
 }
 
 .workshop-profile-form__container {
-  max-width: 56rem;
+  max-width: 88rem;
   margin-inline: auto;
 }
 
 .workshop-profile-form__content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--fm-space-24);
+  display: grid;
+  gap: var(--fm-space-28);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 
 /* ==========================================
-   PROFILE HEADER HERO CARD
+   CARD SURFACE
    ========================================== */
+.card-premium {
+  border-radius: var(--fm-radius-2xl);
+  background: var(--fm-surface-card);
+  border: 1px solid var(--fm-border-subtle);
+  box-shadow: var(--fm-shadow-floating);
+}
+
+.card-premium:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--fm-shadow-xl);
+}
+
+.profile-card {
+  overflow: hidden;
+  grid-column: 1 / -1;
+}
+
+.profile-card--half {
+  grid-column: span 6;
+}
+
+.profile-card--full {
+  grid-column: 1 / -1;
+}
+
 .profile-header {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--fm-border-subtle);
-}
-
-.profile-header:hover {
-  transform: none;
-  box-shadow: var(--fm-shadow-md) !important;
+  grid-column: 1 / -1;
+  border-color: transparent;
 }
 
 .profile-header.is-editing {
-  border-color: var(--fm-color-primary-300);
+  border-color: transparent;
 }
 
 .profile-header__bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--fm-color-primary-subtle) 0%, transparent 50%, var(--fm-color-primary-soft) 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, transparent 45%, rgba(255, 255, 255, 0.88) 100%);
   pointer-events: none;
+}
+
+.profile-header__status-banner {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  width: 100%;
+  padding: var(--fm-space-12) var(--fm-space-20);
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(14px);
+  z-index: 1;
+}
+
+.profile-header__mode-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--fm-space-4) var(--fm-space-12);
+  border-radius: var(--fm-radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fm-text-heading);
+  background: rgba(255, 255, 255, 0.92);
 }
 
 .profile-header__content {
@@ -60,9 +108,9 @@
 
 .profile-header__avatar {
   position: relative;
-  width: 5.5rem;
-  height: 5.5rem;
-  border-radius: var(--fm-radius-xl);
+  width: 6rem;
+  height: 6rem;
+  border-radius: var(--fm-radius-2xl);
   overflow: hidden;
   background: var(--fm-color-primary-soft);
   border: 2px solid var(--fm-border-medium);
@@ -90,7 +138,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.36);
   backdrop-filter: blur(2px);
   opacity: 0;
   cursor: pointer;
@@ -120,8 +168,8 @@
   align-items: center;
   gap: var(--fm-space-6);
   padding: var(--fm-space-6) var(--fm-space-12);
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: var(--fm-color-primary-700);
   background: var(--fm-color-primary-soft);
   border: 1px solid var(--fm-border-subtle);
@@ -138,7 +186,7 @@
 }
 
 .profile-header__change-logo.is-loading {
-  opacity: 0.7;
+  opacity: 0.65;
   pointer-events: none;
 }
 
@@ -150,32 +198,29 @@
 .profile-header__workshop-name {
   margin: 0 0 var(--fm-space-4);
   font-family: var(--fm-font-display);
-  font-size: clamp(1.35rem, 2.5vw + 0.5rem, 1.75rem);
+  font-size: clamp(1.7rem, 2.5vw + 0.4rem, 2.3rem);
   font-weight: 700;
   color: var(--fm-text-heading);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
-.profile-header__vendor-name {
+.profile-header__vendor-name,
+.profile-header__email {
   margin: 0 0 var(--fm-space-2);
-  font-size: 0.9375rem;
-  font-weight: 500;
+  font-size: 0.95rem;
   color: var(--fm-text-body);
 }
 
 .profile-header__email {
-  margin: 0 0 var(--fm-space-10);
-  font-size: 0.875rem;
   color: var(--fm-text-muted);
 }
 
 .profile-header__lang-badge {
   display: inline-flex;
   align-items: center;
-  padding: var(--fm-space-4) var(--fm-space-12);
+  padding: var(--fm-space-4) var(--fm-space-14);
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--fm-color-primary-700);
   background: var(--fm-color-primary-soft);
   border-radius: var(--fm-radius-pill);
@@ -188,7 +233,7 @@
   gap: var(--fm-space-4);
   padding: var(--fm-space-4) var(--fm-space-10);
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--fm-color-warning-600);
   background: var(--fm-color-warning-50);
   border: 1px solid var(--fm-color-warning-100);
@@ -201,18 +246,6 @@
 .profile-header__actions {
   flex-shrink: 0;
   align-self: flex-start;
-}
-
-/* ==========================================
-   PROFILE CARDS (Sections)
-   ========================================== */
-.profile-card {
-  overflow: hidden;
-  border: 1px solid var(--fm-border-subtle);
-}
-
-.profile-card:hover {
-  box-shadow: var(--fm-shadow-md) !important;
 }
 
 .profile-card__header {
@@ -244,16 +277,13 @@
   padding: var(--fm-space-20) var(--fm-space-24) var(--fm-space-24);
 }
 
-/* ==========================================
-   PROFILE ITEMS (View Mode Display)
-   ========================================== */
 .profile-grid {
   display: grid;
   gap: var(--fm-space-20);
 }
 
 .profile-grid--2col {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .profile-item {
@@ -268,31 +298,28 @@
 
 .profile-item__label {
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--fm-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .profile-item__value {
-  font-size: 0.9375rem;
+  font-size: 0.95rem;
   font-weight: 500;
   color: var(--fm-text-heading);
-  line-height: 1.4;
+  line-height: 1.5;
   word-break: break-word;
 }
 
 .profile-item__text {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: var(--fm-text-body);
-  line-height: 1.6;
+  line-height: 1.75;
   word-break: break-word;
 }
 
-/* ==========================================
-   FORM FIELDS (Edit Mode)
-   ========================================== */
 .workshop-field {
   display: flex;
   flex-direction: column;
@@ -306,15 +333,15 @@
   display: block;
   margin-bottom: var(--fm-space-6);
   font-size: 0.8125rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--fm-text-heading);
   letter-spacing: 0.01em;
 }
 
 .workshop-field__control {
-  min-height: 2.625rem;
-  padding: var(--fm-space-10) var(--fm-space-14);
-  font-size: 0.9375rem;
+  min-height: 2.75rem;
+  padding: var(--fm-space-12) var(--fm-space-14);
+  font-size: 0.95rem;
   font-family: var(--fm-font-sans);
   color: var(--fm-text-heading);
   background-color: var(--fm-input-bg);
@@ -353,25 +380,22 @@
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238c8375' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-inline-end: 2.5rem;
+  background-position: right 14px center;
+  padding-inline-end: 2.75rem;
   cursor: pointer;
 }
 
 [dir="rtl"] .workshop-field__control--select {
-  background-position: left 12px center;
+  background-position: left 14px center;
 }
 
 .workshop-field__error {
   margin: var(--fm-space-6) 0 0;
   font-size: 0.8125rem;
   color: var(--fm-color-danger-600);
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
-/* ==========================================
-   ACTION BAR
-   ========================================== */
 .profile-action-bar {
   position: sticky;
   bottom: var(--fm-space-16);
@@ -385,11 +409,11 @@
   justify-content: flex-end;
   gap: var(--fm-space-12);
   padding: var(--fm-space-16) var(--fm-space-24);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
   border: 1px solid var(--fm-border-subtle);
-  border-radius: var(--fm-radius-lg);
+  border-radius: var(--fm-radius-xl);
   box-shadow: var(--fm-shadow-floating);
 }
 
@@ -412,15 +436,11 @@
 }
 
 .profile-action-bar__save:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
   box-shadow: none;
 }
 
-/* ==========================================
-   SKELETON LOADING
-   ========================================== */
 .profile-skeleton {
   display: flex;
   flex-direction: column;
@@ -433,7 +453,7 @@
   gap: var(--fm-space-24);
   padding: var(--fm-space-32);
   background: var(--fm-surface-card);
-  border-radius: var(--fm-radius-md);
+  border-radius: var(--fm-radius-xl);
   border: 1px solid var(--fm-border-subtle);
 }
 
@@ -452,14 +472,13 @@
 }
 
 .profile-skeleton__cards {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--fm-space-20);
 }
 
 .profile-skeleton__card {
   background: var(--fm-surface-card);
-  border-radius: var(--fm-radius-md);
+  border-radius: var(--fm-radius-xl);
   border: 1px solid var(--fm-border-subtle);
   overflow: hidden;
 }
@@ -482,9 +501,12 @@
   gap: var(--fm-space-8);
 }
 
-/* ==========================================
-   RESPONSIVE - TABLET
-   ========================================== */
+@media (max-width: 1199.98px) {
+  .profile-card--half {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 991.98px) {
   .profile-header__content {
     padding: var(--fm-space-24);
@@ -504,10 +526,11 @@
   }
 }
 
-/* ==========================================
-   RESPONSIVE - MOBILE
-   ========================================== */
 @media (max-width: 767.98px) {
+  .workshop-profile-form__content {
+    gap: var(--fm-space-20);
+  }
+
   .profile-header__content {
     flex-direction: column;
     text-align: center;
@@ -561,9 +584,6 @@
   }
 }
 
-/* ==========================================
-   RESPONSIVE - SMALL MOBILE
-   ========================================== */
 @media (max-width: 575.98px) {
   .profile-header__avatar {
     width: 4rem;
@@ -571,9 +591,6 @@
   }
 }
 
-/* ==========================================
-   RTL SUPPORT
-   ========================================== */
 [dir="rtl"] .profile-header__actions {
   align-self: flex-start;
 }

@@ -1,41 +1,56 @@
 .vendor-workshop-profile {
   padding: var(--fm-space-32) var(--fm-space-24) var(--fm-space-48);
-  max-width: 60rem;
+  max-width: 90rem;
   margin-inline: auto;
 }
 
 .vendor-workshop-profile__page-header {
   margin-bottom: var(--fm-space-32);
+  padding: var(--fm-space-28) var(--fm-space-30);
+  background: var(--fm-surface-card);
+  border: 1px solid var(--fm-border-subtle);
+  border-radius: var(--fm-radius-2xl);
+  box-shadow: var(--fm-shadow-floating);
 }
 
 .vendor-workshop-profile__eyebrow {
   margin: 0 0 var(--fm-space-8);
   font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--fm-color-primary-500);
 }
 
 .vendor-workshop-profile__title {
-  margin: 0 0 var(--fm-space-8);
+  margin: 0 0 var(--fm-space-6);
   font-family: var(--fm-font-display);
-  font-size: clamp(1.5rem, 2.5vw + 0.75rem, 2rem);
+  font-size: clamp(2rem, 2.8vw + 0.6rem, 2.6rem);
   font-weight: 700;
   color: var(--fm-text-heading);
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 .vendor-workshop-profile__description {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: var(--fm-text-muted);
-  line-height: 1.5;
-  max-width: 48ch;
+  line-height: 1.8;
+  max-width: 60rem;
+}
+
+@media (max-width: 991.98px) {
+  .vendor-workshop-profile {
+    padding: var(--fm-space-28) var(--fm-space-20) var(--fm-space-40);
+  }
 }
 
 @media (max-width: 767.98px) {
   .vendor-workshop-profile {
     padding: var(--fm-space-20) var(--fm-space-16) var(--fm-space-32);
+  }
+
+  .vendor-workshop-profile__page-header {
+    padding: var(--fm-space-20) var(--fm-space-18);
   }
 }
