@@ -10,22 +10,23 @@ export const routes: Routes = [
   {
     path: 'auth',
     component: AuthLayoutComponent,
-
     children: [
       {
         path: '',
         redirectTo: APP_ROUTES.LOGIN,
         pathMatch: 'full',
       },
-
       {
         path: '',
         loadChildren: () =>
-          import('./features/auth/auth.routes').then(
-            (m) => m.authRoutes
-          ),
+          import('./features/auth/auth.routes').then((m) => m.authRoutes),
       },
     ],
+  },
+  {
+    path: 'vendor',
+    loadChildren: () =>
+      import('./features/vendor/vendor.routes').then((m) => m.vendorRoutes),
   },
   {
     path: 'login',
@@ -40,174 +41,95 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-
     children: [
-
-      // Home
       {
         path: '',
         loadChildren: () =>
-          import('./features/home/home.routes').then(
-            (m) => m.homeRoutes
-          ),
+          import('./features/home/home.routes').then((m) => m.homeRoutes),
       },
-
-      // Products
       {
         path: '',
         loadChildren: () =>
-          import('./features/products/products.routes').then(
-            (m) => m.productsRoutes
-          ),
+          import('./features/products/products.routes').then((m) => m.productsRoutes),
       },
-
-      // Cart
       {
         path: '',
         loadChildren: () =>
-          import('./features/cart/cart.routes').then(
-            (m) => m.cartRoutes
-          ),
+          import('./features/cart/cart.routes').then((m) => m.cartRoutes),
       },
-
-      // Profile
       {
         path: '',
         loadChildren: () =>
-          import('./features/profile/profile.routes').then(
-            (m) => m.profileRoutes
-          ),
+          import('./features/profile/profile.routes').then((m) => m.profileRoutes),
       },
-
-      // Favorites
       {
         path: '',
         loadChildren: () =>
-          import('./features/favorites/favorites.routes').then(
-            (m) => m.favoritesRoutes
-          ),
+          import('./features/favorites/favorites.routes').then((m) => m.favoritesRoutes),
       },
-
-      // Orders
       {
         path: '',
         loadChildren: () =>
-          import('./features/orders/orders.routes').then(
-            (m) => m.ordersRoutes
-          ),
+          import('./features/orders/orders.routes').then((m) => m.ordersRoutes),
       },
-
-      // Vendor
       {
         path: '',
         loadChildren: () =>
-          import('./features/vendor/vendor.routes').then(
-            (m) => m.vendorRoutes
-          ),
+          import('./features/ai/ai.routes').then((m) => m.aiRoutes),
       },
-
-      // AI Chat
       {
         path: '',
         loadChildren: () =>
-          import('./features/ai/ai.routes').then(
-            (m) => m.aiRoutes
-          ),
+          import('./features/categories/categories.routes').then((m) => m.categoriesRoutes),
       },
-
-      // Categories
       {
         path: '',
         loadChildren: () =>
-          import('./features/categories/categories.routes').then(
-            (m) => m.categoriesRoutes
-          ),
+          import('./features/search/search.routes').then((m) => m.searchRoutes),
       },
-
-      // Search
       {
         path: '',
         loadChildren: () =>
-          import('./features/search/search.routes').then(
-            (m) => m.searchRoutes
-          ),
+          import('./features/checkout/checkout.routes').then((m) => m.checkoutRoutes),
       },
-
-      // Checkout
       {
         path: '',
         loadChildren: () =>
-          import('./features/checkout/checkout.routes').then(
-            (m) => m.checkoutRoutes
-          ),
+          import('./features/notifications/notifications.routes').then((m) => m.notificationsRoutes),
       },
-
-      // Notifications
       {
         path: '',
         loadChildren: () =>
-          import('./features/notifications/notifications.routes').then(
-            (m) => m.notificationsRoutes
-          ),
+          import('./features/addresses/addresses.routes').then((m) => m.addressesRoutes),
       },
-
-      // Addresses
       {
         path: '',
         loadChildren: () =>
-          import('./features/addresses/addresses.routes').then(
-            (m) => m.addressesRoutes
-          ),
+          import('./features/about/about.routes').then((m) => m.aboutRoutes),
       },
-
-      // About
       {
         path: '',
         loadChildren: () =>
-          import('./features/about/about.routes').then(
-            (m) => m.aboutRoutes
-          ),
-      },
-
-      // Contact
-      {
-        path: '',
-        loadChildren: () =>
-          import('./features/contact/contact.routes').then(
-            (m) => m.contactRoutes
-          ),
+          import('./features/contact/contact.routes').then((m) => m.contactRoutes),
       },
     ],
   },
-  // =========================
-  // EMPTY LAYOUT
-  // =========================
   {
     path: '',
     component: EmptyLayoutComponent,
-
     children: [
       {
         path: '',
         loadChildren: () =>
-          import('./features/errors/errors.routes').then(
-            (m) => m.errorsRoutes
-          ),
+          import('./features/errors/errors.routes').then((m) => m.errorsRoutes),
       },
-
       {
         path: '',
         loadChildren: () =>
-          import('./features/payment/payment.routes').then(
-            (m) => m.paymentRoutes
-          ),
+          import('./features/payment/payment.routes').then((m) => m.paymentRoutes),
       },
     ],
   },
-
-  // =========================
-  // NOT FOUND
-  // =========================
   {
     path: APP_ROUTES.WILDCARD,
     redirectTo: APP_ROUTES.NOT_FOUND,

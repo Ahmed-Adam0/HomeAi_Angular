@@ -30,6 +30,8 @@ export const APP_ROUTES = {
   ORDER_DETAILS: 'orders/:id',
 
   VENDOR: 'vendor',
+  VENDOR_LOGIN: 'login',
+  VENDOR_REGISTER: 'register',
   VENDOR_ORDERS: 'orders',
   VENDOR_ORDER_DETAILS: 'orders/:id',
   VENDOR_ORDER_DETAILS_FULL: 'vendor/orders/:id',
@@ -74,6 +76,8 @@ export const NAV_ROUTES = {
   ORDERS: '/orders',
 
   VENDOR: '/vendor',
+  VENDOR_LOGIN: '/vendor/login',
+  VENDOR_REGISTER: '/vendor/register',
   VENDOR_ORDERS: '/vendor/orders',
   vendorOrderDetails: (id: string | number) => `/vendor/orders/${id}`,
   VENDOR_REVENUE: '/vendor/revenue',

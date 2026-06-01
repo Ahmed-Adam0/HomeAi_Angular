@@ -2,20 +2,20 @@ import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { VendorAuthService } from '../../services/vendor-auth.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-vendor-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  templateUrl: './vendor-login.component.html',
+  styleUrls: ['./vendor-login.component.css']
 })
-export class Login {
+export class VendorLogin {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  private vendorAuthService = inject(VendorAuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
@@ -32,46 +32,40 @@ export class Login {
 
   private readonly translations = {
     ar: {
-      pageTitle: 'مرحباً بك مجدداً',
-      pageSubtitle: 'سجّل دخولك لمتابعة تصميم مساحتك المثالية',
+      pageTitle: 'مرحبا بك في بوابة الموردين',
+      pageSubtitle: 'سجل دخولك للوصول إلى لوحة تحكم الورشة وإدارة الطلبات',
       emailLabel: 'البريد الإلكتروني',
-      emailPlaceholder: 'أدخل بريدك الإلكتروني',
+      emailPlaceholder: 'أدخل بريد الورشة الإلكتروني',
       emailRequired: 'البريد الإلكتروني مطلوب.',
-      emailInvalid: 'صيغة البريد غير صحيحة.',
+      emailInvalid: 'يرجى إدخال بريد إلكتروني صالح.',
       passwordLabel: 'كلمة المرور',
       passwordPlaceholder: 'أدخل كلمة المرور',
       passwordRequired: 'كلمة المرور مطلوبة.',
-      forgotPassword: 'نسيت كلمة المرور؟',
       loginButton: 'تسجيل الدخول',
-      continueWith: 'أو تابع بواسطة',
-      noAccountText: 'ليس لديك حساب؟',
-      createAccountLink: 'إنشاء حساب جديد',
-      visualHeading: 'صمّم مساحة أحلامك',
-      visualSubtitle: 'استخدم الذكاء الاصطناعي لتصور الأثاث في غرفتك قبل الشراء. احصل على توصيات مخصصة بناءً على ذوقك وتفضيلاتك الفريدة.',
-      socialGoogle: 'Google',
-      defaultLoginError: 'بيانات الدخول غير صحيحة، حاول مجدداً.',
-      loginAsVendor: 'تسجيل الدخول كمورد'
+      noAccountText: 'ليس لديك حساب مورد؟',
+      createAccountLink: 'إنشاء حساب مورد',
+      visualHeading: 'إدارة ورشتك بذكاء',
+      visualSubtitle: 'سجّل دخولك لاستعراض الطلبات، المبيعات، وإعدادات الورشة بسهولة.',
+      defaultLoginError: 'فشل تسجيل الدخول. تحقق من بياناتك وحاول مرة أخرى.',
+      loginAsCustomer: 'تسجيل الدخول كمستخدم'
     },
     en: {
-      pageTitle: 'Welcome back',
-      pageSubtitle: 'Sign in to continue designing your ideal space',
+      pageTitle: 'Welcome to Vendor Portal',
+      pageSubtitle: 'Sign in to access your workshop dashboard and manage orders',
       emailLabel: 'Email Address',
-      emailPlaceholder: 'Enter your email',
+      emailPlaceholder: 'Enter your workshop email',
       emailRequired: 'Email is required.',
       emailInvalid: 'Please enter a valid email address.',
       passwordLabel: 'Password',
       passwordPlaceholder: 'Enter your password',
       passwordRequired: 'Password is required.',
-      forgotPassword: 'Forgot password?',
       loginButton: 'Sign In',
-      continueWith: 'Or continue with',
-      noAccountText: "Don't have an account?",
-      createAccountLink: 'Create new account',
-      visualHeading: 'Design your dream space',
-      visualSubtitle: 'Use AI to preview furniture in your room before purchase. Get personalized recommendations based on your unique taste and preferences.',
-      socialGoogle: 'Google',
+      noAccountText: "Don't have a vendor account?",
+      createAccountLink: 'Create vendor account',
+      visualHeading: 'Manage your workshop smarter',
+      visualSubtitle: 'Log in to review orders, revenue, and workshop settings with ease.',
       defaultLoginError: 'Login failed. Please check your credentials and try again.',
-      loginAsVendor: 'Login as Vendor'
+      loginAsCustomer: 'Login as Customer'
     }
   } as const;
 
@@ -111,10 +105,10 @@ export class Login {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.login(this.loginForm.value).subscribe({
+    this.vendorAuthService.login(this.loginForm.value).subscribe({
       next: () => {
         this.isLoading = false;
-        const destination = this.returnUrl || NAV_ROUTES.HOME;
+        const destination = this.returnUrl || NAV_ROUTES.VENDOR;
         this.router.navigateByUrl(destination, { replaceUrl: true });
       },
       error: (err) => {
@@ -124,24 +118,18 @@ export class Login {
     });
   }
 
-  onGoogleLogin(): void {
-    this.authService.redirectToGoogleOAuth(this.returnUrl);
-  }
-
   private localizeBackendError(errorPayload: any): string {
     const found = this.backendErrorMap.find(item => item.matcher(errorPayload));
     if (found) {
       return this.currentLang() === 'ar' ? found.ar : found.en;
     }
 
-    const defaultMessage = this.currentLang() === 'ar'
-      ? this.translations.ar.defaultLoginError
-      : this.translations.en.defaultLoginError;
-
     if (typeof errorPayload?.message === 'string') {
       return errorPayload.message;
     }
 
-    return defaultMessage;
+    return this.currentLang() === 'ar'
+      ? this.translations.ar.defaultLoginError
+      : this.translations.en.defaultLoginError;
   }
 }

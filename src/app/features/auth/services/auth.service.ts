@@ -64,6 +64,10 @@ export class AuthService {
     );
   }
 
+  authenticate(token: string): void {
+    this.setAuthState(token);
+  }
+
   redirectToGoogleOAuth(returnUrl?: string): void {
     if (!this.isBrowser) {
       return;
