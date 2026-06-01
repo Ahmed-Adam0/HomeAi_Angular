@@ -22,10 +22,12 @@ import { mapVendorRevenueStatistics } from '../data-access/mappers/vendor-revenu
 import { mapVendorProfileResponseDto } from '../data-access/mappers/vendor-profile.mapper';
 import { IVendorProfileResponseDto } from '../data-access/dto/vendor-profile-response.dto';
 import { IVendorProfileRequestDto } from '../data-access/dto/vendor-profile-request.dto';
+import { IVendorNotificationsResponseDto } from '../data-access/dto/vendor-notifications-response.dto';
+import { IUnreadCountDto } from '../data-access/dto/unread-count.dto';
+import { mapNotificationsResponse, INotificationsMappedResult } from '../data-access/mappers/vendor-notification.mapper';
 import {
   IVendorAnalytics,
   IVendorDashboardMetrics,
-  IVendorNotification,
   IVendorOrder,
   IVendorOrderSummary,
   IVendorOrderStatusUpdate,
@@ -167,16 +169,29 @@ export class VendorService {
     );
   }
 
-  getNotifications(): Observable<IVendorNotification[]> {
-    throw new Error('VendorService.getNotifications() is not implemented');
+  getNotifications(page: number, pageSize: number): Observable<INotificationsMappedResult> {
+    return this.http
+      .get<IVendorNotificationsResponseDto>(
+        `${this.apiUrl}${API_URLS.VENDOR.NOTIFICATIONS}`,
+        { params: { page: page.toString(), pageSize: pageSize.toString() } }
+      )
+      .pipe(map(mapNotificationsResponse));
   }
 
-  markNotificationAsRead(notificationId: string): Observable<void> {
-    throw new Error('VendorService.markNotificationAsRead() is not implemented');
+  getUnreadCount(): Observable<number> {
+    return this.http
+      .get<IUnreadCountDto>(`${this.apiUrl}${API_URLS.VENDOR.NOTIFICATIONS_UNREAD_COUNT}`)
+      .pipe(map((dto) => dto.unreadCount ?? 0));
   }
 
-  markAllNotificationsAsRead(): Observable<void> {
-    throw new Error('VendorService.markAllNotificationsAsRead() is not implemented');
+  markAsRead(notificationId: number): Observable<void> {
+    return this.http
+      .put<void>(`${this.apiUrl}${API_URLS.VENDOR.NOTIFICATION_READ(notificationId)}`, null);
+  }
+
+  markAllAsRead(): Observable<void> {
+    return this.http
+      .put<void>(`${this.apiUrl}${API_URLS.VENDOR.NOTIFICATIONS_READ_ALL}`, null);
   }
 }
 

@@ -1,75 +1,194 @@
-<main class="vendor-notifications" [attr.aria-label]="'VENDOR.NOTIFICATIONS.ARIA_LABEL' | translate">
-  <header class="vendor-notifications__hero">
-    <div class="vendor-notifications__hero-copy">
-      <p class="vendor-notifications__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
-      <h1 class="vendor-notifications__title">{{ 'VENDOR.NOTIFICATIONS.TITLE' | translate }}</h1>
-      <p class="vendor-notifications__subtitle">
-        {{ 'VENDOR.NOTIFICATIONS.SUBTITLE' | translate }}
-      </p>
-    </div>
+<main class="vendor-notifications" aria-label="Notifications center">
 
-    <aside class="vendor-notifications__hero-panel" [attr.aria-label]="'VENDOR.NOTIFICATIONS.HERO_ARIA' | translate">
-      <span class="vendor-notifications__hero-badge">{{ 'VENDOR.NOTIFICATIONS.ACTIVITY_CENTER' | translate }}</span>
-      <p class="vendor-notifications__hero-text">
-        {{ 'VENDOR.NOTIFICATIONS.HERO_TEXT' | translate }}
-      </p>
-    </aside>
-  </header>
+  <!-- ================================================================
+       HERO SECTION
+       ================================================================ -->
 
-  <section
-    class="vendor-notifications__section"
-    aria-labelledby="vendor-notifications-recent-heading"
-  >
-    <div class="vendor-notifications__section-head">
-      <div>
-        <h2 id="vendor-notifications-recent-heading" class="vendor-notifications__section-title">
-          {{ 'VENDOR.NOTIFICATIONS.RECENT_SECTION' | translate }}
-        </h2>
-        <p class="vendor-notifications__section-copy">
-          {{ 'VENDOR.NOTIFICATIONS.RECENT_DESC' | translate }}
-        </p>
+  <app-notification-header
+    [unreadCount]="unreadCount()"
+    [hasUnread]="hasUnread()"
+    [markAllLoading]="markAllLoading()"
+    [totalCount]="totalCount()"
+    (markAllRead)="onMarkAllRead()"
+  />
+
+  <!-- ================================================================
+       STATS CARDS
+       ================================================================ -->
+
+  <section class="vendor-notifications__stats" aria-label="Notification statistics">
+    <article class="stat-card stat-card--total">
+      <div class="stat-card__icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+      </div>
+      <div class="stat-card__body">
+        <p class="stat-card__value">{{ totalCount() }}</p>
+        <p class="stat-card__label">{{ 'VENDOR.NOTIFICATIONS.STATS.TOTAL' | translate }}</p>
+      </div>
+    </article>
+
+    <article class="stat-card stat-card--unread">
+      <div class="stat-card__icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </div>
+      <div class="stat-card__body">
+        <p class="stat-card__value">{{ unreadNotificationsCount() }}</p>
+        <p class="stat-card__label">{{ 'VENDOR.NOTIFICATIONS.STATS.UNREAD' | translate }}</p>
+      </div>
+    </article>
+
+    <article class="stat-card stat-card--read">
+      <div class="stat-card__icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <div class="stat-card__body">
+        <p class="stat-card__value">{{ readCount() }}</p>
+        <p class="stat-card__label">{{ 'VENDOR.NOTIFICATIONS.STATS.READ' | translate }}</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================================================================
+       ERROR STATE
+       ================================================================ -->
+
+  @if (error(); as errorMessage) {
+    <div class="vendor-notifications__error" role="alert">
+      <div class="vendor-notifications__error-inner">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ errorMessage }}</span>
+        <button
+          type="button"
+          class="vendor-notifications__error-retry"
+          (click)="onRefresh()"
+        >
+          {{ 'VENDOR.NOTIFICATIONS.RETRY' | translate }}
+        </button>
       </div>
     </div>
+  }
 
-    @if (hasNotifications()) {
-      <app-notifications-list
-        [notifications]="notifications()"
-        (markAsRead)="onMarkAsRead($event)"
+  <!-- ================================================================
+       TOOLBAR — FILTER TABS
+       ================================================================ -->
+
+  @if (hasNotifications()) {
+    <div class="vendor-notifications__toolbar">
+      <div class="vendor-notifications__filters" role="tablist" aria-label="Filter notifications">
+        <button
+          class="filter-tab"
+          [class.filter-tab--active]="selectedFilter() === 'all'"
+          (click)="setFilter('all')"
+          role="tab"
+          [attr.aria-selected]="selectedFilter() === 'all'"
+        >
+          {{ 'VENDOR.NOTIFICATIONS.FILTER.ALL' | translate }}
+        </button>
+        <button
+          class="filter-tab"
+          [class.filter-tab--active]="selectedFilter() === 'unread'"
+          (click)="setFilter('unread')"
+          role="tab"
+          [attr.aria-selected]="selectedFilter() === 'unread'"
+        >
+          {{ 'VENDOR.NOTIFICATIONS.FILTER.UNREAD' | translate }}
+        </button>
+        <button
+          class="filter-tab"
+          [class.filter-tab--active]="selectedFilter() === 'read'"
+          (click)="setFilter('read')"
+          role="tab"
+          [attr.aria-selected]="selectedFilter() === 'read'"
+        >
+          {{ 'VENDOR.NOTIFICATIONS.FILTER.READ' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ================================================================
+       SKELETON LOADING
+       ================================================================ -->
+
+  @if (showSkeleton()) {
+    <section class="vendor-notifications__skeleton" aria-label="Loading notifications">
+      <app-skeleton-loader type="card" [count]="5" />
+    </section>
+  }
+
+  <!-- ================================================================
+       NOTIFICATIONS FEED
+       ================================================================ -->
+
+  @if (showContent()) {
+    <section class="vendor-notifications__feed" aria-label="Notifications list">
+      <div class="vendor-notifications__feed-list" role="list">
+        @for (notification of filteredNotifications(); track notification.id) {
+          <app-notification-card
+            [notification]="notification"
+            [isMarking]="markAsReadLoadingIds().has(notification.id)"
+            (markAsRead)="onMarkAsRead(notification.id)"
+          />
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ================================================================
+       FILTERED EMPTY STATE — has notifications but none match filter
+       ================================================================ -->
+
+  @if (showEmpty()) {
+    <app-notification-empty-state (refresh)="setFilter('all')">
+      <h3 class="vendor-notifications__empty-title">
+        {{ 'VENDOR.NOTIFICATIONS.FILTER_EMPTY_TITLE' | translate }}
+      </h3>
+      <p class="vendor-notifications__empty-desc">
+        {{ 'VENDOR.NOTIFICATIONS.FILTER_EMPTY_DESC' | translate }}
+      </p>
+    </app-notification-empty-state>
+  }
+
+  <!-- ================================================================
+       FULL EMPTY STATE — no notifications at all
+       ================================================================ -->
+
+  @if (showFullEmpty()) {
+    <app-notification-empty-state (refresh)="onRefresh()">
+      <h3 class="vendor-notifications__empty-title">
+        {{ 'VENDOR.NOTIFICATIONS.EMPTY_TITLE' | translate }}
+      </h3>
+      <p class="vendor-notifications__empty-desc">
+        {{ 'VENDOR.NOTIFICATIONS.EMPTY_DESC' | translate }}
+      </p>
+    </app-notification-empty-state>
+  }
+
+  <!-- ================================================================
+       PAGINATION
+       ================================================================ -->
+
+  @if (showPagination()) {
+    <div class="vendor-notifications__pagination">
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalItems]="totalCount()"
+        [itemsPerPage]="PAGE_SIZE"
+        (pageChange)="onPageChange($event)"
       />
-    } @else {
-      <article
-        class="vendor-notifications__empty"
-        role="status"
-        aria-labelledby="vendor-notifications-empty-title"
-      >
-        <div class="vendor-notifications__empty-inner">
-          <div class="vendor-notifications__empty-icon-wrap" aria-hidden="true">
-            <svg
-              class="vendor-notifications__empty-icon"
-              xmlns="http://www.w3.org/2000/svg"
-              width="56"
-              height="56"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              focusable="false"
-            >
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-          </div>
+    </div>
+  }
 
-          <h3 id="vendor-notifications-empty-title" class="vendor-notifications__empty-title">
-            {{ 'VENDOR.NOTIFICATIONS.EMPTY_TITLE' | translate }}
-          </h3>
-          <p class="vendor-notifications__empty-description">
-            {{ 'VENDOR.NOTIFICATIONS.EMPTY_DESC' | translate }}
-          </p>
-        </div>
-      </article>
-    }
-  </section>
 </main>

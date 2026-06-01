@@ -1,0 +1,78 @@
+<article
+  class="notification-card"
+  [class.notification-card--unread]="isUnread()"
+  role="listitem"
+>
+  <div class="notification-card__icon" aria-hidden="true">
+    @switch (iconType()) {
+      @case ('order') {
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+      }
+      @case ('revenue') {
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+      }
+      @case ('review') {
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      }
+      @case ('alert') {
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      }
+      @default {
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+      }
+    }
+  </div>
+
+  <div class="notification-card__body">
+    <div class="notification-card__header">
+      <h3
+        class="notification-card__title"
+        [class.notification-card__title--unread]="isUnread()"
+      >
+        @if (isUnread()) {
+          <span class="notification-card__unread-dot" aria-hidden="true"></span>
+        }
+        {{ notification().title }}
+      </h3>
+      <time
+        class="notification-card__time"
+        [attr.datetime]="notification().createdAt.toISOString()"
+      >
+        {{ timeAgo() }}
+      </time>
+    </div>
+
+    <p class="notification-card__message">{{ notification().message }}</p>
+  </div>
+
+  @if (isUnread()) {
+    <div class="notification-card__actions">
+      <button
+        type="button"
+        class="notification-card__mark-btn"
+        [disabled]="isMarking()"
+        (click)="onMarkAsRead()"
+      >
+        Mark as read
+      </button>
+    </div>
+  }
+</article>

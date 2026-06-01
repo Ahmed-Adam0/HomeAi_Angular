@@ -53,6 +53,10 @@ export const API_URLS = {
     DASHBOARD_METRICS: 'VendorOrders/dashboard/metrics',
     PROFILE: 'Vendors/profile',
     UPLOAD_LOGO: 'Vendors/logo',
+    NOTIFICATIONS: 'internal-notifications',
+    NOTIFICATION_READ: (id: number) => `internal-notifications/${id}/read`,
+    NOTIFICATIONS_READ_ALL: 'internal-notifications/read-all',
+    NOTIFICATIONS_UNREAD_COUNT: 'internal-notifications/unread-count',
   },
 } as const;
 

@@ -1,0 +1,71 @@
+.notification-header {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fm-space-24, 1.5rem);
+  justify-content: space-between;
+  max-width: 88rem;
+  width: 100%;
+}
+
+.notification-header__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fm-space-12, 0.75rem);
+  max-width: 48rem;
+}
+
+.notification-header__eyebrow {
+  color: var(--fm-color-primary-500, #b8935c);
+  font-size: var(--fm-font-size-caption, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.notification-header__title-row {
+  align-items: center;
+  display: flex;
+  gap: var(--fm-space-16, 1rem);
+}
+
+.notification-header__title-icon {
+  align-items: center;
+  background: rgba(184, 147, 92, 0.12);
+  border-radius: var(--fm-radius-lg, 16px);
+  color: var(--fm-color-primary-500, #b8935c);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 3.25rem;
+  justify-content: center;
+  width: 3.25rem;
+}
+
+.notification-header__title {
+  color: var(--fm-color-neutral-900, #1f1c18);
+  font-family: var(--fm-font-display, 'Outfit', serif);
+  font-size: var(--fm-font-size-display-3, clamp(1.75rem, 3vw + 0.75rem, 2.75rem));
+  font-weight: 600;
+  letter-spacing: var(--fm-letter-spacing-heading, -0.02em);
+  line-height: var(--fm-line-height-display, 1.1);
+  margin: 0;
+}
+
+.notification-header__description {
+  color: var(--fm-color-neutral-600, #70675a);
+  font-size: var(--fm-font-size-lead, clamp(1.0625rem, 0.25vw + 1rem, 1.25rem));
+  line-height: var(--fm-line-height-body, 1.625);
+  margin: 0;
+  max-width: 44rem;
+}
+
+.notification-header__actions {
+  flex-shrink: 0;
+}
+
+@media (max-width: 639px) {
+  .notification-header__actions {
+    width: 100%;
+  }
+}
