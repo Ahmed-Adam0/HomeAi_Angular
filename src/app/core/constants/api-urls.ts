@@ -6,6 +6,8 @@ export const API_URLS = {
   AUTH: {
     LOGIN: 'auth/login',
     REGISTER: 'auth/register',
+    VENDOR_LOGIN: 'Vendors/login',
+    VENDOR_REGISTER: 'Vendors/create',
     REFRESH_TOKEN: 'auth/refresh-token',
     LOGOUT: 'auth/logout',
     ME: 'auth/me',

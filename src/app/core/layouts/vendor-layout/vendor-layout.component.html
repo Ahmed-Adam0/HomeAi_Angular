@@ -1,0 +1,97 @@
+<div appRtl class="vendor-layout-wrapper">
+  <!-- Sidebar -->
+  <aside class="vendor-sidebar" [class.open]="sidebarOpen()">
+    <div class="sidebar-header">
+      <div class="logo-container">
+        <i class="bi bi-cpu-fill logo-icon"></i>
+        <span class="logo-text">FurniMind <span class="badge-vendor">Vendor</span></span>
+      </div>
+      <button class="btn-close-sidebar d-md-none" (click)="closeSidebar()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <span class="nav-section-title">Core</span>
+        <a [routerLink]="navRoutes.VENDOR_DASHBOARD" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeSidebar()" class="nav-item">
+          <i class="bi bi-grid-1x2-fill"></i>
+          <span>Dashboard</span>
+        </a>
+        <a [routerLink]="navRoutes.VENDOR_ANALYTICS" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
+          <i class="bi bi-bar-chart-line-fill"></i>
+          <span>Analytics</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Management</span>
+        <a [routerLink]="navRoutes.VENDOR_ORDERS" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
+          <i class="bi bi-bag-check-fill"></i>
+          <span>Orders</span>
+        </a>
+        <a [routerLink]="navRoutes.VENDOR_REVENUE" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
+          <i class="bi bi-cash-stack"></i>
+          <span>Revenue</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Settings</span>
+        <a [routerLink]="navRoutes.VENDOR_PROFILE" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
+          <i class="bi bi-person-bounding-box"></i>
+          <span>Workshop Profile</span>
+        </a>
+       
+      </div>
+
+      <div class="nav-section-footer">
+        <a [routerLink]="navRoutes.HOME" class="nav-item btn-back-store">
+          <i class="bi bi-shop"></i>
+          <span>Back to Marketplace</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Sidebar Overlay for mobile -->
+  @if (sidebarOpen()) {
+    <div class="sidebar-overlay d-md-none" (click)="closeSidebar()"></div>
+  }
+
+  <!-- Main Content Area -->
+  <div class="vendor-main">
+    <!-- Top Navbar -->
+    <header class="vendor-header">
+      <div class="header-left">
+        <button class="btn-toggle-sidebar d-md-none" (click)="toggleSidebar()">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="workshop-info">
+          <span class="workshop-label">Workshop:</span>
+          <span class="workshop-name">FurniMind Premium Workshop</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="user-profile-menu dropdown">
+          <div class="user-avatar">
+            {{ currentUser()?.initials || 'AW' }}
+          </div>
+          <div class="user-details d-none d-sm-block">
+            <span class="user-name">{{ currentUser()?.name || 'Alexander Wright' }}</span>
+            <span class="user-role">{{ currentUser()?.tier || '✦ AI Spaces Creator' }}</span>
+          </div>
+          <button class="btn-logout" (click)="logout()" title="Logout">
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Subpage Container -->
+    <main class="vendor-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
