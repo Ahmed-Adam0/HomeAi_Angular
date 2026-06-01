@@ -51,6 +51,8 @@ export const API_URLS = {
     REVENUE_ANALYTICS: 'VendorOrders/analytics/revenue',
     ORDERS_ANALYTICS: 'VendorOrders/analytics/orders',
     DASHBOARD_METRICS: 'VendorOrders/dashboard/metrics',
+    PROFILE: 'Vendors/profile',
+    UPLOAD_LOGO: 'Vendors/logo',
   },
 } as const;
 

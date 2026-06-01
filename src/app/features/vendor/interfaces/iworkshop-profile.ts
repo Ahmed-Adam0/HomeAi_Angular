@@ -1,60 +1,32 @@
-export interface IWorkshopBusinessHours {
-  day: string;
-  open: string;
-  close: string;
-  isClosed: boolean;
+export interface IVendorWorkshopAddress {
+  city: string | null;
+  area: string | null;
+  street: string | null;
+  buildingNumber: string | null;
+  notes: string | null;
 }
 
-export interface IWorkshopSocialLinks {
-  website?: string;
-  instagram?: string;
-  facebook?: string;
-  linkedIn?: string;
+export interface IVendorProfile {
+  fullName: string | null;
+  phoneNumber: string | null;
+  email: string | null;
+  preferredLanguage: string;
+  workshopNameAr: string | null;
+  workshopNameEn: string | null;
+  descriptionAr: string | null;
+  descriptionEn: string | null;
+  workshopAddress: IVendorWorkshopAddress;
+  logoUrl?: string | null;
 }
 
-export interface IWorkshopProfile {
-  id: string;
-  vendorId: string;
-  workshopName: string;
-  slug: string;
-  tagline?: string;
-  description: string;
-  logoUrl?: string;
-  coverImageUrl?: string;
-  email: string;
-  phone: string;
-  addressLine1: string;
-  addressLine2?: string;
-  city: string;
-  state?: string;
-  postalCode: string;
-  country: string;
-  categories: string[];
-  specialties: string[];
-  businessHours: IWorkshopBusinessHours[];
-  socialLinks: IWorkshopSocialLinks;
-  averageRating: number;
-  reviewCount: number;
-  isVerified: boolean;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface IWorkshopProfileUpdate {
-  workshopName: string;
-  tagline?: string;
-  description: string;
-  email: string;
-  phone: string;
-  addressLine1: string;
-  addressLine2?: string;
-  city: string;
-  state?: string;
-  postalCode: string;
-  country: string;
-  categories: string[];
-  specialties: string[];
-  businessHours: IWorkshopBusinessHours[];
-  socialLinks: IWorkshopSocialLinks;
+export interface IVendorProfileUpdateRequest {
+  fullName: string | null;
+  phoneNumber: string | null;
+  email: string | null;
+  preferredLanguage: string;
+  workshopNameAr: string | null;
+  workshopNameEn: string | null;
+  descriptionAr: string | null;
+  descriptionEn: string | null;
+  workshopAddress: IVendorWorkshopAddress;
 }

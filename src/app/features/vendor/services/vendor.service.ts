@@ -19,6 +19,9 @@ import {
   mapVendorOrderAnalytics,
 } from '../data-access/mappers/vendor-order.mapper';
 import { mapVendorRevenueStatistics } from '../data-access/mappers/vendor-revenue.mapper';
+import { mapVendorProfileResponseDto } from '../data-access/mappers/vendor-profile.mapper';
+import { IVendorProfileResponseDto } from '../data-access/dto/vendor-profile-response.dto';
+import { IVendorProfileRequestDto } from '../data-access/dto/vendor-profile-request.dto';
 import {
   IVendorAnalytics,
   IVendorDashboardMetrics,
@@ -26,9 +29,9 @@ import {
   IVendorOrder,
   IVendorOrderSummary,
   IVendorOrderStatusUpdate,
+  IVendorProfile,
+  IVendorProfileUpdateRequest,
   IVendorRevenue,
-  IWorkshopProfile,
-  IWorkshopProfileUpdate,
   StatusUpdateResponse,
 } from '../interfaces';
 
@@ -119,12 +122,44 @@ export class VendorService {
       .pipe(map(mapVendorOrderAnalytics));
   }
 
-  getWorkshopProfile(): Observable<IWorkshopProfile> {
-    throw new Error('VendorService.getWorkshopProfile() is not implemented');
+  getWorkshopProfile(): Observable<IVendorProfile> {
+    return this.http
+      .get<IVendorProfileResponseDto>(`${this.apiUrl}${API_URLS.VENDOR.PROFILE}`)
+      .pipe(map(mapVendorProfileResponseDto));
   }
 
-  updateWorkshopProfile(payload: IWorkshopProfileUpdate): Observable<IWorkshopProfile> {
-    throw new Error('VendorService.updateWorkshopProfile() is not implemented');
+  updateWorkshopProfile(payload: IVendorProfileUpdateRequest): Observable<IVendorProfile> {
+    const request: IVendorProfileRequestDto = {
+      fullName: payload.fullName,
+      phoneNumber: payload.phoneNumber,
+      email: payload.email,
+      preferredLanguage: payload.preferredLanguage,
+      workshopNameAr: payload.workshopNameAr,
+      workshopNameEn: payload.workshopNameEn,
+      descriptionAr: payload.descriptionAr,
+      descriptionEn: payload.descriptionEn,
+      workshopAddress: {
+        city: payload.workshopAddress.city,
+        area: payload.workshopAddress.area,
+        street: payload.workshopAddress.street,
+        buildingNumber: payload.workshopAddress.buildingNumber,
+        notes: payload.workshopAddress.notes,
+      },
+    };
+
+    return this.http
+      .put<IVendorProfileResponseDto>(`${this.apiUrl}${API_URLS.VENDOR.PROFILE}`, request)
+      .pipe(map(mapVendorProfileResponseDto));
+  }
+
+  uploadWorkshopLogo(file: File): Observable<{ logoUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    return this.http.put<{ logoUrl: string }>(
+      `${this.apiUrl}${API_URLS.VENDOR.UPLOAD_LOGO}`,
+      formData
+    );
   }
 
   getNotifications(): Observable<IVendorNotification[]> {

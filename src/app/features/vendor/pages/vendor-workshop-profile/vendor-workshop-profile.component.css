@@ -1,1 +1,41 @@
-/* Phase 2: workshop profile page styles */
+.vendor-workshop-profile {
+  padding: var(--fm-space-32) var(--fm-space-24) var(--fm-space-48);
+  max-width: 60rem;
+  margin-inline: auto;
+}
+
+.vendor-workshop-profile__page-header {
+  margin-bottom: var(--fm-space-32);
+}
+
+.vendor-workshop-profile__eyebrow {
+  margin: 0 0 var(--fm-space-8);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fm-color-primary-500);
+}
+
+.vendor-workshop-profile__title {
+  margin: 0 0 var(--fm-space-8);
+  font-family: var(--fm-font-display);
+  font-size: clamp(1.5rem, 2.5vw + 0.75rem, 2rem);
+  font-weight: 700;
+  color: var(--fm-text-heading);
+  line-height: 1.15;
+}
+
+.vendor-workshop-profile__description {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--fm-text-muted);
+  line-height: 1.5;
+  max-width: 48ch;
+}
+
+@media (max-width: 767.98px) {
+  .vendor-workshop-profile {
+    padding: var(--fm-space-20) var(--fm-space-16) var(--fm-space-32);
+  }
+}

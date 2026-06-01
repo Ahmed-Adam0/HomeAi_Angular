@@ -1,4 +1,18 @@
-<section class="vendor-workshop-profile" [attr.aria-label]="'VENDOR.WORKSHOP.PAGE_ARIA' | translate">
-  <h1>{{ 'VENDOR.WORKSHOP.TITLE' | translate }}</h1>
-  <app-workshop-profile-form />
-</section>
+<main class="vendor-workshop-profile" appRtl [attr.aria-label]="'vendor.profile.title' | translate">
+  <header class="vendor-workshop-profile__page-header">
+    <div>
+      <p class="vendor-workshop-profile__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
+      <h1 class="vendor-workshop-profile__title">{{ 'vendor.profile.title' | translate }}</h1>
+      <p class="vendor-workshop-profile__description">{{ 'vendor.profile.subtitle' | translate }}</p>
+    </div>
+  </header>
+
+  <app-workshop-profile-form
+    [profile]="profile()"
+    [loading]="loading()"
+    [saving]="saving()"
+    [uploadingLogo]="uploadingLogo()"
+    (saveProfile)="onSaveProfile($event)"
+    (uploadLogo)="onUploadLogo($event)"
+  />
+</main>
