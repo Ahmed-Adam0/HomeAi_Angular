@@ -39,6 +39,8 @@ export const APP_ROUTES = {
   VENDOR_ANALYTICS: 'analytics',
   VENDOR_PROFILE: 'profile',
   VENDOR_NOTIFICATIONS: 'notifications',
+  VENDOR_SETTINGS: 'settings',
+  VENDOR_DASHBOARD: 'dashboard',
 
   AI_CHAT: 'ai-chat',
 
@@ -84,6 +86,7 @@ export const NAV_ROUTES = {
   VENDOR_ANALYTICS: '/vendor/analytics',
   VENDOR_PROFILE: '/vendor/profile',
   VENDOR_NOTIFICATIONS: '/vendor/notifications',
+  VENDOR_DASHBOARD: '/vendor/dashboard',
 
   AI_CHAT: '/ai-chat'
 } as const;

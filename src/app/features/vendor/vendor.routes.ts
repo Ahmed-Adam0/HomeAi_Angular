@@ -1,16 +1,13 @@
 import { Routes } from '@angular/router';
 import { APP_ROUTES } from '../../core/constants';
-import { authGuard } from '../../core/guards/auth.guard';
-import { guestGuard } from '../../core/guards/guest.guard';
 import { AuthLayoutComponent } from '../../core/layouts/auth-layout/auth-layout.component';
-import { MainLayoutComponent } from '../../core/layouts/main-layout/main-layout.component';
+import { VendorLayoutComponent } from '../../core/layouts/vendor-layout/vendor-layout.component';
 
 export const vendorRoutes: Routes = [
   // 1. Guest Auth Routes (wrapped in AuthLayoutComponent)
   {
     path: '',
     component: AuthLayoutComponent,
-    canActivate: [guestGuard],
     children: [
       {
         path: APP_ROUTES.VENDOR_LOGIN, // 'login'
@@ -28,14 +25,18 @@ export const vendorRoutes: Routes = [
       },
     ],
   },
-  // 2. Authenticated Dashboard/Orders Routes (wrapped in MainLayoutComponent)
+  // 2. Vendor Dashboard/Orders Routes (wrapped in VendorLayoutComponent)
   {
     path: '',
-    component: MainLayoutComponent,
-    canActivate: [authGuard],
+    component: VendorLayoutComponent,
     children: [
       {
         path: '',
+        redirectTo: APP_ROUTES.VENDOR_DASHBOARD,
+        pathMatch: 'full',
+      },
+      {
+        path: APP_ROUTES.VENDOR_DASHBOARD, // 'dashboard'
         loadComponent: () =>
           import('./pages/vendor-dashboard/vendor-dashboard.component').then(
             (m) => m.VendorDashboard,
@@ -53,6 +54,7 @@ export const vendorRoutes: Routes = [
             (m) => m.VendorOrderDetails,
           ),
       },
+    
       {
         path: APP_ROUTES.VENDOR_REVENUE, // 'revenue'
         loadComponent: () =>

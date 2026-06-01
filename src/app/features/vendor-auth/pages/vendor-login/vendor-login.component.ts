@@ -108,7 +108,7 @@ export class VendorLogin {
     this.vendorAuthService.login(this.loginForm.value).subscribe({
       next: () => {
         this.isLoading = false;
-        const destination = this.returnUrl || NAV_ROUTES.VENDOR;
+        const destination = this.returnUrl || NAV_ROUTES.VENDOR_DASHBOARD;
         this.router.navigateByUrl(destination, { replaceUrl: true });
       },
       error: (err) => {
