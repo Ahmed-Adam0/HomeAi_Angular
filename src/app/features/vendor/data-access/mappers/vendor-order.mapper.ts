@@ -8,6 +8,7 @@ import { IVendorAnalytics } from '../../interfaces/ivendor-analytics';
 import { IVendorDashboardMetrics } from '../../interfaces/ivendor-dashboard-metrics';
 import { VendorOrderStatus } from '../../models/vendor-order-status.enum';
 import { VendorMetricType } from '../../models/vendor-metric-type.enum';
+import { STATUS_FRONTEND_MAP } from './vendor-order-status.mapper';
 
 /**
  * Maps a VendorOrderDashboardDto from the API to the frontend IVendorOrderSummary model.
@@ -16,14 +17,14 @@ export function mapVendorOrderDashboard(
   dto: IVendorOrderDashboardDto
 ): IVendorOrderSummary {
   return {
-    id: dto.id.toString(),
+    id: dto.id?.toString() ?? '',
     orderNumber: `ORD-${dto.id}`,
-    customerName: dto.customerName,
-    status: mapStringToStatus(dto.status),
-    totalAmount: dto.totalPrice,
+    customerName: dto.customerName ?? '',
+    status: dto.status ? mapStringToStatus(dto.status) : VendorOrderStatus.Pending,
+    totalAmount: dto.totalPrice ?? 0,
     currency: 'EGP',
-    itemCount: dto.itemCount,
-    placedAt: dto.createdAt,
+    itemCount: dto.itemCount ?? 0,
+    placedAt: dto.createdAt ?? '',
   };
 }
 
@@ -33,28 +34,19 @@ export function mapVendorOrderDashboard(
 export function mapVendorOrdersFilterResponse(
   response: IVendorOrdersFilterResponseDto
 ): IVendorOrderSummary[] {
-  return response.data.map(mapVendorOrderDashboard);
+  return (response.data ?? []).map(mapVendorOrderDashboard);
 }
 
 /**
  * Maps a string status to VendorOrderStatus enum.
  */
 function mapStringToStatus(status: string): VendorOrderStatus {
-  switch (status) {
-    case 'Accepted':
-      return VendorOrderStatus.Accepted;
-    case 'In Progress':
-      return VendorOrderStatus.InProgress;
-    case 'Ready for Pickup':
-      return VendorOrderStatus.ReadyForPickup;
-    case 'Delivered':
-      return VendorOrderStatus.Delivered;
-    case 'Cancelled':
-      return VendorOrderStatus.Cancelled;
-    default:
-      console.warn(`[VendorOrderMapper] Unknown status received from API: "${status}". Falling back to "Accepted".`);
-      return VendorOrderStatus.Accepted;
+  const mapped = STATUS_FRONTEND_MAP[status];
+  if (mapped) {
+    return mapped;
   }
+  console.warn(`[VendorOrderMapper] Unknown status received from API: "${status}". Falling back to "Pending".`);
+  return VendorOrderStatus.Pending;
 }
 
 /**
@@ -64,46 +56,46 @@ export function mapVendorOrderDetails(
   dto: IVendorOrderDetailsDto
 ): IVendorOrder {
   return {
-    id: dto.id.toString(),
+    id: dto.id?.toString() ?? '',
     orderNumber: `ORD-${dto.id}`,
     vendorId: '',
     customer: {
-      id: dto.userId,
-      fullName: dto.customerName,
+      id: dto.userId ?? '',
+      fullName: dto.customerName ?? '',
       email: '',
-      phone: dto.customerPhone,
+      phone: dto.customerPhone ?? '',
     },
-    items: dto.items.map((item) => ({
-      id: item.productId.toString(),
-      productId: item.productId.toString(),
-      productName: item.productName,
-      quantity: item.quantity,
-      unitPrice: item.unitPrice,
-      lineTotal: item.total,
+    items: (dto.items ?? []).map((item) => ({
+      id: item.productId?.toString() ?? '',
+      productId: item.productId?.toString() ?? '',
+      productName: item.productName ?? '',
+      quantity: item.quantity ?? 0,
+      unitPrice: item.unitPrice ?? 0,
+      lineTotal: item.total ?? 0,
     })),
-    status: mapStringToStatus(dto.status),
+    status: dto.status ? mapStringToStatus(dto.status) : VendorOrderStatus.Pending,
     paymentStatus: 'pending',
-    subtotal: dto.totalPrice,
+    subtotal: dto.totalPrice ?? 0,
     shippingCost: 0,
     taxAmount: 0,
     discountAmount: 0,
-    totalAmount: dto.totalPrice,
+    totalAmount: dto.totalPrice ?? 0,
     currency: 'EGP',
     shippingAddress: {
-      addressLine1: dto.address,
+      addressLine1: dto.address ?? '',
       city: '',
       postalCode: '',
       country: '',
     },
     notes: dto.notes ?? undefined,
-    statusHistory: dto.statusHistory.map((history) => ({
-      id: history.id.toString(),
-      previousStatus: mapStringToStatus(history.oldStatus),
-      newStatus: mapStringToStatus(history.newStatus),
-      changedAt: history.createdAt,
+    statusHistory: (dto.statusHistory ?? []).map((history) => ({
+      id: history.id?.toString() ?? '',
+      previousStatus: mapStringToStatus(history.oldStatus ?? ''),
+      newStatus: mapStringToStatus(history.newStatus ?? ''),
+      changedAt: history.createdAt ?? '',
     })),
-    placedAt: dto.createdAt,
-    updatedAt: dto.updatedAt || dto.createdAt,
+    placedAt: dto.createdAt ?? '',
+    updatedAt: dto.updatedAt || dto.createdAt || '',
   };
 }
 

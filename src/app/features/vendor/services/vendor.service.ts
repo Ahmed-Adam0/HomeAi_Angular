@@ -6,7 +6,8 @@ import { API_URLS } from '../../../core/constants';
 import { IVendorOrdersFilterRequestDto } from '../data-access/dto/vendor-orders-filter-request.dto';
 import { IVendorOrdersFilterResponseDto } from '../data-access/dto/vendor-orders-filter-response.dto';
 import { IVendorOrderDetailsDto } from '../data-access/dto/vendor-order-details.dto';
-import { IVendorUpdateOrderStatusRequestDto } from '../data-access/dto/vendor-update-order-status-request.dto';
+import { IVendorUpdateOrderStatusRequestDto, VendorOrderStatusApi } from '../data-access/dto/vendor-update-order-status-request.dto';
+import { STATUS_API_MAP } from '../data-access/mappers/vendor-order-status.mapper';
 import { IVendorDashboardMetricsDto } from '../data-access/dto/vendor-dashboard-metrics.dto';
 import { IVendorRevenueStatisticsDto } from '../data-access/dto/vendor-revenue-statistics.dto';
 import { IVendorOrderAnalyticsDto } from '../data-access/dto/vendor-order-analytics.dto';
@@ -28,6 +29,7 @@ import {
   IVendorRevenue,
   IWorkshopProfile,
   IWorkshopProfileUpdate,
+  StatusUpdateResponse,
 } from '../interfaces';
 
 @Injectable({
@@ -62,35 +64,33 @@ export class VendorService {
       .pipe(map(mapVendorOrderDetails));
   }
 
-  updateOrderStatus(orderId: number, newStatus: string): Observable<IVendorOrder>;
-  updateOrderStatus(payload: IVendorOrderStatusUpdate): Observable<IVendorOrder>;
+  updateOrderStatus(orderId: number, newStatus: VendorOrderStatus): Observable<StatusUpdateResponse>;
+  updateOrderStatus(payload: IVendorOrderStatusUpdate): Observable<StatusUpdateResponse>;
   updateOrderStatus(
     orderIdOrPayload: number | IVendorOrderStatusUpdate,
-    newStatus?: string
-  ): Observable<IVendorOrder> {
+    newStatus?: VendorOrderStatus
+  ): Observable<StatusUpdateResponse> {
     if (typeof orderIdOrPayload === 'number') {
       const requestBody: IVendorUpdateOrderStatusRequestDto = {
-        newStatus: newStatus ?? '',
+        newStatus: STATUS_API_MAP[newStatus!] as VendorOrderStatusApi,
       };
 
       return this.http
-        .put<IVendorOrderDetailsDto>(
+        .put<StatusUpdateResponse>(
           `${this.apiUrl}${API_URLS.VENDOR.UPDATE_ORDER_STATUS(orderIdOrPayload)}`,
           requestBody
-        )
-        .pipe(map(mapVendorOrderDetails));
+        );
     }
 
     const requestBody: IVendorUpdateOrderStatusRequestDto = {
-      newStatus: orderIdOrPayload.status,
+      newStatus: STATUS_API_MAP[orderIdOrPayload.status] as VendorOrderStatusApi,
     };
 
     return this.http
-      .put<IVendorOrderDetailsDto>(
+      .put<StatusUpdateResponse>(
         `${this.apiUrl}${API_URLS.VENDOR.UPDATE_ORDER_STATUS(orderIdOrPayload.orderId)}`,
         requestBody
-      )
-      .pipe(map(mapVendorOrderDetails));
+      );
   }
 
   getDashboardMetrics(): Observable<IVendorDashboardMetrics> {

@@ -42,9 +42,10 @@ export class VendorOrders implements OnInit {
 
   readonly statusFilterOptions: readonly OrderStatusFilterOption[] = [
     { value: 'all', labelKey: 'VENDOR.ORDERS.FILTER_ALL_STATUSES' },
-    { value: VendorOrderStatus.Accepted, labelKey: 'VENDOR.STATUS.CONFIRMED' },
-    { value: VendorOrderStatus.InProgress, labelKey: 'VENDOR.STATUS.PROCESSING' },
-    { value: VendorOrderStatus.ReadyForPickup, labelKey: 'VENDOR.STATUS.SHIPPED' },
+    { value: VendorOrderStatus.Pending, labelKey: 'VENDOR.STATUS.PENDING' },
+    { value: VendorOrderStatus.Confirmed, labelKey: 'VENDOR.STATUS.CONFIRMED' },
+    { value: VendorOrderStatus.Processing, labelKey: 'VENDOR.STATUS.PROCESSING' },
+    { value: VendorOrderStatus.Ready, labelKey: 'VENDOR.STATUS.SHIPPED' },
     { value: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED' },
     { value: VendorOrderStatus.Cancelled, labelKey: 'VENDOR.STATUS.CANCELLED' },
   ];
@@ -72,12 +73,12 @@ export class VendorOrders implements OnInit {
   });
 
   onSearchInput(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
+    const value = (event.target as HTMLInputElement)?.value ?? '';
     this.searchTerm.set(value);
   }
 
   onStatusChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
+    const value = (event.target as HTMLSelectElement)?.value ?? 'all';
     this.selectedStatus.set(value);
   }
 

@@ -76,3 +76,7 @@ export interface IVendorOrderStatusUpdate {
   status: VendorOrderStatus;
   note?: string;
 }
+
+export interface StatusUpdateResponse {
+  message: string;
+}

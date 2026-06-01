@@ -1,15 +1,17 @@
 export enum VendorOrderStatus {
-  Accepted = 'Accepted',
-  InProgress = 'In Progress',
-  ReadyForPickup = 'Ready for Pickup',
-  Delivered = 'Delivered',
-  Cancelled = 'Cancelled',
+  Pending = 'pending',
+  Confirmed = 'confirmed',
+  Processing = 'processing',
+  Ready = 'ready',
+  Delivered = 'delivered',
+  Cancelled = 'cancelled',
 }
 
 export const ALLOWED_TRANSITIONS: Record<VendorOrderStatus, readonly VendorOrderStatus[]> = {
-  [VendorOrderStatus.Accepted]: [VendorOrderStatus.InProgress, VendorOrderStatus.Cancelled],
-  [VendorOrderStatus.InProgress]: [VendorOrderStatus.ReadyForPickup, VendorOrderStatus.Cancelled],
-  [VendorOrderStatus.ReadyForPickup]: [VendorOrderStatus.Delivered, VendorOrderStatus.Cancelled],
+  [VendorOrderStatus.Pending]: [VendorOrderStatus.Confirmed, VendorOrderStatus.Cancelled],
+  [VendorOrderStatus.Confirmed]: [VendorOrderStatus.Processing, VendorOrderStatus.Cancelled],
+  [VendorOrderStatus.Processing]: [VendorOrderStatus.Ready],
+  [VendorOrderStatus.Ready]: [VendorOrderStatus.Delivered],
   [VendorOrderStatus.Delivered]: [],
   [VendorOrderStatus.Cancelled]: [],
 };

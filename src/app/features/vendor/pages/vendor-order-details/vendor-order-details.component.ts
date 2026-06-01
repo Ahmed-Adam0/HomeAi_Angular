@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -69,9 +70,10 @@ export class VendorOrderDetails implements OnInit {
     const currentStatus = this.order()?.status;
 
     const steps = [
-      { status: VendorOrderStatus.Accepted, labelKey: 'VENDOR.STATUS.CONFIRMED', icon: 'check-circle' },
-      { status: VendorOrderStatus.InProgress, labelKey: 'VENDOR.STATUS.PROCESSING', icon: 'play-circle' },
-      { status: VendorOrderStatus.ReadyForPickup, labelKey: 'VENDOR.STATUS.SHIPPED', icon: 'truck' },
+      { status: VendorOrderStatus.Pending, labelKey: 'VENDOR.STATUS.PENDING', icon: 'clock' },
+      { status: VendorOrderStatus.Confirmed, labelKey: 'VENDOR.STATUS.CONFIRMED', icon: 'check-circle' },
+      { status: VendorOrderStatus.Processing, labelKey: 'VENDOR.STATUS.PROCESSING', icon: 'play-circle' },
+      { status: VendorOrderStatus.Ready, labelKey: 'VENDOR.STATUS.SHIPPED', icon: 'truck' },
       { status: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED', icon: 'package' },
     ];
 
@@ -84,9 +86,10 @@ export class VendorOrderDetails implements OnInit {
     }
 
     const statusOrder = [
-      VendorOrderStatus.Accepted,
-      VendorOrderStatus.InProgress,
-      VendorOrderStatus.ReadyForPickup,
+      VendorOrderStatus.Pending,
+      VendorOrderStatus.Confirmed,
+      VendorOrderStatus.Processing,
+      VendorOrderStatus.Ready,
       VendorOrderStatus.Delivered,
     ];
 
@@ -117,9 +120,10 @@ export class VendorOrderDetails implements OnInit {
   }
 
   private readonly statusOptionList: readonly { value: VendorOrderStatus; labelKey: string }[] = [
-    { value: VendorOrderStatus.Accepted, labelKey: 'VENDOR.STATUS.CONFIRMED' },
-    { value: VendorOrderStatus.InProgress, labelKey: 'VENDOR.STATUS.PROCESSING' },
-    { value: VendorOrderStatus.ReadyForPickup, labelKey: 'VENDOR.STATUS.SHIPPED' },
+    { value: VendorOrderStatus.Pending, labelKey: 'VENDOR.STATUS.PENDING' },
+    { value: VendorOrderStatus.Confirmed, labelKey: 'VENDOR.STATUS.CONFIRMED' },
+    { value: VendorOrderStatus.Processing, labelKey: 'VENDOR.STATUS.PROCESSING' },
+    { value: VendorOrderStatus.Ready, labelKey: 'VENDOR.STATUS.SHIPPED' },
     { value: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED' },
     { value: VendorOrderStatus.Cancelled, labelKey: 'VENDOR.STATUS.CANCELLED' },
   ];
@@ -199,9 +203,11 @@ export class VendorOrderDetails implements OnInit {
   }
 
   onStatusSelection(event: Event): void {
-    const value = (event.target as HTMLSelectElement)?.value;
-    console.log('onStatusSelection called with:', { value });
-    this.selectedStatus.set(value as VendorOrderStatus);
+    const value = (event.target as HTMLSelectElement)?.value as VendorOrderStatus | undefined;
+    if (!value || !Object.values(VendorOrderStatus).includes(value)) {
+      return;
+    }
+    this.selectedStatus.set(value);
     this.statusUpdateError.set(null);
   }
 
@@ -243,9 +249,31 @@ export class VendorOrderDetails implements OnInit {
           this.uiState.showAlert('success', this.translationService.translate('VENDOR.ORDER_DETAILS.UPDATE_STATUS_SUCCESS'));
           this.loadOrderDetails(orderId.toString());
         },
-        error: (err) => {
+        error: (err: unknown) => {
           console.error('Failed to update vendor order status:', err);
-          this.statusUpdateError.set(err.message || this.translationService.translate('VENDOR.ORDER_DETAILS.UPDATE_STATUS_ERROR'));
+          let errorMsg = '';
+          if (err instanceof HttpErrorResponse) {
+            switch (err.status) {
+              case 400:
+                errorMsg = this.translationService.translate('VENDOR.ORDER_DETAILS.ERROR_400');
+                break;
+              case 401:
+                errorMsg = this.translationService.translate('VENDOR.ORDER_DETAILS.ERROR_401');
+                break;
+              case 404:
+                errorMsg = this.translationService.translate('VENDOR.ORDER_DETAILS.ERROR_404');
+                break;
+              case 500:
+                errorMsg = this.translationService.translate('VENDOR.ORDER_DETAILS.ERROR_500');
+                break;
+              default:
+                errorMsg = err.error?.message || err.message || this.translationService.translate('VENDOR.ORDER_DETAILS.UPDATE_STATUS_ERROR');
+                break;
+            }
+          } else {
+            errorMsg = this.translationService.translate('VENDOR.ORDER_DETAILS.UPDATE_STATUS_ERROR');
+          }
+          this.statusUpdateError.set(errorMsg);
           this.isUpdatingStatus.set(false);
         },
       });

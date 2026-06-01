@@ -117,25 +117,34 @@
         </app-button>
 
         <!-- Quick Status Transitions -->
-        @if (order()!.status === 'Accepted') {
+        @if (order()!.status === VendorOrderStatus.Pending) {
           <app-button
             variant="premium"
             size="md"
             [disabled]="isUpdatingStatus()"
-            (clicked)="setQuickStatus(VendorOrderStatus.InProgress)"
+            (clicked)="setQuickStatus(VendorOrderStatus.Confirmed)"
+          >
+            Confirm Order
+          </app-button>
+        } @else if (order()!.status === VendorOrderStatus.Confirmed) {
+          <app-button
+            variant="premium"
+            size="md"
+            [disabled]="isUpdatingStatus()"
+            (clicked)="setQuickStatus(VendorOrderStatus.Processing)"
           >
             Start Processing
           </app-button>
-        } @else if (order()!.status === 'In Progress') {
+        } @else if (order()!.status === VendorOrderStatus.Processing) {
           <app-button
             variant="premium"
             size="md"
             [disabled]="isUpdatingStatus()"
-            (clicked)="setQuickStatus(VendorOrderStatus.ReadyForPickup)"
+            (clicked)="setQuickStatus(VendorOrderStatus.Ready)"
           >
-            Mark as Shipped
+            Mark as Ready
           </app-button>
-        } @else if (order()!.status === 'Ready for Pickup') {
+        } @else if (order()!.status === VendorOrderStatus.Ready) {
           <app-button
             variant="premium"
             size="md"
@@ -537,7 +546,7 @@
               
               <!-- Direct cancel button (available when transitions permit) -->
               @for (option of availableStatusOptions(); track option.value) {
-                @if (option.value === 'Cancelled') {
+                @if (option.value === VendorOrderStatus.Cancelled) {
                   <app-button
                     variant="danger"
                     size="md"

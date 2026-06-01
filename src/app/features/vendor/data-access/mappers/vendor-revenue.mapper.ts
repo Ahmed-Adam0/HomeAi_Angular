@@ -20,10 +20,13 @@ export function mapVendorRevenueStatistics(
     refunds: 0,
     pendingPayout: 0,
     completedPayout: 0,
-    breakdown: (dto.dailyBreakdown || []).map((item) => ({
-      label: item.date,
-      amount: item.revenue,
-      percentage: dto.totalRevenue > 0 ? (item.revenue / dto.totalRevenue) * 100 : 0,
+    breakdown: (dto.dailyBreakdown ?? []).map((item) => ({
+      label: item.date ?? '',
+      amount: item.revenue ?? 0,
+      percentage:
+        dto.totalRevenue && dto.totalRevenue > 0
+          ? ((item.revenue ?? 0) / dto.totalRevenue) * 100
+          : 0,
     })),
     recentPayouts: [],
   };
