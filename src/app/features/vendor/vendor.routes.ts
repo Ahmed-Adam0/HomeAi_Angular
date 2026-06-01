@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { APP_ROUTES } from '../../core/constants';
 import { AuthLayoutComponent } from '../../core/layouts/auth-layout/auth-layout.component';
 import { VendorLayoutComponent } from '../../core/layouts/vendor-layout/vendor-layout.component';
+import { vendorGuard } from '../../core/guards/vendor.guard';
+import { vendorAuthGuard } from '../../core/guards/vendor-auth.guard';
 
 export const vendorRoutes: Routes = [
   // 1. Guest Auth Routes (wrapped in AuthLayoutComponent)
@@ -11,6 +13,7 @@ export const vendorRoutes: Routes = [
     children: [
       {
         path: APP_ROUTES.VENDOR_LOGIN, // 'login'
+        canActivate: [vendorAuthGuard],
         loadComponent: () =>
           import('../vendor-auth/pages/vendor-login/vendor-login.component').then(
             (m) => m.VendorLogin,
@@ -18,6 +21,7 @@ export const vendorRoutes: Routes = [
       },
       {
         path: APP_ROUTES.VENDOR_REGISTER, // 'register'
+        canActivate: [vendorAuthGuard],
         loadComponent: () =>
           import('../vendor-auth/pages/vendor-register/vendor-register.component').then(
             (m) => m.VendorRegister,
@@ -29,6 +33,7 @@ export const vendorRoutes: Routes = [
   {
     path: '',
     component: VendorLayoutComponent,
+    canActivate: [vendorGuard],
     children: [
       {
         path: '',
