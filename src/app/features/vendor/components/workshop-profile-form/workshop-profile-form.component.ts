@@ -28,9 +28,12 @@ export class WorkshopProfileForm {
   readonly loading = input(false);
   readonly saving = input(false);
   readonly uploadingLogo = input(false);
+  readonly editing = input(false);
 
   readonly saveProfile = output<IVendorProfile>();
   readonly uploadLogo = output<File>();
+  readonly editProfile = output<void>();
+  readonly cancelEdit = output<void>();
 
   protected readonly submitted = signal(false);
 
@@ -67,7 +70,9 @@ export class WorkshopProfileForm {
   constructor() {
     effect(() => {
       const profile = this.profile();
-      if (profile) {
+      const isEditing = this.editing();
+
+      if (profile && isEditing) {
         this.form.patchValue({
           fullName: profile.fullName ?? '',
           phoneNumber: profile.phoneNumber ?? '',
@@ -86,7 +91,15 @@ export class WorkshopProfileForm {
           },
         });
       }
+
+      if (!isEditing) {
+        this.submitted.set(false);
+      }
     });
+  }
+
+  protected onEditProfile(): void {
+    this.editProfile.emit();
   }
 
   protected onSubmit(): void {
@@ -122,28 +135,7 @@ export class WorkshopProfileForm {
 
   protected onCancel(): void {
     this.submitted.set(false);
-    const profile = this.profile();
-    if (profile) {
-      this.form.patchValue({
-        fullName: profile.fullName ?? '',
-        phoneNumber: profile.phoneNumber ?? '',
-        email: profile.email ?? '',
-        preferredLanguage: profile.preferredLanguage,
-        workshopNameAr: profile.workshopNameAr ?? '',
-        workshopNameEn: profile.workshopNameEn ?? '',
-        descriptionAr: profile.descriptionAr ?? '',
-        descriptionEn: profile.descriptionEn ?? '',
-        workshopAddress: {
-          city: profile.workshopAddress.city ?? '',
-          area: profile.workshopAddress.area ?? '',
-          street: profile.workshopAddress.street ?? '',
-          buildingNumber: profile.workshopAddress.buildingNumber ?? '',
-          notes: profile.workshopAddress.notes ?? '',
-        },
-      });
-    } else {
-      this.form.reset();
-    }
+    this.cancelEdit.emit();
   }
 
   protected onFileSelected(event: Event): void {

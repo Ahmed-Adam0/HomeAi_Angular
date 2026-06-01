@@ -12,7 +12,10 @@
     [loading]="loading()"
     [saving]="saving()"
     [uploadingLogo]="uploadingLogo()"
+    [editing]="isEditing()"
     (saveProfile)="onSaveProfile($event)"
     (uploadLogo)="onUploadLogo($event)"
+    (editProfile)="editProfile()"
+    (cancelEdit)="cancelEdit()"
   />
 </main>

@@ -33,6 +33,7 @@ export class VendorWorkshopProfile implements OnInit {
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
   protected readonly uploadingLogo = signal(false);
+  protected readonly isEditing = signal(false);
 
   ngOnInit(): void {
     this.loadProfile();
@@ -56,6 +57,14 @@ export class VendorWorkshopProfile implements OnInit {
       });
   }
 
+  protected editProfile(): void {
+    this.isEditing.set(true);
+  }
+
+  protected cancelEdit(): void {
+    this.isEditing.set(false);
+  }
+
   protected onSaveProfile(profileData: IVendorProfile): void {
     this.saving.set(true);
 
@@ -68,6 +77,7 @@ export class VendorWorkshopProfile implements OnInit {
       .subscribe({
         next: (updated) => {
           this.profile.set(updated);
+          this.isEditing.set(false);
           this.uiState.showAlert('success', 'vendor.profile.success.updated');
         },
         error: (err: HttpErrorResponse) => {

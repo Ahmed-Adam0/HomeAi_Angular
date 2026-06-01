@@ -1,19 +1,29 @@
 @if (isSkeletonVisible()) {
   <div class="workshop-profile-form" role="status" aria-label="{{ 'vendor.profile.loading' | translate }}">
     <div class="workshop-profile-form__container">
-      <div class="card-premium">
-        <div class="workshop-skeleton__header">
-          <div class="workshop-skeleton__avatar fm-skeleton fm-skeleton-image" style="width:80px;height:80px;border-radius:50%;"></div>
-          <div class="workshop-skeleton__heading">
-            <div class="fm-skeleton fm-skeleton-text title" style="width:55%;"></div>
-            <div class="fm-skeleton fm-skeleton-text medium" style="width:35%;"></div>
+      <div class="profile-skeleton">
+        <div class="profile-skeleton__header">
+          <div class="profile-skeleton__avatar fm-skeleton fm-skeleton-image"></div>
+          <div class="profile-skeleton__lines">
+            <div class="fm-skeleton fm-skeleton-text" style="width:55%"></div>
+            <div class="fm-skeleton fm-skeleton-text" style="width:35%"></div>
+            <div class="fm-skeleton fm-skeleton-text" style="width:45%"></div>
           </div>
         </div>
-        <div class="workshop-skeleton__body">
-          @for (row of [1,2,3,4]; track row) {
-            <div class="workshop-skeleton__row">
-              <div class="fm-skeleton fm-skeleton-text short" style="width:25%;"></div>
-              <div class="fm-skeleton fm-skeleton-text long" style="width:100%;height:44px;"></div>
+        <div class="profile-skeleton__cards">
+          @for (card of [1,2,3]; track card) {
+            <div class="profile-skeleton__card">
+              <div class="profile-skeleton__card-header">
+                <div class="fm-skeleton fm-skeleton-text" style="width:40%"></div>
+              </div>
+              <div class="profile-skeleton__card-body">
+                @for (row of [1,2,3,4]; track row) {
+                  <div class="profile-skeleton__row">
+                    <div class="fm-skeleton fm-skeleton-text" style="width:20%"></div>
+                    <div class="fm-skeleton fm-skeleton-text" style="width:100%;height:22px"></div>
+                  </div>
+                }
+              </div>
             </div>
           }
         </div>
@@ -23,277 +33,308 @@
 } @else {
   <div class="workshop-profile-form">
     <div class="workshop-profile-form__container">
-      <form
-        class="workshop-profile-form__content"
-        [formGroup]="form"
-        (ngSubmit)="onSubmit()"
-        novalidate
-      >
-        <!-- PROFILE HEADER -->
-        <div class="card-premium workshop-profile-header">
-          <div class="workshop-profile-header__content">
-            <div class="workshop-profile-header__avatar-section">
-              <div class="workshop-profile-header__avatar">
-                @if (profile()?.logoUrl; as logoUrl) {
-                  <img
-                    [src]="logoUrl"
-                    [alt]="'vendor.profile.header' | translate"
-                    class="workshop-profile-header__avatar-img"
-                  />
-                } @else {
-                  <div class="workshop-profile-header__avatar-placeholder">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
-                      <path d="M12 10v6"/>
-                      <path d="M9 13h6"/>
-                    </svg>
-                  </div>
-                }
-              </div>
-              <div class="workshop-profile-header__upload">
-                <label class="workshop-profile-header__upload-btn" [class.is-loading]="uploadingLogo()">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    class="workshop-profile-header__upload-input"
-                    (change)="onFileSelected($event)"
-                    [disabled]="uploadingLogo()"
-                  />
-                  @if (uploadingLogo()) {
-                    <span class="fm-btn-spinner" aria-hidden="true"></span>
-                    <span>{{ 'vendor.profile.saving' | translate }}</span>
-                  } @else if (profile()?.logoUrl) {
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    <span>{{ 'vendor.profile.changeLogo' | translate }}</span>
-                  } @else {
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    <span>{{ 'vendor.profile.uploadLogo' | translate }}</span>
-                  }
-                </label>
-              </div>
+
+      <!-- ============================== -->
+      <!-- PROFILE HEADER HERO CARD       -->
+      <!-- ============================== -->
+      <div class="card-premium profile-header" [class.is-editing]="editing()">
+        <div class="profile-header__bg"></div>
+        <div class="profile-header__content">
+          <div class="profile-header__avatar-section">
+            <div class="profile-header__avatar">
+              @if (profile()?.logoUrl; as logoUrl) {
+                <img [src]="logoUrl" [alt]="'vendor.profile.header' | translate" class="profile-header__avatar-img" />
+              } @else {
+                <div class="profile-header__avatar-placeholder">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+                    <path d="M12 10v6"/>
+                    <path d="M9 13h6"/>
+                  </svg>
+                </div>
+              }
+              <label class="profile-header__avatar-overlay" [class.is-loading]="uploadingLogo()">
+                <input type="file" accept="image/*" class="profile-header__avatar-input" (change)="onFileSelected($event)" [disabled]="uploadingLogo()" />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </label>
             </div>
-            <div class="workshop-profile-header__info">
-              <h1 class="workshop-profile-header__name">
-                {{ (profile()?.workshopNameEn || profile()?.workshopNameAr || profile()?.fullName || ('VENDOR.COMMON.NA' | translate)) }}
-              </h1>
-              <p class="workshop-profile-header__email">{{ profile()?.email || ('VENDOR.COMMON.NOT_PROVIDED' | translate) }}</p>
-              <span class="workshop-profile-header__lang-badge">
-                {{ (profile()?.preferredLanguage === 'ar' ? 'vendor.profile.language.arabic' : 'vendor.profile.language.english') | translate }}
+            <label class="profile-header__change-logo" [class.is-loading]="uploadingLogo()">
+              <input type="file" accept="image/*" class="profile-header__avatar-input" (change)="onFileSelected($event)" [disabled]="uploadingLogo()" />
+              @if (uploadingLogo()) {
+                <span class="fm-btn-spinner" aria-hidden="true"></span>
+                <span>{{ 'vendor.profile.saving' | translate }}</span>
+              } @else {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>{{ (profile()?.logoUrl ? 'vendor.profile.changeLogo' : 'vendor.profile.uploadLogo') | translate }}</span>
+              }
+            </label>
+          </div>
+
+          <div class="profile-header__info">
+            <h1 class="profile-header__workshop-name">
+              {{ (profile()?.workshopNameEn || profile()?.workshopNameAr || profile()?.fullName || ('VENDOR.COMMON.NA' | translate)) }}
+            </h1>
+            <p class="profile-header__vendor-name">{{ profile()?.fullName || ('VENDOR.COMMON.NOT_PROVIDED' | translate) }}</p>
+            <p class="profile-header__email">{{ profile()?.email || ('VENDOR.COMMON.NOT_PROVIDED' | translate) }}</p>
+            <span class="profile-header__lang-badge">
+              {{ (profile()?.preferredLanguage === 'ar' ? 'vendor.profile.language.arabic' : 'vendor.profile.language.english') | translate }}
+            </span>
+            @if (editing()) {
+              <span class="profile-header__edit-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>{{ 'vendor.profile.editProfile' | translate }}</span>
               </span>
-            </div>
+            }
+          </div>
+
+          <div class="profile-header__actions">
+            @if (!editing()) {
+              <button type="button" class="btn btn-gradient profile-header__edit-btn" (click)="onEditProfile()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>{{ 'vendor.profile.editProfile' | translate }}</span>
+              </button>
+            }
           </div>
         </div>
+      </div>
+
+      @if (editing()) {
+        <!-- ============================== -->
+        <!-- EDIT MODE: FORM WRAPPER        -->
+        <!-- ============================== -->
+        <form class="workshop-profile-form__content" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+          <!-- PERSONAL INFORMATION -->
+          <div class="card-premium profile-card">
+            <div class="profile-card__header">
+              <div class="profile-card__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <h2 class="profile-card__title">{{ 'vendor.profile.personalInformation' | translate }}</h2>
+            </div>
+            <div class="profile-card__body">
+              <div class="profile-grid profile-grid--2col">
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="fullName">{{ 'vendor.profile.fullName' | translate }}</label>
+                  <input id="fullName" type="text" class="workshop-field__control" formControlName="fullName" autocomplete="name" [class.is-invalid]="submitted() && form.controls.fullName.invalid" />
+                  @if (submitted() && form.controls.fullName.errors?.['required']) {
+                    <p class="workshop-field__error" role="alert">{{ 'VALIDATION.REQUIRED' | translate }}</p>
+                  }
+                </div>
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="email">{{ 'vendor.profile.email' | translate }}</label>
+                  <input id="email" type="email" class="workshop-field__control" formControlName="email" autocomplete="email" [class.is-invalid]="submitted() && form.controls.email.invalid" />
+                  @if (submitted() && form.controls.email.errors?.['required']) {
+                    <p class="workshop-field__error" role="alert">{{ 'VALIDATION.REQUIRED' | translate }}</p>
+                  }
+                  @if (submitted() && form.controls.email.errors?.['email']) {
+                    <p class="workshop-field__error" role="alert">{{ 'VALIDATION.INVALID_EMAIL' | translate }}</p>
+                  }
+                </div>
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="phoneNumber">{{ 'vendor.profile.phoneNumber' | translate }}</label>
+                  <input id="phoneNumber" type="tel" class="workshop-field__control" formControlName="phoneNumber" autocomplete="tel" [class.is-invalid]="submitted() && form.controls.phoneNumber.invalid" />
+                  @if (submitted() && form.controls.phoneNumber.errors?.['required']) {
+                    <p class="workshop-field__error" role="alert">{{ 'VALIDATION.REQUIRED' | translate }}</p>
+                  }
+                  @if (submitted() && form.controls.phoneNumber.errors?.['invalidPhone']) {
+                    <p class="workshop-field__error" role="alert">{{ 'VALIDATION.INVALID_PHONE' | translate }}</p>
+                  }
+                </div>
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="preferredLanguage">{{ 'vendor.profile.preferredLanguage' | translate }}</label>
+                  <select id="preferredLanguage" class="workshop-field__control workshop-field__control--select" formControlName="preferredLanguage">
+                    <option value="en">{{ 'vendor.profile.language.english' | translate }}</option>
+                    <option value="ar">{{ 'vendor.profile.language.arabic' | translate }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WORKSHOP INFORMATION -->
+          <div class="card-premium profile-card">
+            <div class="profile-card__header">
+              <div class="profile-card__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+              </div>
+              <h2 class="profile-card__title">{{ 'vendor.profile.workshopInformation' | translate }}</h2>
+            </div>
+            <div class="profile-card__body">
+              <div class="profile-grid profile-grid--2col">
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="workshopNameAr">{{ 'vendor.profile.workshopNameAr' | translate }}</label>
+                  <input id="workshopNameAr" type="text" class="workshop-field__control" formControlName="workshopNameAr" autocomplete="organization" />
+                </div>
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="workshopNameEn">{{ 'vendor.profile.workshopNameEn' | translate }}</label>
+                  <input id="workshopNameEn" type="text" class="workshop-field__control" formControlName="workshopNameEn" autocomplete="organization" />
+                </div>
+                <div class="workshop-field workshop-field--full">
+                  <label class="workshop-field__label" for="descriptionAr">{{ 'vendor.profile.descriptionAr' | translate }}</label>
+                  <textarea id="descriptionAr" class="workshop-field__control workshop-field__control--textarea" formControlName="descriptionAr" rows="3" dir="auto"></textarea>
+                </div>
+                <div class="workshop-field workshop-field--full">
+                  <label class="workshop-field__label" for="descriptionEn">{{ 'vendor.profile.descriptionEn' | translate }}</label>
+                  <textarea id="descriptionEn" class="workshop-field__control workshop-field__control--textarea" formControlName="descriptionEn" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WORKSHOP ADDRESS -->
+          <div class="card-premium profile-card">
+            <div class="profile-card__header">
+              <div class="profile-card__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <h2 class="profile-card__title">{{ 'vendor.profile.addressInformation' | translate }}</h2>
+            </div>
+            <div class="profile-card__body">
+              <div class="profile-grid profile-grid--2col" formGroupName="workshopAddress">
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="city">{{ 'vendor.profile.city' | translate }}</label>
+                  <input id="city" type="text" class="workshop-field__control" formControlName="city" autocomplete="address-level2" />
+                </div>
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="area">{{ 'vendor.profile.area' | translate }}</label>
+                  <input id="area" type="text" class="workshop-field__control" formControlName="area" autocomplete="address-level1" />
+                </div>
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="street">{{ 'vendor.profile.street' | translate }}</label>
+                  <input id="street" type="text" class="workshop-field__control" formControlName="street" autocomplete="street-address" />
+                </div>
+                <div class="workshop-field">
+                  <label class="workshop-field__label" for="buildingNumber">{{ 'vendor.profile.buildingNumber' | translate }}</label>
+                  <input id="buildingNumber" type="text" class="workshop-field__control" formControlName="buildingNumber" />
+                </div>
+                <div class="workshop-field workshop-field--full">
+                  <label class="workshop-field__label" for="notes">{{ 'vendor.profile.notes' | translate }}</label>
+                  <textarea id="notes" class="workshop-field__control workshop-field__control--textarea" formControlName="notes" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACTION BAR -->
+          <div class="profile-action-bar">
+            <div class="profile-action-bar__inner">
+              <button type="button" class="btn btn-ghost profile-action-bar__cancel" (click)="onCancel()" [disabled]="saving()">
+                {{ 'vendor.profile.cancel' | translate }}
+              </button>
+              <button type="submit" class="btn btn-gradient profile-action-bar__save" [disabled]="saving() || form.invalid" [class.is-loading]="saving()">
+                @if (saving()) {
+                  <span class="fm-btn-spinner" aria-hidden="true"></span>
+                  <span>{{ 'vendor.profile.saving' | translate }}</span>
+                } @else {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  <span>{{ 'vendor.profile.saveChanges' | translate }}</span>
+                }
+              </button>
+            </div>
+          </div>
+
+        </form>
+      } @else {
+        <!-- ============================== -->
+        <!-- VIEW MODE: DISPLAY CARDS       -->
+        <!-- ============================== -->
 
         <!-- PERSONAL INFORMATION -->
-        <div class="card-premium workshop-profile-section">
-          <div class="workshop-profile-section__header">
-            <div class="workshop-profile-section__icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="card-premium profile-card">
+          <div class="profile-card__header">
+            <div class="profile-card__icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
-            <h2 class="workshop-profile-section__title">{{ 'vendor.profile.personalInformation' | translate }}</h2>
+            <h2 class="profile-card__title">{{ 'vendor.profile.personalInformation' | translate }}</h2>
           </div>
-          <div class="workshop-profile-section__grid workshop-profile-section__grid--2col">
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="fullName">{{ 'vendor.profile.fullName' | translate }}</label>
-              <input
-                id="fullName"
-                type="text"
-                class="workshop-field__control"
-                formControlName="fullName"
-                autocomplete="name"
-                [class.is-invalid]="submitted() && form.controls.fullName.invalid"
-              />
-              @if (submitted() && form.controls.fullName.errors?.['required']) {
-                <p class="workshop-field__error" role="alert">{{ 'VALIDATION.REQUIRED' | translate }}</p>
-              }
-            </div>
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="email">{{ 'vendor.profile.email' | translate }}</label>
-              <input
-                id="email"
-                type="email"
-                class="workshop-field__control"
-                formControlName="email"
-                autocomplete="email"
-                [class.is-invalid]="submitted() && form.controls.email.invalid"
-              />
-              @if (submitted() && form.controls.email.errors?.['required']) {
-                <p class="workshop-field__error" role="alert">{{ 'VALIDATION.REQUIRED' | translate }}</p>
-              }
-              @if (submitted() && form.controls.email.errors?.['email']) {
-                <p class="workshop-field__error" role="alert">{{ 'VALIDATION.INVALID_EMAIL' | translate }}</p>
-              }
-            </div>
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="phoneNumber">{{ 'vendor.profile.phoneNumber' | translate }}</label>
-              <input
-                id="phoneNumber"
-                type="tel"
-                class="workshop-field__control"
-                formControlName="phoneNumber"
-                autocomplete="tel"
-                [class.is-invalid]="submitted() && form.controls.phoneNumber.invalid"
-              />
-              @if (submitted() && form.controls.phoneNumber.errors?.['required']) {
-                <p class="workshop-field__error" role="alert">{{ 'VALIDATION.REQUIRED' | translate }}</p>
-              }
-              @if (submitted() && form.controls.phoneNumber.errors?.['invalidPhone']) {
-                <p class="workshop-field__error" role="alert">{{ 'VALIDATION.INVALID_PHONE' | translate }}</p>
-              }
-            </div>
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="preferredLanguage">{{ 'vendor.profile.preferredLanguage' | translate }}</label>
-              <select
-                id="preferredLanguage"
-                class="workshop-field__control workshop-field__control--select"
-                formControlName="preferredLanguage"
-              >
-                <option value="en">{{ 'vendor.profile.language.english' | translate }}</option>
-                <option value="ar">{{ 'vendor.profile.language.arabic' | translate }}</option>
-              </select>
+          <div class="profile-card__body">
+            <div class="profile-grid profile-grid--2col">
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.fullName' | translate }}</span>
+                <span class="profile-item__value">{{ profile()?.fullName || ('VENDOR.COMMON.NO_DATA' | translate) }}</span>
+              </div>
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.email' | translate }}</span>
+                <span class="profile-item__value">{{ profile()?.email || ('VENDOR.COMMON.NO_DATA' | translate) }}</span>
+              </div>
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.phoneNumber' | translate }}</span>
+                <span class="profile-item__value">{{ profile()?.phoneNumber || ('VENDOR.COMMON.NO_DATA' | translate) }}</span>
+              </div>
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.preferredLanguage' | translate }}</span>
+                <span class="profile-item__value">{{ (profile()?.preferredLanguage === 'ar' ? 'vendor.profile.language.arabic' : 'vendor.profile.language.english') | translate }}</span>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- WORKSHOP INFORMATION -->
-        <div class="card-premium workshop-profile-section">
-          <div class="workshop-profile-section__header">
-            <div class="workshop-profile-section__icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+        <div class="card-premium profile-card">
+          <div class="profile-card__header">
+            <div class="profile-card__icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
             </div>
-            <h2 class="workshop-profile-section__title">{{ 'vendor.profile.workshopInformation' | translate }}</h2>
+            <h2 class="profile-card__title">{{ 'vendor.profile.workshopInformation' | translate }}</h2>
           </div>
-          <div class="workshop-profile-section__grid workshop-profile-section__grid--2col">
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="workshopNameAr">{{ 'vendor.profile.workshopNameAr' | translate }}</label>
-              <input
-                id="workshopNameAr"
-                type="text"
-                class="workshop-field__control"
-                formControlName="workshopNameAr"
-                autocomplete="organization"
-              />
-            </div>
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="workshopNameEn">{{ 'vendor.profile.workshopNameEn' | translate }}</label>
-              <input
-                id="workshopNameEn"
-                type="text"
-                class="workshop-field__control"
-                formControlName="workshopNameEn"
-                autocomplete="organization"
-              />
-            </div>
-            <div class="workshop-field workshop-field--full">
-              <label class="workshop-field__label" for="descriptionAr">{{ 'vendor.profile.descriptionAr' | translate }}</label>
-              <textarea
-                id="descriptionAr"
-                class="workshop-field__control workshop-field__control--textarea"
-                formControlName="descriptionAr"
-                rows="3"
-                dir="auto"
-              ></textarea>
-            </div>
-            <div class="workshop-field workshop-field--full">
-              <label class="workshop-field__label" for="descriptionEn">{{ 'vendor.profile.descriptionEn' | translate }}</label>
-              <textarea
-                id="descriptionEn"
-                class="workshop-field__control workshop-field__control--textarea"
-                formControlName="descriptionEn"
-                rows="3"
-              ></textarea>
+          <div class="profile-card__body">
+            <div class="profile-grid profile-grid--2col">
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.workshopNameAr' | translate }}</span>
+                <span class="profile-item__value">{{ profile()?.workshopNameAr || ('VENDOR.COMMON.NO_DATA' | translate) }}</span>
+              </div>
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.workshopNameEn' | translate }}</span>
+                <span class="profile-item__value">{{ profile()?.workshopNameEn || ('VENDOR.COMMON.NO_DATA' | translate) }}</span>
+              </div>
+              <div class="profile-item profile-item--full">
+                <span class="profile-item__label">{{ 'vendor.profile.descriptionAr' | translate }}</span>
+                <p class="profile-item__text">{{ profile()?.descriptionAr || ('VENDOR.COMMON.NO_DATA' | translate) }}</p>
+              </div>
+              <div class="profile-item profile-item--full">
+                <span class="profile-item__label">{{ 'vendor.profile.descriptionEn' | translate }}</span>
+                <p class="profile-item__text">{{ profile()?.descriptionEn || ('VENDOR.COMMON.NO_DATA' | translate) }}</p>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- WORKSHOP ADDRESS -->
-        <div class="card-premium workshop-profile-section">
-          <div class="workshop-profile-section__header">
-            <div class="workshop-profile-section__icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div class="card-premium profile-card">
+          <div class="profile-card__header">
+            <div class="profile-card__icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </div>
-            <h2 class="workshop-profile-section__title">{{ 'vendor.profile.addressInformation' | translate }}</h2>
+            <h2 class="profile-card__title">{{ 'vendor.profile.addressInformation' | translate }}</h2>
           </div>
-          <div class="workshop-profile-section__grid workshop-profile-section__grid--2col" formGroupName="workshopAddress">
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="city">{{ 'vendor.profile.city' | translate }}</label>
-              <input
-                id="city"
-                type="text"
-                class="workshop-field__control"
-                formControlName="city"
-                autocomplete="address-level2"
-              />
-            </div>
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="area">{{ 'vendor.profile.area' | translate }}</label>
-              <input
-                id="area"
-                type="text"
-                class="workshop-field__control"
-                formControlName="area"
-                autocomplete="address-level1"
-              />
-            </div>
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="street">{{ 'vendor.profile.street' | translate }}</label>
-              <input
-                id="street"
-                type="text"
-                class="workshop-field__control"
-                formControlName="street"
-                autocomplete="street-address"
-              />
-            </div>
-            <div class="workshop-field">
-              <label class="workshop-field__label" for="buildingNumber">{{ 'vendor.profile.buildingNumber' | translate }}</label>
-              <input
-                id="buildingNumber"
-                type="text"
-                class="workshop-field__control"
-                formControlName="buildingNumber"
-              />
-            </div>
-            <div class="workshop-field workshop-field--full">
-              <label class="workshop-field__label" for="notes">{{ 'vendor.profile.notes' | translate }}</label>
-              <textarea
-                id="notes"
-                class="workshop-field__control workshop-field__control--textarea"
-                formControlName="notes"
-                rows="2"
-              ></textarea>
+          <div class="profile-card__body">
+            <div class="profile-grid profile-grid--2col">
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.city' | translate }}</span>
+                <span class="profile-item__value">{{ profile()?.workshopAddress?.city || ('VENDOR.COMMON.NO_DATA' | translate) }}</span>
+              </div>
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.area' | translate }}</span>
+                <span class="profile-item__value">{{ profile()?.workshopAddress?.area || ('VENDOR.COMMON.NO_DATA' | translate) }}</span>
+              </div>
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.street' | translate }}</span>
+                <span class="profile-item__value">{{ profile()?.workshopAddress?.street || ('VENDOR.COMMON.NO_DATA' | translate) }}</span>
+              </div>
+              <div class="profile-item">
+                <span class="profile-item__label">{{ 'vendor.profile.buildingNumber' | translate }}</span>
+                <span class="profile-item__value">{{ profile()?.workshopAddress?.buildingNumber || ('VENDOR.COMMON.NO_DATA' | translate) }}</span>
+              </div>
+              <div class="profile-item profile-item--full">
+                <span class="profile-item__label">{{ 'vendor.profile.notes' | translate }}</span>
+                <p class="profile-item__text">{{ profile()?.workshopAddress?.notes || ('VENDOR.COMMON.NO_DATA' | translate) }}</p>
+              </div>
             </div>
           </div>
         </div>
+      }
 
-        <!-- ACTION BAR -->
-        <div class="workshop-profile-action-bar">
-          <div class="workshop-profile-action-bar__inner">
-            <button
-              type="button"
-              class="btn btn-ghost workshop-profile-action-bar__cancel"
-              (click)="onCancel()"
-              [disabled]="saving()"
-            >
-              {{ 'vendor.profile.cancel' | translate }}
-            </button>
-            <button
-              type="submit"
-              class="btn btn-gradient workshop-profile-action-bar__save"
-              [disabled]="saving() || form.invalid"
-              [class.is-loading]="saving()"
-            >
-              @if (saving()) {
-                <span class="fm-btn-spinner" aria-hidden="true"></span>
-                <span>{{ 'vendor.profile.saving' | translate }}</span>
-              } @else {
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                <span>{{ 'vendor.profile.saveChanges' | translate }}</span>
-              }
-            </button>
-          </div>
-        </div>
-      </form>
     </div>
   </div>
 }
