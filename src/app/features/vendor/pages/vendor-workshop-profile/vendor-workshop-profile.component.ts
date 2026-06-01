@@ -103,6 +103,8 @@ export class VendorWorkshopProfile implements OnInit {
         },
         error: (err: HttpErrorResponse) => {
           console.error('[VendorWorkshopProfile] Failed to upload logo:', err);
+          console.error('[VendorWorkshopProfile] error.error:', err.error);
+          console.error('[VendorWorkshopProfile] error.error.errors:', (err.error as any)?.errors);
           this.uiState.showAlert('danger', 'vendor.profile.error.logoUploadFailed');
         },
       });

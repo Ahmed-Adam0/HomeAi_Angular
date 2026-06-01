@@ -487,6 +487,7 @@
   "vendor.profile.error.loadFailed": "Failed to load profile. Please try again.",
   "vendor.profile.error.saveFailed": "Failed to save profile. Please try again.",
   "vendor.profile.error.logoUploadFailed": "Failed to upload logo. Please try again.",
+  "vendor.profile.error.invalidImageType": "Only .jpg, .jpeg, .png images are allowed.",
   "vendor.profile.editProfile": "Edit Profile",
   "vendor.profile.language.arabic": "Arabic",
   "vendor.profile.language.english": "English",

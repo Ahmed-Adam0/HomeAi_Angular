@@ -487,6 +487,7 @@
   "vendor.profile.error.loadFailed": "فشل تحميل الملف. يرجى المحاولة مرة أخرى.",
   "vendor.profile.error.saveFailed": "فشل حفظ الملف. يرجى المحاولة مرة أخرى.",
   "vendor.profile.error.logoUploadFailed": "فشل رفع الشعار. يرجى المحاولة مرة أخرى.",
+  "vendor.profile.error.invalidImageType": "يُسمح فقط بصور .jpg و .jpeg و .png.",
   "vendor.profile.editProfile": "تعديل الملف الشخصي",
   "vendor.profile.language.arabic": "العربية",
   "vendor.profile.language.english": "الإنجليزية",

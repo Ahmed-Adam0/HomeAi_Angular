@@ -1,21 +1,17 @@
-<main class="vendor-workshop-profile" appRtl [attr.aria-label]="'vendor.profile.title' | translate">
-  <header class="vendor-workshop-profile__page-header">
-    <div>
-      <p class="vendor-workshop-profile__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
-      <h1 class="vendor-workshop-profile__title">{{ 'vendor.profile.title' | translate }}</h1>
-      <p class="vendor-workshop-profile__description">{{ 'vendor.profile.subtitle' | translate }}</p>
+<main class="vendor-profile-page container py-4 py-md-5" appRtl>
+  <div class="row gy-4">
+    <div class="col-12">
+      <app-workshop-profile-form
+        [profile]="profile()"
+        [loading]="loading()"
+        [saving]="saving()"
+        [uploadingLogo]="uploadingLogo()"
+        [editing]="isEditing()"
+        (saveProfile)="onSaveProfile($event)"
+        (uploadLogo)="onUploadLogo($event)"
+        (editProfile)="editProfile()"
+        (cancelEdit)="cancelEdit()"
+      />
     </div>
-  </header>
-
-  <app-workshop-profile-form
-    [profile]="profile()"
-    [loading]="loading()"
-    [saving]="saving()"
-    [uploadingLogo]="uploadingLogo()"
-    [editing]="isEditing()"
-    (saveProfile)="onSaveProfile($event)"
-    (uploadLogo)="onUploadLogo($event)"
-    (editProfile)="editProfile()"
-    (cancelEdit)="cancelEdit()"
-  />
+  </div>
 </main>

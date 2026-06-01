@@ -154,7 +154,12 @@ export class VendorService {
 
   uploadWorkshopLogo(file: File): Observable<{ logoUrl: string }> {
     const formData = new FormData();
-    formData.append('file', file, file.name);
+    formData.append('logo', file, file.name);
+
+    for (const entry of (formData as any).entries()) {
+      console.log('[VendorService] formData entry:', entry);
+    }
+    console.log('[VendorService] file object:', file);
 
     return this.http.put<{ logoUrl: string }>(
       `${this.apiUrl}${API_URLS.VENDOR.UPLOAD_LOGO}`,

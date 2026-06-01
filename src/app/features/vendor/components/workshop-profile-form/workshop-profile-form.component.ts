@@ -8,15 +8,17 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { RtlDirective } from '../../../../shared/directives/rtl.directive';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
 import { IVendorProfile } from '../../interfaces/iworkshop-profile';
 
 @Component({
   selector: 'app-workshop-profile-form',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective],
   templateUrl: './workshop-profile-form.component.html',
   styleUrl: './workshop-profile-form.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,6 +38,16 @@ export class WorkshopProfileForm {
   readonly cancelEdit = output<void>();
 
   protected readonly submitted = signal(false);
+
+  protected readonly workshopDisplayName = computed(() => {
+    const p = this.profile();
+    return p?.workshopNameEn || p?.workshopNameAr || p?.fullName || '--';
+  });
+
+  protected readonly languageLabel = computed(() => {
+    const lang = this.profile()?.preferredLanguage;
+    return lang === 'ar' ? 'العربية' : 'English';
+  });
 
   protected readonly form = this.fb.nonNullable.group({
     fullName: this.fb.nonNullable.control<string>('', {
@@ -98,8 +110,34 @@ export class WorkshopProfileForm {
     });
   }
 
-  protected onEditProfile(): void {
-    this.editProfile.emit();
+  protected onToggleEdit(): void {
+    if (this.editing()) {
+      this.onCancel();
+    } else {
+      this.editProfile.emit();
+    }
+  }
+
+  private readonly ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+
+  protected readonly logoError = signal<string | null>(null);
+
+  protected onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    console.log(file.name);
+    console.log(file.type);
+
+    if (!this.ALLOWED_MIME_TYPES.includes(file.type)) {
+      this.logoError.set('vendor.profile.error.invalidImageType');
+      input.value = '';
+      return;
+    }
+
+    this.logoError.set(null);
+    this.uploadLogo.emit(file);
   }
 
   protected onSubmit(): void {
@@ -136,13 +174,5 @@ export class WorkshopProfileForm {
   protected onCancel(): void {
     this.submitted.set(false);
     this.cancelEdit.emit();
-  }
-
-  protected onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (file) {
-      this.uploadLogo.emit(file);
-    }
   }
 }
