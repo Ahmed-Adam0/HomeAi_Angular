@@ -1,9 +1,9 @@
-import { Component, inject, signal, ChangeDetectionStrategy, DestroyRef, OnInit } from '@angular/core';
+﻿import { Component, computed, inject, signal, ChangeDetectionStrategy, DestroyRef, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Popover } from 'primeng/popover';
-import { VendorService } from '../../services/vendor.service';
+import { VendorNotificationStateService } from '../../services/vendor-notification-state.service';
 import { IVendorNotificationItem, NotificationIconType } from '../../interfaces';
 import { NAV_ROUTES } from '../../../../core/constants';
 
@@ -16,32 +16,38 @@ import { NAV_ROUTES } from '../../../../core/constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VendorNotificationBellComponent implements OnInit {
-  private readonly vendorService = inject(VendorService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly notificationState = inject(VendorNotificationStateService);
 
   readonly navRoutes = NAV_ROUTES;
-  readonly unreadCount = signal(0);
-  readonly notifications = signal<IVendorNotificationItem[]>([]);
+  readonly unreadCount = this.notificationState.unreadCount;
+  readonly notifications = computed(() => this.notificationState.notifications().slice(0, 5));
   readonly loading = signal(false);
   readonly markingAll = signal(false);
 
   ngOnInit(): void {
-    this.refreshUnreadCount();
+    this.notificationState.loadUnreadCount()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
   onPopoverShow(): void {
-    this.loadNotifications();
+    this.loadNotificationsIfNeeded();
   }
 
   markAllAsRead(): void {
     this.markingAll.set(true);
-    this.vendorService.markAllAsRead()
+
+    this.notificationState.markAllAsRead()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.unreadCount.set(0);
-        this.notifications.update(items => items.map(n => ({ ...n, isRead: true })));
-        this.markingAll.set(false);
+      .subscribe({
+        next: () => {
+          this.markingAll.set(false);
+        },
+        error: () => {
+          this.markingAll.set(false);
+        },
       });
   }
 
@@ -60,22 +66,24 @@ export class VendorNotificationBellComponent implements OnInit {
     return map[type] ?? 'pi pi-bell';
   }
 
-  private refreshUnreadCount(): void {
-    this.vendorService.getUnreadCount()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(count => this.unreadCount.set(count));
-  }
-
   private loadNotifications(): void {
     this.loading.set(true);
-    this.vendorService.getNotifications(1, 5)
+
+    this.notificationState.loadNotifications(1, 5)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (result) => {
-          this.notifications.set(result.items);
+        next: () => {
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+        },
       });
+  }
+
+  private loadNotificationsIfNeeded(): void {
+    if (this.notifications().length === 0) {
+      this.loadNotifications();
+    }
   }
 }

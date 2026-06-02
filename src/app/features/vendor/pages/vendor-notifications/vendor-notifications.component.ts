@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -11,7 +11,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
-import { Button } from '../../../../shared/components/button/button.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 import {
@@ -19,7 +18,7 @@ import {
   NotificationHeader,
   NotificationEmptyState,
 } from '../../components';
-import { VendorService } from '../../services/vendor.service';
+import { VendorNotificationStateService } from '../../services/vendor-notification-state.service';
 import { IVendorNotificationItem } from '../../interfaces';
 import { INotificationsMappedResult } from '../../data-access/mappers/vendor-notification.mapper';
 
@@ -29,7 +28,6 @@ import { INotificationsMappedResult } from '../../data-access/mappers/vendor-not
   imports: [
     DatePipe,
     TranslatePipe,
-    Button,
     PaginationComponent,
     SkeletonLoader,
     NotificationCard,
@@ -41,7 +39,7 @@ import { INotificationsMappedResult } from '../../data-access/mappers/vendor-not
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VendorNotifications implements OnInit {
-  private readonly vendorService = inject(VendorService);
+  private readonly notificationState = inject(VendorNotificationStateService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly PAGE_SIZE = 10;
@@ -50,8 +48,8 @@ export class VendorNotifications implements OnInit {
      Data signals
      ------------------------------------------------------------------ */
 
-  readonly notifications = signal<IVendorNotificationItem[]>([]);
-  readonly unreadCount = signal<number>(0);
+  readonly notifications = computed(() => this.notificationState.currentPageNotifications());
+  readonly unreadCount = this.notificationState.unreadCount;
 
   /* ------------------------------------------------------------------
      Loading signals
@@ -154,15 +152,14 @@ export class VendorNotifications implements OnInit {
 
     const { pageNumber, pageSize } = this.pagination();
 
-    this.vendorService
-      .getNotifications(pageNumber, pageSize)
+    this.notificationState
+      .loadNotifications(pageNumber, pageSize)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.notificationsLoading.set(false)),
       )
       .subscribe({
         next: (result: INotificationsMappedResult) => {
-          this.notifications.set(result.items);
           this.pagination.set({
             pageNumber: result.pageNumber,
             pageSize: result.pageSize,
@@ -181,14 +178,14 @@ export class VendorNotifications implements OnInit {
   private loadUnreadCount(): void {
     this.unreadCountLoading.set(true);
 
-    this.vendorService
-      .getUnreadCount()
+    this.notificationState
+      .loadUnreadCount()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.unreadCountLoading.set(false)),
       )
       .subscribe({
-        next: (count: number) => this.unreadCount.set(count),
+        next: () => {},
       });
   }
 
@@ -197,16 +194,9 @@ export class VendorNotifications implements OnInit {
      ------------------------------------------------------------------ */
 
   onMarkAsRead(id: number): void {
-    const previousNotifications = this.notifications();
-    const previousUnreadCount = this.unreadCount();
-
-    this.notifications.update((items) =>
-      items.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
-    );
-    this.unreadCount.update((c) => Math.max(0, c - 1));
     this.markAsReadLoadingIds.update((ids) => new Set(ids).add(id));
 
-    this.vendorService
+    this.notificationState
       .markAsRead(id)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -220,8 +210,7 @@ export class VendorNotifications implements OnInit {
       )
       .subscribe({
         error: () => {
-          this.notifications.set(previousNotifications);
-          this.unreadCount.set(previousUnreadCount);
+          // Local state is rolled back in the state service on failure.
         },
       });
   }
@@ -235,14 +224,9 @@ export class VendorNotifications implements OnInit {
       return;
     }
 
-    const previousNotifications = this.notifications();
-    const previousUnreadCount = this.unreadCount();
-
-    this.notifications.update((items) => items.map((n) => ({ ...n, isRead: true })));
-    this.unreadCount.set(0);
     this.markAllLoading.set(true);
 
-    this.vendorService
+    this.notificationState
       .markAllAsRead()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -250,8 +234,7 @@ export class VendorNotifications implements OnInit {
       )
       .subscribe({
         error: () => {
-          this.notifications.set(previousNotifications);
-          this.unreadCount.set(previousUnreadCount);
+          // Local state is rolled back in the state service on failure.
         },
       });
   }
@@ -292,3 +275,4 @@ export interface PaginationMeta {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
 }
+
