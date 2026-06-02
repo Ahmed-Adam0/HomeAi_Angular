@@ -85,18 +85,8 @@ export class AuthService {
     );
   }
 
-  getWorkshopId(): number | null {
-    const user = this.currentUser();
-    if (user?.workshopId) {
-      return user.workshopId;
-    }
-    if (this.isBrowser) {
-      const stored = localStorage.getItem('workshopId') || localStorage.getItem('workshop_id');
-      if (stored) {
-        return Number(stored);
-      }
-    }
-    return null;
+  authenticate(token: string): void {
+    this.setAuthState(token);
   }
 
   redirectToGoogleOAuth(returnUrl?: string): void {
