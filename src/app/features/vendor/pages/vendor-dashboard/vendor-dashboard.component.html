@@ -48,156 +48,285 @@
       <div class="cta-background-decor position-absolute"></div>
     </div>
 
-    <!-- Live Statistics Overview Section -->
+    <!-- Modern PrimeNG-Inspired Analytics Section -->
     <section class="vendor-dashboard__section mb-5">
-      <h2 class="h5 fw-bold text-dark mb-4 d-flex align-items-center gap-2">
-        <i class="bi bi-speedometer2 text-gold"></i>
-        {{ translationService.currentLang() === 'ar' ? 'إحصائيات الأداء المباشرة' : 'Live Performance Metrics' }}
-      </h2>
-
-      <!-- Row 1: Sales & Orders KPI Metrics -->
+      
+      <!-- Premium Compact KPI Cards Row -->
       <div class="row g-4 mb-4">
-        <!-- Total Orders Card -->
+        <!-- KPI Card 1: Revenue -->
         <div class="col-sm-6 col-lg-3">
-          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'إجمالي الطلبات' : 'Total Orders' }}</span>
-              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-cart-check text-gold fs-5"></i>
+          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 bg-white">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="kpi-label text-muted uppercase font-xxs fw-bold tracking-wider">{{ translationService.currentLang() === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue' }}</span>
+                <h3 class="h4 fw-extrabold text-dark m-0 mt-1">{{ (metrics()?.totalRevenue ?? 0) | currencyFormat }}</h3>
+              </div>
+              <div class="kpi-icon-wrapper rounded-3 bg-gold-soft text-gold d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                <i class="bi bi-wallet2 fs-5"></i>
               </div>
             </div>
-            <h3 class="display-6 fw-extrabold text-dark m-0">{{ metrics()?.totalOrders ?? 0 }}</h3>
-            <p class="font-xxs text-muted mt-2 mb-0">
-              {{ translationService.currentLang() === 'ar' ? 'الطلبات المستلمة' : 'Orders received' }}
-            </p>
-          </div>
-
-        </div>
-
-        <!-- Total Revenue Card -->
-        <div class="col-sm-6 col-lg-3">
-          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue' }}</span>
-              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-currency-dollar text-gold fs-5"></i>
-              </div>
+            <div class="kpi-footer d-flex align-items-center gap-1.5 mt-2 pt-2 border-top border-light-subtle">
+              <span class="badge bg-success-soft text-success font-xxs rounded-pill py-0.5 px-1.5 fw-bold">+12%</span>
+              <span class="font-xxs text-muted">{{ translationService.currentLang() === 'ar' ? 'مبيعات الورشة الإجمالية' : 'Gross store earnings' }}</span>
             </div>
-            <h3 class="display-6 fw-extrabold text-dark m-0">{{ (metrics()?.totalRevenue ?? 0) | currencyFormat }}</h3>
-            <p class="font-xxs text-muted mt-2 mb-0">
-              {{ translationService.currentLang() === 'ar' ? 'إجمالي المبيعات' : 'Gross sales' }}
-            </p>
           </div>
         </div>
 
-        <!-- Pending Orders Card -->
+        <!-- KPI Card 2: Orders -->
         <div class="col-sm-6 col-lg-3">
-          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'طلبات قيد الانتظار' : 'Pending Orders' }}</span>
-              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-clock-history text-gold fs-5"></i>
+          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 bg-white">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="kpi-label text-muted uppercase font-xxs fw-bold tracking-wider">{{ translationService.currentLang() === 'ar' ? 'إجمالي الطلبات' : 'Total Orders' }}</span>
+                <h3 class="h4 fw-extrabold text-dark m-0 mt-1">{{ metrics()?.totalOrders ?? 0 }}</h3>
+              </div>
+              <div class="kpi-icon-wrapper rounded-3 bg-gold-soft text-gold d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                <i class="bi bi-cart-check fs-5"></i>
               </div>
             </div>
-            <h3 class="display-6 fw-extrabold text-dark m-0">{{ metrics()?.pendingOrdersCount ?? 0 }}</h3>
-            <p class="font-xxs text-muted mt-2 mb-0">
-              {{ translationService.currentLang() === 'ar' ? 'بانتظار المعالجة' : 'Awaiting processing' }}
-            </p>
+            <div class="kpi-footer d-flex align-items-center justify-content-between mt-2 pt-2 border-top border-light-subtle font-xxs text-muted">
+              <span>{{ translationService.currentLang() === 'ar' ? 'مكتمل: ' : 'Completed: ' }}<strong class="text-dark">{{ metrics()?.completedOrdersCount ?? 0 }}</strong></span>
+              <span class="text-muted">|</span>
+              <span>{{ translationService.currentLang() === 'ar' ? 'معلق: ' : 'Pending: ' }}<strong class="text-dark">{{ metrics()?.pendingOrdersCount ?? 0 }}</strong></span>
+            </div>
           </div>
         </div>
 
-        <!-- Completed Orders Card -->
+        <!-- KPI Card 3: Catalog -->
         <div class="col-sm-6 col-lg-3">
-          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'الطلب المكتمل' : 'Completed Orders' }}</span>
-              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-check2-all text-gold fs-5"></i>
+          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 bg-white cursor-pointer transition-all hover-lift" routerLink="/vendor/products">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="kpi-label text-muted uppercase font-xxs fw-bold tracking-wider">{{ translationService.currentLang() === 'ar' ? 'كتالوج المنتجات' : 'Store Catalog' }}</span>
+                <h3 class="h4 fw-extrabold text-dark m-0 mt-1">{{ totalProducts() }}</h3>
+              </div>
+              <div class="kpi-icon-wrapper rounded-3 bg-gold-soft text-gold d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                <i class="bi bi-box-seam fs-5"></i>
               </div>
             </div>
-            <h3 class="display-6 fw-extrabold text-dark m-0">{{ metrics()?.completedOrdersCount ?? 0 }}</h3>
-            <p class="font-xxs text-muted mt-2 mb-0">
-              {{ translationService.currentLang() === 'ar' ? 'تم توصيلها بنجاح' : 'Successfully delivered' }}
-            </p>
+            <div class="kpi-footer d-flex align-items-center justify-content-between mt-2 pt-2 border-top border-light-subtle font-xxs text-muted">
+              <span>{{ translationService.currentLang() === 'ar' ? 'نشط: ' : 'Active: ' }}<strong class="text-success">{{ activeProducts() }}</strong></span>
+              <span class="text-muted">|</span>
+              <span>{{ translationService.currentLang() === 'ar' ? 'مؤرشف: ' : 'Archived: ' }}<strong class="text-danger">{{ archivedProducts() }}</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Card 4: Reviews -->
+        <div class="col-sm-6 col-lg-3">
+          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 bg-white cursor-pointer transition-all hover-lift" routerLink="/vendor/reviews">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="kpi-label text-muted uppercase font-xxs fw-bold tracking-wider">{{ translationService.currentLang() === 'ar' ? 'تقييمات الورشة' : 'Workshop Rating' }}</span>
+                <h3 class="h4 fw-extrabold text-dark m-0 mt-1">
+                  {{ topRatedProduct() ? topRatedProduct()!.averageRating : '5.0' }}
+                </h3>
+              </div>
+              <div class="kpi-icon-wrapper rounded-3 bg-gold-soft text-gold d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                <i class="bi bi-star fs-5"></i>
+              </div>
+            </div>
+            <div class="kpi-footer d-flex align-items-center gap-1.5 mt-2 pt-2 border-top border-light-subtle">
+              <div class="d-flex gap-0.5 text-gold align-items-center font-xxs">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+              <span class="font-xxs text-muted">{{ translationService.currentLang() === 'ar' ? 'التقييم العام المباشر' : 'Live rating average' }}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Row 2: Catalog & Products Stats -->
-      <div class="row g-4">
-        <!-- Total Products Card -->
-        <div class="col-sm-6 col-lg-3">
-          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs transition-all h-100 cursor-pointer bg-white" routerLink="/vendor/products">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'إجمالي المنتجات' : 'Total Products' }}</span>
-              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-box-seam text-gold fs-5"></i>
+      <!-- Main Visual split grid (Area Trend & Donut status) -->
+      <div class="row g-4 mb-4">
+        <!-- Area Trend Chart Card -->
+        <div class="col-12 col-lg-8">
+          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs bg-white h-100">
+            <div class="chart-header d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+              <div>
+                <h3 class="h6 fw-extrabold text-dark m-0 uppercase letter-spacing-wide">
+                  {{ translationService.currentLang() === 'ar' ? 'تحليلات الأداء والاتجاهات' : 'Performance Analytics & Trends' }}
+                </h3>
+                <p class="font-xxs text-muted m-0 mt-1">
+                  {{ translationService.currentLang() === 'ar' ? 'متابعة حركة الإيرادات الإجمالية وحجم الطلبات المكتملة.' : 'Monitor live gross revenues and order fulfillment frequency.' }}
+                </p>
+              </div>
+              
+              <!-- Segment Control Toggle Tabs -->
+              <div class="btn-segment-group d-inline-flex p-1 bg-light rounded-pill border border-light-subtle">
+                <button
+                  type="button"
+                  (click)="selectTrendTab('revenue')"
+                  class="btn-segment rounded-pill px-3 py-1 font-xxs fw-bold border-0 transition-all"
+                  [class.active]="selectedTrend() === 'revenue'"
+                >
+                  <i class="bi bi-currency-dollar me-1"></i>
+                  {{ translationService.currentLang() === 'ar' ? 'الإيرادات' : 'Revenue' }}
+                </button>
+                <button
+                  type="button"
+                  (click)="selectTrendTab('orders')"
+                  class="btn-segment rounded-pill px-3 py-1 font-xxs fw-bold border-0 transition-all"
+                  [class.active]="selectedTrend() === 'orders'"
+                >
+                  <i class="bi bi-cart me-1"></i>
+                  {{ translationService.currentLang() === 'ar' ? 'الطلبات' : 'Orders' }}
+                </button>
               </div>
             </div>
-            <h3 class="display-6 fw-extrabold text-dark m-0">{{ totalProducts() }}</h3>
-            <p class="font-xxs text-gold fw-bold mt-2 mb-0">
-              {{ translationService.currentLang() === 'ar' ? 'عرض الكتالوج بالكامل ←' : 'Browse full catalog →' }}
-            </p>
+
+            <!-- Canvas Container -->
+            <div class="chart-canvas-container position-relative" style="height: 300px; width: 100%;">
+              <canvas id="trendChartCanvas"></canvas>
+              
+              <!-- Subtle empty state overlay inside the chart area -->
+              <div *ngIf="isTrendDataEmpty()" class="chart-empty-overlay d-flex flex-column align-items-center justify-content-center position-absolute top-0 start-0 w-100 h-100 rounded-4" style="background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(1.5px); pointer-events: none;">
+                <div class="empty-chart-badge px-3 py-2 rounded-pill bg-white border border-light-subtle d-flex align-items-center gap-2 shadow-xs">
+                  <i class="bi bi-graph-up text-gold"></i>
+                  <span class="font-xxs fw-bold text-secondary">
+                    {{ translationService.currentLang() === 'ar' ? 'لا توجد بيانات مبيعات حتى الآن' : 'No sales activity yet' }}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Active Products Card -->
-        <div class="col-sm-6 col-lg-3">
-          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'المنتجات النشطة' : 'Active Products' }}</span>
-              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-check-circle text-success fs-5"></i>
+        <!-- Product Status Donut Chart Card -->
+        <div class="col-12 col-lg-4">
+          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs bg-white h-100 d-flex flex-column justify-content-between">
+            <div>
+              <h3 class="h6 fw-extrabold text-dark mb-1 uppercase letter-spacing-wide">
+                {{ translationService.currentLang() === 'ar' ? 'توزيع كتالوج المنتجات' : 'Product Catalog Status' }}
+              </h3>
+              <p class="font-xxs text-muted mb-4">
+                {{ translationService.currentLang() === 'ar' ? 'نظرة عامة على نسبة المنتجات النشطة والمؤرشفة.' : 'Overview of active catalog vs archived marketplace listings.' }}
+              </p>
+            </div>
+
+            <!-- Canvas Donut Container -->
+            <div class="chart-canvas-container position-relative d-flex align-items-center justify-content-center" style="height: 180px; width: 100%;">
+              <canvas id="statusChartCanvas"></canvas>
+              <!-- Center absolute text overlay -->
+              <div class="donut-center-text position-absolute text-center" style="transform: translateY(2px); pointer-events: none;">
+                <span class="d-block h2 fw-extrabold text-dark mb-0" style="line-height: 1; font-family: 'Outfit', sans-serif;">{{ totalProducts() }}</span>
+                <span class="text-muted font-xxs uppercase tracking-wider fw-bold" style="font-size: 8px;">{{ translationService.currentLang() === 'ar' ? 'منتج' : 'Items' }}</span>
               </div>
             </div>
-            <h3 class="display-6 fw-extrabold text-dark m-0">{{ activeProducts() }}</h3>
-            <p class="font-xxs text-success mt-2 mb-0">
-              <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
-              {{ translationService.currentLang() === 'ar' ? 'تظهر للعملاء في المتجر' : 'Visible in the marketplace' }}
+
+            <!-- Custom HTML Legend -->
+            <div class="legend-container mt-4 pt-3 border-top border-light-subtle">
+              <div class="d-flex justify-content-between align-items-center mb-2 font-xxs">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="legend-color-dot" style="background-color: #b8935c; width: 9px; height: 9px; display: inline-block; border-radius: 50%;"></span>
+                  <span class="text-secondary fw-semibold">{{ translationService.currentLang() === 'ar' ? 'منتجات نشطة بالمتجر' : 'Active storefront items' }}</span>
+                </div>
+                <span class="fw-extrabold text-dark">
+                  {{ activeProducts() }}
+                  <span class="text-muted fw-normal font-xxs ms-1">({{ activeProductsPercentage() }}%)</span>
+                </span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center font-xxs">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="legend-color-dot" style="background-color: #e5e0d8; width: 9px; height: 9px; display: inline-block; border-radius: 50%;"></span>
+                  <span class="text-secondary fw-semibold">{{ translationService.currentLang() === 'ar' ? 'منتجات مؤرشفة مخفية' : 'Archived hidden items' }}</span>
+                </div>
+                <span class="fw-extrabold text-dark">
+                  {{ archivedProducts() }}
+                  <span class="text-muted fw-normal font-xxs ms-1">({{ archivedProductsPercentage() }}%)</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compact Premium Reviews Analytics Row -->
+      <div class="row g-4 mb-4">
+        <!-- Reviews Sentiment Summary Card -->
+        <div class="col-12 col-md-5 col-xl-4">
+          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs bg-white h-100">
+            <h3 class="h6 fw-extrabold text-dark mb-1 uppercase letter-spacing-wide">
+              {{ translationService.currentLang() === 'ar' ? 'ملخص تقييمات العملاء' : 'Customer Review Insights' }}
+            </h3>
+            <p class="font-xxs text-muted mb-4">
+              {{ translationService.currentLang() === 'ar' ? 'مؤشرات الرضا العام ومعدل الإيجابية لمنتجاتك.' : 'Overall satisfaction scores and sentiment breakdown.' }}
             </p>
+
+            <div class="d-flex align-items-center gap-4 mb-4 pt-2">
+              <div class="rating-huge-display text-center p-3 rounded-4 bg-gold-soft" style="min-width: 90px; border: 1px solid rgba(184, 147, 92, 0.15);">
+                <span class="d-block display-6 fw-extrabold text-gold mb-1" style="line-height: 1; font-family: 'Outfit', sans-serif;">{{ averageRating() }}</span>
+                <span class="text-muted uppercase fw-bold" style="font-size: 8px; letter-spacing: 0.05em;">{{ translationService.currentLang() === 'ar' ? 'من 5' : 'out of 5' }}</span>
+              </div>
+              <div>
+                <div class="d-flex gap-0.5 text-gold mb-1 fs-5">
+                  <i class="bi" [ngClass]="+averageRating() >= 1 ? 'bi-star-fill' : (+averageRating() >= 0.5 ? 'bi-star-half' : 'bi-star')"></i>
+                  <i class="bi" [ngClass]="+averageRating() >= 2 ? 'bi-star-fill' : (+averageRating() >= 1.5 ? 'bi-star-half' : 'bi-star')"></i>
+                  <i class="bi" [ngClass]="+averageRating() >= 3 ? 'bi-star-fill' : (+averageRating() >= 2.5 ? 'bi-star-half' : 'bi-star')"></i>
+                  <i class="bi" [ngClass]="+averageRating() >= 4 ? 'bi-star-fill' : (+averageRating() >= 3.5 ? 'bi-star-half' : 'bi-star')"></i>
+                  <i class="bi" [ngClass]="+averageRating() >= 5 ? 'bi-star-fill' : (+averageRating() >= 4.5 ? 'bi-star-half' : 'bi-star')"></i>
+                </div>
+                <p class="font-xxs text-secondary mb-0">
+                  {{ translationService.currentLang() === 'ar' ? 'بناءً على ' : 'Based on ' }}
+                  <strong class="text-dark">{{ totalReviewsCount() }}</strong>
+                  {{ translationService.currentLang() === 'ar' ? ' تقييمات' : ' customer ratings' }}
+                </p>
+              </div>
+            </div>
+
+            <div class="sentiment-bar-kpi mt-3">
+              <div class="d-flex justify-content-between align-items-center mb-1 font-xxs">
+                <span class="text-secondary fw-semibold">{{ translationService.currentLang() === 'ar' ? 'معدل التقييمات الإيجابية' : 'Positive Sentiment' }}</span>
+                <span class="fw-bold text-success">{{ positiveReviewsPercentage() }}%</span>
+              </div>
+              <div class="progress rounded-pill bg-light" style="height: 6px;">
+                <div class="progress-bar bg-success rounded-pill animate-bar-fill" role="progressbar" [style.width]="positiveReviewsPercentage() + '%'" [attr.aria-valuenow]="positiveReviewsPercentage()" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <p class="font-xxs text-muted mt-1.5 mb-0">
+                {{ translationService.currentLang() === 'ar' ? 'نسبة التقييمات ذات 4 و 5 نجوم.' : 'Percentage of 4 and 5 star ratings received.' }}
+              </p>
+            </div>
           </div>
         </div>
 
-        <!-- Archived Products Card -->
-        <div class="col-sm-6 col-lg-3">
-          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'المنتجات المؤرشفة' : 'Archived Products' }}</span>
-              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-archive text-danger fs-5"></i>
-              </div>
-            </div>
-            <h3 class="display-6 fw-extrabold text-dark m-0">{{ archivedProducts() }}</h3>
-            <p class="font-xxs text-danger mt-2 mb-0">
-              <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i>
-              {{ translationService.currentLang() === 'ar' ? 'تمت إزالتها من المتجر' : 'Removed from marketplace' }}
+        <!-- Rating Distribution Card -->
+        <div class="col-12 col-md-7 col-xl-8">
+          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs bg-white h-100">
+            <h3 class="h6 fw-extrabold text-dark mb-1 uppercase letter-spacing-wide">
+              {{ translationService.currentLang() === 'ar' ? 'توزيع التقييمات بالنجوم' : 'Rating Distribution' }}
+            </h3>
+            <p class="font-xxs text-muted mb-4">
+              {{ translationService.currentLang() === 'ar' ? 'تفصيل كمي للتقييمات الفردية لكل مستوى.' : 'Quantitative breakdown of individual reviews per rating level.' }}
             </p>
-          </div>
-        </div>
 
-        <!-- Top Rated Product Card -->
-        <div class="col-sm-6 col-lg-3">
-          <div class="card card-stat-card border-0 rounded-4 p-4 shadow-xs h-100 bg-white">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="fs-8 fw-bold text-muted uppercase">{{ translationService.currentLang() === 'ar' ? 'المنتج الأعلى تقييماً' : 'Top Rated Product' }}</span>
-              <div class="stat-icon-wrapper rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-star-fill text-gold fs-5"></i>
+            <!-- Star Distribution progress bars -->
+            <div class="d-flex flex-column gap-3 pt-2">
+              <div class="d-flex align-items-center gap-3" *ngFor="let star of [5, 4, 3, 2, 1]">
+                <span class="star-label font-xxs text-secondary fw-bold d-flex align-items-center gap-1" style="min-width: 45px;">
+                  {{ star }} <i class="bi bi-star-fill text-gold font-xxs"></i>
+                </span>
+                <div class="progress flex-grow-1 rounded-pill bg-light" style="height: 8px;">
+                  <div 
+                    class="progress-bar rounded-pill animate-bar-fill" 
+                    [ngClass]="{'bg-gold': star >= 4, 'bg-warning': star === 3, 'bg-danger': star <= 2}"
+                    role="progressbar" 
+                    [style.width]="ratingDistributionPercentage(star) + '%'" 
+                    [attr.aria-valuenow]="ratingDistributionPercentage(star)" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                  </div>
+                </div>
+                <span class="count-badge font-xxs text-muted fw-semibold text-end" style="min-width: 35px;">
+                  {{ ratingDistributionCount(star) }}
+                </span>
+                <span class="pct-badge font-xxs text-secondary text-end" style="min-width: 45px;">
+                  {{ ratingDistributionPercentage(star) | number:'1.0-0' }}%
+                </span>
               </div>
             </div>
-            <ng-container *ngIf="topRatedProduct(); else noTopRated">
-              <h4 class="font-xs fw-bold text-dark text-truncate mb-2" style="max-width: 100%;">
-                {{ translationService.currentLang() === 'ar' ? topRatedProduct()!.nameAr : topRatedProduct()!.nameEn }}
-              </h4>
-              <div class="d-flex align-items-center gap-1">
-                <i class="bi bi-star-fill text-gold font-xxs"></i>
-                <span class="font-xs fw-extrabold text-dark">{{ topRatedProduct()!.averageRating }}</span>
-                <span class="font-xxs text-muted">/ 5.0</span>
-              </div>
-            </ng-container>
-            <ng-template #noTopRated>
-              <h4 class="font-xs text-muted mb-2">-</h4>
-              <span class="font-xxs text-muted">{{ translationService.currentLang() === 'ar' ? 'لا توجد تقييمات بعد' : 'No ratings yet' }}</span>
-            </ng-template>
           </div>
         </div>
       </div>

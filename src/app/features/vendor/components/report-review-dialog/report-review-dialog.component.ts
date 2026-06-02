@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
@@ -10,7 +10,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   templateUrl: './report-review-dialog.component.html',
   styleUrl: './report-review-dialog.component.css'
 })
-export class ReportReviewDialog {
+export class ReportReviewDialog implements OnChanges, OnDestroy {
   @Input() visible = false;
   @Input() reviewId: number | string | null = null;
   @Input() isSubmitting = false;
@@ -22,6 +22,25 @@ export class ReportReviewDialog {
   private fb = inject(FormBuilder);
 
   reportForm: FormGroup;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['visible']) {
+      const isVisible = changes['visible'].currentValue;
+      if (typeof document !== 'undefined') {
+        if (isVisible) {
+          document.body.classList.add('modal-open');
+        } else {
+          document.body.classList.remove('modal-open');
+        }
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('modal-open');
+    }
+  }
 
   readonly reasons = [
     { value: 'Abuse', labelEn: 'Abuse', labelAr: 'إساءة استخدام' },

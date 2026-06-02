@@ -3,3 +3,9 @@
 @import './styles/base/typography.css';
 @import './styles/components/buttons.css';
 @import './styles/components/cards.css';
+
+/* Body scroll lock when modal is open */
+body.modal-open {
+  overflow: hidden !important;
+  height: 100vh !important;
+}

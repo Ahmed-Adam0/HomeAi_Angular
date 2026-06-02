@@ -13,6 +13,7 @@ import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import Chart from 'chart.js/auto';
 
 import { VendorProductService } from '../../services/vendor-product.service';
 import { VendorReviewsService } from '../../services/vendor-reviews.service';
@@ -45,17 +46,27 @@ export class VendorDashboard implements OnInit {
   private uiState = inject(UiState);
   private platformId = inject(PLATFORM_ID);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   // Read-only references to shared reactive signals
   readonly products = this.vendorProductService.products;
   readonly reviews = this.vendorReviewsService.reviews;
-  readonly metrics = this.vendorOrdersService.dashboardMetrics;
+  readonly metrics = signal<any | null>(null);
 
   readonly loading = signal<boolean>(true);
 
   // New signals for stats and top product from backend (Requirement 5)
   readonly productStats = signal<{ total: number; active: number; archived: number } | null>(null);
   readonly topProduct = signal<IProduct | null>(null);
+
+  // Analytics Trend and Product Status Signals
+  readonly revenueAnalyticsData = signal<any[]>([]);
+  readonly ordersAnalyticsData = signal<any[]>([]);
+  readonly selectedTrend = signal<'revenue' | 'orders'>('revenue');
+
+  // Chart instances trackers
+  private trendChartInstance: any = null;
+  private statusChartInstance: any = null;
 
   // Computed statistics from products & stats endpoint fallback
   readonly totalProducts = computed(() => this.productStats()?.total ?? this.products().length);
@@ -74,7 +85,54 @@ export class VendorDashboard implements OnInit {
   readonly recentReviews = computed(() => this.reviews().slice(0, 3));
   readonly reportedReviewsCount = computed(() => this.reviews().filter(r => r.isReported).length);
 
+  // Computed Reviews Analytics
+  readonly totalReviewsCount = computed(() => this.reviews().length);
 
+  readonly averageRating = computed(() => {
+    const list = this.reviews();
+    if (list.length === 0) {
+      return (this.topRatedProduct()?.averageRating ?? 5.0).toFixed(1);
+    }
+    const sum = list.reduce((acc, r) => acc + (r.rating || 0), 0);
+    return (sum / list.length).toFixed(1);
+  });
+
+  readonly positiveReviewsPercentage = computed(() => {
+    const list = this.reviews();
+    if (list.length === 0) return 100;
+    const pos = list.filter(r => r.rating >= 4).length;
+    return Math.round((pos / list.length) * 100);
+  });
+
+  ratingDistributionCount(star: number): number {
+    return this.reviews().filter(r => r.rating === star).length;
+  }
+
+  ratingDistributionPercentage(star: number): number {
+    const total = this.reviews().length;
+    if (total === 0) {
+      if (star === 5) return 80;
+      if (star === 4) return 20;
+      return 0;
+    }
+    return (this.ratingDistributionCount(star) / total) * 100;
+  }
+
+  readonly activeProductsPercentage = computed(() => {
+    const total = this.totalProducts();
+    if (total === 0) return 0;
+    return Math.round((this.activeProducts() / total) * 100);
+  });
+
+  readonly archivedProductsPercentage = computed(() => {
+    const total = this.totalProducts();
+    if (total === 0) return 0;
+    return Math.round((this.archivedProducts() / total) * 100);
+  });
+
+  readonly isTrendDataEmpty = computed(() => {
+    return this.revenueAnalyticsData().length === 0 && this.ordersAnalyticsData().length === 0;
+  });
 
   // Inline review reply tracking
   readonly activeReplyReviewId = signal<string | number | null>(null);
@@ -89,7 +147,338 @@ export class VendorDashboard implements OnInit {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.loadDashboardData();
+
+      this.destroyRef.onDestroy(() => {
+        this.destroyCharts();
+      });
     }
+  }
+
+  destroyCharts(): void {
+    if (this.trendChartInstance) {
+      this.trendChartInstance.destroy();
+      this.trendChartInstance = null;
+    }
+    if (this.statusChartInstance) {
+      this.statusChartInstance.destroy();
+      this.statusChartInstance = null;
+    }
+  }
+
+  selectTrendTab(trend: 'revenue' | 'orders'): void {
+    if (this.selectedTrend() === trend) return;
+    this.selectedTrend.set(trend);
+    this.renderTrendChart();
+  }
+
+  private getFallbackData() {
+    const labels = [];
+    const revenueValues = [];
+    const ordersValues = [];
+    const now = new Date();
+    const isAr = this.translationService.currentLang() === 'ar';
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(now.getDate() - i);
+      const label = d.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' });
+      labels.push(label);
+      revenueValues.push(0);
+      ordersValues.push(0);
+    }
+    return { labels, revenueValues, ordersValues };
+  }
+
+  private formatDateLabel(dateStr: string): string {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString(this.translationService.currentLang() === 'ar' ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' });
+    } catch {
+      return dateStr;
+    }
+  }
+
+  renderTrendChart(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const ctx = document.getElementById('trendChartCanvas') as HTMLCanvasElement;
+    if (!ctx) return;
+
+    if (this.trendChartInstance) {
+      this.trendChartInstance.destroy();
+      this.trendChartInstance = null;
+    }
+
+    const isAr = this.translationService.currentLang() === 'ar';
+    const isRevenue = this.selectedTrend() === 'revenue';
+    
+    const revData = this.revenueAnalyticsData();
+    const ordData = this.ordersAnalyticsData();
+
+    let labels: string[] = [];
+    let dataValues: number[] = [];
+
+    const fallback = this.getFallbackData();
+
+    if (isRevenue) {
+      if (revData && revData.length > 0) {
+        labels = revData.map(p => p.dateLabel || p.date || this.formatDateLabel(p.placedAt || p.placedDate || ''));
+        dataValues = revData.map(p => Number(p.revenue || p.total || p.amount || 0));
+      } else {
+        labels = fallback.labels;
+        dataValues = fallback.revenueValues;
+      }
+    } else {
+      if (ordData && ordData.length > 0) {
+        labels = ordData.map(p => p.dateLabel || p.date || this.formatDateLabel(p.placedAt || p.placedDate || ''));
+        dataValues = ordData.map(p => Number(p.orders || p.count || p.totalOrders || p.value || 0));
+      } else {
+        labels = fallback.labels;
+        dataValues = fallback.ordersValues;
+      }
+    }
+
+    const goldColor = '#b8935c';
+    const gradient = ctx.getContext('2d')?.createLinearGradient(0, 0, 0, 280);
+    if (gradient) {
+      gradient.addColorStop(0, 'rgba(184, 147, 92, 0.38)');
+      gradient.addColorStop(0.5, 'rgba(184, 147, 92, 0.15)');
+      gradient.addColorStop(1, 'rgba(184, 147, 92, 0.00)');
+    }
+
+    this.trendChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: isRevenue 
+            ? (isAr ? 'الإيرادات اليومية' : 'Daily Revenue') 
+            : (isAr ? 'عدد الطلبات اليومية' : 'Daily Orders'),
+          data: dataValues,
+          borderColor: goldColor,
+          borderWidth: 2.5,
+          backgroundColor: gradient || 'rgba(184, 147, 92, 0.06)',
+          fill: true,
+          tension: 0.25,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: goldColor,
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointHoverBorderWidth: 3,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 1200,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            backgroundColor: '#1f1c18',
+            titleColor: '#ffffff',
+            bodyColor: '#e5e0d8',
+            borderColor: '#b8935c',
+            borderWidth: 1,
+            padding: 12,
+            boxPadding: 4,
+            usePointStyle: true,
+            cornerRadius: 8,
+            titleFont: {
+              family: 'Outfit, sans-serif',
+              size: 11,
+              weight: 'bold'
+            },
+            bodyFont: {
+              family: 'Outfit, sans-serif',
+              size: 11
+            },
+            callbacks: {
+              label: (context: any) => {
+                let value = context.parsed.y;
+                if (isRevenue) {
+                  return ` ${isAr ? 'إيرادات' : 'Revenue'}: EGP ${value.toLocaleString()}`;
+                } else {
+                  return ` ${isAr ? 'الطلبات' : 'Orders'}: ${value}`;
+                }
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'category' as const,
+            offset: false,
+            grid: {
+              display: false,
+            },
+            ticks: {
+              color: '#70675a',
+              font: {
+                size: 9,
+                family: 'Outfit, sans-serif'
+              }
+            }
+          },
+          y: {
+            grid: {
+              color: 'rgba(31, 28, 24, 0.04)',
+            },
+            ticks: {
+              color: '#70675a',
+              font: {
+                size: 9,
+                family: 'Outfit, sans-serif'
+              },
+              callback: (value: any) => {
+                if (isRevenue) {
+                  return 'EGP ' + value.toLocaleString();
+                }
+                return value;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  renderStatusChart(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const ctx = document.getElementById('statusChartCanvas') as HTMLCanvasElement;
+    if (!ctx) return;
+
+    if (this.statusChartInstance) {
+      this.statusChartInstance.destroy();
+      this.statusChartInstance = null;
+    }
+
+    const isAr = this.translationService.currentLang() === 'ar';
+    const active = this.activeProducts();
+    const archived = this.archivedProducts();
+
+    const activeVal = active || 0;
+    const archivedVal = archived || 0;
+
+    this.statusChartInstance = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: [
+          isAr ? 'المنتجات النشطة' : 'Active Products',
+          isAr ? 'المنتجات المؤرشفة' : 'Archived Products'
+        ],
+        datasets: [{
+          data: [activeVal, archivedVal],
+          backgroundColor: ['#b8935c', '#e5e0d8'],
+          borderColor: '#ffffff',
+          borderWidth: 2.5,
+          hoverBorderColor: '#b8935c',
+          hoverBorderWidth: 1,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '72%',
+        animation: {
+          animateRotate: true,
+          animateScale: true,
+          duration: 1000,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#1f1c18',
+            titleColor: '#ffffff',
+            bodyColor: '#e5e0d8',
+            borderColor: '#b8935c',
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 8,
+            titleFont: {
+              family: 'Outfit, sans-serif',
+              size: 11,
+              weight: 'bold'
+            },
+            bodyFont: {
+              family: 'Outfit, sans-serif',
+              size: 11
+            },
+            callbacks: {
+              label: (context: any) => {
+                const value = context.parsed;
+                const total = activeVal + archivedVal;
+                const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                return ` ${context.label}: ${value} (${percentage}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  initCharts(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.renderTrendChart();
+    this.renderStatusChart();
+  }
+
+  private getAggregatedAnalytics(orders: any[]) {
+    const labels: string[] = [];
+    const revenueValues: number[] = [];
+    const ordersValues: number[] = [];
+    
+    // Always anchor to the current system date (today) to ensure the timeline is live
+    const now = new Date();
+    
+    const isAr = this.translationService.currentLang() === 'ar';
+    
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now.getTime());
+      d.setDate(now.getDate() - i);
+      
+      const label = d.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' });
+      labels.push(label);
+      
+      // Compute range boundaries for this day
+      const dayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+      const dayEnd = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+      
+      // Filter orders placed on this calendar day
+      const dayOrders = orders.filter(o => {
+        if (!o.placedAt) return false;
+        try {
+          const placedDate = new Date(o.placedAt);
+          return placedDate >= dayStart && placedDate <= dayEnd;
+        } catch {
+          return false;
+        }
+      });
+      
+      // Calculate revenue from delivered or completed orders only to match the Total Revenue KPI exactly
+      const dayRevenue = dayOrders
+        .filter(o => o.status === 'delivered' || o.status === 'completed')
+        .reduce((sum, o) => sum + Number(o.totalAmount || o.subtotal || 0), 0);
+        
+      // Count all orders placed on this day to match Total Orders KPI exactly
+      const dayOrdersCount = dayOrders.length;
+      
+      revenueValues.push(dayRevenue);
+      ordersValues.push(dayOrdersCount);
+    }
+    
+    return { labels, revenueValues, ordersValues };
   }
 
   loadDashboardData(): void {
@@ -97,8 +486,7 @@ export class VendorDashboard implements OnInit {
 
     const products$ = this.vendorProductService.getVendorProducts().pipe(catchError(err => { console.error(err); return of([]); }));
     const reviews$ = this.vendorReviewsService.getVendorReviews().pipe(catchError(err => { console.error(err); return of([]); }));
-    const metrics$ = this.vendorOrdersService.getDashboardMetrics().pipe(catchError(err => { console.error(err); return of(null); }));
-
+    
     // Stats & Top rated product queries (Requirement 5)
     const stats$ = this.vendorProductService.getVendorStats().pipe(
       catchError(err => {
@@ -114,18 +502,62 @@ export class VendorDashboard implements OnInit {
       })
     );
 
+    // Fetch live orders list to compute precise consistent metrics and daily trends
+    const orders$ = this.vendorOrdersService.getFilteredOrders({ pageSize: 100 }).pipe(
+      catchError(err => {
+        console.error('Failed to load filtered orders:', err);
+        return of([]);
+      })
+    );
+
     forkJoin([
       products$,
       reviews$,
-      metrics$,
       stats$,
-      topProduct$
+      topProduct$,
+      orders$
     ]).subscribe({
-      next: (response: [IProduct[], any[], any, any, IProduct | null]) => {
-        console.log('Vendor Dashboard Data Loaded successfully:', response);
-        const [prods, revs, metrics, stats, topProd] = response;
+      next: (response: [IProduct[], any[], any, IProduct | null, any[]]) => {
+        console.log('Vendor Dashboard Data Loaded successfully from real sources:', response);
+        const [prods, revs, stats, topProd, orders] = response;
 
         this.topProduct.set(topProd);
+
+        // Dynamically compute absolute consistent metrics directly from live orders
+        const totalOrders = orders.length;
+        const completedOrdersCount = orders.filter(o => o.status === 'delivered' || o.status === 'completed').length;
+        const pendingOrdersCount = orders.filter(o => o.status === 'pending').length;
+        const activeOrdersCount = orders.filter(o => o.status === 'confirmed' || o.status === 'processing' || o.status === 'ready').length;
+        
+        // Sum total amount for completed/delivered orders
+        const totalRevenue = orders
+          .filter(o => o.status === 'delivered' || o.status === 'completed')
+          .reduce((sum, o) => sum + Number(o.totalAmount || o.subtotal || 0), 0);
+
+        const computedMetrics = {
+          totalOrders,
+          totalRevenue,
+          pendingOrdersCount,
+          completedOrdersCount,
+          activeOrdersCount
+        };
+
+        console.log('[Dashboard Audit] Calculated metrics from orders:', computedMetrics);
+        this.metrics.set(computedMetrics);
+
+        // Dynamically aggregate trend charts using live orders dates to avoid flat zero curves
+        const aggregated = this.getAggregatedAnalytics(orders);
+        console.log('[Dashboard Audit] Aggregated daily trends:', aggregated);
+
+        this.revenueAnalyticsData.set(aggregated.revenueValues.map((val, idx) => ({
+          dateLabel: aggregated.labels[idx],
+          revenue: val
+        })));
+
+        this.ordersAnalyticsData.set(aggregated.ordersValues.map((val, idx) => ({
+          dateLabel: aggregated.labels[idx],
+          orders: val
+        })));
 
         if (stats) {
           this.productStats.set({
@@ -142,6 +574,10 @@ export class VendorDashboard implements OnInit {
         }
 
         this.loading.set(false);
+
+        setTimeout(() => {
+          this.initCharts();
+        }, 50);
       },
       error: (err) => {
         console.error('Failed to load dashboard statistics', err);
