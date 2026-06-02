@@ -314,6 +314,26 @@
   color: #dc2626;
 }
 
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.forgot-link {
+  font-size: 13px;
+  color: #795c4b;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.forgot-link:hover {
+  opacity: 0.85;
+}
+
 .customer-login-link-container {
   text-align: center;
   margin-top: 16px;

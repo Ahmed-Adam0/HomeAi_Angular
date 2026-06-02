@@ -8,6 +8,7 @@ export const API_URLS = {
     REGISTER: 'auth/register',
     VENDOR_LOGIN: 'Vendors/login',
     VENDOR_REGISTER: 'Vendors/create',
+    GOOGLE_LOGIN: 'Auth/google-login',
     REFRESH_TOKEN: 'auth/refresh-token',
     LOGOUT: 'auth/logout',
     ME: 'auth/me',
