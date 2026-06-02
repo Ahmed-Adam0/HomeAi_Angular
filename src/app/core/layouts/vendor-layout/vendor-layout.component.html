@@ -1,4 +1,4 @@
-<div appRtl class="vendor-layout-wrapper">
+<div appRtl class="vendor-layout-wrapper" [attr.dir]="direction()" [attr.lang]="currentLang()">
   <!-- Sidebar -->
   <aside class="vendor-sidebar" [class.open]="sidebarOpen()">
     <div class="sidebar-header">
@@ -6,41 +6,41 @@
         <i class="bi bi-cpu-fill logo-icon"></i>
         <span class="logo-text">FurniMind <span class="badge-vendor">Vendor</span></span>
       </div>
-      <button class="btn-close-sidebar d-md-none" (click)="closeSidebar()">
+      <button class="btn-close-sidebar d-md-none" (click)="closeSidebar()" [attr.aria-label]="'VENDOR.LAYOUT.LOGOUT_TOOLTIP' | translate">
         <i class="bi bi-x-lg"></i>
       </button>
     </div>
 
     <nav class="sidebar-nav">
       <div class="nav-section">
-        <span class="nav-section-title">Core</span>
+        <span class="nav-section-title">{{ 'VENDOR.LAYOUT.SIDEBAR_CORE' | translate }}</span>
         <a [routerLink]="navRoutes.VENDOR_DASHBOARD" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeSidebar()" class="nav-item">
           <i class="bi bi-grid-1x2-fill"></i>
-          <span>Dashboard</span>
+          <span>{{ 'VENDOR.LAYOUT.NAV_DASHBOARD' | translate }}</span>
         </a>
         <a [routerLink]="navRoutes.VENDOR_ANALYTICS" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
           <i class="bi bi-bar-chart-line-fill"></i>
-          <span>Analytics</span>
+          <span>{{ 'VENDOR.LAYOUT.NAV_ANALYTICS' | translate }}</span>
         </a>
       </div>
 
       <div class="nav-section">
-        <span class="nav-section-title">Management</span>
+        <span class="nav-section-title">{{ 'VENDOR.LAYOUT.SIDEBAR_MANAGEMENT' | translate }}</span>
         <a [routerLink]="navRoutes.VENDOR_ORDERS" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
           <i class="bi bi-bag-check-fill"></i>
-          <span>Orders</span>
+          <span>{{ 'VENDOR.LAYOUT.NAV_ORDERS' | translate }}</span>
         </a>
         <a [routerLink]="navRoutes.VENDOR_REVENUE" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
           <i class="bi bi-cash-stack"></i>
-          <span>Revenue</span>
+          <span>{{ 'VENDOR.LAYOUT.NAV_REVENUE' | translate }}</span>
         </a>
       </div>
 
       <div class="nav-section">
-        <span class="nav-section-title">Settings</span>
+        <span class="nav-section-title">{{ 'VENDOR.LAYOUT.SIDEBAR_SETTINGS' | translate }}</span>
         <a [routerLink]="navRoutes.VENDOR_PROFILE" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
           <i class="bi bi-person-bounding-box"></i>
-          <span>Workshop Profile</span>
+          <span>{{ 'VENDOR.LAYOUT.NAV_WORKSHOP' | translate }}</span>
         </a>
        
       </div>
@@ -48,7 +48,7 @@
       <div class="nav-section-footer">
         <a [routerLink]="navRoutes.HOME" class="nav-item btn-back-store">
           <i class="bi bi-shop"></i>
-          <span>Back to Marketplace</span>
+          <span>{{ 'VENDOR.LAYOUT.NAV_BACK_MARKETPLACE' | translate }}</span>
         </a>
       </div>
     </nav>
@@ -64,16 +64,24 @@
     <!-- Top Navbar -->
     <header class="vendor-header">
       <div class="header-left">
-        <button class="btn-toggle-sidebar d-md-none" (click)="toggleSidebar()">
+        <button class="btn-toggle-sidebar d-md-none" (click)="toggleSidebar()" [attr.aria-label]="'VENDOR.LAYOUT.NAV_DASHBOARD' | translate">
           <i class="bi bi-list"></i>
         </button>
         <div class="workshop-info">
-          <span class="workshop-label">Workshop:</span>
+          <span class="workshop-label">{{ 'VENDOR.LAYOUT.WORKSHOP_LABEL' | translate }}</span>
           <span class="workshop-name">FurniMind Premium Workshop</span>
         </div>
       </div>
 
       <div class="header-right">
+        <!-- Language Switcher -->
+        <div class="language-switcher-container">
+          <button class="btn-language-switch" (click)="selectLanguage(currentLang() === 'en' ? 'ar' : 'en')" [attr.title]="'VENDOR.LAYOUT.LANGUAGE_SWITCHER_' + (currentLang() | uppercase) | translate" [attr.aria-label]="'Switch Language'">
+            <span class="lang-icon"></span>
+            <span class="lang-text fw-bold">{{ currentLang() === 'en' ? ('VENDOR.LAYOUT.LANGUAGE_SWITCHER_EN' | translate) : ('VENDOR.LAYOUT.LANGUAGE_SWITCHER_AR' | translate) }}</span>
+          </button>
+        </div>
+
         <div class="user-profile-menu dropdown">
           <div class="user-avatar">
             {{ currentUser()?.initials || 'AW' }}
@@ -82,7 +90,7 @@
             <span class="user-name">{{ currentUser()?.name || 'Alexander Wright' }}</span>
             <span class="user-role">{{ currentUser()?.tier || '✦ AI Spaces Creator' }}</span>
           </div>
-          <button class="btn-logout" (click)="logout()" title="Logout">
+          <button class="btn-logout" (click)="logout()" [attr.title]="'VENDOR.LAYOUT.LOGOUT_TOOLTIP' | translate">
             <i class="bi bi-box-arrow-right"></i>
           </button>
         </div>
