@@ -1,176 +1,405 @@
-<div class="workshop-profile-form">
-  <div class="workshop-profile-form__container">
-    <article class="workshop-profile-card" aria-labelledby="workshop-profile-title">
-      <header class="workshop-profile-card__header">
-        <div class="workshop-profile-card__avatar" aria-hidden="true">
-          <i class="bi bi-shop"></i>
+@if (isSkeletonVisible()) {
+  <div role="status" aria-label="{{ 'vendor.profile.loading' | translate }}">
+    <div class="profile-skeleton">
+      <div class="profile-skeleton__header">
+        <div class="fm-skeleton fm-skeleton-image" style="width:5.5rem;height:5.5rem;border-radius:var(--fm-radius-xl);flex-shrink:0;"></div>
+        <div class="profile-skeleton__lines">
+          <div class="fm-skeleton fm-skeleton-text" style="width:55%"></div>
+          <div class="fm-skeleton fm-skeleton-text" style="width:35%"></div>
+          <div class="fm-skeleton fm-skeleton-text" style="width:45%"></div>
         </div>
-        <div class="workshop-profile-card__heading">
-          <h2 id="workshop-profile-title" class="workshop-profile-card__title">{{ 'VENDOR.WORKSHOP.TITLE' | translate }}</h2>
-          <p class="workshop-profile-card__subtitle">
-            {{ 'VENDOR.WORKSHOP.SUBTITLE' | translate }}
-          </p>
+      </div>
+      <div class="profile-skeleton__cards">
+        @for (card of [1,2,3]; track card) {
+          <div class="profile-skeleton__card">
+            <div class="profile-skeleton__card-header">
+              <div class="fm-skeleton fm-skeleton-text" style="width:40%"></div>
+            </div>
+            <div class="profile-skeleton__card-body">
+              @for (row of [1,2,3,4]; track row) {
+                <div class="profile-skeleton__row">
+                  <div class="fm-skeleton fm-skeleton-text" style="width:20%"></div>
+                  <div class="fm-skeleton fm-skeleton-text" style="width:100%;height:22px"></div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <!-- ============================================ -->
+  <!-- PROFILE HEADER CARD                          -->
+  <!-- ============================================ -->
+  <div class="card border-0 overflow-hidden form-card mb-4">
+    <div class="card-body p-4 p-md-5">
+      <div class="d-flex align-items-center justify-content-between gap-4 flex-wrap">
+        <div class="d-flex align-items-center gap-4">
+          <!-- Vendor Logo -->
+          <div class="vendor-logo-wrapper flex-shrink-0 position-relative">
+            @if (profile()?.logoUrl; as logoUrl) {
+              <img [src]="logoUrl" [alt]="'vendor.profile.header' | translate" class="vendor-logo-img" />
+            } @else {
+              <div class="vendor-logo-placeholder d-flex align-items-center justify-content-center">
+                <i class="bi bi-shop fs-2 text-muted"></i>
+              </div>
+            }
+            @if (editing()) {
+              <label class="vendor-logo-overlay d-flex align-items-center justify-content-center" [class.is-loading]="uploadingLogo()">
+                <input type="file" accept=".jpg,.jpeg,.png" class="d-none" (change)="onFileSelected($event)" [disabled]="uploadingLogo()" />
+                @if (uploadingLogo()) {
+                  <span class="spinner-border spinner-border-sm text-white"></span>
+                } @else {
+                  <i class="bi bi-camera fs-5 text-white"></i>
+                }
+              </label>
+            }
+            @if (editing()) {
+              <label class="vendor-change-logo d-inline-flex align-items-center gap-1 mt-2" [class.is-loading]="uploadingLogo()">
+                <input type="file" accept=".jpg,.jpeg,.png" class="d-none" (change)="onFileSelected($event)" [disabled]="uploadingLogo()" />
+                <i class="bi bi-arrow-up-circle" style="font-size:0.7rem;"></i>
+                <span style="font-size:0.7rem;">{{ (profile()?.logoUrl ? 'vendor.profile.changeLogo' : 'vendor.profile.uploadLogo') | translate }}</span>
+              </label>
+            }
+          </div>
+          @if (logoError(); as errorMsg) {
+            <div class="invalid-feedback d-block mt-2">{{ errorMsg | translate }}</div>
+          }
+          <!-- Profile Info -->
+          <div class="min-w-0">
+            <h3 class="h5 mb-1 font-semibold text-dark">{{ workshopDisplayName() }}</h3>
+            <p class="mb-1 text-body small">{{ profile()?.fullName || ('VENDOR.COMMON.NOT_PROVIDED' | translate) }}</p>
+            <p class="mb-2 text-muted small">{{ profile()?.email || ('VENDOR.COMMON.NOT_PROVIDED' | translate) }}</p>
+            <span class="d-inline-flex align-items-center px-3 py-1 rounded-pill" style="font-size:0.75rem;font-weight:600;background:var(--fm-color-primary-soft);color:var(--fm-color-primary-700);">
+              {{ languageLabel() }}
+            </span>
+          </div>
         </div>
-      </header>
+        <!-- Edit/Cancel Toggle -->
+        <button type="button" class="btn btn-sm btn-outline d-flex align-items-center gap-2 rounded-pill px-3 flex-shrink-0" (click)="onToggleEdit()">
+          <i class="bi" [class.bi-pencil]="!editing()" [class.bi-x-lg]="editing()"></i>
+          {{ (editing() ? 'vendor.profile.cancel' : 'vendor.profile.editProfile') | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
 
-      <form
-        class="workshop-profile-card__form"
-        [formGroup]="form"
-        (ngSubmit)="onSubmit()"
-        novalidate
-      >
-        <div class="workshop-profile-card__body">
-          <section class="workshop-profile-section" aria-labelledby="workshop-details-heading">
-            <h3 id="workshop-details-heading" class="workshop-profile-section__title">
-              {{ 'VENDOR.WORKSHOP.DETAILS_SECTION' | translate }}
-            </h3>
+  @if (editing()) {
+    <!-- ============================================ -->
+    <!-- EDIT MODE                                    -->
+    <!-- ============================================ -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 
-            <div class="row g-4">
-              <div class="col-12 col-md-6">
-                <label class="workshop-field__label" for="workshopName">{{ 'VENDOR.WORKSHOP.WORKSHOP_NAME' | translate }}</label>
-                <input
-                  id="workshopName"
-                  type="text"
-                  class="workshop-field__control form-control"
-                  formControlName="workshopName"
-                  autocomplete="organization"
-                  [class.is-invalid]="
-                    (form.controls.workshopName.touched || submitted()) &&
-                    form.controls.workshopName.invalid
-                  "
-                />
-                @if (
-                  (form.controls.workshopName.touched || submitted()) &&
-                  form.controls.workshopName.errors?.['required']
-                ) {
-                  <p class="workshop-field__error" role="alert">{{ 'VENDOR.WORKSHOP.ERROR.WORKSHOP_NAME_REQUIRED' | translate }}</p>
-                }
+      <!-- SECTION: PERSONAL INFORMATION -->
+      <div class="card border-0 overflow-hidden form-card mb-4">
+        <div class="card-body p-4 p-md-5">
+          <div class="d-flex align-items-center gap-3 mb-4 pb-2">
+            <div class="d-flex align-items-center justify-content-center rounded-3 bg-white shadow-sm" style="width:40px;height:40px;">
+              <i class="bi bi-person text-brand fs-5"></i>
+            </div>
+            <div>
+              <h3 class="h5 mb-1 font-semibold text-dark">{{ 'vendor.profile.personalInformation' | translate }}</h3>
+            </div>
+          </div>
+          <div class="row g-4">
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="fullName">{{ 'vendor.profile.fullName' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-person"></i></span>
+                <input id="fullName" type="text" class="form-control premium-input ps-5" formControlName="fullName" [class.is-invalid]="submitted() && form.controls.fullName.invalid" />
               </div>
-
-              <div class="col-12 col-md-6">
-                <label class="workshop-field__label" for="email">{{ 'VENDOR.COMMON.EMAIL' | translate }}</label>
-                <input
-                  id="email"
-                  type="email"
-                  class="workshop-field__control form-control"
-                  formControlName="email"
-                  autocomplete="email"
-                  [class.is-invalid]="
-                    (form.controls.email.touched || submitted()) && form.controls.email.invalid
-                  "
-                />
-                @if (
-                  (form.controls.email.touched || submitted()) &&
-                  form.controls.email.errors?.['required']
-                ) {
-                  <p class="workshop-field__error" role="alert">{{ 'VENDOR.WORKSHOP.ERROR.EMAIL_REQUIRED' | translate }}</p>
-                }
-                @if (
-                  (form.controls.email.touched || submitted()) &&
-                  form.controls.email.errors?.['email']
-                ) {
-                  <p class="workshop-field__error" role="alert">{{ 'VENDOR.WORKSHOP.ERROR.EMAIL_INVALID' | translate }}</p>
-                }
+              @if (submitted() && form.controls.fullName.errors?.['required']) {
+                <div class="invalid-feedback d-block mt-1">{{ 'VALIDATION.REQUIRED' | translate }}</div>
+              }
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="email">{{ 'vendor.profile.email' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-envelope"></i></span>
+                <input id="email" type="email" class="form-control premium-input ps-5" formControlName="email" [class.is-invalid]="submitted() && form.controls.email.invalid" />
               </div>
-
-              <div class="col-12 col-md-6">
-                <label class="workshop-field__label" for="phone">{{ 'VENDOR.COMMON.PHONE' | translate }}</label>
-                <input
-                  id="phone"
-                  type="tel"
-                  class="workshop-field__control form-control"
-                  formControlName="phone"
-                  autocomplete="tel"
-                  [class.is-invalid]="
-                    (form.controls.phone.touched || submitted()) && form.controls.phone.invalid
-                  "
-                />
-                @if (
-                  (form.controls.phone.touched || submitted()) &&
-                  form.controls.phone.errors?.['required']
-                ) {
-                  <p class="workshop-field__error" role="alert">{{ 'VENDOR.WORKSHOP.ERROR.PHONE_REQUIRED' | translate }}</p>
-                }
+              @if (submitted() && form.controls.email.errors?.['required']) {
+                <div class="invalid-feedback d-block mt-1">{{ 'VALIDATION.REQUIRED' | translate }}</div>
+              }
+              @if (submitted() && form.controls.email.errors?.['email']) {
+                <div class="invalid-feedback d-block mt-1">{{ 'VALIDATION.INVALID_EMAIL' | translate }}</div>
+              }
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="phoneNumber">{{ 'vendor.profile.phoneNumber' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-telephone"></i></span>
+                <input id="phoneNumber" type="tel" class="form-control premium-input ps-5" formControlName="phoneNumber" [class.is-invalid]="submitted() && form.controls.phoneNumber.invalid" />
               </div>
-
-              <div class="col-12 col-md-6">
-                <label class="workshop-field__label" for="address">{{ 'VENDOR.COMMON.ADDRESS' | translate }}</label>
-                <input
-                  id="address"
-                  type="text"
-                  class="workshop-field__control form-control"
-                  formControlName="address"
-                  autocomplete="street-address"
-                  [class.is-invalid]="
-                    (form.controls.address.touched || submitted()) && form.controls.address.invalid
-                  "
-                />
-                @if (
-                  (form.controls.address.touched || submitted()) &&
-                  form.controls.address.errors?.['required']
-                ) {
-                  <p class="workshop-field__error" role="alert">{{ 'VENDOR.WORKSHOP.ERROR.ADDRESS_REQUIRED' | translate }}</p>
-                }
-              </div>
-
-              <div class="col-12">
-                <label class="workshop-field__label" for="description">{{ 'VENDOR.COMMON.DESCRIPTION' | translate }}</label>
-                <textarea
-                  id="description"
-                  class="workshop-field__control workshop-field__control--textarea form-control"
-                  formControlName="description"
-                  rows="4"
-                  [class.is-invalid]="
-                    (form.controls.description.touched || submitted()) &&
-                    form.controls.description.invalid
-                  "
-                ></textarea>
-                @if (
-                  (form.controls.description.touched || submitted()) &&
-                  form.controls.description.errors?.['required']
-                ) {
-                  <p class="workshop-field__error" role="alert">{{ 'VENDOR.WORKSHOP.ERROR.DESCRIPTION_REQUIRED' | translate }}</p>
-                }
-              </div>
-
-              <div class="col-12">
-                <label class="workshop-field__label" for="logo">
-                  {{ 'VENDOR.WORKSHOP.LOGO_URL' | translate }}
-                  <span class="workshop-field__optional">{{ 'VENDOR.COMMON.OPTIONAL' | translate }}</span>
-                </label>
-                <input
-                  id="logo"
-                  type="url"
-                  class="workshop-field__control form-control"
-                  formControlName="logo"
-                  [placeholder]="'VENDOR.WORKSHOP.LOGO_PLACEHOLDER' | translate"
-                  autocomplete="off"
-                />
+              @if (submitted() && form.controls.phoneNumber.errors?.['required']) {
+                <div class="invalid-feedback d-block mt-1">{{ 'VALIDATION.REQUIRED' | translate }}</div>
+              }
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="preferredLanguage">{{ 'vendor.profile.preferredLanguage' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-translate"></i></span>
+                <select id="preferredLanguage" class="form-select premium-input ps-5" formControlName="preferredLanguage">
+                  <option value="en">{{ 'vendor.profile.language.english' | translate }}</option>
+                  <option value="ar">{{ 'vendor.profile.language.arabic' | translate }}</option>
+                </select>
               </div>
             </div>
-          </section>
-        </div>
-
-        <footer class="workshop-profile-card__footer">
-          <div class="workshop-profile-card__actions">
-            <button
-              type="button"
-              class="btn btn-outline-secondary workshop-profile-card__btn-cancel"
-              (click)="onCancel()"
-            >
-              {{ 'VENDOR.COMMON.CANCEL' | translate }}
-            </button>
-            <button
-              type="submit"
-              class="btn btn-gradient workshop-profile-card__btn-save"
-              [disabled]="form.invalid"
-            >
-              <i class="bi bi-check2-circle" aria-hidden="true"></i>
-              {{ 'VENDOR.WORKSHOP.SAVE' | translate }}
-            </button>
           </div>
-        </footer>
-      </form>
-    </article>
-  </div>
-</div>
+        </div>
+      </div>
+
+      <!-- SECTION: WORKSHOP INFORMATION -->
+      <div class="card border-0 overflow-hidden form-card mb-4">
+        <div class="card-body p-4 p-md-5">
+          <div class="d-flex align-items-center gap-3 mb-4 pb-2">
+            <div class="d-flex align-items-center justify-content-center rounded-3 bg-white shadow-sm" style="width:40px;height:40px;">
+              <i class="bi bi-shop text-brand fs-5"></i>
+            </div>
+            <div>
+              <h3 class="h5 mb-1 font-semibold text-dark">{{ 'vendor.profile.workshopInformation' | translate }}</h3>
+            </div>
+          </div>
+          <div class="row g-4">
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="workshopNameAr">{{ 'vendor.profile.workshopNameAr' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-type"></i></span>
+                <input id="workshopNameAr" type="text" class="form-control premium-input ps-5" formControlName="workshopNameAr" />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="workshopNameEn">{{ 'vendor.profile.workshopNameEn' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-type-bold"></i></span>
+                <input id="workshopNameEn" type="text" class="form-control premium-input ps-5" formControlName="workshopNameEn" />
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label font-medium text-dark small mb-2" for="descriptionAr">{{ 'vendor.profile.descriptionAr' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute textarea-icon ms-3 text-muted"><i class="bi bi-text-paragraph"></i></span>
+                <textarea id="descriptionAr" class="form-control premium-input ps-5" formControlName="descriptionAr" rows="3" style="padding-top:16px;min-height:80px;resize:vertical;"></textarea>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label font-medium text-dark small mb-2" for="descriptionEn">{{ 'vendor.profile.descriptionEn' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute textarea-icon ms-3 text-muted"><i class="bi bi-text-paragraph"></i></span>
+                <textarea id="descriptionEn" class="form-control premium-input ps-5" formControlName="descriptionEn" rows="3" style="padding-top:16px;min-height:80px;resize:vertical;"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: WORKSHOP ADDRESS -->
+      <div class="card border-0 overflow-hidden form-card mb-4">
+        <div class="card-body p-4 p-md-5">
+          <div class="d-flex align-items-center gap-3 mb-4 pb-2">
+            <div class="d-flex align-items-center justify-content-center rounded-3 bg-white shadow-sm" style="width:40px;height:40px;">
+              <i class="bi bi-geo-alt text-brand fs-5"></i>
+            </div>
+            <div>
+              <h3 class="h5 mb-1 font-semibold text-dark">{{ 'vendor.profile.addressInformation' | translate }}</h3>
+            </div>
+          </div>
+          <div class="row g-4" formGroupName="workshopAddress">
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="city">{{ 'vendor.profile.city' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-building"></i></span>
+                <input id="city" type="text" class="form-control premium-input ps-5" formControlName="city" />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="area">{{ 'vendor.profile.area' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-pin-map"></i></span>
+                <input id="area" type="text" class="form-control premium-input ps-5" formControlName="area" />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="street">{{ 'vendor.profile.street' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-signpost-2"></i></span>
+                <input id="street" type="text" class="form-control premium-input ps-5" formControlName="street" />
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label font-medium text-dark small mb-2" for="buildingNumber">{{ 'vendor.profile.buildingNumber' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-door-closed"></i></span>
+                <input id="buildingNumber" type="text" class="form-control premium-input ps-5" formControlName="buildingNumber" />
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label font-medium text-dark small mb-2" for="notes">{{ 'vendor.profile.notes' | translate }}</label>
+              <div class="input-container position-relative">
+                <span class="input-icon-left position-absolute textarea-icon ms-3 text-muted"><i class="bi bi-chat-dots"></i></span>
+                <textarea id="notes" class="form-control premium-input ps-5" formControlName="notes" rows="2" style="padding-top:16px;min-height:60px;resize:vertical;"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTION BAR -->
+      <div class="d-flex justify-content-end gap-3 pt-2">
+        <button type="button" class="btn btn-ghost btn-md rounded-pill px-4" (click)="onCancel()" [disabled]="saving()">
+          {{ 'vendor.profile.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn-dark btn-md btn-rounded btn-ripple-effect px-4" [disabled]="saving()">
+          @if (saving()) {
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          }
+          {{ 'vendor.profile.saveChanges' | translate }}
+        </button>
+      </div>
+    </form>
+  } @else {
+    <!-- ============================================ -->
+    <!-- VIEW MODE                                    -->
+    <!-- ============================================ -->
+
+    <!-- SECTION: PERSONAL INFORMATION -->
+    <div class="card border-0 overflow-hidden form-card mb-4">
+      <div class="card-body p-4 p-md-5">
+        <div class="d-flex align-items-center gap-3 mb-4 pb-2">
+          <div class="d-flex align-items-center justify-content-center rounded-3 bg-white shadow-sm" style="width:40px;height:40px;">
+            <i class="bi bi-person text-brand fs-5"></i>
+          </div>
+          <div>
+            <h3 class="h5 mb-1 font-semibold text-dark">{{ 'vendor.profile.personalInformation' | translate }}</h3>
+          </div>
+        </div>
+        <div class="row g-4">
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.fullName' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-person"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="profile()?.fullName || '--'" readonly />
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.email' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-envelope"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="profile()?.email || '--'" readonly />
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.phoneNumber' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-telephone"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="profile()?.phoneNumber || '--'" readonly />
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.preferredLanguage' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-translate"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="languageLabel()" readonly />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: WORKSHOP INFORMATION -->
+    <div class="card border-0 overflow-hidden form-card mb-4">
+      <div class="card-body p-4 p-md-5">
+        <div class="d-flex align-items-center gap-3 mb-4 pb-2">
+          <div class="d-flex align-items-center justify-content-center rounded-3 bg-white shadow-sm" style="width:40px;height:40px;">
+            <i class="bi bi-shop text-brand fs-5"></i>
+          </div>
+          <div>
+            <h3 class="h5 mb-1 font-semibold text-dark">{{ 'vendor.profile.workshopInformation' | translate }}</h3>
+          </div>
+        </div>
+        <div class="row g-4">
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.workshopNameAr' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-type"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="profile()?.workshopNameAr || '--'" readonly />
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.workshopNameEn' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-type-bold"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="profile()?.workshopNameEn || '--'" readonly />
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.descriptionAr' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute textarea-icon ms-3 text-muted"><i class="bi bi-text-paragraph"></i></span>
+              <textarea class="form-control premium-input ps-5" rows="3" style="padding-top:16px;min-height:80px;resize:none;" [value]="profile()?.descriptionAr || '--'" readonly></textarea>
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.descriptionEn' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute textarea-icon ms-3 text-muted"><i class="bi bi-text-paragraph"></i></span>
+              <textarea class="form-control premium-input ps-5" rows="3" style="padding-top:16px;min-height:80px;resize:none;" [value]="profile()?.descriptionEn || '--'" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: WORKSHOP ADDRESS -->
+    <div class="card border-0 overflow-hidden form-card mb-4">
+      <div class="card-body p-4 p-md-5">
+        <div class="d-flex align-items-center gap-3 mb-4 pb-2">
+          <div class="d-flex align-items-center justify-content-center rounded-3 bg-white shadow-sm" style="width:40px;height:40px;">
+            <i class="bi bi-geo-alt text-brand fs-5"></i>
+          </div>
+          <div>
+            <h3 class="h5 mb-1 font-semibold text-dark">{{ 'vendor.profile.addressInformation' | translate }}</h3>
+          </div>
+        </div>
+        <div class="row g-4">
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.city' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-building"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="profile()?.workshopAddress?.city || '--'" readonly />
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.area' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-pin-map"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="profile()?.workshopAddress?.area || '--'" readonly />
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.street' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-signpost-2"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="profile()?.workshopAddress?.street || '--'" readonly />
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.buildingNumber' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-door-closed"></i></span>
+              <input class="form-control premium-input ps-5" type="text" [value]="profile()?.workshopAddress?.buildingNumber || '--'" readonly />
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="form-label font-medium text-dark small mb-2">{{ 'vendor.profile.notes' | translate }}</label>
+            <div class="input-container position-relative readonly">
+              <span class="input-icon-left position-absolute textarea-icon ms-3 text-muted"><i class="bi bi-chat-dots"></i></span>
+              <textarea class="form-control premium-input ps-5" rows="2" style="padding-top:16px;min-height:60px;resize:none;" [value]="profile()?.workshopAddress?.notes || '--'" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+}

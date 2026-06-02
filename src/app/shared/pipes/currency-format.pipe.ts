@@ -2,6 +2,7 @@ import { inject, Pipe, PipeTransform } from '@angular/core';
 import { TranslationService } from '../i18n/translation.service';
 
 @Pipe({
+  standalone: true,
   name: 'currencyFormat',
   pure: false
 })

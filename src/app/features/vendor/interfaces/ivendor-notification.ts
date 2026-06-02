@@ -17,3 +17,14 @@ export interface IVendorNotificationSummary {
   unreadCount: number;
   recent: IVendorNotification[];
 }
+
+export type NotificationIconType = 'order' | 'revenue' | 'review' | 'alert' | 'system';
+
+export interface IVendorNotificationItem {
+  id: number;
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: Date;
+  icon: NotificationIconType;
+}

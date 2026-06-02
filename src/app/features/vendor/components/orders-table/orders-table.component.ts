@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
-import { IVendorOrder } from '../../interfaces';
+import { IVendorOrderSummary } from '../../interfaces';
 import { OrderStatusBadge } from '../order-status-badge/order-status-badge.component';
 
 @Component({
@@ -14,7 +14,7 @@ import { OrderStatusBadge } from '../order-status-badge/order-status-badge.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrdersTable {
-  readonly orders = input.required<IVendorOrder[]>();
+  readonly orders = input.required<IVendorOrderSummary[]>();
   readonly viewOrder = output<string>();
 
   protected onViewOrder(orderId: string): void {

@@ -91,7 +91,37 @@
       </h2>
     </header>
 
-    @if (filteredOrders().length) {
+    @if (loading()) {
+      <div class="vendor-orders__loading" role="status" aria-label="Loading orders...">
+        <svg class="vendor-orders__spinner" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="32" stroke-linecap="round" class="opacity-25" style="color: var(--color-primary);"></circle>
+        </svg>
+      </div>
+    } @else if (error()) {
+      <div class="vendor-orders__error" role="alert">
+        <div class="vendor-orders__error-icon" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <h3 class="vendor-orders__error-title">Failed to load orders</h3>
+        <p class="vendor-orders__error-description">
+          {{ error() }}
+        </p>
+      </div>
+    } @else if (filteredOrders().length) {
       <app-orders-table
         [orders]="filteredOrders()"
         (viewOrder)="onViewOrder($event)"

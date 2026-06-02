@@ -1,10 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
-  signal,
   inject,
   OnInit,
+  signal,
   PLATFORM_ID
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -49,7 +50,7 @@ export class VendorDashboard implements OnInit {
   readonly products = this.vendorProductService.products;
   readonly reviews = this.vendorReviewsService.reviews;
   readonly metrics = this.vendorOrdersService.dashboardMetrics;
-  
+
   readonly loading = signal<boolean>(true);
 
   // New signals for stats and top product from backend (Requirement 5)
@@ -60,7 +61,7 @@ export class VendorDashboard implements OnInit {
   readonly totalProducts = computed(() => this.productStats()?.total ?? this.products().length);
   readonly activeProducts = computed(() => this.productStats()?.active ?? this.products().filter(p => p.isActive).length);
   readonly archivedProducts = computed(() => this.productStats()?.archived ?? this.products().filter(p => !p.isActive).length);
-  
+
   readonly topRatedProduct = computed(() => {
     if (this.topProduct()) {
       return this.topProduct();
@@ -97,7 +98,7 @@ export class VendorDashboard implements OnInit {
     const products$ = this.vendorProductService.getVendorProducts().pipe(catchError(err => { console.error(err); return of([]); }));
     const reviews$ = this.vendorReviewsService.getVendorReviews().pipe(catchError(err => { console.error(err); return of([]); }));
     const metrics$ = this.vendorOrdersService.getDashboardMetrics().pipe(catchError(err => { console.error(err); return of(null); }));
-    
+
     // Stats & Top rated product queries (Requirement 5)
     const stats$ = this.vendorProductService.getVendorStats().pipe(
       catchError(err => {
@@ -123,9 +124,9 @@ export class VendorDashboard implements OnInit {
       next: (response: [IProduct[], any[], any, any, IProduct | null]) => {
         console.log('Vendor Dashboard Data Loaded successfully:', response);
         const [prods, revs, metrics, stats, topProd] = response;
-        
+
         this.topProduct.set(topProd);
-        
+
         if (stats) {
           this.productStats.set({
             total: Number(stats.totalProducts ?? stats.totalCount ?? stats.total ?? prods.length),

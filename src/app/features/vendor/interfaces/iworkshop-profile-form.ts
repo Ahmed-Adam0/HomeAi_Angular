@@ -1,9 +1,17 @@
-/** Strongly typed value shape for the workshop profile reactive form. */
-export interface IWorkshopProfileFormValue {
-  workshopName: string;
-  description: string;
+export interface IVendorProfileFormValue {
+  fullName: string;
+  phoneNumber: string;
   email: string;
-  phone: string;
-  address: string;
-  logo: string;
+  preferredLanguage: string;
+  workshopNameAr: string;
+  workshopNameEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+  workshopAddress: {
+    city: string;
+    area: string;
+    street: string;
+    buildingNumber: string;
+    notes: string;
+  };
 }

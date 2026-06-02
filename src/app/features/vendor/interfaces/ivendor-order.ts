@@ -72,7 +72,11 @@ export interface IVendorOrderSummary {
 }
 
 export interface IVendorOrderStatusUpdate {
-  orderId: string;
+  orderId: string | number;
   status: VendorOrderStatus;
   note?: string;
+}
+
+export interface StatusUpdateResponse {
+  message: string;
 }

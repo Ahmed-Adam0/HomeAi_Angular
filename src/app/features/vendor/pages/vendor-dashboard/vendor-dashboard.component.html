@@ -25,7 +25,7 @@
 
   <!-- Dashboard Main Content -->
   <div class="vendor-dashboard__content mt-4" *ngIf="!loading()">
-    
+
     <!-- Premium CTA Callout Banner Card -->
     <div class="card card-cta-banner rounded-4 border-0 p-4 p-md-5 mb-5 shadow-xs position-relative overflow-hidden">
       <div class="row align-items-center g-4 position-relative z-2">
@@ -270,7 +270,7 @@
           <i class="bi bi-chat-left-heart-fill text-gold"></i>
           {{ translationService.currentLang() === 'ar' ? 'آخر المراجعات وإدارة التقييمات' : 'Recent Reviews & Moderation Shortcuts' }}
         </h2>
-        
+
         <!-- Reported review indicator badge -->
         <span *ngIf="reportedReviewsCount() > 0" class="badge bg-danger-soft text-danger border border-danger-subtle rounded-pill font-xxs px-3 py-1.5 d-inline-flex align-items-center gap-1.5">
           <i class="bi bi-flag-fill"></i>

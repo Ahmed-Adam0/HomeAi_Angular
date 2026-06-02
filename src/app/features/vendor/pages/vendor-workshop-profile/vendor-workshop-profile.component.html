@@ -1,4 +1,17 @@
-<section class="vendor-workshop-profile" [attr.aria-label]="'VENDOR.WORKSHOP.PAGE_ARIA' | translate">
-  <h1>{{ 'VENDOR.WORKSHOP.TITLE' | translate }}</h1>
-  <app-workshop-profile-form />
-</section>
+<main class="vendor-profile-page container py-4 py-md-5" appRtl>
+  <div class="row gy-4">
+    <div class="col-12">
+      <app-workshop-profile-form
+        [profile]="profile()"
+        [loading]="loading()"
+        [saving]="saving()"
+        [uploadingLogo]="uploadingLogo()"
+        [editing]="isEditing()"
+        (saveProfile)="onSaveProfile($event)"
+        (uploadLogo)="onUploadLogo($event)"
+        (editProfile)="editProfile()"
+        (cancelEdit)="cancelEdit()"
+      />
+    </div>
+  </div>
+</main>

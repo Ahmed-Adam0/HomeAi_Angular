@@ -1,0 +1,30 @@
+.unread-badge {
+  align-items: center;
+  background: linear-gradient(135deg, var(--fm-color-primary-500, #b8935c), var(--fm-color-primary-700, #8a683d));
+  border-radius: var(--fm-radius-pill, 9999px);
+  box-shadow: 0 2px 8px rgba(184, 147, 92, 0.32);
+  color: #fff;
+  display: inline-flex;
+  font-family: var(--fm-font-display, 'Outfit', serif);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  justify-content: center;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  min-width: 1.75rem;
+  padding: 0.3125rem 0.5625rem;
+  white-space: nowrap;
+}
+
+.unread-badge--pulse {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(184, 147, 92, 0.32);
+  }
+  50% {
+    box-shadow: 0 2px 16px rgba(184, 147, 92, 0.52);
+  }
+}

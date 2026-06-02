@@ -1,1 +1,4 @@
-/* Phase 2: workshop profile page styles */
+.vendor-profile-page {
+  min-height: 100vh;
+  background-color: var(--fm-surface-bg);
+}
