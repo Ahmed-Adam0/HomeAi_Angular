@@ -1,4 +1,4 @@
-<div class="notification-bell-wrapper">
+<div #bellWrapper class="notification-bell-wrapper">
   <button
     type="button"
     class="notification-bell-btn"
@@ -11,8 +11,8 @@
     }
   </button>
 
-  <p-popover #popover (onShow)="onPopoverShow()" styleClass="notification-dropdown" [dismissable]="true">
-    <div class="notification-dropdown-header">
+<p-popover #popover [appendTo]="bellWrapper" (onShow)="onPopoverShow()" styleClass="notification-dropdown" [dismissable]="true">
+      <div class="notification-dropdown-header">
       <h3 class="notification-dropdown-title">Notifications</h3>
       @if (notifications().length > 0 && unreadCount() > 0) {
         <button
