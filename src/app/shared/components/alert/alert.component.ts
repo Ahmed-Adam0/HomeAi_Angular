@@ -1,8 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
+import { RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
+
 @Component({
   selector: 'app-alert',
-  imports: [],
+  standalone: true,
+  imports: [NgIf, RouterLink],
   templateUrl: './alert.component.html',
   styleUrl: './alert.component.css'
 })

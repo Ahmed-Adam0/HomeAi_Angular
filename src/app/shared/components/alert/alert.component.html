@@ -1,18 +1,36 @@
 @if (visible && message) {
-  <div class="alert d-flex align-items-center justify-content-between p-3 mb-3 border rounded-3 alert-dismissible" [class]="'alert-' + type">
-    <div class="d-flex align-items-center gap-2">
-      <span class="alert-icon">
+  <div class="alert-premium shadow-sm border-0 d-flex align-items-center justify-content-between p-2.5 mb-2.5 rounded-3" [class]="'alert-' + type">
+    <div class="d-flex align-items-center gap-2.5 overflow-hidden w-100">
+      <div class="alert-icon-wrapper rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 position-relative">
         @switch (type) {
-          @case ('success') { ✅ }
-          @case ('danger') { ❌ }
-          @case ('warning') { ⚠️ }
-          @case ('info') { ℹ️ }
+          @case ('success') {
+            <i class="bi bi-check-lg fs-6"></i>
+            @if (message.toLowerCase().includes('favorite') || message.includes('مفضل')) {
+              <i class="bi bi-heart-fill mini-heart-badge"></i>
+            }
+          }
+          @case ('danger') { <i class="bi bi-x-circle fs-6"></i> }
+          @case ('warning') { <i class="bi bi-exclamation-triangle fs-6"></i> }
+          @case ('info') { <i class="bi bi-info-circle fs-6"></i> }
         }
-      </span>
-      <span class="alert-text fw-medium">{{ message }}</span>
+      </div>
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100 overflow-hidden">
+        <span class="alert-text fw-medium font-xxs text-truncate" style="max-width: calc(100% - 85px);" [title]="message">{{ message }}</span>
+        
+        <!-- Subtle, lightweight inline CTA for Favorites -->
+        <a
+          *ngIf="type === 'success' && (message.toLowerCase().includes('favorite') || message.includes('مفضل'))"
+          routerLink="/favorites"
+          class="alert-cta-btn font-xxxxs fw-semibold text-decoration-none text-uppercase py-1 px-2.5 rounded-pill transition-all"
+        >
+          {{ message.includes('مفضل') ? 'عرض' : 'View' }}
+        </a>
+      </div>
     </div>
     @if (dismissible) {
-      <button type="button" (click)="onClose()" class="btn-close" aria-label="Close"></button>
+      <button type="button" (click)="onClose()" class="btn-close-premium border-0 bg-transparent rounded-circle d-flex align-items-center justify-content-center ms-2 flex-shrink-0" aria-label="Close">
+        <i class="bi bi-x fs-5"></i>
+      </button>
     }
   </div>
 }
