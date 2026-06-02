@@ -139,7 +139,7 @@
                 <!-- Product Image -->
                 <div class="fav-card-img-wrap overflow-hidden">
                   <img
-                    [src]="fav.productImage || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80'"
+                    [src]="fav.productImage"
                     [alt]="translationService.currentLang() === 'ar' ? (fav.productNameAr || fav.productName) : (fav.productNameEn || fav.productName)"
                     class="fav-card-img w-100 h-100 object-fit-cover"
                     loading="lazy"
@@ -202,7 +202,7 @@
             >
               <div class="sug-img-wrap flex-shrink-0 rounded-3 overflow-hidden">
                 <img
-                  [src]="sug.mainImageUrl || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=200&q=80'"
+                  [src]="sug.mainImageUrl"
                   [alt]="translationService.currentLang() === 'ar' ? sug.nameAr : sug.nameEn"
                   class="sug-img w-100 h-100 object-fit-cover"
                   loading="lazy"

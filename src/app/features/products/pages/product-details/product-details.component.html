@@ -47,7 +47,7 @@
           <div class="active-image-container rounded-4 overflow-hidden shadow-md bg-light border border-light position-relative mb-3">
             <!-- Main image -->
             <img
-              [src]="activeImage() || 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80'"
+              [src]="activeImage()"
               [alt]="translationService.currentLang() === 'ar' ? product()?.nameAr : product()?.nameEn"
               class="active-img w-100 h-100 object-fit-cover transition-all"
             />

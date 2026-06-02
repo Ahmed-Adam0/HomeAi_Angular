@@ -8,7 +8,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslationService } from '../../../shared/i18n/translation.service';
 import { AuthService } from '../../../features/auth/services/auth.service';
-import { normalizeProduct } from '../../../core/utils/api-utils';
+import { normalizeProduct, unwrap } from '../../../core/utils/api-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +69,7 @@ export class FavoritesService {
         const requests = favs.map(fav => {
           return this.http.get<any>(`${this.apiUrl}Products/${fav.productId}`).pipe(
             map(rawProd => {
-              const prod = normalizeProduct(rawProd);
+              const prod = normalizeProduct(unwrap<any>(rawProd));
               const price = Number(prod.price || fav.price || 0);
               const salePrice = prod.salePrice ? Number(prod.salePrice) : undefined;
               return {
@@ -103,7 +103,7 @@ export class FavoritesService {
     if (!this.authService.isLoggedIn()) {
       return this.http.get<any>(`${this.apiUrl}Products/${productId}`).pipe(
         map(rawProd => {
-          const prod = normalizeProduct(rawProd);
+          const prod = normalizeProduct(unwrap<any>(rawProd));
           const favItem: IFavoriteItem = {
             id: `guest_${productId}_${Date.now()}`,
             productId: String(productId),
@@ -201,7 +201,7 @@ export class FavoritesService {
       // Backend may nest product data inside a `product` object
       const rawProduct = item.product ?? item;
       // ALWAYS normalize using the central normalizeProduct utility to ensure 100% path, absolute prefix, and active sync
-      const product = normalizeProduct(rawProduct);
+      const product = normalizeProduct(unwrap<any>(rawProduct));
 
       const price =
         Number(item.price ?? item.productPrice ?? product.price ?? product.salePrice ?? 0);
