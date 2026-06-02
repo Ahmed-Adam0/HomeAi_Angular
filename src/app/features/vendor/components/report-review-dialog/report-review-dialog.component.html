@@ -1,41 +1,51 @@
 <div class="report-dialog-backdrop" *ngIf="visible" (click)="onClose()">
-  <div class="report-dialog-card bg-white rounded-4 shadow-lg border-0 overflow-hidden" (click)="$event.stopPropagation()">
+  <div class="report-dialog-card rounded-4 border-0 overflow-hidden" (click)="$event.stopPropagation()">
+    <!-- Top thin gold accent bar -->
+    <div class="accent-bar bg-gold"></div>
+
     <!-- Header -->
-    <div class="report-dialog-header bg-dark text-white p-4 d-flex justify-content-between align-items-center">
-      <div>
-        <h4 class="h5 mb-0 fw-bold letter-spacing-tight">
-          {{ translationService.currentLang() === 'ar' ? 'الإبلاغ عن تقييم غير لائق' : 'Report Abuse or Toxic Review' }}
-        </h4>
-        <p class="mb-0 text-white-50 fs-8 mt-1">
-          {{ translationService.currentLang() === 'ar' ? 'أبلغ إدارة المنصة عن التقييم لمراجعته' : 'Flag this review for administrator moderation and review.' }}
-        </p>
+    <div class="report-dialog-header p-4 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3">
+        <div class="icon-badge rounded-circle bg-danger-soft text-danger d-flex align-items-center justify-content-center">
+          <i class="bi bi-flag-fill fs-5"></i>
+        </div>
+        <div>
+          <h4 class="h5 mb-0 fw-extrabold text-dark letter-spacing-tight">
+            {{ translationService.currentLang() === 'ar' ? 'الإبلاغ عن تقييم غير لائق' : 'Flag Review for Moderation' }}
+          </h4>
+          <p class="mb-0 text-muted font-xxs mt-0.5">
+            {{ translationService.currentLang() === 'ar' ? 'أبلغ إدارة المنصة عن التقييم لمراجعته' : 'Flag this review for administrator moderation and review.' }}
+          </p>
+        </div>
       </div>
-      <button type="button" class="btn-close btn-close-white border-0 bg-transparent text-white" aria-label="Close" (click)="onClose()">
-        <i class="bi bi-x-lg fs-5"></i>
+      <button type="button" class="btn-close-custom border-0 bg-transparent text-muted rounded-circle d-flex align-items-center justify-content-center" aria-label="Close" (click)="onClose()">
+        <i class="bi bi-x fs-4"></i>
       </button>
     </div>
 
     <!-- Content -->
-    <div class="p-4">
+    <div class="p-4 pt-0">
       <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
         <!-- Reason selection list -->
         <div class="mb-3">
-          <label for="reason" class="form-label fs-7 fw-bold text-dark mb-2">
+          <label for="reason" class="form-label font-xs fw-bold text-dark mb-2">
             {{ translationService.currentLang() === 'ar' ? 'سبب الإبلاغ *' : 'Reason for Reporting *' }}
           </label>
-          <select
-            id="reason"
-            formControlName="reason"
-            class="form-select rounded-pill px-3 py-2 fs-7 cursor-pointer"
-            [class.is-invalid]="isInvalid('reason')"
-          >
-            <option value="" disabled selected>
-              {{ translationService.currentLang() === 'ar' ? 'اختر سبب الإبلاغ...' : 'Select a moderation reason...' }}
-            </option>
-            <option *ngFor="let reason of reasons" [value]="reason.value">
-              {{ translationService.currentLang() === 'ar' ? reason.labelAr : reason.labelEn }}
-            </option>
-          </select>
+          <div class="select-wrapper position-relative">
+            <select
+              id="reason"
+              formControlName="reason"
+              class="form-select custom-select px-3 py-2.5 fs-7 cursor-pointer"
+              [class.is-invalid]="isInvalid('reason')"
+            >
+              <option value="" disabled selected>
+                {{ translationService.currentLang() === 'ar' ? 'اختر سبب الإبلاغ...' : 'Select a moderation reason...' }}
+              </option>
+              <option *ngFor="let reason of reasons" [value]="reason.value">
+                {{ translationService.currentLang() === 'ar' ? reason.labelAr : reason.labelEn }}
+              </option>
+            </select>
+          </div>
           <div class="invalid-feedback fs-8 px-2 mt-1">
             {{ translationService.currentLang() === 'ar' ? 'يرجى اختيار سبب صالح للإبلاغ.' : 'Please select a valid moderation reason.' }}
           </div>
@@ -43,20 +53,20 @@
 
         <!-- Notes textarea -->
         <div class="mb-4">
-          <label for="notes" class="form-label fs-7 fw-bold text-dark mb-2">
+          <label for="notes" class="form-label font-xs fw-bold text-dark mb-2">
             {{ translationService.currentLang() === 'ar' ? 'ملاحظات إضافية (اختياري)' : 'Additional Notes (Optional)' }}
           </label>
           <textarea
             id="notes"
             formControlName="notes"
-            class="form-control rounded-4 px-3 py-2 fs-7"
+            class="form-control custom-textarea px-3 py-2.5 fs-7"
             rows="4"
             [placeholder]="translationService.currentLang() === 'ar' ? 'اشرح بالتفصيل لماذا تعتقد أن هذا التقييم مسيء أو غير لائق...' : 'Provide detail on why you believe this review is spam, abusive, or inaccurate...'"
             [class.is-invalid]="isInvalid('notes')"
           ></textarea>
-          <div class="d-flex justify-content-between fs-8 text-muted mt-1 px-1">
+          <div class="d-flex justify-content-between font-xxs text-muted mt-1.5 px-1">
             <span>{{ translationService.currentLang() === 'ar' ? 'بحد أقصى 500 حرف' : 'Max 500 characters' }}</span>
-            <span>{{ reportForm.get('notes')?.value?.length || 0 }}/500</span>
+            <span class="fw-semibold text-secondary">{{ reportForm.get('notes')?.value?.length || 0 }}/500</span>
           </div>
           <div class="invalid-feedback fs-8 px-2">
             {{ translationService.currentLang() === 'ar' ? 'الملاحظات تجاوزت الحد الأقصى المسموح به.' : 'Notes exceed the maximum character limit.' }}
@@ -64,11 +74,10 @@
         </div>
 
         <!-- Actions -->
-        <div class="d-flex justify-content-end gap-2 pt-3 border-top border-light">
+        <div class="d-flex justify-content-end gap-2 pt-3 border-top border-light-subtle">
           <button
             type="button"
-            class="btn btn-outline-dark rounded-pill px-4 py-2 fs-7 fw-semibold border-0"
-            style="background-color: rgba(31,28,24,0.06)"
+            class="btn btn-cancel rounded-pill px-4 py-2 fs-7 fw-bold border-0"
             [disabled]="isSubmitting"
             (click)="onClose()"
           >
@@ -76,12 +85,12 @@
           </button>
           <button
             type="submit"
-            class="btn btn-danger rounded-pill px-4 py-2 fs-7 fw-semibold d-flex align-items-center gap-2 border-0 shadow-sm"
+            class="btn btn-submit-report rounded-pill px-4 py-2 fs-7 fw-bold d-flex align-items-center gap-2 border-0 shadow-xs"
             [disabled]="isSubmitting || reportForm.invalid"
           >
             <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <i *ngIf="!isSubmitting" class="bi bi-flag-fill"></i>
-            {{ translationService.currentLang() === 'ar' ? 'إرسال البلاغ' : 'Submit Report' }}
+            {{ translationService.currentLang() === 'ar' ? 'إرسال البلاغ' : 'Submit Flag' }}
           </button>
         </div>
       </form>
