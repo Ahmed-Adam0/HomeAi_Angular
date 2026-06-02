@@ -8,7 +8,7 @@ export class LazyImageDirective implements OnInit {
   private renderer = inject(Renderer2);
 
   @Input('appLazyImage') src!: string;
-  @Input() placeholder = 'assets/images/image-placeholder.png';
+  @Input() placeholder = 'assets/images/image-placeholder.svg';
 
   ngOnInit(): void {
     this.renderer.setAttribute(this.el.nativeElement, 'src', this.placeholder);

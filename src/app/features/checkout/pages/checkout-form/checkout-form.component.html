@@ -282,7 +282,7 @@
               @for (item of cartItems(); track item.id) {
                 <div class="summary-product-item d-flex align-items-center gap-3 py-3 border-bottom">
                   <div class="product-img-wrapper position-relativeflex-shrink-0">
-                    <img [src]="item.productImage || 'assets/images/placeholder.jpg'" [alt]="currentLang() === 'ar' ? item.productNameAr : item.productNameEn" class="product-thumbnail-img rounded-3">
+                    <img [src]="item.productImage || 'assets/images/image-placeholder.svg'" [alt]="currentLang() === 'ar' ? item.productNameAr : item.productNameEn" class="product-thumbnail-img rounded-3">
                     <span class="product-qty-badge position-absolute translate-middle rounded-circle bg-dark text-white d-flex align-items-center justify-content-center">
                       {{ item.quantity }}
                     </span>
