@@ -1,0 +1,71 @@
+<div #bellWrapper class="notification-bell-wrapper">
+  <button
+    type="button"
+    class="notification-bell-btn"
+    (click)="popover.toggle($event)"
+    [attr.aria-label]="(unreadCount() > 0 ? unreadCount() + ' unread notifications' : 'Notifications')"
+  >
+    <i class="pi pi-bell"></i>
+    @if (unreadCount() > 0) {
+      <span class="notification-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+    }
+  </button>
+
+<p-popover #popover [appendTo]="bellWrapper" (onShow)="onPopoverShow()" styleClass="notification-dropdown" [dismissable]="true">
+      <div class="notification-dropdown-header">
+      <h3 class="notification-dropdown-title">Notifications</h3>
+      @if (notifications().length > 0 && unreadCount() > 0) {
+        <button
+          type="button"
+          class="mark-all-btn"
+          [disabled]="markingAll()"
+          (click)="markAllAsRead()"
+        >
+          @if (markingAll()) {
+            <i class="pi pi-spin pi-spinner"></i>
+          }
+          Mark all as read
+        </button>
+      }
+    </div>
+
+    <div class="notification-dropdown-body">
+      @if (loading()) {
+        <div class="notification-loading">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+        </div>
+      } @else if (notifications().length === 0) {
+        <div class="notification-empty">
+          <i class="pi pi-bell-slash"></i>
+          <p>No notifications yet</p>
+        </div>
+      } @else {
+        @for (notif of notifications(); track notif.id) {
+          <div class="notification-item" [class.notification-item--unread]="!notif.isRead">
+            <div class="notification-item-icon" [class]="'notification-item-icon--' + notif.icon">
+              <i class="{{ iconClass(notif.icon) }}"></i>
+            </div>
+            <div class="notification-item-body">
+              <div class="notification-item-header">
+                <span class="notification-item-title">{{ notif.title }}</span>
+                <span class="notification-item-time">{{ notif.createdAt | date:'short' }}</span>
+              </div>
+              <p class="notification-item-message">{{ notif.message }}</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    @if (notifications().length > 0) {
+      <div class="notification-dropdown-footer">
+        <a class="view-all-link" (click)="viewAll()">
+          View all notifications
+          <i class="pi pi-arrow-right"></i>
+        </a>
+      </div>
+    }
+  </p-popover>
+</div>

@@ -229,6 +229,10 @@
   gap: 20px;
 }
 
+.header-right app-vendor-notification-bell {
+  margin-right: 4px;
+}
+
 .user-profile-menu {
   display: flex;
   align-items: center;

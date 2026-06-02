@@ -85,7 +85,7 @@ export const vendorRoutes: Routes = [
       {
         path: APP_ROUTES.VENDOR_REVENUE, // 'revenue'
         loadComponent: () =>
-          import('./pages/vendor-revenue/vendor-revenue.component').then((m) => m.VendorRevenue),
+          import('./pages/revenue-dashboard/revenue-dashboard.component').then((m) => m.RevenueDashboard),
       },
       {
         path: APP_ROUTES.VENDOR_ANALYTICS, // 'analytics'

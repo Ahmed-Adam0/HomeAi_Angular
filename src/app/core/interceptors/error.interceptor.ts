@@ -1,18 +1,7 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject, PLATFORM_ID } from '@angular/core';
-import { Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
 import { catchError, throwError } from 'rxjs';
-import { LOCAL_STORAGE_KEYS } from '../constants';
 
-/**
- * Functional interceptor to handle global HTTP errors.
- * Logs error details professionally and prepares structure for future toast notifications.
- */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  const router = inject(Router);
-  const platformId = inject(PLATFORM_ID);
-
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       // Professional logging in console
@@ -38,10 +27,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             break;
           case 401:
             userMessage = 'Your session has expired. Please log in again.';
-            if (isPlatformBrowser(platformId)) {
-              localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
-              router.navigate(['/auth/login']);
-            }
             break;
           case 403:
             userMessage = 'You do not have permission to perform this action.';

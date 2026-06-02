@@ -11,3 +11,4 @@ export { NotificationEmptyState } from './notification-empty-state/notification-
 export { UnreadBadge } from './unread-badge/unread-badge.component';
 export { ProductForm } from './product-form/product-form.component';
 export { ImageUploader } from './image-uploader/image-uploader.component';
+export { VendorNotificationBellComponent } from './vendor-notification-bell/vendor-notification-bell.component';

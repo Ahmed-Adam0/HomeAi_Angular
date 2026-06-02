@@ -14,7 +14,7 @@ import { TranslationService } from '../../../shared/i18n/translation.service';
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, RtlDirective, TranslatePipe],
   templateUrl: './vendor-layout.component.html',
   styleUrl: './vendor-layout.component.css',
-  
+
 })
 export class VendorLayoutComponent {
   private authService = inject(AuthService);
