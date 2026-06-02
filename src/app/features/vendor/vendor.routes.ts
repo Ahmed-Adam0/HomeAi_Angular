@@ -107,6 +107,13 @@ export const vendorRoutes: Routes = [
           import('./pages/vendor-notifications/vendor-notifications.component').then(
             (m) => m.VendorNotifications,
           ),
+      },
+      {
+        path: APP_ROUTES.VENDOR_REVIEWS, // 'reviews'
+        loadComponent: () =>
+          import('./pages/vendor-reviews/vendor-reviews.component').then(
+            (m) => m.VendorReviews,
+          ),
       }
     ],
   },

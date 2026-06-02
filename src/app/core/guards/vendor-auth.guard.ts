@@ -34,15 +34,15 @@ export const vendorAuthGuard: CanActivateFn = (route, state) => {
   }
 
   // Authenticated: check if vendor or customer
-  const user = authService.currentUser();
-
-  // Has workshopId → this is a vendor already logged in
-  if (user && user.workshopId) {
+  if (authService.isVendor()) {
     console.warn('[vendorAuthGuard] - Vendor already authenticated. Redirecting to vendor dashboard.');
     return router.createUrlTree([NAV_ROUTES.VENDOR_DASHBOARD]);
   }
 
-  // Customer logged in trying to access vendor auth → allow (they can't actually log in as vendor)
-  console.log('[vendorAuthGuard] - Customer is authenticated but attempting vendor auth page. Allowing (no workshop access).');
+  if (authService.isCustomer()) {
+    console.warn('[vendorAuthGuard] - Customer authenticated. Redirecting to customer home.');
+    return router.createUrlTree([NAV_ROUTES.HOME]);
+  }
+
   return true;
 };
