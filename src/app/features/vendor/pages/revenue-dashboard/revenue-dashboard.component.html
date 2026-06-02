@@ -1,0 +1,223 @@
+<main class="vendor-revenue-dashboard">
+  <!-- ===== HEADER ===== -->
+  <header class="vendor-revenue-dashboard__header">
+    <div class="vendor-revenue-dashboard__header-content">
+      <p class="vendor-revenue-dashboard__eyebrow">VENDOR PORTAL</p>
+      <h1 class="vendor-revenue-dashboard__title">Revenue Analytics</h1>
+      <p class="vendor-revenue-dashboard__description">
+        Real-time revenue overview with daily, weekly, and monthly breakdowns
+      </p>
+    </div>
+    <div class="vendor-revenue-dashboard__header-right">
+      <div class="vendor-revenue-dashboard__meta">
+        @if (filterBadgeLabel(); as badge) {
+          <span class="vendor-revenue-dashboard__meta-badge vendor-revenue-dashboard__meta-badge--filter">
+            <i class="bi bi-funnel-fill"></i>
+            {{ badge }}
+          </span>
+        }
+        <span class="vendor-revenue-dashboard__meta-badge">
+          <i class="bi bi-arrow-repeat" [class.fm-spin]="loading()"></i>
+          Live Dashboard
+        </span>
+        <span class="vendor-revenue-dashboard__meta-note">
+          Updated {{ lastUpdated() }}
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== DATE FILTER BAR ===== -->
+  <div class="vendor-revenue-dashboard__filter-bar">
+    <div class="vendor-revenue-dashboard__filter-presets">
+      @for (filter of quickFilters; track filter.label) {
+        <button
+          class="vendor-revenue-dashboard__filter-chip"
+          [class.vendor-revenue-dashboard__filter-chip--active]="activeFilterLabel() === filter.label"
+          (click)="applyQuickFilter(filter)"
+        >
+          {{ filter.label }}
+        </button>
+      }
+    </div>
+
+    <div class="vendor-revenue-dashboard__filter-custom">
+      <p-datepicker
+        [(ngModel)]="dateRange"
+        selectionMode="range"
+        [readonlyInput]="true"
+        placeholder="Custom Range"
+        dateFormat="M d, yy"
+        styleClass="vendor-revenue-dashboard__datepicker"
+      />
+      <button
+        class="vendor-revenue-dashboard__btn vendor-revenue-dashboard__btn--apply"
+        [disabled]="!dateRange() || dateRange()!.length < 2"
+        (click)="applyCustomDateFilter()"
+      >
+        <i class="bi bi-check-lg"></i>
+        Apply
+      </button>
+      @if (hasActiveFilter()) {
+        <button
+          class="vendor-revenue-dashboard__btn vendor-revenue-dashboard__btn--clear"
+          (click)="clearDateFilter()"
+        >
+          <i class="bi bi-x-lg"></i>
+          Clear
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ===== ERROR STATE ===== -->
+  @if (error(); as errMsg) {
+    <div class="vendor-revenue-dashboard__error">
+      <div class="vendor-revenue-dashboard__error-icon">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+      </div>
+      <div class="vendor-revenue-dashboard__error-body">
+        <h3>Failed to load revenue data</h3>
+        <p>{{ errMsg }}</p>
+        <button class="vendor-revenue-dashboard__btn vendor-revenue-dashboard__btn--retry" (click)="revenueService.refreshRevenueData()">
+          <i class="bi bi-arrow-repeat"></i>
+          Retry
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ===== LOADING STATE ===== -->
+  @if (loading() && !data()) {
+    <div class="vendor-revenue-dashboard__loading">
+      <div class="vendor-revenue-dashboard__skeleton-grid">
+        @for (slot of skeletonSlots; track slot) {
+          <div class="vendor-revenue-dashboard__skeleton-card">
+            <div class="vendor-revenue-dashboard__skeleton-icon"></div>
+            <div class="vendor-revenue-dashboard__skeleton-lines">
+              <div class="vendor-revenue-dashboard__skeleton-line--short"></div>
+              <div class="vendor-revenue-dashboard__skeleton-line--title"></div>
+              <div class="vendor-revenue-dashboard__skeleton-line--sub"></div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="vendor-revenue-dashboard__skeleton-charts">
+        <div class="vendor-revenue-dashboard__skeleton-chart-card vendor-revenue-dashboard__skeleton-chart-card--full"></div>
+        <div class="vendor-revenue-dashboard__skeleton-chart-card"></div>
+        <div class="vendor-revenue-dashboard__skeleton-chart-card"></div>
+      </div>
+    </div>
+  }
+
+  <!-- ===== EMPTY STATE ===== -->
+  @if (showEmptyState()) {
+    <div class="vendor-revenue-dashboard__empty">
+      <div class="vendor-revenue-dashboard__empty-icon">
+        <i class="bi bi-bar-chart"></i>
+      </div>
+      <h3>No revenue data available</h3>
+      <p>Revenue analytics will appear here once orders are processed and data is synced.</p>
+      <button class="vendor-revenue-dashboard__btn vendor-revenue-dashboard__btn--primary" (click)="revenueService.refreshRevenueData()">
+        <i class="bi bi-arrow-repeat"></i>
+        Refresh
+      </button>
+    </div>
+  }
+
+  <!-- ===== CONTENT ===== -->
+  @if (showContent()) {
+    <div class="vendor-revenue-dashboard__content">
+      <!-- KPI Cards Row (always rendered when API response exists) -->
+      <div class="vendor-revenue-dashboard__kpi-row">
+        @for (card of kpiCards; track card.key) {
+          <div class="vendor-revenue-dashboard__kpi-card" role="region" [attr.aria-label]="card.label">
+            <div class="vendor-revenue-dashboard__kpi-header">
+              <div class="vendor-revenue-dashboard__kpi-icon">
+                <i [class]="card.icon"></i>
+              </div>
+              <span class="vendor-revenue-dashboard__kpi-label">{{ card.label }}</span>
+            </div>
+            <div class="vendor-revenue-dashboard__kpi-value">{{ getDisplayValue(card) }}</div>
+            <div class="vendor-revenue-dashboard__kpi-subtitle">{{ card.subtitle }}</div>
+            <div class="vendor-revenue-dashboard__kpi-accent"></div>
+          </div>
+        }
+      </div>
+
+      <!-- Charts Section -->
+      <div class="vendor-revenue-dashboard__charts">
+        <!-- Line Chart - Full Width -->
+        @if (lineChartData(); as lcData) {
+          <div class="vendor-revenue-dashboard__chart-card vendor-revenue-dashboard__chart-card--full">
+            <div class="vendor-revenue-dashboard__chart-head">
+              <div>
+                <h3 class="vendor-revenue-dashboard__chart-title">Revenue Trend</h3>
+                <span class="vendor-revenue-dashboard__chart-desc">Daily revenue over time</span>
+              </div>
+              <div class="vendor-revenue-dashboard__chart-legend">
+                <span class="vendor-revenue-dashboard__chart-legend-dot"></span>
+                Revenue
+              </div>
+            </div>
+            <div class="vendor-revenue-dashboard__chart-body">
+              <p-chart type="line" [data]="lcData" [options]="chartOptions" height="320px" />
+            </div>
+          </div>
+        } @else {
+          <div class="vendor-revenue-dashboard__chart-card vendor-revenue-dashboard__chart-card--full">
+            <div class="vendor-revenue-dashboard__chart-empty">
+              <i class="bi bi-graph-down-arrow"></i>
+              <span>No daily revenue chart data available for the selected period</span>
+            </div>
+          </div>
+        }
+
+        <!-- Doughnut + Bar Side by Side -->
+        <div class="vendor-revenue-dashboard__chart-row">
+          @if (doughnutChartData(); as dcData) {
+            <div class="vendor-revenue-dashboard__chart-card">
+              <div class="vendor-revenue-dashboard__chart-head">
+                <div>
+                  <h3 class="vendor-revenue-dashboard__chart-title">Orders by Status</h3>
+                  <span class="vendor-revenue-dashboard__chart-desc">Distribution of order statuses</span>
+                </div>
+              </div>
+              <div class="vendor-revenue-dashboard__chart-body vendor-revenue-dashboard__chart-body--center">
+                <p-chart type="doughnut" [data]="dcData" [options]="doughnutOptions" height="300px" />
+              </div>
+            </div>
+          } @else {
+            <div class="vendor-revenue-dashboard__chart-card">
+              <div class="vendor-revenue-dashboard__chart-empty">
+                <i class="bi bi-pie-chart"></i>
+                <span>No order status chart data available for the selected period</span>
+              </div>
+            </div>
+          }
+
+          @if (barChartData(); as bcData) {
+            <div class="vendor-revenue-dashboard__chart-card">
+              <div class="vendor-revenue-dashboard__chart-head">
+                <div>
+                  <h3 class="vendor-revenue-dashboard__chart-title">Monthly Revenue</h3>
+                  <span class="vendor-revenue-dashboard__chart-desc">Revenue by month</span>
+                </div>
+              </div>
+              <div class="vendor-revenue-dashboard__chart-body">
+                <p-chart type="bar" [data]="bcData" [options]="barChartOptions" height="300px" />
+              </div>
+            </div>
+          } @else {
+            <div class="vendor-revenue-dashboard__chart-card">
+              <div class="vendor-revenue-dashboard__chart-empty">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>No monthly revenue chart data available for the selected period</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</main>

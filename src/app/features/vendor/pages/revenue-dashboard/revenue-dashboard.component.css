@@ -1,4 +1,8 @@
-.vendor-analytics {
+/* ========================================================================
+   REVENUE DASHBOARD — FurniMind Vendor Portal Design System
+   ======================================================================== */
+
+.vendor-revenue-dashboard {
   --color-bg: var(--fm-color-neutral-50, #faf9f6);
   --color-surface: var(--fm-color-neutral-100, #f4f2ee);
   --color-border: var(--fm-border-medium, rgba(31, 28, 24, 0.08));
@@ -12,8 +16,6 @@
   --color-gold-glow: rgba(184, 147, 92, 0.2);
   --color-danger: #ad5c51;
   --color-danger-soft: rgba(173, 92, 81, 0.08);
-  --color-success: #657e5d;
-  --color-success-soft: rgba(101, 126, 93, 0.12);
   --radius-sm: var(--fm-radius-sm, 8px);
   --radius-md: var(--fm-radius-md, 12px);
   --radius-lg: var(--fm-radius-lg, 16px);
@@ -34,7 +36,7 @@
 /* ========================================================================
    HEADER
    ======================================================================== */
-.vendor-analytics__header {
+.vendor-revenue-dashboard__header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -43,17 +45,17 @@
   flex-wrap: wrap;
 }
 
-.vendor-analytics__header-content {
+.vendor-revenue-dashboard__header-content {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.vendor-analytics__header-right {
+.vendor-revenue-dashboard__header-right {
   flex-shrink: 0;
 }
 
-.vendor-analytics__eyebrow {
+.vendor-revenue-dashboard__eyebrow {
   font-family: 'Inter', sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
@@ -63,7 +65,7 @@
   margin: 0;
 }
 
-.vendor-analytics__title {
+.vendor-revenue-dashboard__title {
   font-family: 'Outfit', 'Playfair Display', serif;
   font-size: clamp(1.75rem, 2.5vw + 0.75rem, 2.5rem);
   font-weight: 700;
@@ -73,7 +75,7 @@
   line-height: 1.15;
 }
 
-.vendor-analytics__description {
+.vendor-revenue-dashboard__description {
   font-size: clamp(0.9375rem, 0.25vw + 0.875rem, 1.0625rem);
   color: var(--color-text-secondary);
   margin: 0;
@@ -81,7 +83,7 @@
   max-width: 520px;
 }
 
-.vendor-analytics__meta {
+.vendor-revenue-dashboard__meta {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -94,7 +96,7 @@
   box-shadow: var(--shadow-card);
 }
 
-.vendor-analytics__meta-badge {
+.vendor-revenue-dashboard__meta-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -109,12 +111,12 @@
   white-space: nowrap;
 }
 
-.vendor-analytics__meta-badge--filter {
+.vendor-revenue-dashboard__meta-badge--filter {
   background: rgba(184, 147, 92, 0.2);
   color: #8a683d;
 }
 
-.vendor-analytics__meta-note {
+.vendor-revenue-dashboard__meta-note {
   font-size: 0.75rem;
   color: var(--color-text-muted);
   white-space: nowrap;
@@ -123,7 +125,7 @@
 /* ========================================================================
    DATE FILTER BAR
    ======================================================================== */
-.vendor-analytics__filter-bar {
+.vendor-revenue-dashboard__filter-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -137,13 +139,13 @@
   flex-wrap: wrap;
 }
 
-.vendor-analytics__filter-presets {
+.vendor-revenue-dashboard__filter-presets {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
 
-.vendor-analytics__filter-chip {
+.vendor-revenue-dashboard__filter-chip {
   padding: 6px 14px;
   font-size: 0.8125rem;
   font-weight: 600;
@@ -157,36 +159,37 @@
   white-space: nowrap;
 }
 
-.vendor-analytics__filter-chip:hover {
+.vendor-revenue-dashboard__filter-chip:hover {
   border-color: rgba(184, 147, 92, 0.3);
   color: var(--color-gold);
   background: var(--color-gold-subtle);
 }
 
-.vendor-analytics__filter-chip--active {
+.vendor-revenue-dashboard__filter-chip--active {
   background: var(--color-gold);
   color: #ffffff;
   border-color: var(--color-gold);
 }
 
-.vendor-analytics__filter-chip--active:hover {
+.vendor-revenue-dashboard__filter-chip--active:hover {
   background: #a37e4c;
   border-color: #a37e4c;
   color: #ffffff;
 }
 
-.vendor-analytics__filter-custom {
+.vendor-revenue-dashboard__filter-custom {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-:host ::ng-deep .vendor-analytics__datepicker.p-inputwrapper {
+/* PrimeNG DatePicker overrides */
+:host ::ng-deep .vendor-revenue-dashboard__datepicker.p-inputwrapper {
   min-width: 220px;
 }
 
-:host ::ng-deep .vendor-analytics__datepicker .p-datepicker-input {
+:host ::ng-deep .vendor-revenue-dashboard__datepicker .p-datepicker-input {
   font-family: 'Inter', sans-serif;
   font-size: 0.8125rem;
   padding: 8px 12px;
@@ -196,11 +199,11 @@
   color: var(--color-text-primary);
 }
 
-:host ::ng-deep .vendor-analytics__datepicker .p-datepicker-input:hover {
+:host ::ng-deep .vendor-revenue-dashboard__datepicker .p-datepicker-input:hover {
   border-color: rgba(184, 147, 92, 0.3);
 }
 
-:host ::ng-deep .vendor-analytics__datepicker .p-datepicker-input:focus {
+:host ::ng-deep .vendor-revenue-dashboard__datepicker .p-datepicker-input:focus {
   border-color: var(--color-gold);
   box-shadow: 0 0 0 3px var(--color-gold-soft);
 }
@@ -208,7 +211,7 @@
 /* ========================================================================
    BUTTONS
    ======================================================================== */
-.vendor-analytics__btn {
+.vendor-revenue-dashboard__btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -223,52 +226,52 @@
   white-space: nowrap;
 }
 
-.vendor-analytics__btn:disabled {
+.vendor-revenue-dashboard__btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-.vendor-analytics__btn--apply {
+.vendor-revenue-dashboard__btn--apply {
   background: var(--color-gold);
   color: #ffffff;
 }
 
-.vendor-analytics__btn--apply:hover:not(:disabled) {
+.vendor-revenue-dashboard__btn--apply:hover:not(:disabled) {
   background: #a37e4c;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(184, 147, 92, 0.35);
 }
 
-.vendor-analytics__btn--clear {
+.vendor-revenue-dashboard__btn--clear {
   background: transparent;
   color: var(--color-text-muted);
   border: 1px solid var(--color-border);
 }
 
-.vendor-analytics__btn--clear:hover {
+.vendor-revenue-dashboard__btn--clear:hover {
   border-color: var(--color-danger);
   color: var(--color-danger);
   background: var(--color-danger-soft);
 }
 
-.vendor-analytics__btn--primary {
+.vendor-revenue-dashboard__btn--primary {
   background: var(--color-gold);
   color: #ffffff;
 }
 
-.vendor-analytics__btn--primary:hover {
+.vendor-revenue-dashboard__btn--primary:hover {
   background: #a37e4c;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(184, 147, 92, 0.35);
 }
 
-.vendor-analytics__btn--retry {
+.vendor-revenue-dashboard__btn--retry {
   background: rgba(173, 92, 81, 0.1);
   color: var(--color-danger);
   border: 1px solid rgba(173, 92, 81, 0.25);
 }
 
-.vendor-analytics__btn--retry:hover {
+.vendor-revenue-dashboard__btn--retry:hover {
   background: rgba(173, 92, 81, 0.18);
   transform: translateY(-1px);
 }
@@ -276,14 +279,14 @@
 /* ========================================================================
    KPI CARDS
    ======================================================================== */
-.vendor-analytics__kpi-row {
+.vendor-revenue-dashboard__kpi-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
 
-.vendor-analytics__kpi-card {
+.vendor-revenue-dashboard__kpi-card {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -306,7 +309,7 @@
   overflow: hidden;
 }
 
-.vendor-analytics__kpi-card::before {
+.vendor-revenue-dashboard__kpi-card::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -317,22 +320,22 @@
   border-radius: inherit;
 }
 
-.vendor-analytics__kpi-card:hover {
+.vendor-revenue-dashboard__kpi-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-hover);
   border-color: var(--color-border-hover);
 }
 
-.vendor-analytics__kpi-card:hover::before {
+.vendor-revenue-dashboard__kpi-card:hover::before {
   opacity: 1;
 }
 
-.vendor-analytics__kpi-card:hover .vendor-analytics__kpi-icon {
+.vendor-revenue-dashboard__kpi-card:hover .vendor-revenue-dashboard__kpi-icon {
   background: var(--color-gold-soft);
   border-color: rgba(184, 147, 92, 0.3);
 }
 
-.vendor-analytics__kpi-accent {
+.vendor-revenue-dashboard__kpi-accent {
   position: absolute;
   top: 0;
   left: 0;
@@ -344,17 +347,17 @@
   transition: opacity 0.3s var(--ease-smooth);
 }
 
-.vendor-analytics__kpi-card:hover .vendor-analytics__kpi-accent {
+.vendor-revenue-dashboard__kpi-card:hover .vendor-revenue-dashboard__kpi-accent {
   opacity: 1;
 }
 
-.vendor-analytics__kpi-header {
+.vendor-revenue-dashboard__kpi-header {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.vendor-analytics__kpi-icon {
+.vendor-revenue-dashboard__kpi-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -369,7 +372,7 @@
   transition: all 0.3s var(--ease-smooth);
 }
 
-.vendor-analytics__kpi-label {
+.vendor-revenue-dashboard__kpi-label {
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -378,7 +381,7 @@
   margin: 0;
 }
 
-.vendor-analytics__kpi-value {
+.vendor-revenue-dashboard__kpi-value {
   font-family: 'Outfit', 'Playfair Display', serif;
   font-size: clamp(1.375rem, 1.5vw, 1.75rem);
   font-weight: 700;
@@ -388,31 +391,32 @@
   transition: color 0.2s ease;
 }
 
-.vendor-analytics__kpi-subtitle {
+.vendor-revenue-dashboard__kpi-subtitle {
   font-size: 0.8125rem;
   color: var(--color-text-muted);
   margin: 0;
 }
 
 /* ========================================================================
-   METRICS ROW — Doughnut + Performance side by side
+   CHARTS
    ======================================================================== */
-.vendor-analytics__metrics-row {
+.vendor-revenue-dashboard__charts {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.vendor-revenue-dashboard__chart-card--full {
+  grid-column: 1 / -1;
+}
+
+.vendor-revenue-dashboard__chart-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  margin-bottom: 20px;
 }
 
-/* ========================================================================
-   CHARTS
-   ======================================================================== */
-.vendor-analytics__content {
-  display: flex;
-  flex-direction: column;
-}
-
-.vendor-analytics__chart-card {
+.vendor-revenue-dashboard__chart-card {
   background: #ffffff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -423,23 +427,19 @@
   overflow: hidden;
 }
 
-.vendor-analytics__chart-card:hover {
+.vendor-revenue-dashboard__chart-card:hover {
   box-shadow: var(--shadow-hover);
   border-color: var(--color-border-hover);
 }
 
-.vendor-analytics__chart-card--full {
-  grid-column: 1 / -1;
-}
-
-.vendor-analytics__chart-head {
+.vendor-revenue-dashboard__chart-head {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: flex-start;
+  justify-content: space-between;
   padding: 20px 24px 0;
 }
 
-.vendor-analytics__chart-title {
+.vendor-revenue-dashboard__chart-title {
   font-family: 'Outfit', 'Playfair Display', serif;
   font-size: 1rem;
   font-weight: 600;
@@ -448,112 +448,44 @@
   margin: 0;
 }
 
-.vendor-analytics__chart-desc {
+.vendor-revenue-dashboard__chart-desc {
   font-size: 0.8125rem;
   color: var(--color-text-muted);
+  margin-top: 2px;
   display: block;
 }
 
-.vendor-analytics__chart-body {
+.vendor-revenue-dashboard__chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.vendor-revenue-dashboard__chart-legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-gold);
+}
+
+.vendor-revenue-dashboard__chart-body {
   padding: 16px 20px 20px;
 }
 
-.vendor-analytics__chart-body--center {
+.vendor-revenue-dashboard__chart-body--center {
   display: flex;
   justify-content: center;
 }
 
 /* ========================================================================
-   PERFORMANCE CARD
-   ======================================================================== */
-.vendor-analytics__perf-card {
-  background: #ffffff;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  transition:
-    box-shadow 0.3s var(--ease-smooth),
-    border-color 0.3s var(--ease-smooth);
-  overflow: hidden;
-}
-
-.vendor-analytics__perf-card:hover {
-  box-shadow: var(--shadow-hover);
-  border-color: var(--color-border-hover);
-}
-
-.vendor-analytics__perf-body {
-  padding: 20px 24px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.vendor-analytics__perf-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.vendor-analytics__perf-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.vendor-analytics__perf-label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.vendor-analytics__perf-value {
-  font-size: 0.875rem;
-  font-weight: 700;
-  font-family: 'Outfit', serif;
-}
-
-.vendor-analytics__perf-bar {
-  display: block;
-  height: 100%;
-  border-radius: 5px;
-  transition: width 0.6s var(--ease-smooth);
-}
-
-.vendor-analytics__perf-stat-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding-top: 8px;
-  border-top: 1px solid var(--color-border);
-}
-
-.vendor-analytics__perf-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.vendor-analytics__perf-stat-value {
-  font-family: 'Outfit', serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.vendor-analytics__perf-stat-label {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-muted);
-}
-
-/* ========================================================================
    CHART EMPTY FALLBACK
    ======================================================================== */
-.vendor-analytics__chart-empty {
+.vendor-revenue-dashboard__chart-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -565,13 +497,13 @@
   min-height: 240px;
 }
 
-.vendor-analytics__chart-empty i {
+.vendor-revenue-dashboard__chart-empty i {
   font-size: 2rem;
   opacity: 0.35;
   color: var(--color-gold);
 }
 
-.vendor-analytics__chart-empty span {
+.vendor-revenue-dashboard__chart-empty span {
   font-size: 0.875rem;
   max-width: 260px;
   line-height: 1.5;
@@ -580,7 +512,7 @@
 /* ========================================================================
    ERROR STATE
    ======================================================================== */
-.vendor-analytics__error {
+.vendor-revenue-dashboard__error {
   display: flex;
   align-items: flex-start;
   gap: 16px;
@@ -591,7 +523,7 @@
   backdrop-filter: blur(8px);
 }
 
-.vendor-analytics__error-icon {
+.vendor-revenue-dashboard__error-icon {
   flex-shrink: 0;
   width: 44px;
   height: 44px;
@@ -604,7 +536,7 @@
   font-size: 1.25rem;
 }
 
-.vendor-analytics__error-body h3 {
+.vendor-revenue-dashboard__error-body h3 {
   font-family: 'Outfit', serif;
   font-size: 1rem;
   font-weight: 600;
@@ -612,28 +544,68 @@
   margin: 0 0 4px;
 }
 
-.vendor-analytics__error-body p {
+.vendor-revenue-dashboard__error-body p {
   font-size: 0.875rem;
   color: var(--color-text-secondary);
   margin: 0 0 12px;
 }
 
 /* ========================================================================
+   EMPTY STATE
+   ======================================================================== */
+.vendor-revenue-dashboard__empty {
+  text-align: center;
+  padding: 48px 32px;
+  background: linear-gradient(145deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(250, 249, 246, 0.8) 100%
+  );
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.vendor-revenue-dashboard__empty-icon {
+  font-size: 2.5rem;
+  color: var(--color-gold);
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.vendor-revenue-dashboard__empty h3 {
+  font-family: 'Outfit', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+}
+
+.vendor-revenue-dashboard__empty p {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 20px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========================================================================
    SKELETON LOADING
    ======================================================================== */
-.vendor-analytics__loading {
+.vendor-revenue-dashboard__loading {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.vendor-analytics__skeleton-grid {
+.vendor-revenue-dashboard__skeleton-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 16px;
 }
 
-.vendor-analytics__skeleton-card {
+.vendor-revenue-dashboard__skeleton-card {
   display: flex;
   gap: 12px;
   padding: 20px;
@@ -642,17 +614,17 @@
   border: 1px solid var(--color-border);
 }
 
-.vendor-analytics__skeleton-icon {
+.vendor-revenue-dashboard__skeleton-icon {
   width: 40px;
   height: 40px;
   border-radius: 10px;
   flex-shrink: 0;
   background: linear-gradient(90deg, #ece9e4 25%, #e2ded7 50%, #ece9e4 75%);
   background-size: 200% 100%;
-  animation: am-shimmer 1.4s ease-in-out infinite;
+  animation: fm-shimmer 1.4s ease-in-out infinite;
 }
 
-.vendor-analytics__skeleton-lines {
+.vendor-revenue-dashboard__skeleton-lines {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -660,60 +632,61 @@
   padding-top: 2px;
 }
 
-.vendor-analytics__skeleton-line--short,
-.vendor-analytics__skeleton-line--title,
-.vendor-analytics__skeleton-line--sub {
+.vendor-revenue-dashboard__skeleton-line--short,
+.vendor-revenue-dashboard__skeleton-line--title,
+.vendor-revenue-dashboard__skeleton-line--sub {
   height: 10px;
   border-radius: 4px;
   background: linear-gradient(90deg, #ece9e4 25%, #e2ded7 50%, #ece9e4 75%);
   background-size: 200% 100%;
-  animation: am-shimmer 1.4s ease-in-out infinite;
+  animation: fm-shimmer 1.4s ease-in-out infinite;
 }
 
-.vendor-analytics__skeleton-line--short {
+.vendor-revenue-dashboard__skeleton-line--short {
   width: 40%;
   height: 8px;
 }
 
-.vendor-analytics__skeleton-line--title {
+.vendor-revenue-dashboard__skeleton-line--title {
   width: 85%;
   height: 18px;
 }
 
-.vendor-analytics__skeleton-line--sub {
+.vendor-revenue-dashboard__skeleton-line--sub {
   width: 55%;
   height: 10px;
 }
 
-.vendor-analytics__skeleton-charts {
+.vendor-revenue-dashboard__skeleton-charts {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-.vendor-analytics__skeleton-chart-card--full {
-  grid-column: 1 / -1;
-}
-
-.vendor-analytics__skeleton-chart-card {
-  height: 340px;
+.vendor-revenue-dashboard__skeleton-chart-card {
+  height: 360px;
   border-radius: var(--radius-lg);
   background: linear-gradient(90deg, #ece9e4 25%, #e2ded7 50%, #ece9e4 75%);
   background-size: 200% 100%;
-  animation: am-shimmer 1.4s ease-in-out infinite;
+  animation: fm-shimmer 1.4s ease-in-out infinite;
 }
 
-@keyframes am-shimmer {
+.vendor-revenue-dashboard__skeleton-chart-card--full {
+  grid-column: 1 / -1;
+  height: 360px;
+}
+
+@keyframes fm-shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
 .fm-spin {
-  animation: am-spin 1s linear infinite;
+  animation: fm-spin 1s linear infinite;
   display: inline-block;
 }
 
-@keyframes am-spin {
+@keyframes fm-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
@@ -721,99 +694,99 @@
 /* ========================================================================
    RESPONSIVE
    ======================================================================== */
-@media (max-width: 1200px) {
-  .vendor-analytics__metrics-row {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 1024px) {
-  .vendor-analytics {
+  .vendor-revenue-dashboard {
     padding: 24px;
   }
-  .vendor-analytics__kpi-row {
-    grid-template-columns: repeat(2, 1fr);
+  .vendor-revenue-dashboard__kpi-row {
+    grid-template-columns: repeat(3, 1fr);
   }
-  .vendor-analytics__skeleton-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .vendor-revenue-dashboard__kpi-card:last-child:nth-child(odd) {
+    grid-column: 2 / 3;
   }
-  .vendor-analytics__skeleton-charts {
+  .vendor-revenue-dashboard__chart-row {
     grid-template-columns: 1fr;
   }
-  .vendor-analytics__skeleton-chart-card {
+  .vendor-revenue-dashboard__skeleton-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .vendor-revenue-dashboard__skeleton-charts {
+    grid-template-columns: 1fr;
+  }
+  .vendor-revenue-dashboard__skeleton-chart-card {
     height: 300px;
   }
-  .vendor-analytics__chart-empty {
+  .vendor-revenue-dashboard__chart-empty {
     min-height: 200px;
     padding: 32px 16px;
   }
 }
 
 @media (max-width: 768px) {
-  .vendor-analytics {
+  .vendor-revenue-dashboard {
     padding: 16px;
   }
-  .vendor-analytics__header {
+  .vendor-revenue-dashboard__header {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
     margin-bottom: 16px;
   }
-  .vendor-analytics__meta {
+  .vendor-revenue-dashboard__meta {
     width: 100%;
     flex-wrap: wrap;
   }
-  .vendor-analytics__filter-bar {
+  .vendor-revenue-dashboard__filter-bar {
     flex-direction: column;
     align-items: stretch;
   }
-  .vendor-analytics__filter-custom {
+  .vendor-revenue-dashboard__filter-custom {
     width: 100%;
   }
-  :host ::ng-deep .vendor-analytics__datepicker.p-inputwrapper {
+  :host ::ng-deep .vendor-revenue-dashboard__datepicker.p-inputwrapper {
     flex: 1;
     min-width: 0;
   }
-  .vendor-analytics__kpi-row {
+  .vendor-revenue-dashboard__chart-empty {
+    min-height: 200px;
+    padding: 36px 16px;
+  }
+  .vendor-revenue-dashboard__kpi-row {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
-  .vendor-analytics__kpi-card {
+  .vendor-revenue-dashboard__kpi-card {
     padding: 16px;
   }
-  .vendor-analytics__chart-head {
+  .vendor-revenue-dashboard__chart-head {
     padding: 16px 16px 0;
   }
-  .vendor-analytics__chart-body {
+  .vendor-revenue-dashboard__chart-body {
     padding: 12px 16px 16px;
   }
-  .vendor-analytics__perf-body {
-    padding: 16px 16px 20px;
-  }
-  .vendor-analytics__skeleton-grid {
+  .vendor-revenue-dashboard__skeleton-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .vendor-analytics__chart-empty {
-    min-height: 180px;
-    padding: 28px 16px;
   }
 }
 
 @media (max-width: 576px) {
-  .vendor-analytics__kpi-row {
+  .vendor-revenue-dashboard__kpi-row {
     grid-template-columns: 1fr;
   }
-  .vendor-analytics__skeleton-grid {
+  .vendor-revenue-dashboard__kpi-card:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+  .vendor-revenue-dashboard__skeleton-grid {
     grid-template-columns: 1fr;
   }
-  .vendor-analytics__meta-note {
+  .vendor-revenue-dashboard__meta-note {
     display: none;
   }
-  .vendor-analytics__title {
+  .vendor-revenue-dashboard__title {
     font-size: 1.5rem;
   }
-  .vendor-analytics__perf-stat-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
+}
+
+[dir="rtl"] .vendor-revenue-dashboard__kpi-accent {
+  background: linear-gradient(270deg, var(--color-gold) 0%, rgba(184, 147, 92, 0.3) 100%);
 }
