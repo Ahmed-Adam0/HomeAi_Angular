@@ -9,4 +9,6 @@ export interface IReview {
   title?: string;
   verifiedPurchase: boolean;
   createdAt: string;
+  replyText?: string;
+  vendorReply?: string;
 }

@@ -546,3 +546,20 @@
   border-right: none !important;
   border-left: 1px solid rgba(184, 147, 92, 0.05) !important;
 }
+
+/* Premium Vendor Reply Box inside Product Details Reviews Tab */
+.vendor-reply-box {
+  background-color: #ffffff !important;
+  border-left: 3px solid #b8935c !important;
+  border-right: none !important;
+  box-shadow: 0 4px 12px rgba(31, 28, 24, 0.02) !important;
+}
+
+[dir="rtl"] .vendor-reply-box {
+  border-left: none !important;
+  border-right: 3px solid #b8935c !important;
+}
+
+.bg-gold-soft {
+  background-color: rgba(184, 147, 92, 0.08) !important;
+}

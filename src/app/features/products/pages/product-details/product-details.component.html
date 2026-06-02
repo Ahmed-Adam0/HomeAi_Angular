@@ -506,6 +506,14 @@
                     </div>
 
                     <p class="font-xs text-secondary lh-lg mb-0">{{ rev.comment }}</p>
+
+                    <!-- Dynamic Workshop Reply -->
+                    <div *ngIf="rev.replyText || rev.vendorReply" class="vendor-reply-box rounded-3 p-3 mt-3">
+                      <span class="badge bg-gold-soft text-gold font-xxs mb-1.5 d-inline-block">
+                        {{ translationService.currentLang() === 'ar' ? 'رد الورشة' : 'Workshop Reply' }}
+                      </span>
+                      <p class="font-xs text-secondary mb-0 lh-lg">{{ rev.replyText || rev.vendorReply }}</p>
+                    </div>
                   </div>
                 } @else {
                   <div class="empty-reviews-state text-center p-5 rounded-4 bg-light border border-light-beige shadow-sm">
