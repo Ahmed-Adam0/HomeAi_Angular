@@ -1,10 +1,11 @@
-import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, inject, OnInit, AfterViewInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -13,12 +14,17 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class Login {
+export class Login implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
+  private platformId = inject(PLATFORM_ID);
+
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
 
   loginForm: FormGroup;
   isLoading = false;
@@ -132,8 +138,113 @@ export class Login {
     });
   }
 
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    this.loadGoogleIdentityServices();
+  }
+
   onGoogleLogin(): void {
-    this.authService.redirectToGoogleOAuth(this.returnUrl);
+    this.promptGoogleSignIn();
+  }
+
+  private loadGoogleIdentityServices(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    if ((window as any).google?.accounts?.id) {
+      this.initializeGoogleIdentity();
+      return;
+    }
+
+    const scriptId = 'google-identity-services-script';
+    if (document.getElementById(scriptId)) {
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => this.initializeGoogleIdentity();
+    script.onerror = () => {
+      console.error('Failed to load Google Identity Services script.');
+    };
+    document.head.appendChild(script);
+  }
+
+  private initializeGoogleIdentity(): void {
+    const google = (window as any).google;
+    if (!google?.accounts?.id) {
+      return;
+    }
+
+    google.accounts.id.initialize({
+      client_id: environment.googleClientId,
+      callback: (response: any) => this.handleGoogleCredentialResponse(response),
+      ux_mode: 'popup',
+      context: 'signin'
+    });
+
+    google.accounts.id.renderButton(
+      document.getElementById('google-signin-btn'),
+      { theme: 'outline', size: 'large', width: 350, text: 'signin_with', shape: 'rectangular' }
+    );
+  }
+
+  private promptGoogleSignIn(): void {
+    const google = (window as any).google;
+    if (!google?.accounts?.id) {
+      this.loadGoogleIdentityServices();
+      return;
+    }
+
+    google.accounts.id.prompt((notification: any) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        google.accounts.id.renderButton(
+          document.getElementById('google-signin-btn'),
+          { theme: 'outline', size: 'large', width: 350 }
+        );
+      }
+    });
+  }
+
+  private handleGoogleCredentialResponse(response: any): void {
+    const idToken = response?.credential;
+    if (!idToken) {
+      this.errorMessage = this.currentLang() === 'ar'
+        ? 'فشل تسجيل الدخول عبر Google. حاول مجدداً.'
+        : 'Google sign-in failed. Please try again.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authService.loginWithGoogleIdToken(idToken).subscribe({
+      next: () => {
+        this.isLoading = false;
+        if (this.authService.isVendor()) {
+          console.warn('[Google Login] - Vendor account detected on customer login. Rejecting and logging out.');
+          this.authService.logout();
+          this.errorMessage = this.currentLang() === 'ar'
+            ? 'حسابات الموردين غير مسموح لها بتسجيل الدخول من هنا. يرجى استخدام بوابة الموردين.'
+            : 'Vendor accounts are not allowed to log in here. Please use the Vendor Portal.';
+          return;
+        }
+        const destination = this.returnUrl || NAV_ROUTES.HOME;
+        this.router.navigateByUrl(destination, { replaceUrl: true });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = this.localizeBackendError(err.error);
+      }
+    });
   }
 
   private localizeBackendError(errorPayload: any): string {

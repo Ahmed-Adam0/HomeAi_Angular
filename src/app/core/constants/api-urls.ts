@@ -12,6 +12,7 @@ export const API_URLS = {
     LOGOUT: 'auth/logout',
     ME: 'auth/me',
     GOOGLE: 'auth/google',
+    GOOGLE_LOGIN: 'Auth/google-login',
     FORGOT_PASSWORD: 'auth/forgot-password',
     VERIFY_OTP: 'auth/verify-otp',
     RESET_PASSWORD: 'auth/reset-password',

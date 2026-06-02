@@ -97,15 +97,25 @@ export class AuthService {
     this.setAuthState(token);
   }
 
-  redirectToGoogleOAuth(returnUrl?: string): void {
-    if (!this.isBrowser) {
-      return;
-    }
-
-    const url = `${this.baseUrl}${API_URLS.AUTH.GOOGLE}`;
-    window.location.href = returnUrl
-      ? `${url}?returnUrl=${encodeURIComponent(returnUrl)}`
-      : url;
+  loginWithGoogleIdToken(idToken: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}${API_URLS.AUTH.GOOGLE_LOGIN}`, { idToken }).pipe(
+      tap((response: any) => {
+        const token = this.getAuthToken(response);
+        if (!token) {
+          return;
+        }
+        const workshopId =
+          response.workshopId ||
+          response.workshop?.id ||
+          (response.user && response.user.workshopId) ||
+          (response.data && response.data.workshopId) ||
+          (response.result && response.result.workshopId);
+        if (workshopId && this.isBrowser) {
+          localStorage.setItem('workshopId', String(workshopId));
+        }
+        this.setAuthState(token);
+      })
+    );
   }
 
   forgotPassword(data: IForgotPasswordRequest) {
