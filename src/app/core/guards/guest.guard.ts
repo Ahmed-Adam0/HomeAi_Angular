@@ -35,5 +35,10 @@ export const guestGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: 
     return true;
   }
 
+  if (authService.isVendor()) {
+    console.warn('[guestGuard] - Vendor already authenticated. Redirecting directly to vendor dashboard.');
+    return router.createUrlTree([NAV_ROUTES.VENDOR_DASHBOARD]);
+  }
+
   return resolveGuestRedirect(router, route);
 };

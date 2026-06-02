@@ -77,6 +77,7 @@ export class VendorReviews implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
       this.loadReviews();
     }
   }
@@ -118,6 +119,14 @@ export class VendorReviews implements OnInit {
       const review = this.reviews().find(r => r.id === reviewId);
       this.activeReplyReviewId.set(reviewId);
       this.replyText.set(review?.replyText || '');
+
+      // Smoothly scroll the opened reply editor card into view center
+      setTimeout(() => {
+        const formElement = document.querySelector('.vendor-reply-form');
+        if (formElement) {
+          formElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 120);
     }
   }
 
@@ -156,6 +165,14 @@ export class VendorReviews implements OnInit {
     }
     this.selectedReportReviewId.set(reviewId);
     this.reportModalVisible.set(true);
+
+    // Smoothly scroll report dialog card into view center
+    setTimeout(() => {
+      const dialogElement = document.querySelector('.report-dialog-card');
+      if (dialogElement) {
+        dialogElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 120);
   }
 
   closeReportModal(): void {

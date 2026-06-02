@@ -39,6 +39,14 @@ export class AuthService {
 
   readonly isAuthenticated = computed(() => !!this.authToken());
   readonly currentUser = computed(() => this.userProfile());
+  readonly isVendor = computed(() => {
+    const user = this.userProfile();
+    return !!(user && user.workshopId);
+  });
+  readonly isCustomer = computed(() => {
+    const user = this.userProfile();
+    return !!(user && !user.workshopId);
+  });
 
   constructor() {
     if (this.isBrowser) {

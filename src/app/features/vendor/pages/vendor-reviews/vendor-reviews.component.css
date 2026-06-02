@@ -46,6 +46,11 @@
   animation: slideDown 0.3s ease-out;
 }
 
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -54,5 +59,38 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Mobile Responsiveness Under 768px */
+@media (max-width: 767px) {
+  .vendor-reviews-container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .card-review {
+    padding: 1.25rem !important;
+    margin-bottom: 1rem;
+  }
+
+  /* Make actions button wrapper stack vertically instead of wrapping awkwardly */
+  .card-review .d-flex.flex-row.flex-md-column {
+    flex-direction: column !important;
+    width: 100% !important;
+    border-top: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08)) !important;
+    padding-top: 1rem !important;
+    margin-top: 1rem !important;
+  }
+
+  .card-review .d-flex.flex-row.flex-md-column button {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.625rem 1rem !important;
+  }
+
+  /* Star alignment scaling */
+  .reviewer-name {
+    font-size: 0.85rem !important;
   }
 }

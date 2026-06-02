@@ -34,16 +34,13 @@ export const vendorGuard: CanActivateFn = (route, state) => {
     });
   }
 
-  // Step 2: User is authenticated → check role via workshopId
-  const user = authService.currentUser();
-
-  // Vendor indicator: has workshopId
-  if (user && user.workshopId) {
+  // Step 2: User is authenticated → check role via isVendor()
+  if (authService.isVendor()) {
     console.log('[vendorGuard] - Vendor authenticated. Allowing access.');
     return true;
   }
 
-  // Step 3: Authenticated but no workshopId → customer trying to access vendor pages
+  // Step 3: Authenticated but not a vendor → customer trying to access vendor pages
   console.warn('[vendorGuard] - Authenticated user is a customer, not a vendor. Blocking access and redirecting to home.');
   return router.createUrlTree([NAV_ROUTES.HOME]);
 };

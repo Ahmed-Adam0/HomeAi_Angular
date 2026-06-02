@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { VendorAuthService } from '../../services/vendor-auth.service';
+import { AuthService } from '../../../auth/services/auth.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
@@ -16,6 +17,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 export class VendorLogin {
   private fb = inject(FormBuilder);
   private vendorAuthService = inject(VendorAuthService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
@@ -108,6 +110,14 @@ export class VendorLogin {
     this.vendorAuthService.login(this.loginForm.value).subscribe({
       next: () => {
         this.isLoading = false;
+        if (this.authService.isCustomer()) {
+          console.warn('[VendorLogin] - Customer account detected on vendor login. Rejecting and logging out.');
+          this.authService.logout();
+          this.errorMessage = this.currentLang() === 'ar'
+            ? 'حسابات العملاء غير مسموح لها بتسجيل الدخول من هنا.'
+            : 'Customer accounts are not allowed to log in here.';
+          return;
+        }
         const destination = this.returnUrl || NAV_ROUTES.VENDOR_DASHBOARD;
         this.router.navigateByUrl(destination, { replaceUrl: true });
       },

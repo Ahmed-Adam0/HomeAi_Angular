@@ -114,6 +114,14 @@ export class Login {
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
         this.isLoading = false;
+        if (this.authService.isVendor()) {
+          console.warn('[Login] - Vendor account detected on customer login. Rejecting and logging out.');
+          this.authService.logout();
+          this.errorMessage = this.currentLang() === 'ar'
+            ? 'حسابات الموردين غير مسموح لها بتسجيل الدخول من هنا. يرجى استخدام بوابة الموردين.'
+            : 'Vendor accounts are not allowed to log in here. Please use the Vendor Portal.';
+          return;
+        }
         const destination = this.returnUrl || NAV_ROUTES.HOME;
         this.router.navigateByUrl(destination, { replaceUrl: true });
       },

@@ -76,7 +76,7 @@ export class VendorReviewsService {
    * Target: POST /api/Reviews/{reviewId}/reply
    */
   replyToReview(reviewId: string | number, replyText: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}Reviews/${reviewId}/reply`, { replyText }).pipe(
+    return this.http.post<any>(`${this.apiUrl}Reviews/${reviewId}/reply`, { reply: replyText }).pipe(
       tap(() => {
         // Optimistically update reply in the local signal
         this.reviews.update(list =>
