@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, computed, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { IProduct } from '../../../features/products/interfaces/iproduct';
@@ -11,6 +11,7 @@ import { AuthService } from '../../../features/auth/services/auth.service';
 import { LoadingSpinner } from '../loading-spinner/loading-spinner.component';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
 import { ReviewsService, IRatingStats } from '../../../features/products/services/reviews.service';
+import { UiState } from '../../../core/state/ui.state';
 
 @Component({
   selector: 'app-product-card',
@@ -31,9 +32,10 @@ export class ProductCard implements OnInit {
   private favoritesService = inject(FavoritesService);
   private authService = inject(AuthService);
   private reviewsService = inject(ReviewsService);
+  private uiState = inject(UiState);
   private platformId = inject(PLATFORM_ID);
 
-  readonly isFavorite = signal<boolean>(false);
+  readonly isFavorite = computed(() => this.favoritesService.isFavorited(this.product.id));
   readonly isTogglingFav = signal<boolean>(false);
   readonly ratingStats = signal<IRatingStats | null>(null);
 
@@ -42,7 +44,6 @@ export class ProductCard implements OnInit {
   }
 
   ngOnInit(): void {
-    this.syncFavoriteState();
     this.loadRating();
   }
 
@@ -65,27 +66,6 @@ export class ProductCard implements OnInit {
     });
   }
 
-  private syncFavoriteState(): void {
-    // Fast sync from localStorage cache
-    if (this.isBrowser) {
-      try {
-        const raw = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITES);
-        if (raw) {
-          const list = JSON.parse(raw);
-          if (Array.isArray(list)) {
-            const found = list.some((f: any) => Number(f.productId) === this.product.id);
-            this.isFavorite.set(found);
-          }
-        }
-      } catch {}
-    }
-
-    // Override with authoritative shared signal if it has data
-    if (this.favoritesService.favorites().length > 0) {
-      this.isFavorite.set(this.favoritesService.isFavorited(this.product.id));
-    }
-  }
-
   toggleFavorite(event: Event): void {
     event.stopPropagation();
     event.preventDefault();
@@ -96,7 +76,6 @@ export class ProductCard implements OnInit {
     if (this.isFavorite()) {
       this.favoritesService.removeFavorite(this.product.id).subscribe({
         next: () => {
-          this.isFavorite.set(false);
           this.isTogglingFav.set(false);
           this.refreshLocalStorageCache();
         },
@@ -107,9 +86,14 @@ export class ProductCard implements OnInit {
     } else {
       this.favoritesService.addFavorite(this.product.id).subscribe({
         next: () => {
-          this.isFavorite.set(true);
           this.isTogglingFav.set(false);
           this.refreshLocalStorageCache();
+          
+          // Trigger Success Toast
+          const isAr = this.translationService.currentLang() === 'ar';
+          const prodName = isAr ? (this.product.nameAr || this.product.nameEn) : (this.product.nameEn || this.product.nameAr);
+          const msg = isAr ? `تم إضافة "${prodName}" إلى المفضلة` : `"${prodName}" added to favorites`;
+          this.uiState.showAlert('success', msg);
         },
         error: () => {
           this.isTogglingFav.set(false);

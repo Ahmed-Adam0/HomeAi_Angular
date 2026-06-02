@@ -39,7 +39,7 @@ export class UiState {
       this.alertTimeout = setTimeout(() => {
         this.activeAlert.set(null);
         this.alertTimeout = null;
-      }, 4000);
+      }, 2700);
     }
   }
 

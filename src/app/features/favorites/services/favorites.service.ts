@@ -8,6 +8,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslationService } from '../../../shared/i18n/translation.service';
 import { AuthService } from '../../../features/auth/services/auth.service';
+import { normalizeProduct } from '../../../core/utils/api-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -64,27 +65,18 @@ export class FavoritesService {
           return of([]);
         }
 
-        // Check if we need to fetch details (i.e. if any item has price == 0 or empty/null productImage)
-        const needsEnrichment = favs.some(fav => !fav.price || !fav.productImage);
-        if (!needsEnrichment) {
-          return of(favs);
-        }
-
-        // Fetch product details for each favorite in parallel
+        // ALWAYS fetch live catalog details for each favorite item to completely override stale backend snapshot fields (names, prices, images, stock)
         const requests = favs.map(fav => {
-          // If this specific item is already fully populated, return it directly
-          if (fav.price && fav.productImage) {
-            return of(fav);
-          }
           return this.http.get<any>(`${this.apiUrl}Products/${fav.productId}`).pipe(
-            map(prod => {
+            map(rawProd => {
+              const prod = normalizeProduct(rawProd);
               const price = Number(prod.price || fav.price || 0);
               const salePrice = prod.salePrice ? Number(prod.salePrice) : undefined;
               return {
                 ...fav,
                 productNameEn: prod.nameEn || fav.productNameEn || fav.productName,
                 productNameAr: prod.nameAr || fav.productNameAr || fav.productName,
-                productImage: prod.mainImageUrl || prod.imageUrl || fav.productImage || '',
+                productImage: prod.mainImageUrl || '',
                 price,
                 salePrice: salePrice !== undefined && salePrice < price ? salePrice : undefined,
                 inStock: prod.inStock ?? fav.inStock,
@@ -92,6 +84,7 @@ export class FavoritesService {
             }),
             catchError(err => {
               console.error(`Failed to fetch product details for fav product ${fav.productId}:`, err);
+              // Fallback to original favorite snapshot if catalog fetch fails
               return of(fav);
             })
           );
@@ -109,14 +102,15 @@ export class FavoritesService {
   addFavorite(productId: number): Observable<any> {
     if (!this.authService.isLoggedIn()) {
       return this.http.get<any>(`${this.apiUrl}Products/${productId}`).pipe(
-        map(prod => {
+        map(rawProd => {
+          const prod = normalizeProduct(rawProd);
           const favItem: IFavoriteItem = {
             id: `guest_${productId}_${Date.now()}`,
             productId: String(productId),
             productName: prod.nameEn || prod.name || '',
             productNameEn: prod.nameEn || prod.name || '',
             productNameAr: prod.nameAr || prod.name || '',
-            productImage: prod.mainImageUrl || prod.imageUrl || '',
+            productImage: prod.mainImageUrl || '',
             price: Number(prod.price || 0),
             salePrice: prod.salePrice ? Number(prod.salePrice) : undefined,
             addedAt: new Date().toISOString(),
@@ -134,10 +128,32 @@ export class FavoritesService {
       );
     }
 
+    // Optimistic local add for logged-in users to trigger instant visual feedback
+    const current = [...this.favorites()];
+    const alreadyFavorited = current.some(f => Number(f.productId) === productId);
+    if (!alreadyFavorited) {
+      const optimisticItem: IFavoriteItem = {
+        id: `optimistic_${productId}_${Date.now()}`,
+        productId: String(productId),
+        productName: '',
+        productImage: '',
+        price: 0,
+        addedAt: new Date().toISOString(),
+        inStock: true
+      };
+      this.favorites.set([...current, optimisticItem]);
+    }
+
     return this.http.post<any>(`${this.apiUrl}Favorites/${productId}`, {}).pipe(
-      tap(() => {
-        // Refresh signal from backend after successful add
-        this.getFavorites().subscribe();
+      tap({
+        next: () => {
+          // Re-fetch authoritative fresh data from backend
+          this.getFavorites().subscribe();
+        },
+        error: () => {
+          // Revert optimistic addition if HTTP request fails
+          this.favorites.set(current);
+        }
       })
     );
   }
@@ -183,7 +199,10 @@ export class FavoritesService {
 
     return raw.map(item => {
       // Backend may nest product data inside a `product` object
-      const product = item.product ?? item;
+      const rawProduct = item.product ?? item;
+      // ALWAYS normalize using the central normalizeProduct utility to ensure 100% path, absolute prefix, and active sync
+      const product = normalizeProduct(rawProduct);
+
       const price =
         Number(item.price ?? item.productPrice ?? product.price ?? product.salePrice ?? 0);
       const salePrice =
@@ -197,7 +216,7 @@ export class FavoritesService {
         productName: item.productName ?? item.productNameEn ?? product.nameEn ?? product.name ?? '',
         productNameEn: item.productNameEn ?? product.nameEn ?? product.name ?? '',
         productNameAr: item.productNameAr ?? product.nameAr ?? product.name ?? '',
-        productImage: item.productImage ?? item.imageUrl ?? product.mainImageUrl ?? product.imageUrl ?? '',
+        productImage: product.mainImageUrl || '',
         price,
         salePrice: salePrice !== undefined && salePrice < price ? salePrice : undefined,
         addedAt: item.addedAt ?? item.createdAt ?? new Date().toISOString(),

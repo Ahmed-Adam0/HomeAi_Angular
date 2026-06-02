@@ -18,6 +18,7 @@ import { LoadingSpinner } from '../../../../shared/components/loading-spinner/lo
 import { ProductCard } from '../../../../shared/components/product-card/product-card.component';
 import { LOCAL_STORAGE_KEYS } from '../../../../core/constants/localstorage-keys';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { UiState } from '../../../../core/state/ui.state';
 
 interface ISpecification {
   labelEn: string;
@@ -53,6 +54,7 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
   readonly router = inject(Router);
   readonly cartService = inject(CartService);
   readonly translationService = inject(TranslationService);
+  private uiState = inject(UiState);
   private el = inject(ElementRef);
   private renderer = inject(Renderer2);
   private platformId = inject(PLATFORM_ID);
@@ -95,7 +97,7 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
   readonly itemQuantity = signal<number>(1);
 
   // Favorites States
-  readonly isFavorite = signal<boolean>(false);
+  readonly isFavorite = computed(() => this.favoritesService.isFavorited(this.product()?.id ?? 0));
   readonly isTogglingFavorite = signal<boolean>(false);
 
   // Reviews States
@@ -148,6 +150,9 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadProductDetails(id: string): void {
+    if (this.isBrowser) {
+      window.scrollTo(0, 0);
+    }
     this.isLoading.set(true);
     this.productService.getProductById(id).subscribe({
       next: (data) => {
@@ -225,27 +230,10 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
   private syncFavoritesState(productId: number): void {
     this.favoritesService.getFavorites().subscribe({
       next: (favs) => {
-        const hasFav = favs.some((f) => Number(f.productId) === productId);
-        this.isFavorite.set(hasFav);
         this.syncLocalStorageFavorites(favs);
       },
       error: (err) => {
         console.error('Failed to sync favorites on initialization', err);
-        // Fallback to local storage cache if API is offline
-        if (this.isBrowser) {
-          const raw = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITES);
-          if (raw) {
-            try {
-              const list = JSON.parse(raw);
-              const hasFav = Array.isArray(list) 
-                ? list.some((f: any) => Number(f.productId) === productId)
-                : list.items?.some((f: any) => Number(f.productId) === productId);
-              this.isFavorite.set(hasFav);
-            } catch (e) {
-              this.isFavorite.set(false);
-            }
-          }
-        }
       }
     });
   }
@@ -358,7 +346,6 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
     if (this.isFavorite()) {
       this.favoritesService.removeFavorite(prod.id).subscribe({
         next: () => {
-          this.isFavorite.set(false);
           this.isTogglingFavorite.set(false);
           this.refreshLocalStorageFavorites();
         },
@@ -370,9 +357,14 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.favoritesService.addFavorite(prod.id).subscribe({
         next: () => {
-          this.isFavorite.set(true);
           this.isTogglingFavorite.set(false);
           this.refreshLocalStorageFavorites();
+          
+          // Trigger Success Toast
+          const isAr = this.translationService.currentLang() === 'ar';
+          const prodName = isAr ? (prod.nameAr || prod.nameEn) : (prod.nameEn || prod.nameAr);
+          const msg = isAr ? `تم إضافة "${prodName}" إلى المفضلة` : `"${prodName}" added to favorites`;
+          this.uiState.showAlert('success', msg);
         },
         error: (err) => {
           console.error('Failed to add favorite', err);

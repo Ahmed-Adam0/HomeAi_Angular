@@ -1,49 +1,206 @@
-.alert {
-  animation: slideDown 0.3s ease-out forwards;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-  border-width: 1px !important;
+/* ==========================================================================
+   Premium Alerts System — Stripe & Linear Inspired Modern UX
+   ========================================================================== */
+
+.alert-premium {
+  animation: slideInRight 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0 !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
 }
 
+/* Success Toast — Stripe/Linear Soft Green Style */
 .alert-success {
   background-color: #f0fdf4 !important;
-  color: #166534 !important;
-  border-color: #bbf7d0 !important;
+  border: 1px solid rgba(22, 163, 74, 0.14) !important;
+  color: #14532d !important;
+  border-left: 3px solid #22c55e !important;
 }
 
+[dir="rtl"] .alert-success {
+  border-left: none !important;
+  border-right: 3px solid #22c55e !important;
+}
+
+/* Danger Alert */
 .alert-danger {
   background-color: #fef2f2 !important;
-  color: #991b1b !important;
-  border-color: #fecaca !important;
+  border: 1px solid rgba(220, 38, 38, 0.12) !important;
+  color: #7f1d1d !important;
+  border-left: 3px solid #ef4444 !important;
 }
 
+[dir="rtl"] .alert-danger {
+  border-left: none !important;
+  border-right: 3px solid #ef4444 !important;
+}
+
+/* Warning Alert */
 .alert-warning {
   background-color: #fffbeb !important;
-  color: #92400e !important;
-  border-color: #fef3c7 !important;
+  border: 1px solid rgba(217, 119, 6, 0.12) !important;
+  color: #78350f !important;
+  border-left: 3px solid #f59e0b !important;
 }
 
+[dir="rtl"] .alert-warning {
+  border-left: none !important;
+  border-right: 3px solid #f59e0b !important;
+}
+
+/* Info Alert */
 .alert-info {
   background-color: #f0f9ff !important;
-  color: #075985 !important;
-  border-color: #bae6fd !important;
+  border: 1px solid rgba(2, 132, 199, 0.12) !important;
+  color: #0c4a6e !important;
+  border-left: 3px solid #0ea5e9 !important;
 }
 
-.alert-icon {
-  font-size: 1.1rem;
-  line-height: 1;
+[dir="rtl"] .alert-info {
+  border-left: none !important;
+  border-right: 3px solid #0ea5e9 !important;
 }
 
+/* Icon Wrapper */
+.alert-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.alert-success .alert-icon-wrapper {
+  background-color: rgba(34, 197, 94, 0.12) !important;
+  border-color: rgba(34, 197, 94, 0.18) !important;
+  color: #166534 !important;
+}
+
+.alert-danger .alert-icon-wrapper {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.15) !important;
+  color: #b91c1c !important;
+}
+
+.alert-warning .alert-icon-wrapper {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  border-color: rgba(245, 158, 11, 0.15) !important;
+  color: #b45309 !important;
+}
+
+.alert-info .alert-icon-wrapper {
+  background-color: rgba(14, 165, 233, 0.1) !important;
+  border-color: rgba(14, 165, 233, 0.15) !important;
+  color: #0369a1 !important;
+}
+
+/* Heart Micro-Badge Overlay */
+.mini-heart-badge {
+  position: absolute;
+  bottom: -4px;
+  inset-inline-end: -4px;
+  font-size: 7px;
+  color: #ef4444;
+  background-color: #ffffff;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #fee2e2;
+  animation: beat 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Alert Text */
 .alert-text {
-  font-size: 0.9rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.01em;
+  color: inherit;
+  line-height: 1.4;
 }
 
-@keyframes slideDown {
+/* Very subtle ghost/pill button style that does not compete visually */
+.alert-cta-btn {
+  color: #166534 !important;
+  background-color: transparent !important;
+  border: 1px solid rgba(22, 101, 52, 0.18) !important;
+  padding: 2px 7px !important;
+  border-radius: 20px !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+  line-height: 1;
+  margin-left: 0.5rem;
+}
+
+.alert-cta-btn:hover {
+  background-color: rgba(22, 101, 52, 0.08) !important;
+  border-color: rgba(22, 101, 52, 0.4) !important;
+  color: #15803d !important;
+  text-decoration: none !important;
+}
+
+[dir="rtl"] .alert-cta-btn {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+/* Close Button */
+.btn-close-premium {
+  width: 22px;
+  height: 22px;
+  color: currentColor;
+  opacity: 0.45;
+  transition: all 0.2s ease;
+}
+
+.btn-close-premium:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  opacity: 0.85;
+}
+
+/* Animations */
+@keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateX(20px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
+  }
+}
+
+@keyframes beat {
+  0% { transform: scale(0.6); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Typographic layout variables overrides */
+.font-xxs {
+  font-size: 11px !important;
+}
+.font-xxxxs {
+  font-size: 9px !important;
+}
+
+@media (max-width: 576px) {
+  .alert-premium {
+    padding: 0.6rem 0.8rem !important;
+  }
+  .alert-text {
+    font-size: 11px !important;
   }
 }
