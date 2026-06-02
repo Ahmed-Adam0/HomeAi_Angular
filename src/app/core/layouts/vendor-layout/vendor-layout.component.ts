@@ -4,12 +4,13 @@ import { AuthService } from '../../../features/auth/services/auth.service';
 import { NAV_ROUTES } from '../../constants';
 import { RtlDirective } from '../../../shared/directives/rtl.directive';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { VendorNotificationBellComponent } from '../../../features/vendor/components/vendor-notification-bell/vendor-notification-bell.component';
 
 
 @Component({
   selector: 'app-vendor-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, RtlDirective, TranslatePipe],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, RtlDirective, TranslatePipe, VendorNotificationBellComponent],
   templateUrl: './vendor-layout.component.html',
   styleUrl: './vendor-layout.component.css',
   
