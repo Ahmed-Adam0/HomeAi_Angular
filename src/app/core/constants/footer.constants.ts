@@ -84,15 +84,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
   },
 ];
 
-/** Display-only payment marks aligned with checkout providers (Stripe, PayPal, Paymob). */
+/** Display-only payment marks. Only Paymob is supported. */
 export const PAYMENT_BRANDS: PaymentBrand[] = [
-  { id: 'paypal', label: 'PayPal' },
-  { id: 'apple-pay', label: 'Apple Pay' },
-  { id: 'stripe', label: 'Stripe' },
-  { id: 'mastercard', label: 'Mastercard' },
-  { id: 'visa', label: 'Visa' },
-  { id: 'discover', label: 'Discover' },
-  { id: 'jcb', label: 'JCB' },
-  { id: 'google-pay', label: 'Google Pay' },
-  { id: 'amex', label: 'American Express' },
+  { id: 'paymob', label: 'Paymob' },
 ];

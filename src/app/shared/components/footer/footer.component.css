@@ -252,9 +252,7 @@
 
 .footer-payments {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--fm-space-12);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -263,39 +261,60 @@
 .footer-payment-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  height: 28px;
-  padding-inline: var(--fm-space-8);
-  border-radius: var(--fm-radius-xs);
-  background-color: rgba(255, 255, 255, 0.06);
-  opacity: 0.85;
-  transition: var(--fm-transition-smooth);
+  gap: var(--fm-space-10);
+  padding: var(--fm-space-6) var(--fm-space-20);
+  border-radius: var(--fm-radius-pill);
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: default;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-payment-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--footer-accent);
+  opacity: 0.7;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .footer-payment-badge::after {
-  font-size: 0.625rem;
+  font-size: 0.8125rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--fm-color-neutral-300);
   line-height: 1;
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-payment-badge[data-brand='paymob']::after {
+  content: 'Paymob';
 }
 
 .footer-payment-badge:hover {
-  opacity: 1;
-  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--footer-accent);
+  background: linear-gradient(
+    135deg,
+    rgba(184, 147, 92, 0.12),
+    rgba(184, 147, 92, 0.04)
+  );
+  transform: scale(1.05);
+  box-shadow:
+    0 0 24px rgba(184, 147, 92, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
-.footer-payment-badge[data-brand='paypal']::after { content: 'PayPal'; }
-.footer-payment-badge[data-brand='apple-pay']::after { content: 'Apple Pay'; font-size: 0.55rem; }
-.footer-payment-badge[data-brand='stripe']::after { content: 'stripe'; text-transform: lowercase; font-weight: 600; }
-.footer-payment-badge[data-brand='mastercard']::after { content: 'MC'; }
-.footer-payment-badge[data-brand='visa']::after { content: 'VISA'; letter-spacing: 0.12em; }
-.footer-payment-badge[data-brand='discover']::after { content: 'DISC'; }
-.footer-payment-badge[data-brand='jcb']::after { content: 'JCB'; }
-.footer-payment-badge[data-brand='google-pay']::after { content: 'G Pay'; }
-.footer-payment-badge[data-brand='amex']::after { content: 'AMEX'; }
+.footer-payment-badge:hover::before {
+  opacity: 1;
+  box-shadow: 0 0 10px rgba(184, 147, 92, 0.5);
+}
+
+.footer-payment-badge:hover::after {
+  color: var(--fm-color-neutral-100);
+}
 
 .footer-social {
   display: flex;

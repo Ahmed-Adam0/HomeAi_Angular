@@ -95,7 +95,7 @@
           <span class="footer-copyright-year">{{ copyrightYear() }}</span>
         </p>
 
-        <ul class="footer-payments" aria-label="Accepted payment methods">
+        <ul class="footer-payments" aria-label="Payment method">
           @for (brand of paymentBrands(); track brand.id) {
             <li>
               <span class="footer-payment-badge" [attr.data-brand]="brand.id" [attr.title]="brand.label">
