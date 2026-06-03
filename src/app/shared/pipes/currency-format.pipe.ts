@@ -17,8 +17,8 @@ export class CurrencyFormatPipe implements PipeTransform {
     
     const lang = this.translationService.currentLang();
     if (lang === 'ar') {
-      return `${numericValue.toLocaleString('ar-EG')} ج.م`;
+      return `${numericValue.toLocaleString('ar-EG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ج.م`;
     }
-    return `$${numericValue.toFixed(2)}`;
+    return `EGP ${numericValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   }
 }

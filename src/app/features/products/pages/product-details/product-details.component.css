@@ -104,7 +104,7 @@
 }
 
 /* Absolute Actions Container */
-.favorite-btn, .share-btn {
+.favorite-btn {
   width: 40px !important;
   height: 40px !important;
   background-color: rgba(255, 255, 255, 0.88) !important;
@@ -114,7 +114,7 @@
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.favorite-btn:hover, .share-btn:hover {
+.favorite-btn:hover {
   transform: scale(1.1) !important;
   color: #b8935c !important;
   border-color: rgba(184, 147, 92, 0.3) !important;
@@ -315,21 +315,6 @@
   background-color: #ffffff !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02) !important;
-}
-
-/* Features Metrics Columns */
-.features-metrics-row {
-  border-color: rgba(184, 147, 92, 0.08) !important;
-}
-
-.metric-card i {
-  color: #b8935c !important;
-  font-size: 1.2rem !important;
-  transition: transform 0.4s ease;
-}
-
-.metric-card:hover i {
-  transform: translateY(-2px) scale(1.05);
 }
 
 /* ==========================================================================

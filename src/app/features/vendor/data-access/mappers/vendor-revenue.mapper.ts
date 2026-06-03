@@ -13,7 +13,7 @@ export function mapVendorRevenueStatistics(
       startDate: '',
       endDate: '',
     },
-    currency: 'USD',
+    currency: 'EGP',
     grossRevenue: dto.totalRevenue,
     netRevenue: dto.monthlyRevenue,
     platformFees: 0,

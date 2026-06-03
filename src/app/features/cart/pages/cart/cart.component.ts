@@ -6,11 +6,12 @@ import { CartService } from '../../services/cart.service';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner.component';
+import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, RouterModule, Button, EmptyStateComponent, LoadingSpinner],
+  imports: [CommonModule, RouterModule, Button, EmptyStateComponent, LoadingSpinner, CurrencyFormatPipe],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
 })
@@ -41,7 +42,6 @@ export class Cart {
   readonly pageTitle = computed(() => this.translationService.translate('NAV_CART'));
   readonly emptyLabel = computed(() => this.translationService.translate('EMPTY_CART'));
   readonly checkoutLabel = computed(() => this.translationService.translate('CHECKOUT'));
-  readonly currencySymbol = computed(() => this.translationService.translate('CURRENCY'));
   readonly direction = computed(() => this.translationService.currentLang() === 'ar' ? 'rtl' : 'ltr');
 
   readonly labels = computed(() => {

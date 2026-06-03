@@ -36,7 +36,7 @@
             </div>
 
             <p class="item-price">
-              {{ currencySymbol() }}{{ item.price | number:'1.2-2' }}
+              {{ item.price | currencyFormat }}
             </p>
 
             <div class="item-meta">
@@ -72,7 +72,7 @@
 
               <div class="item-subtotal">
                 <span>{{ labels().itemSubtotal }}</span>
-                <strong>{{ currencySymbol() }}{{ item.subtotal | number:'1.2-2' }}</strong>
+                <strong>{{ item.subtotal | currencyFormat }}</strong>
               </div>
             </div>
           </div>
@@ -97,29 +97,29 @@
 
           <div class="summary-row">
             <span>{{ labels().itemSubtotal }}</span>
-            <span>{{ currencySymbol() }}{{ summary().subtotal | number:'1.2-2' }}</span>
+            <span>{{ summary().subtotal | currencyFormat }}</span>
           </div>
 
           <div class="summary-row">
             <span>{{ labels().shipping }}</span>
-            <span>{{ currencySymbol() }}{{ summary().shipping | number:'1.2-2' }}</span>
+            <span>{{ summary().shipping | currencyFormat }}</span>
           </div>
 
           <div class="summary-row">
             <span>{{ labels().tax }}</span>
-            <span>{{ currencySymbol() }}{{ summary().tax | number:'1.2-2' }}</span>
+            <span>{{ summary().tax | currencyFormat }}</span>
           </div>
 
           <div class="summary-row discount-row" *ngIf="summary().discount > 0">
             <span>{{ labels().discount }}</span>
-            <span>-{{ currencySymbol() }}{{ summary().discount | number:'1.2-2' }}</span>
+            <span>-{{ summary().discount | currencyFormat }}</span>
           </div>
 
           <div class="summary-divider"></div>
 
           <div class="summary-row total-row">
             <span>{{ labels().orderTotal }}</span>
-            <strong>{{ currencySymbol() }}{{ summary().total | number:'1.2-2' }}</strong>
+            <strong>{{ summary().total | currencyFormat }}</strong>
           </div>
 
           <app-button

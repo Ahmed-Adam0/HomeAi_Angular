@@ -17,6 +17,7 @@ import { AlertComponent } from '../../../../shared/components/alert/alert.compon
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner.component';
+import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 
 @Component({
   selector: 'app-vendor-order-details',
@@ -26,6 +27,7 @@ import { LoadingSpinner } from '../../../../shared/components/loading-spinner/lo
     RouterLink,
     OrderStatusBadge,
     TranslatePipe,
+    CurrencyFormatPipe,
     ConfirmDialog,
     PageHeaderComponent,
     Button,

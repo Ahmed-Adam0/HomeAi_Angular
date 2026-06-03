@@ -320,12 +320,12 @@ export class RevenueDashboard implements OnInit {
         padding: 12,
         cornerRadius: 8,
         displayColors: true,
-        callbacks: { label: (ctx: any) => `$${ctx.parsed.y.toFixed(2)}` },
+        callbacks: { label: (ctx: any) => `EGP ${ctx.parsed.y.toFixed(2)}` },
       },
     },
     scales: {
       x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375', maxRotation: 45 } },
-      y: { beginAtZero: true, grid: { color: 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375', callback: (v: any) => `$${v}` } },
+      y: { beginAtZero: true, grid: { color: 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375', callback: (v: any) => `EGP ${v}` } },
     },
   };
 
@@ -340,12 +340,12 @@ export class RevenueDashboard implements OnInit {
         bodyFont: { family: 'Inter', size: 13 },
         padding: 12,
         cornerRadius: 8,
-        callbacks: { label: (ctx: any) => `$${ctx.parsed.y.toFixed(2)}` },
+        callbacks: { label: (ctx: any) => `EGP ${ctx.parsed.y.toFixed(2)}` },
       },
     },
     scales: {
       x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375' } },
-      y: { beginAtZero: true, grid: { color: 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375', callback: (v: any) => `$${v}` } },
+      y: { beginAtZero: true, grid: { color: 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375', callback: (v: any) => `EGP ${v}` } },
     },
   };
 
