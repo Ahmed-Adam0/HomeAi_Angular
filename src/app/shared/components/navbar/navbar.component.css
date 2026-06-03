@@ -2,7 +2,6 @@
    FurniMind AI - Premium Header & Mega Menu Stylesheet
    ========================================================================== */
 
-/* Design Tokens & Theme Colors from variables.css */
 :host {
   --color-dark: var(--fm-color-neutral-900);
   --color-dark-gray: var(--fm-color-neutral-800);
@@ -24,7 +23,6 @@
   --shadow-dropdown: var(--fm-shadow-floating);
 }
 
-/* Typography Helper Classes */
 .font-primary { font-family: var(--font-primary); }
 .font-secondary { font-family: var(--font-secondary); }
 .tracking-tight { letter-spacing: -0.025em; }
@@ -36,7 +34,6 @@
 .bg-dark-custom { background-color: var(--color-dark); }
 .text-gold { color: var(--color-gold) !important; }
 
-/* Separators and Utilities */
 .bar-separator {
   color: rgba(255, 255, 255, 0.15);
   font-size: 0.7rem;
@@ -70,7 +67,6 @@
   color: var(--color-gold) !important;
 }
 
-/* Utility Dropdowns */
 .dropdown-menu-custom {
   min-width: 140px;
   border: 1px solid var(--color-border);
@@ -95,10 +91,12 @@
 }
 
 /* ==========================================================================
-   2. Main Header / Navigation with Glassmorphism Sticky State
+   2. Main Header - Sticky Navigation
    ========================================================================== */
-.main-header {
-  z-index: var(--fm-z-navbar);
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--fm-z-navbar, 1030);
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-border);
   transition: padding var(--fm-transition-duration-normal) var(--fm-ease-smooth),
@@ -111,20 +109,18 @@
   transition: padding var(--fm-transition-duration-normal) var(--fm-ease-smooth);
 }
 
-/* Sticky morphed scrolled state */
-.main-header.scrolled {
+.sticky-header.scrolled {
   background-color: var(--fm-glass-bg) !important;
   backdrop-filter: var(--fm-glass-blur) !important;
   -webkit-backdrop-filter: var(--fm-glass-blur) !important;
   box-shadow: var(--fm-glass-shadow) !important;
   border-bottom-color: var(--fm-glass-border) !important;
 }
-.main-header.scrolled .header-container {
+.sticky-header.scrolled .header-container {
   padding-top: 0.6rem !important;
   padding-bottom: 0.6rem !important;
 }
 
-/* Logo Box styling */
 .logo-box {
   width: 38px;
   height: 38px;
@@ -157,7 +153,6 @@
   margin-top: 1px;
 }
 
-/* Nav Links & Hover states */
 .nav-link-custom {
   font-family: var(--font-primary);
   font-size: 0.88rem;
@@ -173,23 +168,6 @@
   color: var(--fm-color-primary-500);
 }
 
-/* Gold/Beige link (like 'Inspirations' in the screenshot) */
-/* Down arrow rotational transition */
-.arrow-icon {
-  font-size: 0.6rem;
-  margin-left: 4px;
-  transition: transform 0.25s var(--fm-ease-smooth);
-}
-.nav-item-wrapper:hover .arrow-icon {
-  transform: rotate(180deg);
-}
-
-/* Hamburger menu icon in "Products" */
-.hamburger-menu-icon {
-  margin-right: 4px;
-}
-
-/* Hover indicator line */
 .nav-link-custom::after {
   content: '';
   position: absolute;
@@ -206,41 +184,8 @@
 }
 
 /* ==========================================================================
-   3. Search Bar & Action Badges
+   3. Action Icon Buttons & Badges
    ========================================================================== */
-.search-wrapper {
-  width: 180px;
-  border-bottom: 1.5px solid var(--color-border);
-  transition: var(--transition-smooth);
-}
-.search-wrapper:focus-within {
-  width: 220px;
-  border-bottom-color: var(--fm-color-primary-500);
-}
-.search-input {
-  outline: none;
-  width: 100%;
-  font-weight: 500;
-}
-.search-input::placeholder {
-  color: var(--fm-color-neutral-400);
-  font-weight: 400;
-}
-.search-icon-btn {
-  line-height: 1;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.search-icon {
-  color: var(--color-dark);
-  font-size: 0.95rem;
-  transition: var(--transition-fast);
-}
-.search-wrapper:focus-within .search-icon {
-  color: var(--fm-color-primary-500);
-}
-
-/* Action Icon Buttons */
 .action-btn {
   display: flex;
   align-items: center;
@@ -263,7 +208,6 @@
   outline-offset: 1px;
 }
 
-/* Wishlist and Cart Badges */
 .badge-custom {
   font-size: 0.65rem;
   width: 16px;
@@ -279,7 +223,6 @@
   right: 2px !important;
 }
 
-/* Pulsing Notification Badge */
 .animate-pulse {
   animation: badgePulse 2s infinite;
 }
@@ -289,35 +232,9 @@
   100% { box-shadow: 0 0 0 0 rgba(184, 147, 92, 0); }
 }
 
-/* Login CTA Button */
-.login-cta-btn {
-  border: 1.5px solid var(--fm-color-neutral-300);
-  padding: 0.4rem 1.1rem;
-  border-radius: var(--fm-radius-pill);
-  color: var(--fm-color-neutral-800);
-  transition: var(--fm-transition-fast);
-  background-color: transparent;
-  outline: none;
-}
-.login-cta-btn:hover {
-  background-color: var(--fm-color-neutral-900);
-  border-color: var(--fm-color-neutral-900);
-  color: #ffffff !important;
-  transform: translateY(-1px);
-}
-.login-cta-btn:hover i {
-  color: #ffffff !important;
-}
-
-.mark-read-btn:hover {
-  color: var(--fm-color-primary-600) !important;
-  transform: scale(1.15);
-}
-
 /* ==========================================================================
-   5. Floating Profile Dropdown
+   4. Floating Profile Dropdown
    ========================================================================== */
-/* Avatar Trigger with double highlight ring */
 .profile-avatar-trigger {
   padding: 0;
   cursor: pointer;
@@ -348,6 +265,10 @@
   justify-content: center;
   border: 2px solid var(--color-white);
   transition: var(--transition-smooth);
+  overflow: hidden;
+}
+.avatar-image {
+  display: block;
 }
 .avatar-initials {
   color: var(--fm-color-primary-300);
@@ -372,7 +293,6 @@
   box-shadow: 0 0 4px rgba(101, 126, 93, 0.6);
 }
 
-/* Glassmorphic Dropdown Card */
 .profile-dropdown-card {
   width: 250px;
   border: 1px solid var(--fm-glass-border);
@@ -441,7 +361,6 @@
   padding-left: 1.25rem !important;
 }
 
-/* Guest buttons */
 .auth-guest-actions {
   display: flex;
   align-items: center;
@@ -477,127 +396,7 @@
 }
 
 /* ==========================================================================
-   6. Mega Menu Dropdown Container
-   ========================================================================== */
-.mega-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background-color: var(--color-white);
-  visibility: hidden;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s var(--fm-ease-smooth),
-              transform 0.3s var(--fm-ease-smooth),
-              visibility 0.3s;
-  pointer-events: none;
-  z-index: var(--fm-z-dropdown);
-  border-bottom: 3px solid var(--fm-color-primary-500);
-  will-change: transform, opacity;
-}
-.mega-menu.show {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* Category Row & Dynamic Category Images */
-.category-card {
-  transition: var(--transition-smooth);
-}
-.category-icon-circle {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--fm-radius-circle);
-  transition: var(--transition-smooth);
-  background-color: var(--color-cream-bg);
-  overflow: hidden;
-}
-.category-svg {
-  width: 22px;
-  height: 22px;
-  stroke: var(--fm-color-neutral-800);
-  transition: var(--transition-smooth);
-}
-.category-img {
-  transition: var(--transition-smooth);
-}
-.category-card:hover .category-icon-circle {
-  background-color: var(--fm-color-primary-500);
-  transform: scale(1.08);
-}
-.category-card:hover .category-svg {
-  stroke: var(--color-cream-bg);
-}
-.category-card:hover .category-img {
-  transform: scale(1.1);
-}
-.category-card:hover .category-label {
-  color: var(--fm-color-primary-500) !important;
-}
-
-/* Mega menu skeletons integration */
-.skeleton-container {
-  min-height: 44px;
-}
-
-/* 4-Column Directory Layout */
-.column-title {
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  border-left: 2.5px solid var(--fm-color-primary-500);
-  padding-left: 8px;
-}
-.column-link {
-  font-weight: 500;
-  font-size: 0.85rem;
-  color: var(--color-medium-gray) !important;
-  display: inline-block;
-  transition: var(--transition-smooth);
-}
-.column-link:hover {
-  color: var(--fm-color-primary-500) !important;
-  transform: translateX(4px);
-}
-
-/* Luxury Promo Card Banner styling */
-.promo-banner-card {
-  height: 100%;
-  min-height: 210px;
-  background-color: var(--color-dark);
-  position: relative;
-}
-.promo-image {
-  opacity: 0.55;
-  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-.promo-banner-card:hover .promo-image {
-  transform: scale(1.05);
-}
-.promo-overlay {
-  background: linear-gradient(to top, rgba(17,17,17,0.95) 0%, rgba(17,17,17,0.4) 60%, transparent 100%);
-  height: 100%;
-}
-.promo-title {
-  line-height: 1.2;
-}
-.promo-cta {
-  transition: var(--transition-fast);
-}
-.promo-cta i {
-  transition: transform 0.3s ease;
-}
-.promo-banner-card:hover .promo-cta i {
-  transform: translateX(5px);
-}
-.promo-cta:hover {
-  color: var(--color-gold) !important;
-}
-
-/* ==========================================================================
-   7. Mobile Drawer Menu & Overlay
+   5. Mobile Drawer Menu & Overlay
    ========================================================================== */
 .mobile-drawer {
   width: 320px;
@@ -612,7 +411,7 @@
 .logo-box-mini {
   width: 30px;
   height: 30px;
-  border-radius: var(--fm-radius-sm) - 2px;
+  border-radius: calc(var(--fm-radius-sm) - 2px);
   padding: 5px;
 }
 .logo-svg-mini {
@@ -627,21 +426,6 @@
   transform: rotate(90deg);
 }
 
-/* Accordion in Mobile */
-.accordion-trigger-custom {
-  outline: none;
-  transition: var(--transition-fast);
-}
-.accordion-trigger-custom:hover {
-  color: var(--fm-color-primary-500) !important;
-}
-.mobile-nav-sublink {
-  transition: var(--transition-fast);
-}
-.mobile-nav-sublink:hover {
-  color: var(--fm-color-primary-500) !important;
-  padding-left: 3px;
-}
 .mobile-nav-link {
   transition: var(--transition-fast);
 }
@@ -653,6 +437,7 @@
   width: 36px;
   height: 36px;
   border: 1px solid var(--fm-color-neutral-200);
+  overflow: hidden;
 }
 
 .btn-gold-outline {
@@ -677,7 +462,6 @@
   border-color: var(--fm-color-primary-600);
 }
 
-/* Backdrop */
 .drawer-backdrop {
   background-color: var(--fm-surface-overlay);
   backdrop-filter: blur(4px);
@@ -686,7 +470,7 @@
 }
 
 /* ==========================================================================
-   8. Keyframe Animations
+   6. Keyframe Animations
    ========================================================================== */
 @keyframes dropdownFade {
   from {
@@ -705,50 +489,23 @@
 }
 
 /* ==========================================================================
-   9. Responsive Adaptations
+   7. Responsive Adaptations
    ========================================================================== */
 @media (max-width: 1199px) {
-  .search-wrapper {
-    width: 140px;
-  }
-  .search-wrapper:focus-within {
-    width: 170px;
-  }
   .desktop-nav {
     gap: 2.5rem;
   }
 }
 
 @media (max-width: 991px) {
-  /* Condensed spacing on tablet */
   .desktop-nav {
     display: none !important;
   }
 }
 
 /* ==========================================================================
-   10. RTL Layout Overrides
+   8. RTL Layout Overrides
    ========================================================================== */
-[dir="rtl"] .arrow-icon {
-  margin-left: 0;
-  margin-right: 4px;
-}
-
-[dir="rtl"] .column-title {
-  border-left: 0;
-  border-right: 2.5px solid var(--fm-color-primary-500);
-  padding-left: 0;
-  padding-right: 8px;
-}
-
-[dir="rtl"] .column-link:hover {
-  transform: translateX(-4px);
-}
-
-[dir="rtl"] .promo-banner-card:hover .promo-cta i {
-  transform: translateX(-5px);
-}
-
 [dir="rtl"] .mobile-drawer {
   transform: translateX(100%);
 }
@@ -757,13 +514,11 @@
   transform: translateX(0);
 }
 
-[dir="rtl"] .mobile-nav-sublink:hover,
 [dir="rtl"] .mobile-nav-link:hover {
   padding-left: 0;
   padding-right: 3px;
 }
 
-[dir="rtl"] .profile-dropdown,
 [dir="rtl"] .profile-dropdown-card,
 [dir="rtl"] .dropdown-menu-custom {
   right: auto;

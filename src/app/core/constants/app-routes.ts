@@ -90,5 +90,7 @@ export const NAV_ROUTES = {
   VENDOR_DASHBOARD: '/vendor/dashboard',
   VENDOR_REVIEWS: '/vendor/reviews',
 
-  AI_CHAT: '/ai-chat'
+  AI_CHAT: '/ai-chat',
+
+  NOTIFICATIONS: '/notifications'
 } as const;

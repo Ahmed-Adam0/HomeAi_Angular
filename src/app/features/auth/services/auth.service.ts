@@ -21,6 +21,7 @@ interface AuthProfile {
   initials: string;
   tier: string;
   workshopId?: number;
+  image?: string;
 }
 
 @Injectable({
@@ -216,11 +217,14 @@ export class AuthService {
         }
       }
 
+      const image = payload['picture'] || payload['image'] || payload['avatar'] || '';
+
       return {
         id,
         name,
         email,
         initials,
+        image,
         tier: fallbackUser.tier,
         workshopId
       };

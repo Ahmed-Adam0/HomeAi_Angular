@@ -12,8 +12,8 @@ export const CURRENCIES: CurrencyOption[] = [
 ];
 
 export const MAIN_NAV_LINKS: NavLink[] = [
-  { labelEn: 'Products', labelAr: 'المنتجات', route: '/products', hasDropdown: true },
-  { labelEn: 'Rooms', labelAr: 'الغرف', route: '/rooms' },
+  { labelEn: 'Products', labelAr: 'المنتجات', route: '/products' },
+  { labelEn: 'AI Accent', labelAr: 'لمسة الذكاء', route: '/rooms' },
   { labelEn: 'Inspirations', labelAr: 'الأفكار الملهمة', route: '/inspirations' },
   { labelEn: 'Offers & promotions', labelAr: 'العروض والتنزيلات', route: '/offers' }
 ];
