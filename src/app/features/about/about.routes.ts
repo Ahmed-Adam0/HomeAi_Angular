@@ -4,6 +4,6 @@ export const aboutRoutes: Routes = [
   {
     path: 'about',
     loadComponent: () =>
-      import('./pages/about-us/about-us.component').then((m) => m.AboutUsComponent),
-  }
+      import('./pages/about-page/about-page.component').then((m) => m.AboutPageComponent),
+  },
 ];

@@ -1,0 +1,177 @@
+<!-- Hero Section -->
+<section class="hero-section" aria-label="About FurniMind AI Hero">
+  <div class="hero-bg-orbs"></div>
+  <div class="container position-relative">
+    <div class="hero-content">
+      <span class="hero-badge">{{ 'ABOUT.HERO.BADGE' | translate }}</span>
+      <h1 class="hero-title">{{ 'ABOUT.HERO.TITLE' | translate }}</h1>
+      <p class="hero-subtitle">{{ 'ABOUT.HERO.SUBTITLE' | translate }}</p>
+      <div class="hero-actions">
+        <a routerLink="/products" class="btn-hero-primary">
+          <span>{{ 'ABOUT.HERO.CTA_PRIMARY' | translate }}</span>
+          <i class="bi bi-arrow-right btn-arrow-icon"></i>
+        </a>
+        <a routerLink="/contact" class="btn-hero-secondary">
+          <i class="bi bi-chat-dots"></i>
+          <span>{{ 'ABOUT.HERO.CTA_SECONDARY' | translate }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Story Section -->
+<section class="about-section scroll-reveal" aria-labelledby="about-story-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">{{ 'ABOUT.SECTION_BADGE' | translate }}</span>
+      <h2 id="about-story-title" class="section-title">{{ 'ABOUT.STORY.TITLE' | translate }}</h2>
+      <p class="section-desc">{{ 'ABOUT.STORY.DESCRIPTION' | translate }}</p>
+    </div>
+    <div class="about-grid">
+      <div class="about-card reveal-stagger-1">
+        <div class="about-card-icon"><i class="bi bi-compass"></i></div>
+        <h3 class="about-card-label">{{ 'ABOUT.STORY.LABEL' | translate }}</h3>
+        <p class="about-card-text">{{ 'ABOUT.STORY.CONTENT' | translate }}</p>
+      </div>
+      <div class="about-card reveal-stagger-2">
+        <div class="about-card-icon"><i class="bi bi-bullseye"></i></div>
+        <h3 class="about-card-label">{{ 'ABOUT.MISSION.LABEL' | translate }}</h3>
+        <p class="about-card-text">{{ 'ABOUT.MISSION.CONTENT' | translate }}</p>
+      </div>
+      <div class="about-card reveal-stagger-3">
+        <div class="about-card-icon"><i class="bi bi-eye"></i></div>
+        <h3 class="about-card-label">{{ 'ABOUT.VISION.LABEL' | translate }}</h3>
+        <p class="about-card-text">{{ 'ABOUT.VISION.CONTENT' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values Section -->
+<section class="values-section scroll-reveal" aria-labelledby="values-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">{{ 'ABOUT.VALUES.BADGE' | translate }}</span>
+      <h2 id="values-title" class="section-title">{{ 'ABOUT.VALUES.TITLE' | translate }}</h2>
+    </div>
+    <div class="values-grid">
+      @for (value of values; track value.icon) {
+        <div class="value-card">
+          <div class="value-card-inner">
+            <div class="value-icon-wrap"><i class="{{ value.icon }}"></i></div>
+            <h3 class="value-title">{{ value.titleKey | translate }}</h3>
+            <p class="value-desc">{{ value.descKey | translate }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section scroll-reveal" aria-labelledby="stats-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge section-badge-light">{{ 'ABOUT.STATS.BADGE' | translate }}</span>
+      <h2 id="stats-title" class="section-title section-title-light">{{ 'ABOUT.STATS.TITLE' | translate }}</h2>
+    </div>
+    <div class="stats-grid">
+      @for (stat of stats; track stat.key) {
+        <div class="stat-card">
+          <div class="stat-icon"><i class="{{ stat.icon }}"></i></div>
+          <span class="stat-number" [attr.data-target]="stat.target">0</span>
+          <span class="stat-label">{{ stat.key | translate }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Privacy Policy Section -->
+<section class="privacy-section scroll-reveal" aria-labelledby="privacy-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">{{ 'ABOUT.PRIVACY.BADGE' | translate }}</span>
+      <h2 id="privacy-title" class="section-title">{{ 'ABOUT.PRIVACY.TITLE' | translate }}</h2>
+      <p class="section-desc">{{ 'ABOUT.PRIVACY.DESCRIPTION' | translate }}</p>
+    </div>
+    <div class="accordion-wrapper" role="region" aria-label="Privacy Policy Accordion">
+      @for (item of privacyItems; track item.titleKey; let i = $index) {
+        <div class="accordion-card" [class.active]="activePrivacyIndex() === i">
+          <button class="accordion-trigger"
+                  [attr.aria-expanded]="activePrivacyIndex() === i"
+                  [attr.aria-controls]="'privacy-panel-' + i"
+                  (click)="togglePrivacy(i)">
+            <span class="accordion-index">{{ i + 1 | number: '2.0' }}</span>
+            <span class="accordion-title">{{ item.titleKey | translate }}</span>
+            <i class="bi bi-chevron-down accordion-chevron"></i>
+          </button>
+          <div [id]="'privacy-panel-' + i"
+               class="accordion-panel"
+               role="region"
+               [attr.aria-hidden]="activePrivacyIndex() !== i">
+            <div class="accordion-content">
+              <p>{{ item.contentKey | translate }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Terms Section -->
+<section class="terms-section scroll-reveal" aria-labelledby="terms-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">{{ 'ABOUT.TERMS.BADGE' | translate }}</span>
+      <h2 id="terms-title" class="section-title">{{ 'ABOUT.TERMS.TITLE' | translate }}</h2>
+      <p class="section-desc">{{ 'ABOUT.TERMS.DESCRIPTION' | translate }}</p>
+    </div>
+    <div class="accordion-wrapper" role="region" aria-label="Terms and Conditions Accordion">
+      @for (item of termsItems; track item.titleKey; let i = $index) {
+        <div class="accordion-card" [class.active]="activeTermsIndex() === i">
+          <button class="accordion-trigger"
+                  [attr.aria-expanded]="activeTermsIndex() === i"
+                  [attr.aria-controls]="'terms-panel-' + i"
+                  (click)="toggleTerms(i)">
+            <span class="accordion-index">{{ i + 1 | number: '2.0' }}</span>
+            <span class="accordion-title">{{ item.titleKey | translate }}</span>
+            <i class="bi bi-chevron-down accordion-chevron"></i>
+          </button>
+          <div [id]="'terms-panel-' + i"
+               class="accordion-panel"
+               role="region"
+               [attr.aria-hidden]="activeTermsIndex() !== i">
+            <div class="accordion-content">
+              <p>{{ item.contentKey | translate }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Contact CTA Section -->
+<section class="cta-section scroll-reveal" aria-labelledby="cta-title">
+  <div class="cta-bg-orbs"></div>
+  <div class="container position-relative">
+    <div class="cta-content">
+      <span class="cta-badge">{{ 'ABOUT.CTA.BADGE' | translate }}</span>
+      <h2 id="cta-title" class="cta-title">{{ 'ABOUT.CTA.TITLE' | translate }}</h2>
+      <p class="cta-subtitle">{{ 'ABOUT.CTA.SUBTITLE' | translate }}</p>
+      <div class="cta-actions">
+        <a routerLink="/contact" class="btn-cta-primary">
+          <i class="bi bi-envelope-paper"></i>
+          <span>{{ 'ABOUT.CTA.BUTTON' | translate }}</span>
+        </a>
+        <a href="tel:01214649915" class="btn-cta-secondary">
+          <i class="bi bi-telephone"></i>
+          <span>01214649915</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
