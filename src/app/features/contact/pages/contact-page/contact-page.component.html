@@ -1,0 +1,235 @@
+<!-- Hero Section -->
+<section class="hero-section" aria-label="Contact FurniMind AI Hero">
+  <div class="hero-bg-orbs"></div>
+  <div class="hero-grid-bg"></div>
+  <div class="container position-relative">
+    <div class="hero-content">
+      <span class="hero-badge">{{ 'CONTACT.HERO.BADGE' | translate }}</span>
+      <h1 class="hero-title">{{ 'CONTACT.HERO.TITLE' | translate }}</h1>
+      <p class="hero-subtitle">{{ 'CONTACT.HERO.SUBTITLE' | translate }}</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-value">24/7</span>
+          <span class="hero-stat-label">{{ 'CONTACT.HERO.STAT_AVAIL' | translate }}</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-value">&lt; 2h</span>
+          <span class="hero-stat-label">{{ 'CONTACT.HERO.STAT_RESPONSE' | translate }}</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-value">98%</span>
+          <span class="hero-stat-label">{{ 'CONTACT.HERO.STAT_SATISFACTION' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Info Cards -->
+<section class="info-section scroll-reveal" aria-label="Contact Information">
+  <div class="container">
+    <div class="info-grid">
+      @for (info of contactInfo; track info.icon) {
+        <div class="info-card">
+          <div class="info-card-inner">
+            <div class="info-icon-wrap"><i class="{{ info.icon }}"></i></div>
+            <h3 class="info-title">{{ info.titleKey | translate }}</h3>
+            <p class="info-desc">{{ info.descKey | translate }}</p>
+            @if (info.href) {
+              <a [href]="info.href" class="info-link">
+                <span>{{ 'CONTACT.INFO.ACTION' | translate }}</span>
+                <i class="bi bi-arrow-right"></i>
+              </a>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Form + Support Section -->
+<section class="form-section scroll-reveal" aria-label="Contact Form and Support">
+  <div class="container">
+    <div class="form-layout">
+      <div class="form-column">
+        <div class="section-header text-start">
+          <span class="section-badge">{{ 'CONTACT.FORM.BADGE' | translate }}</span>
+          <h2 class="section-title">{{ 'CONTACT.FORM.TITLE' | translate }}</h2>
+          <p class="section-desc">{{ 'CONTACT.FORM.DESCRIPTION' | translate }}</p>
+        </div>
+
+        @if (submitted() && submitSuccess()) {
+          <div class="form-success">
+            <div class="form-success-icon"><i class="bi bi-check-circle-fill"></i></div>
+            <h3 class="form-success-title">{{ 'CONTACT.FORM.SUCCESS_TITLE' | translate }}</h3>
+            <p class="form-success-text">{{ 'CONTACT.FORM.SUCCESS_TEXT' | translate }}</p>
+          </div>
+        }
+
+        @if (submitted() && submitError()) {
+          <div class="form-error-banner">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>{{ 'CONTACT.FORM.ERROR_TEXT' | translate }}</span>
+          </div>
+        }
+
+        @if (!submitted() || submitError()) {
+          <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <div class="floating-input-wrap">
+                  <input type="text" id="name" formControlName="name" class="form-input" placeholder=" " autocomplete="name">
+                  <label for="name" class="form-label-float">{{ 'CONTACT.FORM.NAME' | translate }}</label>
+                </div>
+                @if (f.name.touched && f.name.invalid) {
+                  <span class="form-error">
+                    @if (f.name.errors?.['required']) { {{ 'CONTACT.VALIDATION.NAME_REQUIRED' | translate }} }
+                    @if (f.name.errors?.['minlength']) { {{ 'CONTACT.VALIDATION.NAME_MIN' | translate }} }
+                  </span>
+                }
+              </div>
+              <div class="form-group">
+                <div class="floating-input-wrap">
+                  <input type="email" id="email" formControlName="email" class="form-input" placeholder=" " autocomplete="email">
+                  <label for="email" class="form-label-float">{{ 'CONTACT.FORM.EMAIL' | translate }}</label>
+                </div>
+                @if (f.email.touched && f.email.invalid) {
+                  <span class="form-error">
+                    @if (f.email.errors?.['required']) { {{ 'CONTACT.VALIDATION.EMAIL_REQUIRED' | translate }} }
+                    @if (f.email.errors?.['email']) { {{ 'CONTACT.VALIDATION.EMAIL_INVALID' | translate }} }
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <div class="floating-input-wrap">
+                  <input type="tel" id="phone" formControlName="phone" class="form-input" placeholder=" " autocomplete="tel">
+                  <label for="phone" class="form-label-float">{{ 'CONTACT.FORM.PHONE' | translate }}</label>
+                </div>
+                @if (f.phone.touched && f.phone.invalid) {
+                  <span class="form-error">
+                    @if (f.phone.errors?.['required']) { {{ 'CONTACT.VALIDATION.PHONE_REQUIRED' | translate }} }
+                    @if (f.phone.errors?.['pattern']) { {{ 'CONTACT.VALIDATION.PHONE_INVALID' | translate }} }
+                  </span>
+                }
+              </div>
+              <div class="form-group">
+                <div class="floating-input-wrap">
+                  <input type="text" id="subject" formControlName="subject" class="form-input" placeholder=" ">
+                  <label for="subject" class="form-label-float">{{ 'CONTACT.FORM.SUBJECT' | translate }}</label>
+                </div>
+                @if (f.subject.touched && f.subject.invalid) {
+                  <span class="form-error">
+                    @if (f.subject.errors?.['required']) { {{ 'CONTACT.VALIDATION.SUBJECT_REQUIRED' | translate }} }
+                    @if (f.subject.errors?.['minlength']) { {{ 'CONTACT.VALIDATION.SUBJECT_MIN' | translate }} }
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="floating-input-wrap">
+                <textarea id="message" formControlName="message" class="form-input form-textarea" placeholder=" " rows="5"></textarea>
+                <label for="message" class="form-label-float">{{ 'CONTACT.FORM.MESSAGE' | translate }}</label>
+              </div>
+              @if (f.message.touched && f.message.invalid) {
+                <span class="form-error">
+                  @if (f.message.errors?.['required']) { {{ 'CONTACT.VALIDATION.MESSAGE_REQUIRED' | translate }} }
+                  @if (f.message.errors?.['minlength']) { {{ 'CONTACT.VALIDATION.MESSAGE_MIN' | translate }} }
+                </span>
+              }
+            </div>
+            <button type="submit" class="btn-submit" [disabled]="submitting()">
+              @if (submitting()) {
+                <span class="spinner"></span>
+                <span>{{ 'CONTACT.FORM.SUBMITTING' | translate }}</span>
+              } @else {
+                <i class="bi bi-send"></i>
+                <span>{{ 'CONTACT.FORM.SUBMIT' | translate }}</span>
+              }
+            </button>
+          </form>
+        }
+      </div>
+
+      <div class="support-column">
+        <div class="section-header text-start">
+          <span class="section-badge">{{ 'CONTACT.SUPPORT.BADGE' | translate }}</span>
+          <h2 class="section-title">{{ 'CONTACT.SUPPORT.TITLE' | translate }}</h2>
+          <p class="section-desc">{{ 'CONTACT.SUPPORT.DESCRIPTION' | translate }}</p>
+        </div>
+        <div class="support-grid">
+          @for (option of supportOptions; track option.icon) {
+            <div class="support-card">
+              <div class="support-icon"><i class="{{ option.icon }}"></i></div>
+              <h3 class="support-card-title">{{ option.titleKey | translate }}</h3>
+              <p class="support-card-desc">{{ option.descKey | translate }}</p>
+              <a [href]="option.ctaLink" class="support-cta">
+                <span>{{ option.ctaKey | translate }}</span>
+                <i class="bi bi-arrow-up-right"></i>
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section scroll-reveal" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">{{ 'CONTACT.FAQ.BADGE' | translate }}</span>
+      <h2 id="faq-title" class="section-title">{{ 'CONTACT.FAQ.TITLE' | translate }}</h2>
+      <p class="section-desc">{{ 'CONTACT.FAQ.DESCRIPTION' | translate }}</p>
+    </div>
+    <div class="faq-accordion" role="region" aria-label="Frequently Asked Questions">
+      @for (faq of faqItems; track faq.questionKey; let i = $index) {
+        <div class="faq-card" [class.active]="activeFaqIndex() === i">
+          <button class="faq-trigger"
+                  [attr.aria-expanded]="activeFaqIndex() === i"
+                  [attr.aria-controls]="'faq-panel-' + i"
+                  (click)="toggleFaq(i)">
+            <span class="faq-number">{{ i + 1 | number: '2.0' }}</span>
+            <span class="faq-question">{{ faq.questionKey | translate }}</span>
+            <i class="bi bi-plus-lg faq-icon"></i>
+          </button>
+          <div [id]="'faq-panel-' + i"
+               class="faq-panel"
+               role="region"
+               [attr.aria-hidden]="activeFaqIndex() !== i">
+            <div class="faq-answer">
+              <p>{{ faq.answerKey | translate }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section scroll-reveal" aria-labelledby="cta-title">
+  <div class="cta-bg-orbs"></div>
+  <div class="container position-relative">
+    <div class="cta-content">
+      <span class="cta-badge">{{ 'CONTACT.CTA.BADGE' | translate }}</span>
+      <h2 id="cta-title" class="cta-title">{{ 'CONTACT.CTA.TITLE' | translate }}</h2>
+      <p class="cta-subtitle">{{ 'CONTACT.CTA.SUBTITLE' | translate }}</p>
+      <div class="cta-actions">
+        <a href="mailto:support@furnimind.ai" class="btn-cta-primary">
+          <i class="bi bi-envelope-paper"></i>
+          <span>{{ 'CONTACT.CTA.BUTTON_SUPPORT' | translate }}</span>
+        </a>
+        <a routerLink="/products" class="btn-cta-secondary">
+          <i class="bi bi-grid"></i>
+          <span>{{ 'CONTACT.CTA.BUTTON_MARKETPLACE' | translate }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

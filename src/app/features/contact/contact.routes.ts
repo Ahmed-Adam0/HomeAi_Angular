@@ -4,6 +4,6 @@ export const contactRoutes: Routes = [
   {
     path: 'contact',
     loadComponent: () =>
-      import('./pages/contact-us/contact-us.component').then((m) => m.ContactUsComponent),
-  }
+      import('./pages/contact-page/contact-page.component').then((m) => m.ContactPageComponent),
+  },
 ];
