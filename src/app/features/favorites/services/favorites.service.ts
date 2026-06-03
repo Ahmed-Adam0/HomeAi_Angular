@@ -84,8 +84,10 @@ export class FavoritesService {
             }),
             catchError(err => {
               console.error(`Failed to fetch product details for fav product ${fav.productId}:`, err);
-              // Fallback to original favorite snapshot if catalog fetch fails
-              return of(fav);
+              return of({
+                ...fav,
+                productImage: fav.productImage || 'assets/images/image-placeholder.svg'
+              });
             })
           );
         });

@@ -223,6 +223,11 @@ export class Favorites implements OnInit, OnDestroy, AfterViewInit {
     return this.removingIds().has(Number(fav.productId));
   }
 
+  handleImgError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/images/image-placeholder.svg';
+  }
+
   getInitials(name: string): string {
     if (!name) return '?';
     return name

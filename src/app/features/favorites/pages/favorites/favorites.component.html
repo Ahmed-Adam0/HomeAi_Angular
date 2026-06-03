@@ -140,6 +140,7 @@
                 <div class="fav-card-img-wrap overflow-hidden">
                   <img
                     [src]="fav.productImage"
+                    (error)="handleImgError($event)"
                     [alt]="translationService.currentLang() === 'ar' ? (fav.productNameAr || fav.productName) : (fav.productNameEn || fav.productName)"
                     class="fav-card-img w-100 h-100 object-fit-cover"
                     loading="lazy"
@@ -203,6 +204,7 @@
               <div class="sug-img-wrap flex-shrink-0 rounded-3 overflow-hidden">
                 <img
                   [src]="sug.mainImageUrl"
+                  (error)="handleImgError($event)"
                   [alt]="translationService.currentLang() === 'ar' ? sug.nameAr : sug.nameEn"
                   class="sug-img w-100 h-100 object-fit-cover"
                   loading="lazy"
@@ -242,18 +244,6 @@
                 {{ translationService.currentLang() === 'ar' ? 'تصميم غرفة بمفضلتك' : 'Design a Room with Favorites' }}
               </span>
             </a>
-            <button
-              class="quick-action-btn d-flex align-items-center gap-2 border-0 w-100 text-start"
-              (click)="addAllToCart()"
-              [disabled]="isAddingAll()"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-              </svg>
-              <span class="font-xs">
-                {{ translationService.currentLang() === 'ar' ? 'مشاركة قائمة الأمنيات' : 'Share Wishlist' }}
-              </span>
-            </button>
           </div>
         </div>
       </div>
