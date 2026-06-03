@@ -34,6 +34,10 @@
           <i class="bi bi-cash-stack"></i>
           <span>{{ 'VENDOR.LAYOUT.NAV_REVENUE' | translate }}</span>
         </a>
+         <a [routerLink]="navRoutes.VENDOR_NOTIFICATIONS" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
+          <i class="bi bi-bell-fill"></i>
+          <span>{{ 'VENDOR.LAYOUT.NAV_NOTIFICATIONS' | translate }}</span>
+        </a>
       </div>
 
       <div class="nav-section">
@@ -81,7 +85,7 @@
             <span class="lang-text fw-bold">{{ currentLang() === 'en' ? ('VENDOR.LAYOUT.LANGUAGE_SWITCHER_EN' | translate) : ('VENDOR.LAYOUT.LANGUAGE_SWITCHER_AR' | translate) }}</span>
           </button>
         </div>
-
+<app-vendor-notification-bell />
         <div class="user-profile-menu dropdown">
           <div class="user-avatar">
             {{ currentUser()?.initials || 'AW' }}

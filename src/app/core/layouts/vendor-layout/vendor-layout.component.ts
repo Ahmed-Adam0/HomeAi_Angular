@@ -6,12 +6,13 @@ import { NAV_ROUTES } from '../../constants';
 import { RtlDirective } from '../../../shared/directives/rtl.directive';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../shared/i18n/translation.service';
+import { VendorNotificationBellComponent } from "../../../features/vendor/components";
 
 
 @Component({
   selector: 'app-vendor-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, RtlDirective, TranslatePipe],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, RtlDirective, TranslatePipe, VendorNotificationBellComponent],
   templateUrl: './vendor-layout.component.html',
   styleUrl: './vendor-layout.component.css',
 
