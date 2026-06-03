@@ -59,7 +59,12 @@ export class Navbar implements OnInit {
   readonly isLanguageDropdownOpen = signal<boolean>(false);
   readonly isProfileDropdownOpen = signal<boolean>(false);
   readonly isScrolled = signal<boolean>(false);
+  readonly isHeaderHidden = signal<boolean>(false);
   readonly favoritesCount = signal<number>(0);
+
+  private lastScrollY = 0;
+  private readonly SCROLL_THRESHOLD = 50;
+  private scrollRAF = 0;
 
   readonly cartCount = computed(() => this.cartService.itemCount());
   readonly unreadCount = computed(() => this.notificationService.unreadCount());
@@ -114,7 +119,30 @@ export class Navbar implements OnInit {
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    this.isScrolled.set(window.scrollY > 40);
+    if (this.scrollRAF !== 0) return;
+
+    this.scrollRAF = requestAnimationFrame(() => {
+      this.scrollRAF = 0;
+
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY <= 10) {
+        this.isHeaderHidden.set(false);
+        this.isScrolled.set(false);
+        this.lastScrollY = currentScrollY;
+        return;
+      }
+
+      this.isScrolled.set(true);
+
+      if (currentScrollY > this.lastScrollY && currentScrollY > this.SCROLL_THRESHOLD) {
+        this.isHeaderHidden.set(true);
+      } else if (currentScrollY <= this.lastScrollY) {
+        this.isHeaderHidden.set(false);
+      }
+
+      this.lastScrollY = currentScrollY;
+    });
   }
 
   @HostListener('document:keydown.escape', [])

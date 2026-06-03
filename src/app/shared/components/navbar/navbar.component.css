@@ -91,12 +91,24 @@
 }
 
 /* ==========================================================================
-   2. Main Header - Sticky Navigation
+   2. Fixed Header Container (scroll-up/show, scroll-down/hide)
    ========================================================================== */
-.sticky-header {
-  position: sticky;
+.header-fixed {
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: var(--fm-z-navbar, 1030);
+  transform: translateY(0);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.header-fixed.header-hidden {
+  transform: translateY(-100%);
+}
+
+.main-header {
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-border);
   transition: padding var(--fm-transition-duration-normal) var(--fm-ease-smooth),
@@ -109,14 +121,14 @@
   transition: padding var(--fm-transition-duration-normal) var(--fm-ease-smooth);
 }
 
-.sticky-header.scrolled {
+.main-header.scrolled {
   background-color: var(--fm-glass-bg) !important;
   backdrop-filter: var(--fm-glass-blur) !important;
   -webkit-backdrop-filter: var(--fm-glass-blur) !important;
   box-shadow: var(--fm-glass-shadow) !important;
   border-bottom-color: var(--fm-glass-border) !important;
 }
-.sticky-header.scrolled .header-container {
+.main-header.scrolled .header-container {
   padding-top: 0.6rem !important;
   padding-bottom: 0.6rem !important;
 }

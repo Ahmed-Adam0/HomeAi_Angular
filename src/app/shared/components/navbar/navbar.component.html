@@ -1,54 +1,56 @@
-<!-- Top Black Bar -->
-<div class="top-bar py-2 text-white bg-dark-custom">
-  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
-    <!-- Social Links -->
-    <div class="social-links d-flex gap-3">
-      <a href="https://facebook.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-      <a href="https://instagram.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-      <a href="https://twitter.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
-      <a href="https://linkedin.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-      <a href="https://youtube.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-    </div>
+<!-- Fixed Header Container (scroll-up/show, scroll-down/hide) -->
+<div class="header-fixed" [class.header-hidden]="isHeaderHidden()">
+  <!-- Top Black Bar -->
+  <div class="top-bar py-2 text-white bg-dark-custom">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <!-- Social Links -->
+      <div class="social-links d-flex gap-3">
+        <a href="https://facebook.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://instagram.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://twitter.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
+        <a href="https://linkedin.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        <a href="https://youtube.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+      </div>
 
-    <!-- Contact Info -->
-    <div class="contact-info d-flex align-items-center gap-2">
-      <span class="fs-7 font-secondary font-weight-medium tracking-wide">01214649915</span>
-    </div>
+      <!-- Contact Info -->
+      <div class="contact-info d-flex align-items-center gap-2">
+        <span class="fs-7 font-secondary font-weight-medium tracking-wide">01214649915</span>
+      </div>
 
-    <!-- Utility Links & Dropdowns -->
-    <div class="utility-links d-flex align-items-center gap-3">
-      <a routerLink="/about" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{ 'NAV_ABOUT_US' | translate }}</a>
-      <span class="bar-separator">•</span>
-      <a routerLink="/contact" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{ 'NAV_CONTACT_US' | translate }}</a>
-      <span class="bar-separator">•</span>
+      <!-- Utility Links & Dropdowns -->
+      <div class="utility-links d-flex align-items-center gap-3">
+        <a routerLink="/about" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{ 'NAV_ABOUT_US' | translate }}</a>
+        <span class="bar-separator">•</span>
+        <a routerLink="/contact" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{ 'NAV_CONTACT_US' | translate }}</a>
+        <span class="bar-separator">•</span>
 
-      <!-- Language Dropdown -->
-      <div class="dropdown-wrapper position-relative">
-        <button class="dropdown-trigger text-white bg-transparent border-0 opacity-75 hover-opacity-100 fs-7 p-0 d-flex align-items-center gap-1"
-                (click)="toggleLanguageDropdown($event)">
-          <span>{{ selectedLanguage().label }}</span>
-          <i class="bi bi-chevron-down fs-8"></i>
-        </button>
-        @if (isLanguageDropdownOpen()) {
-          <ul class="dropdown-menu-custom position-absolute end-0 mt-2 py-1 shadow bg-white rounded list-unstyled z-3">
-            @for (lang of languages(); track lang.code) {
-              <li>
-                <button class="dropdown-item-custom w-100 text-start px-3 py-1-5 border-0 bg-transparent fs-7 d-flex align-items-center gap-2"
-                        (click)="selectLanguage(lang)">
-                   <span>{{ lang.flag }}</span>
-                   <span>{{ lang.label }}</span>
-                </button>
-              </li>
-            }
-          </ul>
-        }
+        <!-- Language Dropdown -->
+        <div class="dropdown-wrapper position-relative">
+          <button class="dropdown-trigger text-white bg-transparent border-0 opacity-75 hover-opacity-100 fs-7 p-0 d-flex align-items-center gap-1"
+                  (click)="toggleLanguageDropdown($event)">
+            <span>{{ selectedLanguage().label }}</span>
+            <i class="bi bi-chevron-down fs-8"></i>
+          </button>
+          @if (isLanguageDropdownOpen()) {
+            <ul class="dropdown-menu-custom position-absolute end-0 mt-2 py-1 shadow bg-white rounded list-unstyled z-3">
+              @for (lang of languages(); track lang.code) {
+                <li>
+                  <button class="dropdown-item-custom w-100 text-start px-3 py-1-5 border-0 bg-transparent fs-7 d-flex align-items-center gap-2"
+                          (click)="selectLanguage(lang)">
+                     <span>{{ lang.flag }}</span>
+                     <span>{{ lang.label }}</span>
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Main Navigation Bar with Glassmorphic Sticky Transition -->
-<header class="main-header sticky-header" [class.scrolled]="isScrolled()" (click)="closeAllFloatingDropdowns()">
+  <!-- Main Navigation Bar -->
+  <header class="main-header" [class.scrolled]="isScrolled()" (click)="closeAllFloatingDropdowns()">
   <div class="container d-flex align-items-center justify-content-between py-3 header-container">
 
     <!-- Brand Logo Area -->
@@ -199,6 +201,7 @@
     </div>
   </div>
 </header>
+</div>
 
 <!-- Mobile Navigation Drawer -->
 <div class="mobile-drawer position-fixed top-0 bottom-0 start-0 shadow-lg bg-white z-5 d-flex flex-column"
