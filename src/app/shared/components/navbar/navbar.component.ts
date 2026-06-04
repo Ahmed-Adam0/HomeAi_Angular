@@ -75,6 +75,7 @@ export class Navbar implements OnInit {
   });
 
   protected avatarError = signal(false);
+  private lastErroredSrc: string | null = null;
 
   constructor() {
     const destroyRef = inject(DestroyRef);
@@ -91,8 +92,11 @@ export class Navbar implements OnInit {
     });
 
     effect(() => {
-      this.userAvatarSrc();
+      const src = this.userAvatarSrc();
       this.avatarError.set(false);
+      if (src === null) {
+        this.lastErroredSrc = null;
+      }
     });
 
     this.router.events
@@ -224,6 +228,12 @@ export class Navbar implements OnInit {
   }
 
   onAvatarError(): void {
+    const currentSrc = this.userAvatarSrc();
+    // Ignore stale error events from null/empty src
+    if (!currentSrc) return;
+    // Ignore if this URL already errored (avoid redundant error state)
+    if (this.lastErroredSrc === currentSrc) return;
+    this.lastErroredSrc = currentSrc;
     this.avatarError.set(true);
   }
 

@@ -96,7 +96,7 @@
                     aria-label="User Account Options">
               <div class="avatar-ring-outer">
                 <div class="avatar-ring-inner position-relative">
-                  <img [src]="userAvatarSrc()"
+                  <img [attr.src]="userAvatarSrc() || undefined"
                        alt="Profile"
                        class="avatar-image w-100 h-100 rounded-circle object-fit-cover"
                        [class.d-none]="!userAvatarSrc() || avatarError()"
@@ -278,14 +278,18 @@
 
     <!-- Authentication in Mobile Drawer -->
     <div class="mobile-auth-drawer border-top pt-3">
-      @if (authService.isLoggedIn()) {
+      <div class="mobile-auth-authenticated" [class.d-none]="!authService.isLoggedIn()">
         <div class="d-flex align-items-center gap-2.5 mb-3 px-1">
-          <div class="avatar-mini bg-gold rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-7">
-            @if (userAvatarSrc() && !avatarError()) {
-              <img [src]="userAvatarSrc()" alt="Profile" class="w-100 h-100 rounded-circle object-fit-cover" (error)="onAvatarError()" />
-            } @else {
-              <span>{{ authService.currentUser()?.initials || 'FM' }}</span>
-            }
+          <div class="avatar-mini bg-gold rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-7 position-relative overflow-hidden">
+            <img [attr.src]="userAvatarSrc() || undefined"
+                 alt="Profile"
+                 class="w-100 h-100 rounded-circle object-fit-cover"
+                 [class.d-none]="!userAvatarSrc() || avatarError()"
+                 (error)="onAvatarError()" />
+            <span class="avatar-initials-mini position-absolute top-50 start-50 translate-middle fw-bold"
+                  [class.d-none]="userAvatarSrc() && !avatarError()">
+              {{ authService.currentUser()?.initials || 'FM' }}
+            </span>
           </div>
           <div>
             <span class="d-block fw-bold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
@@ -310,7 +314,8 @@
             <span>{{ 'NAV_LOGOUT' | translate }}</span>
           </button>
         </div>
-      } @else {
+      </div>
+      <div class="mobile-auth-unauthenticated" [class.d-none]="authService.isLoggedIn()">
         <div class="d-flex flex-column gap-2">
           <a routerLink="/auth/login" class="btn btn-gold-outline w-100 rounded-pill fs-7 py-2 fw-bold d-flex align-items-center justify-content-center gap-2" (click)="toggleMobileMenu()">
             <i class="bi bi-box-arrow-in-right"></i>
@@ -321,7 +326,7 @@
             <span>{{ 'NAV_REGISTER' | translate }}</span>
           </a>
         </div>
-      }
+      </div>
     </div>
   </div>
 
