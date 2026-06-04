@@ -1,4 +1,5 @@
 <main class="vendor-orders" [attr.aria-label]="'VENDOR.ORDERS.ARIA_LABEL' | translate">
+  <!-- ── Header ── -->
   <header class="vendor-orders__header">
     <div class="vendor-orders__header-content">
       <p class="vendor-orders__eyebrow">{{ 'VENDOR.COMMON.PORTAL' | translate }}</p>
@@ -9,42 +10,61 @@
     </div>
   </header>
 
+  <!-- ── Filters ── -->
   <section class="vendor-orders__filters" [attr.aria-label]="'VENDOR.ORDERS.FILTERS_ARIA' | translate">
-    <div class="vendor-orders__filters-toolbar">
-      <div class="vendor-orders__search-field">
-        <label class="vendor-orders__filter-label" for="vendor-orders-search">
-          {{ 'VENDOR.ORDERS.SEARCH_LABEL' | translate }}
-        </label>
-        <div class="vendor-orders__search-control">
-          <span class="vendor-orders__search-icon" aria-hidden="true">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.75"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </span>
-          <input
-            id="vendor-orders-search"
-            class="vendor-orders__search-input"
-            type="search"
-            name="orderSearch"
-            [placeholder]="'VENDOR.ORDERS.SEARCH_PLACEHOLDER' | translate"
-            autocomplete="off"
-            [value]="searchTerm()"
-            (input)="onSearchInput($event)"
-          />
-        </div>
+    <!-- Search — always visible -->
+    <div class="vendor-orders__search-wrapper">
+      <div class="vendor-orders__search-control">
+        <span class="vendor-orders__search-icon" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input
+          id="vendor-orders-search"
+          class="vendor-orders__search-input"
+          type="search"
+          name="orderSearch"
+          [placeholder]="'VENDOR.ORDERS.SEARCH_PLACEHOLDER' | translate"
+          autocomplete="off"
+          [value]="searchTerm()"
+          (input)="onSearchInput($event)"
+        />
       </div>
+    </div>
 
+    <!-- Filter toggle (mobile/tablet only) -->
+    <button
+      type="button"
+      class="vendor-orders__filter-toggle"
+      (click)="toggleMobileFilters()"
+      [attr.aria-expanded]="showMobileFilters()"
+      [attr.aria-label]="'VENDOR.ORDERS.FILTERS_ARIA' | translate"
+    >
+      <i class="bi bi-funnel" aria-hidden="true"></i>
+      <span>{{ 'VENDOR.ORDERS.STATUS_LABEL' | translate }}</span>
+      @if (activeFilterLabel()) {
+        <span class="vendor-orders__filter-toggle-badge"></span>
+      }
+      <i class="bi" [class.bi-chevron-up]="showMobileFilters()" [class.bi-chevron-down]="!showMobileFilters()" aria-hidden="true"></i>
+    </button>
+
+    <!-- Status dropdown (collapsible on mobile/tablet, always visible on desktop) -->
+    <div
+      class="vendor-orders__status-collapse"
+      [class.vendor-orders__status-collapse--open]="showMobileFilters()"
+    >
       <div class="vendor-orders__status-field">
         <label class="vendor-orders__filter-label" for="vendor-orders-status">
           {{ 'VENDOR.ORDERS.STATUS_LABEL' | translate }}
@@ -81,6 +101,7 @@
     </div>
   </section>
 
+  <!-- ── Title + Orders table / cards ── -->
   <section
     class="vendor-orders__table-section"
     aria-labelledby="vendor-orders-table-heading"
@@ -89,6 +110,9 @@
       <h2 id="vendor-orders-table-heading" class="vendor-orders__section-title">
         {{ 'VENDOR.ORDERS.RECENT_ORDERS' | translate }}
       </h2>
+      @if (!loading() && orders().length) {
+        <span class="vendor-orders__order-count">{{ orders().length }}</span>
+      }
     </header>
 
     @if (loading()) {

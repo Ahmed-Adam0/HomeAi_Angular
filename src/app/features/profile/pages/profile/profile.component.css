@@ -36,3 +36,30 @@
 .btn {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
+
+@media (max-width: 575px) {
+  .ai-activity-card .card-body {
+    padding: 1.25rem !important;
+  }
+  .activity-stat-value {
+    font-size: 1.5rem;
+  }
+  .activity-stat-box {
+    padding: 0.75rem !important;
+  }
+}
+
+@media (max-width: 374px) {
+  .ai-activity-card .card-body {
+    padding: 1rem !important;
+  }
+  .activity-stat-value {
+    font-size: 1.25rem;
+  }
+  .activity-stat-box {
+    padding: 0.5rem !important;
+  }
+  .activity-stat-box .text-uppercase {
+    font-size: 0.625rem !important;
+  }
+}

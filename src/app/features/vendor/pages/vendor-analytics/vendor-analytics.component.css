@@ -817,3 +817,55 @@
     gap: 8px;
   }
 }
+
+/* Extra small devices */
+@media (max-width: 374px) {
+  .vendor-analytics {
+    padding: 12px !important;
+  }
+
+  .vendor-analytics__kpi-card {
+    padding: 14px !important;
+  }
+
+  .vendor-analytics__kpi-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+  }
+
+  .vendor-analytics__kpi-value {
+    font-size: 1.125rem;
+  }
+
+  .vendor-analytics__filter-chip {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+
+  .vendor-analytics__meta {
+    flex-wrap: wrap;
+    padding: 6px 12px;
+  }
+
+  .vendor-analytics__meta-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+
+  .vendor-analytics__filter-bar {
+    padding: 10px 14px;
+  }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1920px) {
+  .vendor-analytics {
+    max-width: 1600px;
+    padding: 40px 48px;
+  }
+
+  .vendor-analytics__kpi-row {
+    gap: 24px;
+  }
+}

@@ -89,10 +89,46 @@
 /* Product Card Wrapper Sizing Polish */
 .products-grid app-product-card {
   width: 100%;
-  max-width: 360px; /* Limits giant growth on wide column spans */
-  justify-self: center; /* Perfectly centers card within the grid column */
+  max-width: 360px;
+  justify-self: center;
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 374px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+
+  .products-grid app-product-card {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 375px) and (max-width: 575px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .products-grid app-product-card {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2.5rem;
+  }
 }
 
 /* Animations */

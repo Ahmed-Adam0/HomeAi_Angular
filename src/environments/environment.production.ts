@@ -14,5 +14,6 @@ export const environment = {
   localization: {
     defaultLanguage: 'en',
     supportedLanguages: ['en', 'ar']
-  }
+  },
+  googleClientId: '834738882064-e87ejpnt830djaabjh07uhhk626sanhe.apps.googleusercontent.com'
 };

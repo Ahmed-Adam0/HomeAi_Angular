@@ -150,3 +150,72 @@
   left: 20px;
 }
 
+@media (max-width: 767px) {
+  .testimonials-section {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+  .stat-card {
+    border-radius: 18px !important;
+    padding: 1rem !important;
+  }
+  .stat-card h3 {
+    font-size: 1.5rem !important;
+  }
+  .review-card {
+    border-radius: 18px !important;
+  }
+  .review-card::before {
+    font-size: 6rem;
+    top: -15px;
+    right: 10px;
+  }
+  [dir="rtl"] .review-card::before {
+    right: auto;
+    left: 10px;
+  }
+}
+
+@media (max-width: 575px) {
+  .testimonials-section {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+  .section-heading {
+    font-size: clamp(1.5rem, 6vw, 1.9rem) !important;
+  }
+  .section-subtitle {
+    font-size: 0.85rem !important;
+  }
+  .stat-card h3 {
+    font-size: 1.25rem !important;
+  }
+  .stat-card p {
+    font-size: 0.75rem !important;
+  }
+  .review-card {
+    padding: 1.25rem !important;
+  }
+  .review-quote {
+    font-size: 0.875rem !important;
+  }
+}
+
+@media (max-width: 374px) {
+  .stat-card h3 {
+    font-size: 1.1rem !important;
+  }
+  .stat-card p {
+    font-size: 0.7rem !important;
+  }
+  .review-card {
+    padding: 1rem !important;
+  }
+  .review-quote {
+    font-size: 0.8125rem !important;
+  }
+  .review-user {
+    font-size: 0.65rem !important;
+  }
+}
+

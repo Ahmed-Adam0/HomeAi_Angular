@@ -1,0 +1,287 @@
+:root {
+  /* ==========================================
+     RESPONSIVE DESIGN SYSTEM
+     Enterprise breakpoints and layout utilities
+     ========================================== */
+  
+  /* Breakpoint tokens (for reference in JS/TS) */
+  --fm-bp-xs: 320px;
+  --fm-bp-sm: 375px;
+  --fm-bp-md: 768px;
+  --fm-bp-lg: 1024px;
+  --fm-bp-xl: 1280px;
+  --fm-bp-2xl: 1440px;
+  --fm-bp-3xl: 1600px;
+  --fm-bp-4xl: 1920px;
+
+  /* Container max-widths */
+  --fm-container-sm: 640px;
+  --fm-container-md: 768px;
+  --fm-container-lg: 1024px;
+  --fm-container-xl: 1280px;
+  --fm-container-2xl: 1440px;
+  --fm-container-full: 100%;
+}
+
+/* ==========================================
+   GLOBAL OVERFLOW GUARD
+   Prevents horizontal scrolling at root level
+   ========================================== */
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+/* ==========================================
+   RESPONSIVE CONTAINER SYSTEM
+   ========================================== */
+.fm-container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--fm-space-16);
+  max-width: var(--fm-container-2xl);
+}
+
+@media (min-width: 576px) {
+  .fm-container {
+    padding-inline: var(--fm-space-24);
+  }
+}
+
+@media (min-width: 1280px) {
+  .fm-container {
+    padding-inline: var(--fm-space-32);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE UTILITY CLASSES
+   ========================================== */
+
+/* Hide/Show breakpoint utilities */
+.fm-hidden-xs { display: none !important; }
+.fm-visible-xs { display: block !important; }
+
+@media (min-width: 576px) {
+  .fm-hidden-sm { display: none !important; }
+  .fm-visible-sm { display: block !important; }
+  .fm-hidden-xs { display: block !important; }
+  .fm-visible-xs { display: none !important; }
+}
+
+@media (min-width: 768px) {
+  .fm-hidden-md { display: none !important; }
+  .fm-visible-md { display: block !important; }
+  .fm-hidden-sm { display: block !important; }
+  .fm-visible-sm { display: none !important; }
+}
+
+@media (min-width: 1024px) {
+  .fm-hidden-lg { display: none !important; }
+  .fm-visible-lg { display: block !important; }
+  .fm-hidden-md { display: block !important; }
+  .fm-visible-md { display: none !important; }
+}
+
+@media (min-width: 1280px) {
+  .fm-hidden-xl { display: none !important; }
+  .fm-visible-xl { display: block !important; }
+  .fm-hidden-lg { display: block !important; }
+  .fm-visible-lg { display: none !important; }
+}
+
+/* Responsive spacing utilities */
+.fm-gap-xs { gap: var(--fm-space-8); }
+.fm-gap-sm { gap: var(--fm-space-12); }
+.fm-gap-md { gap: var(--fm-space-16); }
+.fm-gap-lg { gap: var(--fm-space-24); }
+.fm-gap-xl { gap: var(--fm-space-32); }
+
+@media (max-width: 575px) {
+  .fm-gap-responsive { gap: var(--fm-space-8); }
+  .fm-p-responsive { padding: var(--fm-space-12); }
+  .fm-px-responsive { padding-inline: var(--fm-space-12); }
+  .fm-py-responsive { padding-block: var(--fm-space-12); }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .fm-gap-responsive { gap: var(--fm-space-12); }
+  .fm-p-responsive { padding: var(--fm-space-16); }
+  .fm-px-responsive { padding-inline: var(--fm-space-16); }
+  .fm-py-responsive { padding-block: var(--fm-space-16); }
+}
+
+@media (min-width: 768px) {
+  .fm-gap-responsive { gap: var(--fm-space-16); }
+  .fm-p-responsive { padding: var(--fm-space-24); }
+  .fm-px-responsive { padding-inline: var(--fm-space-24); }
+  .fm-py-responsive { padding-block: var(--fm-space-24); }
+}
+
+@media (min-width: 1024px) {
+  .fm-gap-responsive { gap: var(--fm-space-24); }
+  .fm-p-responsive { padding: var(--fm-space-32); }
+  .fm-px-responsive { padding-inline: var(--fm-space-32); }
+  .fm-py-responsive { padding-block: var(--fm-space-32); }
+}
+
+/* ==========================================
+   RESPONSIVE GRID UTILITIES
+   ========================================== */
+.fm-grid {
+  display: grid;
+  gap: var(--fm-space-16);
+  width: 100%;
+}
+
+.fm-grid-1 { grid-template-columns: 1fr; }
+.fm-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.fm-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.fm-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.fm-grid-5 { grid-template-columns: repeat(5, 1fr); }
+
+@media (max-width: 575px) {
+  .fm-grid-responsive { grid-template-columns: 1fr; }
+  .fm-grid-responsive\:2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .fm-grid-responsive { grid-template-columns: repeat(2, 1fr); }
+  .fm-grid-responsive\:3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .fm-grid-responsive { grid-template-columns: repeat(2, 1fr); }
+  .fm-grid-responsive\:4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .fm-grid-responsive { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1280px) {
+  .fm-grid-responsive { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ==========================================
+   RESPONSIVE TABLES
+   ========================================== */
+.fm-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fm-table-responsive::-webkit-scrollbar {
+  height: 4px;
+}
+
+.fm-table-responsive::-webkit-scrollbar-thumb {
+  background: var(--fm-color-neutral-300);
+  border-radius: var(--fm-radius-pill);
+}
+
+/* ==========================================
+   RESPONSIVE MODAL/DRAWER SIZES
+   ========================================== */
+.fm-modal-full-mobile {
+  max-height: 100dvh;
+  border-radius: 0;
+}
+
+@media (max-width: 575px) {
+  .fm-modal-mobile-bottom {
+    align-items: flex-end;
+  }
+  
+  .fm-modal-mobile-bottom .modal-card {
+    border-radius: var(--fm-radius-lg) var(--fm-radius-lg) 0 0;
+    max-height: 90dvh;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE TEXT
+   ========================================== */
+@media (max-width: 575px) {
+  .fm-text-responsive-xs {
+    font-size: 0.75rem;
+  }
+  .fm-text-responsive-sm {
+    font-size: 0.8125rem;
+  }
+  .fm-text-responsive-base {
+    font-size: 0.875rem;
+  }
+}
+
+/* ==========================================
+   TABLET LANDSCAPE FIXES (820px - 1024px)
+   ========================================== */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .fm-tablet-2cols {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .fm-tablet-3cols {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .fm-tablet-stack {
+    flex-direction: column !important;
+  }
+  .fm-tablet-full {
+    width: 100% !important;
+  }
+}
+
+/* ==========================================
+   ULTRA-WIDE SCREEN (1920px+)
+   ========================================== */
+@media (min-width: 1920px) {
+  .fm-ultrawide-max {
+    max-width: 1600px;
+    margin-inline: auto;
+  }
+  .fm-ultrawide-content {
+    padding-inline: var(--fm-space-48);
+  }
+}
+
+/* ==========================================
+   RTL SAFE UTILITIES
+   ========================================== */
+[dir="rtl"] .fm-rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .fm-rtl-mirror {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .fm-mobile-drawer-rtl {
+  right: 0;
+  left: auto;
+  transform: translateX(100%);
+}
+
+[dir="rtl"] .fm-mobile-drawer-rtl.show {
+  transform: translateX(0);
+}
+
+/* ==========================================
+   ACCESSIBILITY - REDUCED MOTION
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

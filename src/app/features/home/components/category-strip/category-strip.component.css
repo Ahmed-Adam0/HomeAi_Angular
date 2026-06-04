@@ -140,3 +140,40 @@
 [dir="rtl"] .room-title {
   font-weight: 700 !important;
 }
+
+@media (max-width: 575px) {
+  .categories-section {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+  .category-card {
+    aspect-ratio: 3 / 4;
+    border-radius: 18px !important;
+  }
+  .room-title {
+    font-size: clamp(1rem, 4vw, 1.15rem) !important;
+  }
+  .room-count {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .categories-section .row-cols-sm-3 .col {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  .category-card {
+    aspect-ratio: 4 / 5;
+    border-radius: 14px !important;
+  }
+  .room-title {
+    font-size: 0.9rem !important;
+  }
+  .room-count {
+    font-size: 0.6rem;
+  }
+  .category-meta p {
+    display: none;
+  }
+}

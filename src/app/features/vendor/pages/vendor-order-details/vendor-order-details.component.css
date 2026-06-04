@@ -310,4 +310,79 @@
   .card-premium {
     padding: 1.25rem !important;
   }
+
+  .custom-table thead th,
+  .custom-table tbody td {
+    padding: 0.75rem 0.625rem;
+    font-size: 0.8125rem;
+  }
+
+  .product-thumbnail-container {
+    width: 48px;
+    height: 48px;
+  }
+
+  .timeline-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .top-header-bar {
+    padding: 0.75rem !important;
+  }
+
+  .card-premium {
+    padding: 1rem !important;
+  }
+
+  .card-title {
+    font-size: 0.9375rem;
+  }
+
+  .icon-shape {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+
+  .custom-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .custom-table thead th,
+  .custom-table tbody td {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .product-thumbnail-container {
+    width: 36px;
+    height: 36px;
+  }
+
+  .timeline-content {
+    font-size: 0.8125rem;
+  }
+
+  .timeline-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 0.625rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 820px) {
+  .top-header-bar {
+    padding: 1rem 1.25rem !important;
+  }
+
+  .card-premium {
+    padding: 1.5rem !important;
+  }
 }

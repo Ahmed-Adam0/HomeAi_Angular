@@ -316,7 +316,9 @@
 }
 
 /* Responsive Rules */
-@media (max-width: 768px) {
+
+/* Hide sidebar by default on tablet and below */
+@media (max-width: 1023px) {
   .vendor-sidebar {
     transform: translateX(-100%);
   }
@@ -335,6 +337,115 @@
 
   .vendor-content {
     padding: 16px;
+  }
+
+  .user-details {
+    display: none !important;
+  }
+
+  .header-right {
+    gap: var(--fm-space-10);
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 374px) {
+  .vendor-header {
+    padding: 0 10px !important;
+    height: 56px !important;
+  }
+
+  .vendor-content {
+    padding: 12px !important;
+  }
+
+  .workshop-name {
+    display: none;
+  }
+
+  .workshop-label {
+    font-size: 11px;
+  }
+
+  .header-right {
+    gap: var(--fm-space-6);
+  }
+
+  .language-switcher-container {
+    display: none !important;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .btn-language-switch {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+}
+
+/* Small devices */
+@media (min-width: 375px) and (max-width: 575px) {
+  .vendor-header {
+    padding: 0 12px !important;
+    height: 60px !important;
+  }
+
+  .vendor-content {
+    padding: 14px !important;
+  }
+
+  .workshop-name {
+    display: none;
+  }
+
+  .header-right {
+    gap: var(--fm-space-8);
+  }
+
+  .user-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
+}
+
+/* Tablet portrait (768px - 820px) */
+@media (min-width: 768px) and (max-width: 820px) {
+  .vendor-header {
+    padding: 0 20px;
+    height: 64px;
+  }
+
+  .vendor-content {
+    padding: 20px;
+  }
+
+  .user-details {
+    display: none !important;
+  }
+}
+
+/* RTL vendor layout responsive */
+@media (max-width: 1023px) {
+  [dir="rtl"] .vendor-sidebar {
+    transform: translateX(100%);
+  }
+
+  [dir="rtl"] .vendor-sidebar.open {
+    transform: translateX(0);
+  }
+
+  [dir="rtl"] .vendor-main {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  [dir="rtl"] .vendor-header {
+    padding: 0 16px;
   }
 }
 
@@ -438,7 +549,7 @@
     right: 0;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1023px) {
     .vendor-sidebar {
       transform: translateX(100%);
     }
@@ -449,11 +560,32 @@
 
     .vendor-main {
       margin-right: 0;
+      margin-left: 0;
       transition: margin-right 0.3s ease;
     }
 
     .vendor-header {
       padding: 0 16px;
+    }
+
+    .header-left {
+      flex-direction: row;
+    }
+
+    .header-right {
+      flex-direction: row;
+    }
+  }
+
+  @media (max-width: 575px) {
+    .vendor-header {
+      padding: 0 12px !important;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 820px) {
+    .vendor-header {
+      padding: 0 20px;
     }
   }
 }

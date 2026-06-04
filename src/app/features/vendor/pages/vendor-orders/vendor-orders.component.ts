@@ -40,6 +40,9 @@ export class VendorOrders implements OnInit {
   readonly searchTerm = signal('');
   readonly selectedStatus = signal<string>('all');
 
+  /** Toggle for the collapsible filter area on mobile/tablet */
+  readonly showMobileFilters = signal(false);
+
   readonly statusFilterOptions: readonly OrderStatusFilterOption[] = [
     { value: 'all', labelKey: 'VENDOR.ORDERS.FILTER_ALL_STATUSES' },
     { value: VendorOrderStatus.Pending, labelKey: 'VENDOR.STATUS.PENDING' },
@@ -72,6 +75,13 @@ export class VendorOrders implements OnInit {
     );
   });
 
+  readonly activeFilterLabel = computed(() => {
+    const selected = this.selectedStatus();
+    if (selected === 'all') return null;
+    const opt = this.statusFilterOptions.find((o) => o.value === selected);
+    return opt?.labelKey ?? null;
+  });
+
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement)?.value ?? '';
     this.searchTerm.set(value);
@@ -80,6 +90,11 @@ export class VendorOrders implements OnInit {
   onStatusChange(event: Event): void {
     const value = (event.target as HTMLSelectElement)?.value ?? 'all';
     this.selectedStatus.set(value);
+    this.showMobileFilters.set(false);
+  }
+
+  toggleMobileFilters(): void {
+    this.showMobileFilters.update((v) => !v);
   }
 
   onViewOrder(id: string): void {
@@ -99,8 +114,6 @@ export class VendorOrders implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (summaries) => {
-          console.log('VendorOrders.loadOrders orders received:', summaries);
-          console.log('VendorOrders.loadOrders orders.length:', summaries.length);
           this.orders.set(summaries);
           this.loading.set(false);
         },

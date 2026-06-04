@@ -787,6 +787,74 @@
   }
 }
 
+/* Extra small devices */
+@media (max-width: 374px) {
+  .vendor-revenue-dashboard {
+    padding: 12px !important;
+  }
+
+  .vendor-revenue-dashboard__kpi-card {
+    padding: 14px !important;
+  }
+
+  .vendor-revenue-dashboard__kpi-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+  }
+
+  .vendor-revenue-dashboard__kpi-value {
+    font-size: 1.125rem;
+  }
+
+  .vendor-revenue-dashboard__meta {
+    flex-wrap: wrap;
+    padding: 6px 12px;
+  }
+
+  .vendor-revenue-dashboard__meta-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+
+  .vendor-revenue-dashboard__filter-bar {
+    padding: 10px 14px;
+  }
+
+  .vendor-revenue-dashboard__filter-chip {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+
+  .btn-language-switch {
+    display: none !important;
+  }
+}
+
+/* Tablet narrow (768px - 820px) */
+@media (min-width: 768px) and (max-width: 820px) {
+  .vendor-revenue-dashboard__kpi-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .vendor-revenue-dashboard__kpi-card:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1920px) {
+  .vendor-revenue-dashboard {
+    max-width: 1600px;
+    padding: 40px 48px;
+  }
+
+  .vendor-revenue-dashboard__kpi-row {
+    gap: 24px;
+  }
+}
+
 [dir="rtl"] .vendor-revenue-dashboard__kpi-accent {
   background: linear-gradient(270deg, var(--color-gold) 0%, rgba(184, 147, 92, 0.3) 100%);
 }

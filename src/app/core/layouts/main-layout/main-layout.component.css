@@ -1,9 +1,30 @@
 main {
   padding-top: 100px;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 575px) {
+  main {
+    padding-top: 60px;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 991px) {
   main {
     padding-top: 90px;
+  }
+}
+
+@media (min-width: 992px) {
+  main {
+    padding-top: 100px;
+  }
+}
+
+/* No top-bar visible on small screens (hidden at 575px) */
+@media (max-width: 575px) {
+  main {
+    padding-top: 56px;
   }
 }

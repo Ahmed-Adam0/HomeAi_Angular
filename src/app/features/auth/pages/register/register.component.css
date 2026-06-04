@@ -562,3 +562,83 @@
     padding: 40px 20px;
   }
 }
+
+@media (max-width: 575px) {
+  .auth-form-side {
+    padding: 32px 16px;
+  }
+  .auth-form-inner {
+    max-width: 100%;
+  }
+  .form-header h1 {
+    font-size: 22px;
+  }
+  .form-header p {
+    font-size: 13px;
+  }
+  .form-group input {
+    height: 44px;
+    font-size: 14px;
+  }
+  .btn-submit {
+    height: 46px;
+    font-size: 14px;
+  }
+  .brand-logo {
+    margin-bottom: 18px;
+  }
+  .logo-text {
+    font-size: 16px;
+  }
+  .logo-icon-small {
+    width: 32px;
+    height: 32px;
+  }
+  .logo-icon-small svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 374px) {
+  .auth-form-side {
+    padding: 24px 12px;
+  }
+  .form-header h1 {
+    font-size: 19px;
+  }
+  .form-header p {
+    font-size: 12px;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group input {
+    height: 40px;
+    font-size: 13px;
+    padding: 0 40px 0 12px;
+  }
+  .auth-wrapper[dir="ltr"] .form-group input {
+    padding: 0 12px 0 40px;
+  }
+  .input-icon {
+    right: 10px;
+  }
+  .input-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  .btn-submit {
+    height: 42px;
+    font-size: 13px;
+  }
+  .auth-footer {
+    font-size: 13px;
+  }
+  .password-strength-bar {
+    margin-top: 6px;
+  }
+  .strength-segment {
+    height: 3px;
+  }
+}

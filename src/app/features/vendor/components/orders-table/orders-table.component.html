@@ -26,56 +26,98 @@
       </div>
     </div>
   } @else {
-    <div class="orders-table__card card-premium">
-      <div class="table-responsive">
-        <table class="orders-table__table table align-middle mb-0">
-          <thead>
-            <tr>
-              <th scope="col">{{ 'VENDOR.ORDERS.COL_ORDER_ID' | translate }}</th>
-              <th scope="col">{{ 'VENDOR.ORDERS.COL_CUSTOMER' | translate }}</th>
-              <th scope="col">{{ 'VENDOR.ORDERS.COL_DATE' | translate }}</th>
-              <th scope="col">{{ 'VENDOR.ORDERS.COL_TOTAL' | translate }}</th>
-              <th scope="col">{{ 'VENDOR.ORDERS.COL_STATUS' | translate }}</th>
-              <th scope="col" class="text-end" style="width: 48px;"></th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (order of orders(); track order.id) {
-              <tr class="orders-table__row">
-                <td>
-                  <div class="orders-table__order-id">
-                    <span class="orders-table__order-number">{{ order.orderNumber }}</span>
-                    <span class="orders-table__order-meta">{{ 'VENDOR.COMMON.ORDER_HASH' | translate }}{{ order.id }}</span>
-                  </div>
-                </td>
-                <td>
-                  <span class="orders-table__customer">{{ order.customerName }}</span>
-                </td>
-                <td>
-                  <span class="orders-table__date">{{ order.placedAt | date: 'mediumDate' }}</span>
-                </td>
-                <td>
-                  <span class="orders-table__amount">{{ order.totalAmount | currencyFormat }}</span>
-                </td>
-                <td>
-                  <app-order-status-badge [status]="order.status"></app-order-status-badge>
-                </td>
-                <td class="text-end">
-                  <button
-                    type="button"
-                    class="orders-table__action-btn"
-                    [attr.aria-label]="'VENDOR.COMMON.VIEW_DETAILS' | translate"
-                    [title]="'VENDOR.COMMON.VIEW_DETAILS' | translate"
-                    (click)="onViewOrder(order.id)"
-                  >
-                    <i class="bi bi-eye"></i>
-                  </button>
-                </td>
+    <!-- ── Desktop table (≥ 992px) ── -->
+    <div class="orders-table__desktop-view">
+      <div class="orders-table__card card-premium">
+        <div class="table-responsive">
+          <table class="orders-table__table table align-middle mb-0">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'VENDOR.ORDERS.COL_ORDER_ID' | translate }}</th>
+                <th scope="col">{{ 'VENDOR.ORDERS.COL_CUSTOMER' | translate }}</th>
+                <th scope="col">{{ 'VENDOR.ORDERS.COL_DATE' | translate }}</th>
+                <th scope="col">{{ 'VENDOR.ORDERS.COL_TOTAL' | translate }}</th>
+                <th scope="col">{{ 'VENDOR.ORDERS.COL_STATUS' | translate }}</th>
+                <th scope="col" class="text-end" style="width: 48px;"></th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              @for (order of orders(); track order.id) {
+                <tr class="orders-table__row">
+                  <td>
+                    <div class="orders-table__order-id">
+                      <span class="orders-table__order-number">{{ order.orderNumber }}</span>
+                      <span class="orders-table__order-meta">{{ 'VENDOR.COMMON.ORDER_HASH' | translate }}{{ order.id }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="orders-table__customer">{{ order.customerName }}</span>
+                  </td>
+                  <td>
+                    <span class="orders-table__date">{{ order.placedAt | date: 'mediumDate' }}</span>
+                  </td>
+                  <td>
+                    <span class="orders-table__amount">{{ order.totalAmount | currencyFormat }}</span>
+                  </td>
+                  <td>
+                    <app-order-status-badge [status]="order.status" size="sm" />
+                  </td>
+                  <td class="text-end">
+                    <button
+                      type="button"
+                      class="orders-table__action-btn"
+                      [attr.aria-label]="'VENDOR.COMMON.VIEW_DETAILS' | translate"
+                      [title]="'VENDOR.COMMON.VIEW_DETAILS' | translate"
+                      (click)="onViewOrder(order.id)"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
+    </div>
+
+    <!-- ── Mobile / Tablet cards (< 992px) ── -->
+    <div class="orders-table__mobile-view" aria-label="Order cards">
+      @for (order of orders(); track order.id) {
+        <div class="order-card" (click)="onViewOrder(order.id)" role="button" tabindex="0" (keydown.enter)="onViewOrder(order.id)">
+          <!-- Row 1: Status + Order Number -->
+          <div class="order-card__header">
+            <app-order-status-badge [status]="order.status" size="lg" />
+            <span class="order-card__number">{{ order.orderNumber }}</span>
+          </div>
+
+          <!-- Row 2: Customer -->
+          <div class="order-card__customer-row">
+            <span class="order-card__customer">{{ order.customerName }}</span>
+          </div>
+
+          <!-- Row 3: Amount + Meta -->
+          <div class="order-card__meta-row">
+            <span class="order-card__amount">{{ order.totalAmount | currencyFormat }}</span>
+            <span class="order-card__meta-sep" aria-hidden="true">•</span>
+            <span class="order-card__date">{{ order.placedAt | date: 'mediumDate' }}</span>
+            <span class="order-card__meta-sep" aria-hidden="true">•</span>
+            <span class="order-card__items">{{ order.itemCount }}</span>
+          </div>
+
+          <!-- Row 4: Actions -->
+          <div class="order-card__actions">
+            <button
+              type="button"
+              class="order-card__action-btn"
+              (click)="$event.stopPropagation(); onViewOrder(order.id)"
+            >
+              <i class="bi bi-eye"></i>
+              <span>{{ 'VENDOR.COMMON.VIEW_DETAILS' | translate }}</span>
+            </button>
+          </div>
+        </div>
+      }
     </div>
   }
 </section>

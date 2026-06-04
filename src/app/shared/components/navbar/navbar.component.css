@@ -503,6 +503,201 @@
 /* ==========================================================================
    7. Responsive Adaptations
    ========================================================================== */
+
+/* Extra small devices (320px - 374px) */
+@media (max-width: 374px) {
+  .top-bar .social-links {
+    gap: var(--fm-space-8) !important;
+  }
+
+  .top-bar .social-links a {
+    font-size: 0.75rem;
+  }
+
+  .top-bar .contact-info span {
+    font-size: 0.65rem !important;
+  }
+
+  .top-bar .utility-links {
+    gap: var(--fm-space-6) !important;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .top-bar .utility-links a {
+    font-size: 0.6rem !important;
+  }
+
+  .top-bar .utility-links .bar-separator {
+    font-size: 0.5rem;
+  }
+
+  .main-header .py-3 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .brand-name {
+    font-size: 1rem !important;
+  }
+
+  .brand-sub {
+    font-size: 0.45rem !important;
+  }
+
+  .logo-box {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+  }
+
+  .actions-area {
+    gap: var(--fm-space-4) !important;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .action-btn i {
+    font-size: 1rem !important;
+  }
+
+  .badge-custom {
+    width: 14px;
+    height: 14px;
+    font-size: 0.55rem;
+  }
+
+  .auth-guest-actions {
+    gap: var(--fm-space-4) !important;
+  }
+
+  .login-action-btn {
+    font-size: 0.65rem !important;
+    padding: 0.35rem 0.6rem !important;
+  }
+
+  .register-action-btn {
+    font-size: 0.65rem !important;
+    padding: 0.35rem 0.75rem !important;
+  }
+
+  .mobile-toggle i {
+    font-size: 1.5rem !important;
+  }
+
+  .mobile-drawer {
+    width: 280px;
+  }
+}
+
+/* Small devices (375px - 575px) */
+@media (max-width: 575px) {
+  .top-bar .container {
+    flex-direction: column;
+    align-items: center !important;
+    gap: var(--fm-space-4);
+  }
+
+  .top-bar .social-links {
+    gap: var(--fm-space-10);
+  }
+
+  .top-bar .social-links a {
+    font-size: 0.8rem;
+  }
+
+  .top-bar .utility-links {
+    gap: var(--fm-space-8);
+  }
+
+  .top-bar .utility-links a,
+  .top-bar .utility-links .dropdown-trigger {
+    font-size: 0.68rem !important;
+  }
+
+  .header-fixed .top-bar {
+    display: none;
+  }
+
+  .main-header .header-container {
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+  }
+
+  .auth-guest-actions .login-action-btn {
+    display: none;
+  }
+}
+
+/* Small to medium (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .top-bar .container {
+    flex-wrap: nowrap;
+  }
+
+  .top-bar .social-links {
+    gap: var(--fm-space-8);
+  }
+
+  .top-bar .social-links a {
+    font-size: 0.75rem;
+  }
+
+  .top-bar .utility-links a,
+  .top-bar .utility-links .dropdown-trigger {
+    font-size: 0.7rem !important;
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+  }
+
+  .actions-area {
+    gap: var(--fm-space-6) !important;
+  }
+}
+
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .top-bar .social-links a {
+    font-size: 0.82rem;
+  }
+
+  .top-bar .utility-links a,
+  .top-bar .utility-links .dropdown-trigger {
+    font-size: 0.75rem !important;
+  }
+
+  .brand-name {
+    font-size: 1.15rem;
+  }
+
+  .desktop-nav {
+    gap: 1.5rem;
+  }
+
+  .nav-link-custom {
+    font-size: 0.82rem;
+  }
+
+  .actions-area {
+    gap: var(--fm-space-8) !important;
+  }
+
+  .register-action-btn {
+    padding: 0.4rem 0.85rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .login-action-btn {
+    font-size: 0.75rem !important;
+    padding: 0.4rem 0.75rem !important;
+  }
+}
+
 @media (max-width: 1199px) {
   .desktop-nav {
     gap: 2.5rem;
@@ -512,6 +707,34 @@
 @media (max-width: 991px) {
   .desktop-nav {
     display: none !important;
+  }
+}
+
+/* ==========================================================================
+   7a. Profile dropdown responsive
+   ========================================================================== */
+@media (max-width: 575px) {
+  .profile-dropdown-card {
+    width: 280px;
+    right: -60px !important;
+    top: 115%;
+  }
+
+  [dir="rtl"] .profile-dropdown-card {
+    right: auto !important;
+    left: -60px !important;
+  }
+}
+
+@media (max-width: 374px) {
+  .profile-dropdown-card {
+    width: 260px;
+    right: -40px !important;
+  }
+
+  [dir="rtl"] .profile-dropdown-card {
+    right: auto !important;
+    left: -40px !important;
   }
 }
 

@@ -342,3 +342,68 @@
   left: 0 !important;
 }
 
+@media (max-width: 767px) {
+  :host ::ng-deep .featured-section {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+  :host ::ng-deep .featured-section h2 {
+    font-size: 1.75rem !important;
+  }
+  :host ::ng-deep .featured-section .row.mb-5 {
+    margin-bottom: 2rem !important;
+  }
+  :host ::ng-deep .featured-section .btn-premium {
+    font-size: 0.72rem !important;
+    padding: 0.65rem 1.4rem !important;
+  }
+}
+
+@media (max-width: 575px) {
+  :host ::ng-deep .featured-section {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+  :host ::ng-deep .featured-section h2 {
+    font-size: 1.4rem !important;
+  }
+  :host ::ng-deep .featured-section .product-card {
+    border-radius: 18px !important;
+  }
+  :host ::ng-deep .featured-section .product-card .card-body {
+    padding: 1rem !important;
+  }
+  :host ::ng-deep .featured-section .product-card .product-title {
+    font-size: 0.9rem !important;
+  }
+  :host ::ng-deep .featured-section .product-card .current-price {
+    font-size: 1rem !important;
+  }
+  :host ::ng-deep .featured-section .product-card .favorite-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  :host ::ng-deep .featured-section .product-card .add-to-cart-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+@media (max-width: 374px) {
+  :host ::ng-deep .featured-section h2 {
+    font-size: 1.2rem !important;
+  }
+  :host ::ng-deep .featured-section .product-card {
+    border-radius: 14px !important;
+  }
+  :host ::ng-deep .featured-section .product-card .product-title {
+    font-size: 0.8125rem !important;
+  }
+  :host ::ng-deep .featured-section .product-card .current-price {
+    font-size: 0.9rem !important;
+  }
+  :host ::ng-deep .featured-section .product-card .product-brand {
+    font-size: 0.6rem !important;
+  }
+}
+

@@ -311,3 +311,28 @@
     font-size: 0.75rem;
   }
 }
+
+@media (max-width: 374px) {
+  .alert-overlay {
+    padding: 0.625rem 0.75rem;
+    min-width: auto;
+    max-width: calc(100vw - 16px);
+  }
+  .alert-overlay .alert-text {
+    font-size: 0.7rem;
+  }
+  .alert-overlay .alert-icon-wrapper {
+    width: 24px;
+    height: 24px;
+  }
+  .alert-overlay .alert-svg {
+    width: 14px;
+    height: 14px;
+  }
+  .alert-inline {
+    padding: 10px 12px;
+  }
+  .alert-inline .alert-text {
+    font-size: 13px;
+  }
+}

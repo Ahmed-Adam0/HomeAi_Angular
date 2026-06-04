@@ -106,3 +106,56 @@
     padding: 16px;
   }
 }
+
+@media (max-width: 374px) {
+  .modal-backdrop {
+    padding: 8px;
+  }
+
+  .modal-card {
+    max-height: calc(100vh - 16px);
+    border-radius: 10px;
+  }
+
+  .modal-sm {
+    max-width: 100%;
+  }
+
+  .modal-md {
+    max-width: 100%;
+  }
+
+  .modal-lg {
+    max-width: 100%;
+  }
+
+  .modal-header {
+    padding: 12px 14px;
+  }
+
+  .modal-body {
+    padding: 14px;
+  }
+
+  .modal-title {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 991px) {
+  .modal-lg {
+    max-width: 90vw;
+  }
+}
+
+/* For mobile bottom sheet style (small screens) */
+@media (max-width: 575px) {
+  .modal-backdrop {
+    align-items: flex-end;
+  }
+
+  .modal-card {
+    border-radius: 16px 16px 0 0;
+    max-height: 90vh;
+  }
+}

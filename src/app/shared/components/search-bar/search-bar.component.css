@@ -46,3 +46,27 @@
   left: 1.5rem;
   right: auto;
 }
+
+@media (max-width: 575px) {
+  .search-container {
+    max-width: 100%;
+  }
+  .search-input {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .search-input {
+    font-size: 0.8rem;
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+  }
+  [dir="rtl"] .search-input {
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+  }
+  .search-icon {
+    font-size: 0.9rem;
+  }
+}

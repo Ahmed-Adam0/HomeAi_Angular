@@ -33,6 +33,7 @@ export class OrderStatusBadge {
   private readonly translationService = inject(TranslationService);
 
   readonly status = input.required<VendorOrderStatus>();
+  readonly size = input<'sm' | 'lg'>('sm');
 
   readonly statusLabel = computed(() => {
     this.translationService.currentLang();
@@ -46,5 +47,9 @@ export class OrderStatusBadge {
 
   readonly badgeClass = computed(
     () => `status-badge--${STATUS_VARIANTS[this.status()]}`
+  );
+
+  readonly sizeClass = computed(
+    () => `status-badge--${this.size()}`
   );
 }

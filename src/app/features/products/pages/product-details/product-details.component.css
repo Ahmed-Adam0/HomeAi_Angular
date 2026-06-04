@@ -468,6 +468,127 @@
 }
 
 /* ==========================================================================
+   6a. Responsive breakpoints
+   ========================================================================== */
+@media (max-width: 575px) {
+  .product-main-title {
+    font-size: 1.5rem !important;
+  }
+
+  .gallery-wrapper {
+    margin-bottom: 1.5rem;
+  }
+
+  .thumbnail-container {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .product-description {
+    font-size: 0.82rem !important;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.72rem !important;
+  }
+
+  .price-box {
+    padding: 1rem !important;
+  }
+
+  .current-price-detail {
+    font-size: 1.25rem;
+  }
+
+  .quantity-controller {
+    height: 42px;
+  }
+
+  .ai-widget-card {
+    padding: 1.25rem !important;
+  }
+
+  .tab-content {
+    padding-top: 1rem !important;
+  }
+
+  .related-products-section {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .PlayfairRelatedTitle {
+    font-size: 1.25rem !important;
+  }
+}
+
+@media (max-width: 374px) {
+  .thumbnail-container {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .product-main-title {
+    font-size: 1.25rem !important;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.68rem !important;
+  }
+
+  .favorite-btn {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .btn-premium,
+  .btn-outline-premium {
+    font-size: 0.72rem !important;
+    padding: 0.6rem 1rem !important;
+  }
+
+  .quantity-controller {
+    height: 38px;
+  }
+
+  .quantity-controller .btn-link {
+    font-size: 0.9rem;
+  }
+
+  .ai-recommended-badge {
+    font-size: 0.6rem !important;
+    padding: 0.35rem 0.65rem !important;
+  }
+
+  .discount-badge {
+    font-size: 0.6rem !important;
+    padding: 0.3rem 0.6rem !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 820px) {
+  .product-main-title {
+    font-size: 1.75rem !important;
+  }
+
+  .gallery-wrapper {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .product-description {
+    max-width: 640px;
+  }
+
+  .related-products-section {
+    margin-top: 4rem;
+  }
+}
+
+/* ==========================================================================
    7. Premium Arabic RTL Spacing balance overrides
    ========================================================================== */
 [dir="rtl"] .product-details-page {

@@ -1,7 +1,8 @@
 <span
   class="status-badge"
-  [class]="badgeClass()"
+  [class]="[badgeClass(), sizeClass()].join(' ')"
   [attr.aria-label]="statusAriaLabel()"
 >
-  {{ statusLabel() }}
+  <span class="status-badge__dot" aria-hidden="true"></span>
+  <span class="status-badge__label">{{ statusLabel() }}</span>
 </span>
