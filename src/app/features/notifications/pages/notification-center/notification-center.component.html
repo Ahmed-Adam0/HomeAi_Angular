@@ -46,7 +46,7 @@
       </article>
     </section>
 
-    @if (error(); as errorMessage) {
+    @if (notificationService.error(); as errorMessage) {
       <div class="notifications-page__error" role="alert">
         <i class="bi bi-exclamation-circle"></i>
         <span>{{ errorMessage }}</span>
@@ -124,6 +124,21 @@
               </div>
               <p class="notification-card__message">{{ notification.message }}</p>
             </div>
+            @if (!notification.isRead) {
+              <div class="notification-card__actions">
+                <button
+                  type="button"
+                  class="notification-card__mark-read-btn"
+                  [disabled]="markingIds().has(notification.id)"
+                  (click)="onMarkAsRead(notification.id)"
+                >
+                  @if (markingIds().has(notification.id)) {
+                    <i class="bi bi-arrow-repeat"></i>
+                  }
+                  {{ 'NAV_MARK_ALL_READ' | translate }}
+                </button>
+              </div>
+            }
           </article>
         }
       </section>

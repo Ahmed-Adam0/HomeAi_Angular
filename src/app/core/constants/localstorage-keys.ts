@@ -9,5 +9,6 @@ export const LOCAL_STORAGE_KEYS = {
   THEME: 'furniture_theme_mode',
   LANGUAGE: 'furniture_language',
   CART: 'furniture_cart_items',
-  FAVORITES: 'furniture_favorites_list'
+  FAVORITES: 'furniture_favorites_list',
+  AVATAR_URL: 'furniture_avatar_url'
 } as const;

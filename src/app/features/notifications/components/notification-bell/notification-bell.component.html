@@ -8,7 +8,11 @@
     aria-haspopup="dialog"
   >
     <i class="bi bi-bell fs-5"></i>
-    @if (unreadCount() > 0) {
+    @if (unreadCountLoading() && unreadCount() === 0) {
+      <span class="notification-badge notification-badge--loading">
+        <i class="bi bi-arrow-repeat"></i>
+      </span>
+    } @else if (unreadCount() > 0) {
       <span class="notification-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
     }
   </button>
@@ -41,6 +45,11 @@
             <div class="skeleton-line"></div>
             <div class="skeleton-line"></div>
           </div>
+        } @else if (notificationService.error()) {
+          <div class="notification-error">
+            <i class="bi bi-exclamation-triangle"></i>
+            <p>{{ notificationService.error() }}</p>
+          </div>
         } @else if (notifications().length === 0) {
           <div class="notification-empty">
             <i class="bi bi-bell-slash"></i>
@@ -48,7 +57,14 @@
           </div>
         } @else {
           @for (notif of notifications(); track notif.id) {
-            <div class="notification-item" [class.notification-item--unread]="!notif.isRead">
+            <div
+              class="notification-item"
+              [class.notification-item--unread]="!notif.isRead"
+              (click)="markAsRead(notif.id)"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="notif.title"
+            >
               <div class="notification-item__body">
                 <div class="notification-item__header">
                   <span class="notification-item__title">{{ notif.title }}</span>
@@ -58,6 +74,9 @@
               </div>
               @if (!notif.isRead) {
                 <span class="notification-item__unread-dot" aria-hidden="true"></span>
+              }
+              @if (markingIds().has(notif.id)) {
+                <i class="bi bi-arrow-repeat notification-item__marking"></i>
               }
             </div>
           }

@@ -1,11 +1,12 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, throwError, tap, map } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, Observable, throwError, tap, map, timer, Subject, switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants';
-import { INotificationsResponseDto } from '../data-access/dto/notifications-response.dto';
-import { IUnreadCountDto } from '../data-access/dto/unread-count.dto';
-import { mapNotificationsResponse, INotificationsMappedResult } from '../data-access/mappers/notification.mapper';
+import { PaginatedResponse } from '../data-access/dto/notifications-response.dto';
+import { UnreadCount } from '../data-access/dto/unread-count.dto';
+import { mapNotificationsResponse, NotificationsMappedResult } from '../data-access/mappers/notification.mapper';
 import { INotificationItem } from '../interfaces/inotification';
 
 @Injectable({
@@ -18,14 +19,31 @@ export class NotificationService {
   private readonly notificationsById = signal<Record<number, INotificationItem>>({});
   readonly currentPageNotifications = signal<INotificationItem[]>([]);
   readonly unreadCount = signal<number>(0);
+  readonly loading = signal(false);
+  readonly unreadCountLoading = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly unreadCountError = signal<string | null>(null);
+
+  private errorCooldownMs = 5000;
+  private lastErrorTime = 0;
 
   readonly notifications = computed(() =>
     Object.values(this.notificationsById())
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()),
   );
 
-  loadNotifications(page: number, pageSize: number): Observable<INotificationsMappedResult> {
-    return this.http.get<INotificationsResponseDto>(
+  private setError(message: string): void {
+    const now = Date.now();
+    if (now - this.lastErrorTime < this.errorCooldownMs) return;
+    this.lastErrorTime = now;
+    this.error.set(message);
+  }
+
+  loadNotifications(page: number, pageSize: number): Observable<NotificationsMappedResult> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.http.get<PaginatedResponse>(
       `${this.apiUrl}${API_URLS.NOTIFICATIONS.LIST}`,
       { params: { page: page.toString(), pageSize: pageSize.toString() } },
     ).pipe(
@@ -44,17 +62,32 @@ export class NotificationService {
           });
           return next;
         });
+        this.loading.set(false);
+      }),
+      catchError((err: HttpErrorResponse) => {
+        this.loading.set(false);
+        this.setError(this.parseHttpError(err));
+        return throwError(() => err);
       }),
     );
   }
 
   loadUnreadCount(): Observable<number> {
-    return this.http.get<IUnreadCountDto>(
+    this.unreadCountLoading.set(true);
+    this.unreadCountError.set(null);
+
+    return this.http.get<UnreadCount>(
       `${this.apiUrl}${API_URLS.NOTIFICATIONS.UNREAD_COUNT}`,
     ).pipe(
       map((dto) => dto.unreadCount ?? 0),
       tap((count) => {
         this.unreadCount.set(count);
+        this.unreadCountLoading.set(false);
+      }),
+      catchError((err: HttpErrorResponse) => {
+        this.unreadCountLoading.set(false);
+        this.unreadCountError.set(this.parseHttpError(err));
+        return throwError(() => err);
       }),
     );
   }
@@ -70,10 +103,11 @@ export class NotificationService {
     return this.http.put<void>(
       `${this.apiUrl}${API_URLS.NOTIFICATIONS.MARK_READ(notificationId)}`, null,
     ).pipe(
-      catchError((error) => {
+      catchError((error: HttpErrorResponse) => {
         this.notificationsById.set(previousNotifications);
         this.currentPageNotifications.set(previousPageNotifications);
         this.unreadCount.set(previousUnreadCount);
+        this.setError(this.parseHttpError(error));
         return throwError(() => error);
       }),
     );
@@ -90,10 +124,11 @@ export class NotificationService {
     return this.http.put<void>(
       `${this.apiUrl}${API_URLS.NOTIFICATIONS.MARK_ALL_READ}`, null,
     ).pipe(
-      catchError((error) => {
+      catchError((error: HttpErrorResponse) => {
         this.notificationsById.set(previousNotifications);
         this.currentPageNotifications.set(previousPageNotifications);
         this.unreadCount.set(previousUnreadCount);
+        this.setError(this.parseHttpError(error));
         return throwError(() => error);
       }),
     );
@@ -131,5 +166,18 @@ export class NotificationService {
     this.currentPageNotifications.update((items) =>
       items.map((notification) => ({ ...notification, isRead })),
     );
+  }
+
+  private parseHttpError(err: HttpErrorResponse): string {
+    if (err.status === 401 || err.status === 403) {
+      return 'Your session has expired. Please log in again.';
+    }
+    if (err.status === 404) {
+      return 'The requested resource was not found.';
+    }
+    if (err.status >= 500) {
+      return 'A server error occurred. Please try again later.';
+    }
+    return err.message || 'An unexpected error occurred.';
   }
 }

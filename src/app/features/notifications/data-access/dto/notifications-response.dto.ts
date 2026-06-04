@@ -1,7 +1,7 @@
-import { INotificationDto } from './notification.dto';
+import { InternalNotificationDto } from './notification.dto';
 
-export interface INotificationsResponseDto {
-  items: INotificationDto[];
+export interface PaginatedResponse {
+  items: InternalNotificationDto[];
   totalCount: number;
   totalPages: number;
   pageNumber: number;

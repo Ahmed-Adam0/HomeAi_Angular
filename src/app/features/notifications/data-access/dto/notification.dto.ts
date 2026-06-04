@@ -1,4 +1,4 @@
-export interface INotificationDto {
+export interface InternalNotificationDto {
   id: number;
   title: string;
   message: string;

@@ -50,10 +50,10 @@ export const API_URLS = {
     IMAGE_UPLOAD: 'Profile/image',
   },
   NOTIFICATIONS: {
-    LIST: 'notifications',
-    UNREAD_COUNT: 'notifications/unread-count',
-    MARK_READ: (id: number) => `notifications/${id}/read`,
-    MARK_ALL_READ: 'notifications/read-all',
+    LIST: 'internal-notifications',
+    UNREAD_COUNT: 'internal-notifications/unread-count',
+    MARK_READ: (id: number) => `internal-notifications/${id}/read`,
+    MARK_ALL_READ: 'internal-notifications/read-all',
   },
   VENDOR: {
     ORDERS_FILTER: 'VendorOrders/orders/filter',

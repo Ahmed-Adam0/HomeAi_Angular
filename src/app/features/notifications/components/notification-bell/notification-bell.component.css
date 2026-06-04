@@ -54,6 +54,20 @@
   border: 2px solid rgba(255, 255, 255, 0.9);
 }
 
+.notification-badge--loading {
+  background: #a08c84;
+  animation: badge-spin 1s linear infinite;
+}
+
+.notification-badge--loading i {
+  font-size: 10px;
+}
+
+@keyframes badge-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .notification-backdrop {
   position: fixed;
   inset: 0;
@@ -260,17 +274,52 @@
   font-weight: 500;
 }
 
+.notification-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px;
+  color: #c84b31;
+  text-align: center;
+}
+
+.notification-error i {
+  font-size: 28px;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.notification-error p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.notification-item__marking {
+  font-size: 14px;
+  color: #c5a880;
+  animation: badge-spin 1s linear infinite;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
 .notification-item {
   display: flex;
   gap: 12px;
   padding: 12px 20px;
   transition: background-color 0.15s ease;
-  cursor: default;
+  cursor: pointer;
   position: relative;
 }
 
 .notification-item:hover {
   background-color: #faf8f6;
+}
+
+.notification-item:focus-visible {
+  outline: 2px solid #c5a880;
+  outline-offset: -2px;
 }
 
 .notification-item--unread {

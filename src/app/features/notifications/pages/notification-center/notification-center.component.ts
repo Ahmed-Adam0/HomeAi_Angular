@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { NotificationService } from '../../services/notification.service';
-import { INotificationsMappedResult } from '../../data-access/mappers/notification.mapper';
+import { NotificationsMappedResult } from '../../data-access/mappers/notification.mapper';
 
 export interface PaginationMeta {
   pageNumber: number;
@@ -33,7 +33,7 @@ export interface PaginationMeta {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationCenterComponent implements OnInit {
-  private readonly notificationService = inject(NotificationService);
+  readonly notificationService = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
 
@@ -41,11 +41,9 @@ export class NotificationCenterComponent implements OnInit {
 
   readonly notifications = computed(() => this.notificationService.currentPageNotifications());
   readonly unreadCount = this.notificationService.unreadCount;
-
-  readonly notificationsLoading = signal<boolean>(false);
-  readonly unreadCountLoading = signal<boolean>(false);
+  readonly notificationsLoading = this.notificationService.loading;
   readonly markAllLoading = signal<boolean>(false);
-  readonly error = signal<string | null>(null);
+  readonly markingIds = signal<Set<number>>(new Set());
 
   readonly selectedFilter = signal<'all' | 'unread' | 'read'>('all');
 
@@ -83,19 +81,19 @@ export class NotificationCenterComponent implements OnInit {
   );
 
   readonly showContent = computed(
-    () => !this.notificationsLoading() && !this.error() && this.hasNotifications(),
+    () => !this.notificationsLoading() && !this.notificationService.error() && this.hasNotifications(),
   );
 
   readonly showEmpty = computed(
     () =>
       !this.notificationsLoading() &&
-      !this.error() &&
+      !this.notificationService.error() &&
       this.hasNotifications() &&
       !this.hasFilteredNotifications(),
   );
 
   readonly showFullEmpty = computed(
-    () => !this.notificationsLoading() && !this.error() && !this.hasNotifications(),
+    () => !this.notificationsLoading() && !this.notificationService.error() && !this.hasNotifications(),
   );
 
   ngOnInit(): void {
@@ -104,19 +102,15 @@ export class NotificationCenterComponent implements OnInit {
   }
 
   private loadNotifications(): void {
-    this.notificationsLoading.set(true);
-    this.error.set(null);
+    this.notificationService.error.set(null);
 
     const { pageNumber, pageSize } = this.pagination();
 
     this.notificationService
       .loadNotifications(pageNumber, pageSize)
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.notificationsLoading.set(false)),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (result: INotificationsMappedResult) => {
+        next: (result: NotificationsMappedResult) => {
           this.pagination.set({
             pageNumber: result.pageNumber,
             pageSize: result.pageSize,
@@ -126,22 +120,40 @@ export class NotificationCenterComponent implements OnInit {
             hasNextPage: result.hasNextPage,
           });
         },
-        error: (err: Error) => {
-          this.error.set(err?.message ?? 'Failed to load notifications');
-        },
       });
   }
 
   private loadUnreadCount(): void {
-    this.unreadCountLoading.set(true);
-
     this.notificationService
       .loadUnreadCount()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.unreadCountLoading.set(false)),
-      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
+  }
+
+  onMarkAsRead(id: number): void {
+    if (this.markingIds().has(id)) return;
+
+    this.markingIds.update((ids) => new Set(ids).add(id));
+
+    this.notificationService
+      .markAsRead(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.markingIds.update((ids) => {
+            const next = new Set(ids);
+            next.delete(id);
+            return next;
+          });
+        },
+        error: () => {
+          this.markingIds.update((ids) => {
+            const next = new Set(ids);
+            next.delete(id);
+            return next;
+          });
+        },
+      });
   }
 
   onMarkAllRead(): void {
@@ -168,6 +180,7 @@ export class NotificationCenterComponent implements OnInit {
   }
 
   onRefresh(): void {
+    this.notificationService.error.set(null);
     this.pagination.update((p) => ({ ...p, pageNumber: 1 }));
     this.loadNotifications();
     this.loadUnreadCount();

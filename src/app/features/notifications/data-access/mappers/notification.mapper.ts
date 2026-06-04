@@ -1,8 +1,8 @@
-import { INotificationDto } from '../dto/notification.dto';
-import { INotificationsResponseDto } from '../dto/notifications-response.dto';
+import { InternalNotificationDto } from '../dto/notification.dto';
+import { PaginatedResponse } from '../dto/notifications-response.dto';
 import { INotificationItem } from '../../interfaces/inotification';
 
-export interface INotificationsMappedResult {
+export interface NotificationsMappedResult {
   items: INotificationItem[];
   totalCount: number;
   totalPages: number;
@@ -18,7 +18,7 @@ function parseDate(value: string | undefined | null): Date {
   return Number.isNaN(date.getTime()) ? new Date() : date;
 }
 
-function mapNotificationItem(dto: INotificationDto): INotificationItem {
+function mapNotificationItem(dto: InternalNotificationDto): INotificationItem {
   return {
     id: dto.id,
     title: dto.title ?? '',
@@ -29,8 +29,8 @@ function mapNotificationItem(dto: INotificationDto): INotificationItem {
 }
 
 export function mapNotificationsResponse(
-  response: INotificationsResponseDto,
-): INotificationsMappedResult {
+  response: PaginatedResponse,
+): NotificationsMappedResult {
   return {
     items: (response.items ?? []).map(mapNotificationItem),
     totalCount: response.totalCount ?? 0,

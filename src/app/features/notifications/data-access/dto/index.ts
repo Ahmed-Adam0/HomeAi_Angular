@@ -1,3 +1,3 @@
-export type { INotificationDto } from './notification.dto';
-export type { INotificationsResponseDto } from './notifications-response.dto';
-export type { IUnreadCountDto } from './unread-count.dto';
+export type { InternalNotificationDto } from './notification.dto';
+export type { PaginatedResponse } from './notifications-response.dto';
+export type { UnreadCount } from './unread-count.dto';

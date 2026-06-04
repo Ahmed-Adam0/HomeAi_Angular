@@ -1,3 +1,3 @@
-export type { INotificationDto, INotificationsResponseDto, IUnreadCountDto } from './dto';
+export type { InternalNotificationDto, PaginatedResponse, UnreadCount } from './dto';
 export { mapNotificationsResponse } from './mappers';
-export type { INotificationsMappedResult } from './mappers';
+export type { NotificationsMappedResult } from './mappers';

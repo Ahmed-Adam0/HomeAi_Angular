@@ -1,3 +1,3 @@
-export interface IUnreadCountDto {
+export interface UnreadCount {
   unreadCount: number;
 }

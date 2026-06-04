@@ -17,14 +17,16 @@ import { NAV_ROUTES } from '../../../../core/constants';
 export class NotificationBellComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly notificationService = inject(NotificationService);
+  readonly notificationService = inject(NotificationService);
   private readonly elementRef = inject(ElementRef);
 
   readonly navRoutes = NAV_ROUTES;
   readonly unreadCount = this.notificationService.unreadCount;
+  readonly unreadCountLoading = this.notificationService.unreadCountLoading;
   readonly notifications = computed(() => this.notificationService.notifications().slice(0, 5));
-  readonly loading = signal(false);
+  readonly loading = this.notificationService.loading;
   readonly markingAll = signal(false);
+  readonly markingIds = signal<Set<number>>(new Set());
   readonly isOpen = signal(false);
 
   ngOnInit(): void {
@@ -49,6 +51,31 @@ export class NotificationBellComponent implements OnInit {
   closeDropdown(): void {
     this.isOpen.set(false);
     document.body.style.overflow = '';
+  }
+
+  markAsRead(id: number): void {
+    if (this.markingIds().has(id)) return;
+
+    this.markingIds.update((ids) => new Set(ids).add(id));
+
+    this.notificationService.markAsRead(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.markingIds.update((ids) => {
+            const next = new Set(ids);
+            next.delete(id);
+            return next;
+          });
+        },
+        error: () => {
+          this.markingIds.update((ids) => {
+            const next = new Set(ids);
+            next.delete(id);
+            return next;
+          });
+        },
+      });
   }
 
   markAllAsRead(): void {
@@ -81,14 +108,9 @@ export class NotificationBellComponent implements OnInit {
   }
 
   private loadNotifications(): void {
-    this.loading.set(true);
-
     this.notificationService.loadNotifications(1, 5)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => { this.loading.set(false); },
-        error: () => { this.loading.set(false); },
-      });
+      .subscribe();
   }
 
   private loadNotificationsIfNeeded(): void {

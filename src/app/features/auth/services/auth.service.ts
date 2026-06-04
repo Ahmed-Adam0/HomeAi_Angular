@@ -54,6 +54,7 @@ export class AuthService {
       const savedToken = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
       if (savedToken) {
         this.setAuthState(savedToken);
+        this.restoreCachedAvatar();
       }
     }
   }
@@ -74,6 +75,7 @@ export class AuthService {
           localStorage.setItem('workshopId', String(workshopId));
         }
         this.setAuthState(token);
+        this.applyResponseAvatar(response);
       })
     );
   }
@@ -90,6 +92,7 @@ export class AuthService {
           localStorage.setItem('workshopId', String(workshopId));
         }
         this.setAuthState(token);
+        this.applyResponseAvatar(response);
       })
     );
   }
@@ -114,6 +117,7 @@ export class AuthService {
           localStorage.setItem('workshopId', String(workshopId));
         }
         this.setAuthState(token);
+        this.applyResponseAvatar(response);
       })
     );
   }
@@ -154,11 +158,15 @@ export class AuthService {
       if (updates.image !== undefined) next.image = updates.image;
       return next;
     });
+    if (updates.image !== undefined && this.isBrowser) {
+      localStorage.setItem(LOCAL_STORAGE_KEYS.AVATAR_URL, updates.image);
+    }
   }
 
   logout(): void {
     if (this.isBrowser) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.AVATAR_URL);
     }
     this.clearAuthState();
   }
@@ -266,6 +274,31 @@ export class AuthService {
         ...fallbackUser,
         workshopId
       };
+    }
+  }
+
+  private applyResponseAvatar(response: any): void {
+    const avatarUrl =
+      response.user?.avatarUrl ||
+      response.user?.image ||
+      response.user?.picture ||
+      '';
+    if (!avatarUrl) return;
+    this.userProfile.update((p) => {
+      if (!p || p.image) return p;
+      return { ...p, image: avatarUrl };
+    });
+    if (this.isBrowser) {
+      localStorage.setItem(LOCAL_STORAGE_KEYS.AVATAR_URL, avatarUrl);
+    }
+  }
+
+  private restoreCachedAvatar(): void {
+    const profile = this.userProfile();
+    if (!profile || profile.image) return;
+    const cached = localStorage.getItem(LOCAL_STORAGE_KEYS.AVATAR_URL);
+    if (cached) {
+      this.userProfile.update((p) => p ? { ...p, image: cached } : p);
     }
   }
 
