@@ -1,52 +1,177 @@
-<div class="container py-5">
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-    <div>
-      <h1 class="fw-bold text-dark m-0">Notification Center</h1>
-      <p class="text-secondary m-0">Stay updated on your design recommendations and orders</p>
-    </div>
-    @if (notificationsList().length > 0) {
-      <button (click)="clearAll()" class="btn btn-outline-danger btn-sm rounded-pill px-3">
-        Clear All
-      </button>
+<main class="notifications-page" aria-label="Notifications center">
+  <div class="notifications-page__container">
+    <header class="notifications-page__header">
+      <div class="notifications-page__header-top">
+        <button type="button" class="notifications-page__back-btn" (click)="goBack()" aria-label="Go back">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <div class="notifications-page__header-text">
+          <h1 class="notifications-page__title">{{ 'NAV_NOTIFICATION_TITLE' | translate }}</h1>
+          <p class="notifications-page__subtitle">{{ 'NAV_NOTIFICATION_DESC' | translate }}</p>
+        </div>
+      </div>
+      @if (hasUnread()) {
+        <button
+          type="button"
+          class="notifications-page__mark-all-btn"
+          [disabled]="markAllLoading()"
+          (click)="onMarkAllRead()"
+        >
+          @if (markAllLoading()) {
+            <i class="bi bi-arrow-repeat"></i>
+          }
+          {{ 'NAV_MARK_ALL_READ' | translate }}
+        </button>
+      }
+    </header>
+
+    <section class="notifications-page__stats" aria-label="Notification statistics">
+      <article class="stat-card stat-card--total">
+        <div class="stat-card__body">
+          <p class="stat-card__value">{{ totalCount() }}</p>
+          <p class="stat-card__label">{{ 'NAV_NOTIFICATION_TOTAL' | translate }}</p>
+        </div>
+      </article>
+      <article class="stat-card stat-card--unread">
+        <div class="stat-card__body">
+          <p class="stat-card__value">{{ unreadCount() }}</p>
+          <p class="stat-card__label">{{ 'NAV_NOTIFICATION_UNREAD' | translate }}</p>
+        </div>
+      </article>
+      <article class="stat-card stat-card--read">
+        <div class="stat-card__body">
+          <p class="stat-card__value">{{ readCount() }}</p>
+          <p class="stat-card__label">{{ 'NAV_NOTIFICATION_READ' | translate }}</p>
+        </div>
+      </article>
+    </section>
+
+    @if (error(); as errorMessage) {
+      <div class="notifications-page__error" role="alert">
+        <i class="bi bi-exclamation-circle"></i>
+        <span>{{ errorMessage }}</span>
+        <button type="button" class="notifications-page__error-retry" (click)="onRefresh()">
+          {{ 'NAV_NOTIFICATION_RETRY' | translate }}
+        </button>
+      </div>
+    }
+
+    @if (hasNotifications()) {
+      <div class="notifications-page__toolbar">
+        <div class="notifications-page__filters" role="tablist" aria-label="Filter notifications">
+          <button
+            class="filter-tab"
+            [class.filter-tab--active]="selectedFilter() === 'all'"
+            (click)="setFilter('all')"
+            role="tab"
+            [attr.aria-selected]="selectedFilter() === 'all'"
+          >
+            {{ 'NAV_NOTIFICATION_FILTER_ALL' | translate }}
+          </button>
+          <button
+            class="filter-tab"
+            [class.filter-tab--active]="selectedFilter() === 'unread'"
+            (click)="setFilter('unread')"
+            role="tab"
+            [attr.aria-selected]="selectedFilter() === 'unread'"
+          >
+            {{ 'NAV_NOTIFICATION_FILTER_UNREAD' | translate }}
+          </button>
+          <button
+            class="filter-tab"
+            [class.filter-tab--active]="selectedFilter() === 'read'"
+            (click)="setFilter('read')"
+            role="tab"
+            [attr.aria-selected]="selectedFilter() === 'read'"
+          >
+            {{ 'NAV_NOTIFICATION_FILTER_READ' | translate }}
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (showSkeleton()) {
+      <section class="notifications-page__skeleton" aria-label="Loading notifications">
+        @for (_ of [1,2,3,4,5]; track _) {
+          <div class="skeleton-card">
+            <div class="skeleton-line skeleton-line--title"></div>
+            <div class="skeleton-line skeleton-line--text"></div>
+            <div class="skeleton-line skeleton-line--time"></div>
+          </div>
+        }
+      </section>
+    }
+
+    @if (showContent()) {
+      <section class="notifications-page__feed" aria-label="Notifications list">
+        @for (notification of filteredNotifications(); track notification.id) {
+          <article
+            class="notification-card"
+            [class.notification-card--unread]="!notification.isRead"
+            role="listitem"
+          >
+            <div class="notification-card__body">
+              <div class="notification-card__header">
+                <h3 class="notification-card__title">
+                  @if (!notification.isRead) {
+                    <span class="notification-card__unread-dot" aria-hidden="true"></span>
+                  }
+                  {{ notification.title }}
+                </h3>
+                <time class="notification-card__time">
+                  {{ notification.createdAt | date:'medium' }}
+                </time>
+              </div>
+              <p class="notification-card__message">{{ notification.message }}</p>
+            </div>
+          </article>
+        }
+      </section>
+    }
+
+    @if (showEmpty()) {
+      <div class="notifications-page__empty">
+        <div class="notifications-page__empty-icon" aria-hidden="true">
+          <i class="bi bi-bell-slash"></i>
+        </div>
+        <h3 class="notifications-page__empty-title">{{ 'NAV_NOTIFICATION_FILTER_EMPTY_TITLE' | translate }}</h3>
+        <p class="notifications-page__empty-desc">{{ 'NAV_NOTIFICATION_FILTER_EMPTY_DESC' | translate }}</p>
+        <button type="button" class="notifications-page__empty-btn" (click)="setFilter('all')">
+          {{ 'NAV_NOTIFICATION_SHOW_ALL' | translate }}
+        </button>
+      </div>
+    }
+
+    @if (showFullEmpty()) {
+      <div class="notifications-page__empty">
+        <div class="notifications-page__empty-icon" aria-hidden="true">
+          <i class="bi bi-bell"></i>
+        </div>
+        <h3 class="notifications-page__empty-title">{{ 'NAV_NOTIFICATION_EMPTY_TITLE' | translate }}</h3>
+        <p class="notifications-page__empty-desc">{{ 'NAV_NOTIFICATION_EMPTY_DESC' | translate }}</p>
+      </div>
+    }
+
+    @if (showPagination()) {
+      <div class="notifications-page__pagination">
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage() <= 1"
+          (click)="onPageChange(currentPage() - 1)"
+          aria-label="Previous page"
+        >
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <span class="pagination-info">{{ currentPage() }} / {{ totalPages() }}</span>
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage() >= totalPages()"
+          (click)="onPageChange(currentPage() + 1)"
+          aria-label="Next page"
+        >
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
     }
   </div>
-
-  @if (isLoading()) {
-    <div class="list-group gap-2">
-      <app-skeleton-loader type="notification" [count]="3"></app-skeleton-loader>
-    </div>
-  } @else if (notificationsList().length > 0) {
-    <div class="list-group gap-2">
-      @for (item of notificationsList(); track item.id) {
-        <div class="list-group-item list-group-item-action border rounded-3 p-3 position-relative notification-item" [class.unread-item]="!item.read" (click)="markRead(item.id)">
-          <div class="d-flex align-items-start justify-content-between gap-3">
-            <div>
-              <div class="d-flex align-items-center gap-2 mb-1">
-                @switch (item.type) {
-                  @case ('success') { <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Success</span> }
-                  @case ('error') { <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">Error</span> }
-                  @case ('warning') { <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1">Warning</span> }
-                  @case ('info') { <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1">Update</span> }
-                }
-                <h5 class="fw-bold text-dark m-0 fs-6">{{ item.title }}</h5>
-              </div>
-              <p class="text-secondary small m-0">{{ item.message }}</p>
-              <span class="text-muted extra-small mt-2 d-block">{{ item.createdAt | date: 'shortTime' }}</span>
-            </div>
-            @if (!item.read) {
-              <span class="unread-dot position-absolute top-3 end-3 rounded-circle"></span>
-            }
-          </div>
-        </div>
-      }
-    </div>
-  } @else {
-    <app-empty-state
-      title="All caught up!"
-      description="You have no notifications at the moment."
-      icon="🔔"
-      actionText="Return to Showroom"
-      (actionClick)="clearAll()">
-    </app-empty-state>
-  }
-</div>
+</main>

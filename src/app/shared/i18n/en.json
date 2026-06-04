@@ -730,6 +730,20 @@
   "VENDOR.ORDERS_ANALYTICS.PERF_EMPTY": "No performance metrics available",
   "VENDOR.ORDERS_ANALYTICS.CHART_ORDERS_BREAKDOWN": "Orders Breakdown",
   "VENDOR.ORDERS_ANALYTICS.CHART_ORDERS_BREAKDOWN_DESC": "Order counts by status",
-  "VENDOR.ORDERS_ANALYTICS.CHART_ORDERS_BREAKDOWN_EMPTY": "No order breakdown chart data for the selected period"
+  "VENDOR.ORDERS_ANALYTICS.CHART_ORDERS_BREAKDOWN_EMPTY": "No order breakdown chart data for the selected period",
+  "NAV_NOTIFICATION_DESC": "Stay up to date with your latest updates",
+  "NAV_NOTIFICATION_TOTAL": "Total",
+  "NAV_NOTIFICATION_UNREAD": "Unread",
+  "NAV_NOTIFICATION_READ": "Read",
+  "NAV_NOTIFICATION_RETRY": "Retry",
+  "NAV_NOTIFICATION_FILTER_ALL": "All",
+  "NAV_NOTIFICATION_FILTER_UNREAD": "Unread",
+  "NAV_NOTIFICATION_FILTER_READ": "Read",
+  "NAV_NOTIFICATION_FILTER_EMPTY_TITLE": "No notifications here",
+  "NAV_NOTIFICATION_FILTER_EMPTY_DESC": "Try switching to a different filter to see more notifications.",
+  "NAV_NOTIFICATION_SHOW_ALL": "Show all notifications",
+  "NAV_NOTIFICATION_EMPTY_TITLE": "You're all caught up!",
+  "NAV_NOTIFICATION_EMPTY_DESC": "You have no notifications at the moment. We'll let you know when something new arrives.",
+  "NAV_VIEW_ALL_NOTIFICATIONS": "View all notifications"
 }
 

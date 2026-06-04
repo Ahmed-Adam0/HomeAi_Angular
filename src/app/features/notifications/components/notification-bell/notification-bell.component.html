@@ -1,0 +1,77 @@
+<div class="notification-bell-wrapper">
+  <button
+    type="button"
+    class="notification-bell-btn"
+    (click)="toggleDropdown($event)"
+    [attr.aria-label]="(unreadCount() > 0 ? unreadCount() + ' unread notifications' : 'Notifications')"
+    [attr.aria-expanded]="isOpen()"
+    aria-haspopup="dialog"
+  >
+    <i class="bi bi-bell fs-5"></i>
+    @if (unreadCount() > 0) {
+      <span class="notification-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+    }
+  </button>
+
+  @if (isOpen()) {
+    <div class="notification-backdrop" (click)="closeDropdown()" aria-hidden="true"></div>
+
+    <div class="notification-dropdown" role="dialog" aria-label="Notifications" aria-modal="true">
+      <div class="notification-dropdown__header">
+        <h3 class="notification-dropdown__title">{{ 'NAV_NOTIFICATION_TITLE' | translate }}</h3>
+        @if (notifications().length > 0 && unreadCount() > 0) {
+          <button
+            type="button"
+            class="notification-dropdown__mark-btn"
+            [disabled]="markingAll()"
+            (click)="markAllAsRead()"
+          >
+            @if (markingAll()) {
+              <i class="bi bi-arrow-repeat"></i>
+            }
+            {{ 'NAV_MARK_ALL_READ' | translate }}
+          </button>
+        }
+      </div>
+
+      <div class="notification-dropdown__body">
+        @if (loading()) {
+          <div class="notification-loading">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+          </div>
+        } @else if (notifications().length === 0) {
+          <div class="notification-empty">
+            <i class="bi bi-bell-slash"></i>
+            <p>{{ 'NAV_NOTIFICATION_EMPTY' | translate }}</p>
+          </div>
+        } @else {
+          @for (notif of notifications(); track notif.id) {
+            <div class="notification-item" [class.notification-item--unread]="!notif.isRead">
+              <div class="notification-item__body">
+                <div class="notification-item__header">
+                  <span class="notification-item__title">{{ notif.title }}</span>
+                  <span class="notification-item__time">{{ notif.createdAt | date:'short' }}</span>
+                </div>
+                <p class="notification-item__message">{{ notif.message }}</p>
+              </div>
+              @if (!notif.isRead) {
+                <span class="notification-item__unread-dot" aria-hidden="true"></span>
+              }
+            </div>
+          }
+        }
+      </div>
+
+      @if (notifications().length > 0) {
+        <div class="notification-dropdown__footer">
+          <button type="button" class="notification-dropdown__view-all" (click)="viewAll()">
+            {{ 'NAV_VIEW_ALL_NOTIFICATIONS' | translate }}
+            <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

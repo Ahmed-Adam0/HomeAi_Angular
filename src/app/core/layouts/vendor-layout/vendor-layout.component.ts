@@ -1,6 +1,6 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { NAV_ROUTES } from '../../constants';
 import { RtlDirective } from '../../../shared/directives/rtl.directive';
@@ -24,6 +24,16 @@ export class VendorLayoutComponent {
 
   readonly navRoutes = NAV_ROUTES;
   readonly sidebarOpen = signal(false);
+
+  readonly avatarError = signal(false);
+  private readonly avatarResetEffect = effect(() => {
+    this.currentUser()?.image;
+    this.avatarError.set(false);
+  });
+
+  protected onAvatarError(): void {
+    this.avatarError.set(true);
+  }
 
   // Localization signals and computeds
   readonly currentLang = this.translationService.currentLang;

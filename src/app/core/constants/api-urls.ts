@@ -49,6 +49,12 @@ export const API_URLS = {
     CHANGE_PASSWORD: 'profile/change-password',
     IMAGE_UPLOAD: 'Profile/image',
   },
+  NOTIFICATIONS: {
+    LIST: 'notifications',
+    UNREAD_COUNT: 'notifications/unread-count',
+    MARK_READ: (id: number) => `notifications/${id}/read`,
+    MARK_ALL_READ: 'notifications/read-all',
+  },
   VENDOR: {
     ORDERS_FILTER: 'VendorOrders/orders/filter',
     ORDER_DETAILS: (orderId: number | string) => `VendorOrders/orders/${orderId}`,

@@ -27,13 +27,13 @@ import * as Constants from '../../../core/constants/navbar.constants';
 import { LOCAL_STORAGE_KEYS, NAV_ROUTES } from '../../../core/constants';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { CartService } from '../../../features/cart/services/cart.service';
-import { NotificationService } from '../../../features/notifications/services/notification.service';
+import { NotificationBellComponent } from '../../../features/notifications/components/notification-bell/notification-bell.component';
 import { IFavoriteItem } from '../../../features/favorites/interfaces/ifavorite-item';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TranslatePipe, LocalizedPipe],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslatePipe, LocalizedPipe, NotificationBellComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
@@ -41,7 +41,6 @@ export class Navbar implements OnInit {
   protected readonly translationService = inject(TranslationService);
   protected readonly authService = inject(AuthService);
   protected readonly cartService = inject(CartService);
-  protected readonly notificationService = inject(NotificationService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router = inject(Router);
 
@@ -68,7 +67,6 @@ export class Navbar implements OnInit {
   private scrollRAF = 0;
 
   readonly cartCount = computed(() => this.cartService.itemCount());
-  readonly unreadCount = computed(() => this.notificationService.unreadCount());
   readonly currentUrl = signal<string>('');
 
   readonly userAvatarSrc = computed<string | null>(() => {

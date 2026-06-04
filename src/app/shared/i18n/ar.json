@@ -730,6 +730,20 @@
   "VENDOR.ORDERS_ANALYTICS.PERF_EMPTY": "لا توجد مقاييس أداء متاحة",
   "VENDOR.ORDERS_ANALYTICS.CHART_ORDERS_BREAKDOWN": "تفصيل الطلبات",
   "VENDOR.ORDERS_ANALYTICS.CHART_ORDERS_BREAKDOWN_DESC": "عدد الطلبات حسب الحالة",
-  "VENDOR.ORDERS_ANALYTICS.CHART_ORDERS_BREAKDOWN_EMPTY": "لا توجد بيانات تفصيل الطلبات للفترة المحددة"
+  "VENDOR.ORDERS_ANALYTICS.CHART_ORDERS_BREAKDOWN_EMPTY": "لا توجد بيانات تفصيل الطلبات للفترة المحددة",
+  "NAV_NOTIFICATION_DESC": "ابق على اطلاع بآخر التحديثات",
+  "NAV_NOTIFICATION_TOTAL": "الإجمالي",
+  "NAV_NOTIFICATION_UNREAD": "غير مقروء",
+  "NAV_NOTIFICATION_READ": "مقروء",
+  "NAV_NOTIFICATION_RETRY": "إعادة المحاولة",
+  "NAV_NOTIFICATION_FILTER_ALL": "الكل",
+  "NAV_NOTIFICATION_FILTER_UNREAD": "غير مقروءة",
+  "NAV_NOTIFICATION_FILTER_READ": "مقروءة",
+  "NAV_NOTIFICATION_FILTER_EMPTY_TITLE": "لا توجد إشعارات هنا",
+  "NAV_NOTIFICATION_FILTER_EMPTY_DESC": "جرّب التبديل إلى فلتر مختلف لرؤية المزيد من الإشعارات.",
+  "NAV_NOTIFICATION_SHOW_ALL": "عرض جميع الإشعارات",
+  "NAV_NOTIFICATION_EMPTY_TITLE": "كل شيء محدث!",
+  "NAV_NOTIFICATION_EMPTY_DESC": "لا توجد إشعارات في الوقت الحالي. سنخبرك عند وصول جديد.",
+  "NAV_VIEW_ALL_NOTIFICATIONS": "عرض جميع الإشعارات"
 }
 

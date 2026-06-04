@@ -85,87 +85,78 @@
     <!-- Desktop Actions (Right Side) -->
     <div class="actions-area d-flex align-items-center gap-3">
 
-      <!-- Notifications Bell -->
-      <a [routerLink]="navRoutes.NOTIFICATIONS"
-         class="action-btn text-dark text-decoration-none position-relative"
-         aria-label="Notifications">
-        <i class="bi bi-bell fs-5"></i>
-        @if (unreadCount() > 0) {
-          <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center animate-pulse">
-            {{ unreadCount() }}
-          </span>
-        }
-      </a>
+      <app-notification-bell />
 
-      <!-- Authentication: Profile Dropdown (Logged In) vs. Premium Dual CTAs (Logged Out) -->
-      @if (authService.isLoggedIn()) {
-        <div class="dropdown-wrapper position-relative">
-          <button (click)="toggleProfileDropdown($event)"
-                  class="profile-avatar-trigger border-0 bg-transparent position-relative d-flex align-items-center justify-content-center"
-                  [attr.aria-expanded]="isProfileDropdownOpen()"
-                  aria-label="User Account Options">
-            <div class="avatar-ring-outer">
-              <div class="avatar-ring-inner">
-                @if (userAvatarSrc() && !avatarError()) {
+      <div class="auth-section position-relative">
+        <div class="auth-authenticated" [class.d-none]="!authService.isLoggedIn()">
+          <div class="dropdown-wrapper position-relative">
+            <button (click)="toggleProfileDropdown($event)"
+                    class="profile-avatar-trigger border-0 bg-transparent position-relative d-flex align-items-center justify-content-center"
+                    [attr.aria-expanded]="isProfileDropdownOpen()"
+                    aria-label="User Account Options">
+              <div class="avatar-ring-outer">
+                <div class="avatar-ring-inner position-relative">
                   <img [src]="userAvatarSrc()"
                        alt="Profile"
                        class="avatar-image w-100 h-100 rounded-circle object-fit-cover"
+                       [class.d-none]="!userAvatarSrc() || avatarError()"
                        (error)="onAvatarError()" />
-                } @else {
-                  <span class="avatar-initials">{{ authService.currentUser()?.initials || 'FM' }}</span>
-                }
-              </div>
-            </div>
-            <span class="online-indicator"></span>
-          </button>
-
-          @if (isProfileDropdownOpen()) {
-            <div class="profile-dropdown-card shadow-lg bg-white rounded z-3 position-absolute end-0 mt-2 p-0" (click)="$event.stopPropagation()">
-              <div class="profile-dropdown-header p-3 border-bottom">
-                <span class="user-fullname d-block fw-bold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
-                <span class="user-email d-block text-muted fs-8">{{ authService.currentUser()?.email }}</span>
-                <div class="mt-2 text-start">
-                  <span class="user-badge py-0.5 px-2 rounded-pill fs-9 fw-bold text-gold">{{ authService.currentUser()?.tier }}</span>
+                  <span class="avatar-initials"
+                        [class.d-none]="userAvatarSrc() && !avatarError()">
+                    {{ authService.currentUser()?.initials || 'FM' }}
+                  </span>
                 </div>
               </div>
+              <span class="online-indicator"></span>
+            </button>
 
-              <div class="profile-dropdown-body py-1">
-                <a routerLink="/profile" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
-                  <i class="bi bi-person-fill text-muted item-icon"></i>
-                  <span>{{ 'NAV_MY_PROFILE' | translate }}</span>
-                </a>
-                <a routerLink="/orders" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
-                  <i class="bi bi-card-list text-muted item-icon"></i>
-                  <span>{{ 'NAV_MY_ORDERS' | translate }}</span>
-                </a>
-                <a routerLink="/ai-chat" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
-                  <i class="bi bi-cpu-fill text-gold item-icon"></i>
-                  <span class="fw-semibold">{{ 'NAV_SAVED_SPACES' | translate }}</span>
-                </a>
-              </div>
+            @if (isProfileDropdownOpen()) {
+              <div class="profile-dropdown-card shadow-lg bg-white rounded z-3 position-absolute end-0 mt-2 p-0" (click)="$event.stopPropagation()">
+                <div class="profile-dropdown-header p-3 border-bottom">
+                  <span class="user-fullname d-block fw-bold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
+                  <span class="user-email d-block text-muted fs-8">{{ authService.currentUser()?.email }}</span>
+                  <div class="mt-2 text-start">
+                    <span class="user-badge py-0.5 px-2 rounded-pill fs-9 fw-bold text-gold">{{ authService.currentUser()?.tier }}</span>
+                  </div>
+                </div>
 
-              <div class="profile-dropdown-footer border-top p-2 bg-light-cream">
-                <button (click)="onLogout()" class="w-100 logout-btn-premium py-1.5 px-3 border-0 bg-transparent rounded text-danger fs-7 d-flex align-items-center gap-2.5">
-                  <i class="bi bi-box-arrow-right"></i>
-                  <span>{{ 'NAV_LOGOUT' | translate }}</span>
-                </button>
+                <div class="profile-dropdown-body py-1">
+                  <a routerLink="/profile" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
+                    <i class="bi bi-person-fill text-muted item-icon"></i>
+                    <span>{{ 'NAV_MY_PROFILE' | translate }}</span>
+                  </a>
+                  <a routerLink="/orders" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
+                    <i class="bi bi-card-list text-muted item-icon"></i>
+                    <span>{{ 'NAV_MY_ORDERS' | translate }}</span>
+                  </a>
+                  <a routerLink="/ai-chat" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
+                    <i class="bi bi-cpu-fill text-gold item-icon"></i>
+                    <span class="fw-semibold">{{ 'NAV_SAVED_SPACES' | translate }}</span>
+                  </a>
+                </div>
+
+                <div class="profile-dropdown-footer border-top p-2 bg-light-cream">
+                  <button (click)="onLogout()" class="w-100 logout-btn-premium py-1.5 px-3 border-0 bg-transparent rounded text-danger fs-7 d-flex align-items-center gap-2.5">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>{{ 'NAV_LOGOUT' | translate }}</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          }
+            }
+          </div>
         </div>
-      } @else {
-        <!-- Dual Premium Auth Actions -->
-        <div class="auth-guest-actions d-flex align-items-center gap-2">
-          <!-- Sign In Link -->
-          <a routerLink="/auth/login" class="login-action-btn text-decoration-none fs-7 fw-bold" aria-label="Login">
-            <span>{{ 'NAV_LOGIN' | translate }}</span>
-          </a>
-          <!-- Register Premium CTA -->
-          <a routerLink="/auth/register" class="register-action-btn text-decoration-none fs-7 fw-bold" aria-label="Register">
-            <span>{{ 'NAV_REGISTER' | translate }}</span>
-          </a>
+
+        <div class="auth-unauthenticated" [class.d-none]="authService.isLoggedIn()">
+          <div class="auth-guest-actions d-flex align-items-center gap-2">
+            <a routerLink="/auth/login" class="login-action-btn text-decoration-none fs-7 fw-bold" aria-label="Login">
+              <span>{{ 'NAV_LOGIN' | translate }}</span>
+            </a>
+            <a routerLink="/auth/register" class="register-action-btn text-decoration-none fs-7 fw-bold" aria-label="Register">
+              <span>{{ 'NAV_REGISTER' | translate }}</span>
+            </a>
+          </div>
         </div>
-      }
+      </div>
 
       <!-- Wishlist -->
       <a [routerLink]="navRoutes.FAVORITES"

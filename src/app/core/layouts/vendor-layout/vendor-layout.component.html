@@ -88,7 +88,11 @@
 <app-vendor-notification-bell />
         <div class="user-profile-menu dropdown">
           <div class="user-avatar">
-            {{ currentUser()?.initials || 'AW' }}
+            @if (currentUser()?.image && !avatarError()) {
+              <img [src]="currentUser()?.image" alt="Profile" class="avatar-img" (error)="onAvatarError()" />
+            } @else {
+              {{ currentUser()?.initials || 'AW' }}
+            }
           </div>
           <div class="user-details d-none d-sm-block">
             <span class="user-name">{{ currentUser()?.name || 'Alexander Wright' }}</span>
