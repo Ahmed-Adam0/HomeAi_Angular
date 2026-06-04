@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AuthErrorHandler } from '../../services/auth-error-handler.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
@@ -17,6 +18,7 @@ import { UiState } from '../../../../core/state/ui.state';
 export class ResetPassword {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private authErrorHandler = inject(AuthErrorHandler);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
@@ -113,7 +115,7 @@ export class ResetPassword {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = this.localizeBackendError(err.error);
+        this.errorMessage = this.authErrorHandler.handle(err);
       }
     });
   }
@@ -122,15 +124,5 @@ export class ResetPassword {
     return form.get('newPassword')?.value === form.get('confirmNewPassword')?.value
       ? null
       : { mismatch: true };
-  }
-
-  private localizeBackendError(errorPayload: any): string {
-    if (typeof errorPayload?.message === 'string') {
-      return errorPayload.message;
-    }
-
-    return this.currentLang() === 'ar'
-      ? this.translations.ar.passwordsMismatch
-      : this.translations.en.passwordsMismatch;
   }
 }

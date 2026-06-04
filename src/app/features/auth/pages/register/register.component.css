@@ -32,7 +32,7 @@
 }
 
 /* ═══════════════════════════════
-   FORM SIDE (LEFT) 
+   FORM SIDE (LEFT)
 ═══════════════════════════════ */
 .auth-form-side {
   flex: 1;
@@ -63,7 +63,7 @@
 .logo-icon-small {
   width: 36px;
   height: 36px;
-  background: #795c4b; 
+  background: #795c4b;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -89,13 +89,13 @@
 .form-header h1 {
   font-size: 26px;
   font-weight: 700;
-  color: #795c4b; 
+  color: #795c4b;
   margin: 0 0 8px 0;
 }
 
 .form-header p {
   font-size: 14.5px;
-  color: #52525b; 
+  color: #52525b;
   margin: 0;
 }
 
@@ -123,6 +123,7 @@
   color: #795c4b;
   display: flex;
   opacity: 0.7;
+  z-index: 1;
 }
 
 .input-icon svg {
@@ -139,11 +140,11 @@
   font-size: 15px;
   font-family: inherit;
   color: #0f0f0f;
-  background: #f4eee1; 
+  background: #f4eee1;
   outline: none;
   box-sizing: border-box;
   text-align: right;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .auth-wrapper[dir="ltr"] .form-group input {
@@ -180,12 +181,147 @@
 .form-group input.is-invalid {
   border-color: #dc2626;
   background: #fff8f8;
+  padding-right: 76px;
 }
 
+.auth-wrapper[dir="ltr"] .form-group input.is-invalid {
+  padding-right: 16px;
+  padding-left: 76px;
+}
+
+.form-group input.is-valid {
+  border-color: #16a34a;
+  background: #f0fdf4;
+  padding-right: 76px;
+}
+
+.auth-wrapper[dir="ltr"] .form-group input.is-valid {
+  padding-right: 16px;
+  padding-left: 76px;
+}
+
+/* Field Status Icons */
+.field-status-icon {
+  position: absolute;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  z-index: 1;
+}
+
+.auth-wrapper[dir="ltr"] .field-status-icon {
+  left: auto;
+  right: 14px;
+}
+
+.field-status-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.success-icon {
+  color: #16a34a;
+}
+
+.error-icon {
+  color: #dc2626;
+}
+
+/* Input wrapper states */
+.input-wrapper.has-success {
+  position: relative;
+}
+
+.input-wrapper.has-error {
+  position: relative;
+}
+
+/* Error message */
 .error-msg {
   font-size: 12.5px;
   color: #dc2626;
   margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Password Strength Bar */
+.password-strength-bar {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.strength-segment {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.strength-segment.met {
+  background: #16a34a;
+}
+
+.strength-segment.active:not(.met) {
+  background: #f59e0b;
+}
+
+/* ═══════════════════════════════
+   CUSTOM ALERTS
+═══════════════════════════════ */
+.alert-custom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 13.5px;
+  font-weight: 500;
+  animation: alertSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.alert-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.alert-custom-success {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.alert-custom-success .alert-icon {
+  color: #16a34a;
+}
+
+.alert-custom-error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.alert-custom-error .alert-icon {
+  color: #dc2626;
+}
+
+@keyframes alertSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* زر التسجيل */
@@ -204,7 +340,7 @@
   justify-content: center;
   margin-top: 12px;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px #614739(121, 92, 75, 0.15);
+  box-shadow: 0 4px 12px rgba(121, 92, 75, 0.15);
 }
 
 .btn-submit span {
@@ -225,6 +361,10 @@
 
 .btn-submit:hover:not(:disabled) svg.submit-arrow {
   transform: translateX(-4px);
+}
+
+.auth-wrapper[dir="rtl"] .btn-submit:hover:not(:disabled) svg.submit-arrow {
+  transform: translateX(4px);
 }
 
 .btn-submit:disabled {
@@ -409,7 +549,7 @@
 }
 
 /* ═══════════════════════════════
-   RESPONSIVE (الشاشات الصغيرة)
+   RESPONSIVE
 ═══════════════════════════════ */
 @media (max-width: 900px) {
   .register-mirror {
@@ -421,27 +561,4 @@
   .auth-form-side {
     padding: 40px 20px;
   }
-}
-.alert, 
-.alert-danger, 
-[class*="alert-"] {
-  background-color: #fff5f5 !important; 
-  color: #dc2626 !important;            
-  border: 1px solid #fecaca !important;  
-}
-
-.alert svg, 
-.alert i, 
-.alert-danger svg,
-[class*="alert-"] svg {
-  width: 20px !important;
-  height: 20px !important;
-  min-width: 20px !important;
-  min-height: 20px !important;
-  max-width: 20px !important;
-  max-height: 20px !important;
-  flex-shrink: 0 !important;
-  display: inline-block !important;
-  color: #dc2626 !important;            
-  fill: currentColor !important;
 }

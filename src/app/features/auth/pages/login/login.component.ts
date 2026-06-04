@@ -3,6 +3,7 @@ import { CommonModule ,isPlatformBrowser} from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AuthErrorHandler } from '../../services/auth-error-handler.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import{environment} from '../../../../../environments/environment';
@@ -12,11 +13,12 @@ import{environment} from '../../../../../environments/environment';
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  
+
 })
 export class Login implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private authErrorHandler = inject(AuthErrorHandler);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
@@ -26,12 +28,13 @@ export class Login implements OnInit, AfterViewInit {
     return isPlatformBrowser(this.platformId);
   }
 
-
-
   loginForm: FormGroup;
   isLoading = false;
+  submitted = false;
   errorMessage = '';
+  successMessage = '';
   returnUrl = '';
+  backendErrors: Record<string, string> = {};
 
   readonly navRoutes = NAV_ROUTES;
   readonly currentLang = this.translationService.currentLang;
@@ -83,24 +86,6 @@ export class Login implements OnInit, AfterViewInit {
     }
   } as const;
 
-  private readonly backendErrorMap = [
-    {
-      matcher: (payload: any) => payload?.code === 'INVALID_CREDENTIALS' || payload?.message?.toLowerCase().includes('invalid credentials') || payload?.message?.toLowerCase().includes('incorrect password') || payload?.message?.toLowerCase().includes('بيانات الدخول'),
-      ar: 'بيانات الدخول غير صحيحة، حاول مجدداً.',
-      en: 'Login failed. Please check your credentials and try again.'
-    },
-    {
-      matcher: (payload: any) => payload?.code === 'USER_NOT_FOUND' || payload?.message?.toLowerCase().includes('user not found') || payload?.message?.toLowerCase().includes('المستخدم غير موجود'),
-      ar: 'المستخدم غير موجود. تأكد من بياناتك.',
-      en: 'User not found. Please verify your login information.'
-    },
-    {
-      matcher: (payload: any) => payload?.code === 'ACCOUNT_LOCKED' || payload?.message?.toLowerCase().includes('account locked') || payload?.message?.toLowerCase().includes('تم قفل الحساب'),
-      ar: 'تم قفل الحساب مؤقتاً. تواصل مع الدعم.',
-      en: 'Your account is temporarily locked. Please contact support.'
-    }
-  ];
-
   constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -108,9 +93,43 @@ export class Login implements OnInit, AfterViewInit {
     });
 
     this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '';
+
+    ['email', 'password'].forEach(field => {
+      this.loginForm.get(field)?.valueChanges.subscribe(() => {
+        if (this.backendErrors[field]) {
+          delete this.backendErrors[field];
+          const control = this.loginForm.get(field);
+          if (control) {
+            const { backend, ...rest } = control.errors || {};
+            control.setErrors(Object.keys(rest).length > 0 ? rest : null);
+            control.markAsTouched();
+          }
+        }
+      });
+    });
+  }
+
+  showValidation(controlName: string): boolean {
+    const control = this.loginForm.get(controlName);
+    if (!control) return false;
+    if (this.backendErrors[controlName]) return true;
+    return (control.touched || control.dirty || this.submitted) && control.invalid;
+  }
+
+  showSuccess(controlName: string): boolean {
+    const control = this.loginForm.get(controlName);
+    if (!control) return false;
+    return (control.touched || control.dirty || this.submitted) && control.valid && !!control.value;
+  }
+
+  getFieldError(controlName: string): string {
+    return this.backendErrors[controlName] || '';
   }
 
   onSubmit(): void {
+    this.submitted = true;
+    this.backendErrors = {};
+
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -135,11 +154,10 @@ export class Login implements OnInit, AfterViewInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = this.localizeBackendError(err.error);
+        this.errorMessage = this.authErrorHandler.handle(err, 'login');
       }
     });
   }
-  
 
   ngOnInit(): void {}
 
@@ -244,27 +262,8 @@ export class Login implements OnInit, AfterViewInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = this.localizeBackendError(err.error);
+        this.errorMessage = this.authErrorHandler.handle(err, 'login');
       }
     });
-  }
-
- 
-
-  private localizeBackendError(errorPayload: any): string {
-    const found = this.backendErrorMap.find(item => item.matcher(errorPayload));
-    if (found) {
-      return this.currentLang() === 'ar' ? found.ar : found.en;
-    }
-
-    const defaultMessage = this.currentLang() === 'ar'
-      ? this.translations.ar.defaultLoginError
-      : this.translations.en.defaultLoginError;
-
-    if (typeof errorPayload?.message === 'string') {
-      return errorPayload.message;
-    }
-
-    return defaultMessage;
   }
 }
