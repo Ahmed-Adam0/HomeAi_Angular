@@ -262,9 +262,17 @@
 
     <!-- Language inside drawer -->
     <div class="mobile-selectors bg-light-cream p-3 rounded mb-4">
-      <div class="mobile-selector">
-        <label class="fs-9 text-uppercase tracking-wider text-muted fw-bold d-block mb-1">{{ 'NAV_LANGUAGE' | translate }}</label>
-        <span class="fs-7 text-dark fw-medium">{{ selectedLanguage().flag }} {{ selectedLanguage().label }}</span>
+      <label class="fs-9 text-uppercase tracking-wider text-muted fw-bold d-block mb-2">{{ 'NAV_LANGUAGE' | translate }}</label>
+      <div class="d-flex gap-2">
+        @for (lang of languages(); track lang.code) {
+          <button type="button"
+                  class="mobile-lang-btn d-flex align-items-center gap-2 py-2 px-3 w-100 justify-content-center rounded-pill border fs-7 fw-semibold"
+                  [class.mobile-lang-btn--active]="lang.code === selectedLanguage().code"
+                  (click)="selectLanguage(lang)">
+            <span>{{ lang.flag }}</span>
+            <span>{{ lang.label }}</span>
+          </button>
+        }
       </div>
     </div>
 

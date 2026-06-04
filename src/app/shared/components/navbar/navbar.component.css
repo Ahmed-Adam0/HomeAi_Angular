@@ -452,6 +452,54 @@
   overflow: hidden;
 }
 
+/* ==========================================================================
+   5a. Mobile Language Selector Buttons
+   ========================================================================== */
+.mobile-lang-btn {
+  min-height: 44px;
+  background: #fff;
+  border-color: rgba(31, 28, 24, 0.1);
+  color: #1e1513;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.01em;
+}
+
+.mobile-lang-btn:hover {
+  background: #f0edea;
+  border-color: rgba(184, 147, 92, 0.3);
+}
+
+.mobile-lang-btn--active {
+  background: #b8935c;
+  border-color: #b8935c;
+  color: #fff;
+}
+
+.mobile-lang-btn--active:hover {
+  background: #a37e4c;
+  border-color: #a37e4c;
+}
+
+.mobile-lang-btn:focus-visible {
+  outline: 2px solid #b8935c;
+  outline-offset: 2px;
+}
+
+/* Larger touch target for top bar dropdown trigger on tablet */
+@media (min-width: 576px) and (max-width: 1023px) {
+  .dropdown-trigger {
+    min-height: 36px;
+    padding: 0.25rem 0.4rem !important;
+  }
+}
+
+/* Higher z-index for dropdown menu to avoid clipping behind main-header */
+.dropdown-menu-custom {
+  z-index: 1050 !important;
+}
+
 .btn-gold-outline {
   border: 1.5px solid var(--color-gold);
   color: var(--color-gold);
