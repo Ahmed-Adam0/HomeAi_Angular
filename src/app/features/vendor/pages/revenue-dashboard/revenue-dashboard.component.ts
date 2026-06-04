@@ -18,14 +18,15 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pip
 
 interface KpiCard {
   key: string;
-  label: string;
+  labelKey: string;
   icon: string;
-  subtitle: string;
+  subtitleKey: string;
   isCurrency: boolean;
 }
 
 interface QuickFilter {
-  label: string;
+  key: string;
+  labelKey: string;
   days: number | 'month';
 }
 
@@ -111,20 +112,22 @@ export class RevenueDashboard implements OnInit {
   /* ---------- Date Range Filter ---------- */
 
   readonly dateRange = signal<Date[] | null>(null);
-  readonly activeFilterLabel = signal<string>('All Time');
+  readonly activeFilterKey = signal<string>('all');
 
   readonly quickFilters: QuickFilter[] = [
-    { label: 'Today', days: 0 },
-    { label: 'Last 7 Days', days: 7 },
-    { label: 'Last 30 Days', days: 30 },
-    { label: 'This Month', days: 'month' },
+    { key: 'today', labelKey: 'VENDOR.REVENUE_DASHBOARD.FILTER_TODAY', days: 0 },
+    { key: 'last7', labelKey: 'VENDOR.REVENUE_DASHBOARD.FILTER_7_DAYS', days: 7 },
+    { key: 'last30', labelKey: 'VENDOR.REVENUE_DASHBOARD.FILTER_30_DAYS', days: 30 },
+    { key: 'thisMonth', labelKey: 'VENDOR.REVENUE_DASHBOARD.FILTER_THIS_MONTH', days: 'month' },
   ];
 
-  readonly hasActiveFilter = computed(() => this.activeFilterLabel() !== 'All Time');
+  readonly hasActiveFilter = computed(() => this.activeFilterKey() !== 'all');
 
   readonly filterBadgeLabel = computed(() => {
-    const label = this.activeFilterLabel();
-    return label === 'All Time' ? '' : label;
+    const key = this.activeFilterKey();
+    if (key === 'all') return '';
+    const filter = this.quickFilters.find(f => f.key === key);
+    return filter ? filter.labelKey : key;
   });
 
   applyCustomDateFilter(): void {
@@ -137,7 +140,7 @@ export class RevenueDashboard implements OnInit {
       .subscribe();
     const fmtStart = this.datePipe.transform(range[0], 'MMM d, y') ?? '';
     const fmtEnd = this.datePipe.transform(range[1], 'MMM d, y') ?? '';
-    this.activeFilterLabel.set(`${fmtStart} – ${fmtEnd}`);
+    this.activeFilterKey.set(`${fmtStart} – ${fmtEnd}`);
   }
 
   applyQuickFilter(filter: QuickFilter): void {
@@ -158,12 +161,12 @@ export class RevenueDashboard implements OnInit {
       toRfc3339Start(start),
       toRfc3339(end),
     ).subscribe();
-    this.activeFilterLabel.set(filter.label);
+    this.activeFilterKey.set(filter.key);
   }
 
   clearDateFilter(): void {
     this.dateRange.set(null);
-    this.activeFilterLabel.set('All Time');
+    this.activeFilterKey.set('all');
     this.revenueService.purgeCache();
     this.revenueService.startPolling(30_000);
   }
@@ -171,11 +174,11 @@ export class RevenueDashboard implements OnInit {
   /* ---------- KPI cards ---------- */
 
   readonly kpiCards: KpiCard[] = [
-    { key: 'totalRevenue', label: 'Total Revenue', icon: 'bi bi-wallet2', subtitle: 'All-time earnings', isCurrency: true },
-    { key: 'monthlyRevenue', label: 'Monthly Revenue', icon: 'bi bi-calendar-range', subtitle: 'Current month', isCurrency: true },
-    { key: 'weeklyRevenue', label: 'Weekly Revenue', icon: 'bi bi-graph-up-arrow', subtitle: 'This week', isCurrency: true },
-    { key: 'dailyRevenue', label: 'Daily Revenue', icon: 'bi bi-sun', subtitle: 'Today', isCurrency: true },
-    { key: 'completedOrdersCount', label: 'Completed Orders', icon: 'bi bi-check2-circle', subtitle: 'Total fulfilled', isCurrency: false },
+    { key: 'totalRevenue', labelKey: 'VENDOR.REVENUE_DASHBOARD.KPI_TOTAL_REVENUE', icon: 'bi bi-wallet2', subtitleKey: 'VENDOR.REVENUE_DASHBOARD.KPI_TOTAL_REVENUE_SUB', isCurrency: true },
+    { key: 'monthlyRevenue', labelKey: 'VENDOR.REVENUE_DASHBOARD.KPI_MONTHLY_REVENUE', icon: 'bi bi-calendar-range', subtitleKey: 'VENDOR.REVENUE_DASHBOARD.KPI_MONTHLY_REVENUE_SUB', isCurrency: true },
+    { key: 'weeklyRevenue', labelKey: 'VENDOR.REVENUE_DASHBOARD.KPI_WEEKLY_REVENUE', icon: 'bi bi-graph-up-arrow', subtitleKey: 'VENDOR.REVENUE_DASHBOARD.KPI_WEEKLY_REVENUE_SUB', isCurrency: true },
+    { key: 'dailyRevenue', labelKey: 'VENDOR.REVENUE_DASHBOARD.KPI_DAILY_REVENUE', icon: 'bi bi-sun', subtitleKey: 'VENDOR.REVENUE_DASHBOARD.KPI_DAILY_REVENUE_SUB', isCurrency: true },
+    { key: 'completedOrdersCount', labelKey: 'VENDOR.REVENUE_DASHBOARD.KPI_COMPLETED_ORDERS', icon: 'bi bi-check2-circle', subtitleKey: 'VENDOR.REVENUE_DASHBOARD.KPI_COMPLETED_ORDERS_SUB', isCurrency: false },
   ];
 
   private readonly rawValues = computed<Record<string, number>>(() => {

@@ -15,19 +15,21 @@ import { ProgressBar } from 'primeng/progressbar';
 import { VendorOrderAnalyticsService } from '../../services/vendor-order-analytics.service';
 import { IOrderAnalytics } from '../../interfaces';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 interface KpiCard {
   key: string;
-  label: string;
+  labelKey: string;
   icon: string;
-  subtitle: string;
+  subtitleKey: string;
   isCurrency: boolean;
   isPercent: boolean;
   isHours: boolean;
 }
 
 interface QuickFilter {
-  label: string;
+  key: string;
+  labelKey: string;
   days: number | 'month';
 }
 
@@ -46,7 +48,7 @@ function toRfc3339Start(date: Date): string {
 @Component({
   selector: 'app-vendor-analytics',
   standalone: true,
-  imports: [UIChart, DatePicker, FormsModule, CurrencyPipe, DatePipe, CurrencyFormatPipe, ProgressBar],
+  imports: [UIChart, DatePicker, FormsModule, CurrencyPipe, DatePipe, CurrencyFormatPipe, ProgressBar, TranslatePipe],
   providers: [CurrencyFormatPipe, DatePipe],
   templateUrl: './vendor-analytics.component.html',
   styleUrl: './vendor-analytics.component.css',
@@ -71,20 +73,22 @@ export class VendorAnalytics implements OnInit {
   /* ---------- Date Range Filter ---------- */
 
   readonly dateRange = signal<Date[] | null>(null);
-  readonly activeFilterLabel = signal<string>('All Time');
+  readonly activeFilterKey = signal<string>('all');
 
   readonly quickFilters: QuickFilter[] = [
-    { label: 'Today', days: 0 },
-    { label: 'Last 7 Days', days: 7 },
-    { label: 'Last 30 Days', days: 30 },
-    { label: 'This Month', days: 'month' },
+    { key: 'today', labelKey: 'VENDOR.ORDERS_ANALYTICS.FILTER_TODAY', days: 0 },
+    { key: 'last7', labelKey: 'VENDOR.ORDERS_ANALYTICS.FILTER_7_DAYS', days: 7 },
+    { key: 'last30', labelKey: 'VENDOR.ORDERS_ANALYTICS.FILTER_30_DAYS', days: 30 },
+    { key: 'thisMonth', labelKey: 'VENDOR.ORDERS_ANALYTICS.FILTER_THIS_MONTH', days: 'month' },
   ];
 
-  readonly hasActiveFilter = computed(() => this.activeFilterLabel() !== 'All Time');
+  readonly hasActiveFilter = computed(() => this.activeFilterKey() !== 'all');
 
   readonly filterBadgeLabel = computed(() => {
-    const label = this.activeFilterLabel();
-    return label === 'All Time' ? '' : label;
+    const key = this.activeFilterKey();
+    if (key === 'all') return '';
+    const filter = this.quickFilters.find(f => f.key === key);
+    return filter ? filter.labelKey : key;
   });
 
   applyCustomDateFilter(): void {
@@ -97,7 +101,7 @@ export class VendorAnalytics implements OnInit {
       .subscribe();
     const fmtStart = this.datePipe.transform(range[0], 'MMM d, y') ?? '';
     const fmtEnd = this.datePipe.transform(range[1], 'MMM d, y') ?? '';
-    this.activeFilterLabel.set(`${fmtStart} – ${fmtEnd}`);
+    this.activeFilterKey.set(`${fmtStart} – ${fmtEnd}`);
   }
 
   applyQuickFilter(filter: QuickFilter): void {
@@ -118,12 +122,12 @@ export class VendorAnalytics implements OnInit {
       toRfc3339Start(start),
       toRfc3339(end),
     ).subscribe();
-    this.activeFilterLabel.set(filter.label);
+    this.activeFilterKey.set(filter.key);
   }
 
   clearDateFilter(): void {
     this.dateRange.set(null);
-    this.activeFilterLabel.set('All Time');
+    this.activeFilterKey.set('all');
     this.analyticsService.purgeCache();
     this.analyticsService.startPolling(30_000);
   }
@@ -131,10 +135,10 @@ export class VendorAnalytics implements OnInit {
   /* ---------- KPI cards ---------- */
 
   readonly kpiCards: KpiCard[] = [
-    { key: 'totalOrders', label: 'Total Orders', icon: 'bi bi-box-seam', subtitle: 'All orders received', isCurrency: false, isPercent: false, isHours: false },
-    { key: 'completionRate', label: 'Completion Rate', icon: 'bi bi-check2-circle', subtitle: 'Orders completed', isCurrency: false, isPercent: true, isHours: false },
-    { key: 'averageOrderValue', label: 'Avg. Order Value', icon: 'bi bi-cash-stack', subtitle: 'Average per order', isCurrency: true, isPercent: false, isHours: false },
-    { key: 'averageCompletionTimeHours', label: 'Avg. Completion Time', icon: 'bi bi-clock-history', subtitle: 'Hours to complete', isCurrency: false, isPercent: false, isHours: true },
+    { key: 'totalOrders', labelKey: 'VENDOR.ORDERS_ANALYTICS.KPI_TOTAL_ORDERS', icon: 'bi bi-box-seam', subtitleKey: 'VENDOR.ORDERS_ANALYTICS.KPI_TOTAL_ORDERS_SUB', isCurrency: false, isPercent: false, isHours: false },
+    { key: 'completionRate', labelKey: 'VENDOR.ORDERS_ANALYTICS.KPI_COMPLETION_RATE', icon: 'bi bi-check2-circle', subtitleKey: 'VENDOR.ORDERS_ANALYTICS.KPI_COMPLETION_RATE_SUB', isCurrency: false, isPercent: true, isHours: false },
+    { key: 'averageOrderValue', labelKey: 'VENDOR.ORDERS_ANALYTICS.KPI_AVG_ORDER_VALUE', icon: 'bi bi-cash-stack', subtitleKey: 'VENDOR.ORDERS_ANALYTICS.KPI_AVG_ORDER_VALUE_SUB', isCurrency: true, isPercent: false, isHours: false },
+    { key: 'averageCompletionTimeHours', labelKey: 'VENDOR.ORDERS_ANALYTICS.KPI_AVG_COMPLETION_TIME', icon: 'bi bi-clock-history', subtitleKey: 'VENDOR.ORDERS_ANALYTICS.KPI_AVG_COMPLETION_TIME_SUB', isCurrency: false, isPercent: false, isHours: true },
   ];
 
   private readonly rawValues = computed<Record<string, number>>(() => {

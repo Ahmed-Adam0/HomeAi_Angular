@@ -9,3 +9,64 @@ body.modal-open {
   overflow: hidden !important;
   height: 100vh !important;
 }
+
+/* ============================================
+   GLOBAL SCROLLBAR STYLING
+   ============================================ */
+
+/* WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--fm-color-neutral-300, #d9d3c7);
+  border-radius: var(--fm-radius-sm, 8px);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background var(--fm-transition-duration-fast, 150ms) var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fm-color-primary-500, #b8935c);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--fm-color-primary-600, #a37e4c);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  
+  scrollbar-width: thin;
+  scrollbar-color: var(--fm-color-neutral-300, #d9d3c7) var(--fm-color-neutral-100, #f4f2ee);
+}
+
+/* RTL: keep scrollbar on the right side (default) */
+[dir="rtl"] * {
+  scrollbar-width: thin;
+}
+
+/* Mobile: hide scrollbar for cleaner look (scroll still works) */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  * {
+    scrollbar-width: none;
+  }
+}
