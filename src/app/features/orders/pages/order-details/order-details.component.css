@@ -509,8 +509,16 @@
   .edit-col-total { width: 52px; }
 }
 
-/* Animations Definitions */
+/* Animations Definitions
+   WARNING: Do NOT use `transform` in page-level animations — any ancestor with
+   a non-none `transform` becomes the containing block for `position: fixed`,
+   breaking modals, dialogs, and overlays rendered inside it. */
 @keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
@@ -522,6 +530,10 @@
 
 .animate-fade-in {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-slide {
+  animation: fadeSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-pulse {
