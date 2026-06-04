@@ -131,96 +131,25 @@
               <div class="col-md-6">
                 <div class="form-group-custom">
                   <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_COUNTRY' | translate }}</label>
-                  <select formControlName="country" class="form-select-custom">
-                    <option value="US">{{ currentLang() === 'ar' ? 'الولايات المتحدة الأمريكية' : 'United States' }}</option>
-                    <option value="EG">{{ currentLang() === 'ar' ? 'مصر' : 'Egypt' }}</option>
-                    <option value="SA">{{ currentLang() === 'ar' ? 'المملكة العربية السعودية' : 'Saudi Arabia' }}</option>
-                  </select>
+                  <input type="text" formControlName="country" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'أدخل اسم الدولة' : 'Enter your country'">
+                  @if (checkoutForm.get('country')?.touched && checkoutForm.get('country')?.errors?.['required']) {
+                    <div class="text-danger-custom small mt-1">
+                      {{ currentLang() === 'ar' ? 'الدولة مطلوبة.' : 'Country is required.' }}
+                    </div>
+                  }
                 </div>
               </div>
             </div>
           </section>
 
-          <!-- Section 2: Shipping Method -->
+          <!-- Section 2: Payment Method -->
           <section class="checkout-card bg-white p-4 p-md-5">
             <div class="section-title-group d-flex align-items-center gap-3 mb-4">
               <div class="section-number">2</div>
-              <h3 class="section-heading h4 fw-bold mb-0 text-dark">{{ 'CHECKOUT_SHIPPING_METHOD' | translate }}</h3>
-            </div>
-
-            <div class="shipping-options-grid d-flex flex-column gap-3">
-              <!-- Standard Shipping Option Card -->
-              <label class="selection-card cursor-pointer" [class.active]="checkoutForm.get('shippingOption')?.value === 'standard'">
-                <input type="radio" formControlName="shippingOption" value="standard" class="d-none">
-                <div class="selection-card-content d-flex align-items-center justify-content-between w-100">
-                  <div class="d-flex align-items-center gap-3">
-                    <span class="selection-radio-dot"></span>
-                    <div class="selection-card-text">
-                      <span class="selection-card-title fw-bold text-dark d-block">{{ 'CHECKOUT_SHIPPING_STANDARD' | translate }}</span>
-                      <span class="selection-card-desc text-muted small d-block">{{ 'CHECKOUT_SHIPPING_STANDARD_DESC' | translate }}</span>
-                    </div>
-                  </div>
-                  <span class="selection-card-badge fw-semibold">{{ 'CHECKOUT_SHIPPING_FREE' | translate }}</span>
-                </div>
-              </label>
-
-              <!-- Express Shipping Option Card -->
-              <label class="selection-card cursor-pointer" [class.active]="checkoutForm.get('shippingOption')?.value === 'express'">
-                <input type="radio" formControlName="shippingOption" value="express" class="d-none">
-                <div class="selection-card-content d-flex align-items-center justify-content-between w-100">
-                  <div class="d-flex align-items-center gap-3">
-                    <span class="selection-radio-dot"></span>
-                    <div class="selection-card-text">
-                      <span class="selection-card-title fw-bold text-dark d-block">{{ 'CHECKOUT_SHIPPING_EXPRESS' | translate }}</span>
-                      <span class="selection-card-desc text-muted small d-block">{{ 'CHECKOUT_SHIPPING_EXPRESS_DESC' | translate }}</span>
-                    </div>
-                  </div>
-                  <span class="selection-card-price fw-bold text-dark">{{ 15.00 | currencyFormat }}</span>
-                </div>
-              </label>
-            </div>
-          </section>
-
-          <!-- Section 3: Payment Method -->
-          <section class="checkout-card bg-white p-4 p-md-5">
-            <div class="section-title-group d-flex align-items-center gap-3 mb-4">
-              <div class="section-number">3</div>
               <h3 class="section-heading h4 fw-bold mb-0 text-dark">{{ 'CHECKOUT_PAYMENT_METHOD' | translate }}</h3>
             </div>
 
             <div class="payment-options-grid d-flex flex-column gap-3">
-              <!-- Stripe Card -->
-              <label class="selection-card cursor-pointer" [class.active]="checkoutForm.get('paymentProvider')?.value === 'stripe'">
-                <input type="radio" formControlName="paymentProvider" value="stripe" class="d-none">
-                <div class="selection-card-content d-flex align-items-center justify-content-between w-100">
-                  <div class="d-flex align-items-center gap-3">
-                    <span class="selection-radio-dot"></span>
-                    <div class="payment-icon d-flex align-items-center justify-content-center rounded-3 bg-light">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-card"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-                    </div>
-                    <span class="selection-card-title fw-bold text-dark">{{ 'CHECKOUT_GATEWAY_STRIPE' | translate }}</span>
-                  </div>
-                  <div class="card-brands-icons d-none d-sm-flex gap-1 text-muted">
-                    <span class="brand-badge small px-2 py-1 rounded bg-light">Visa</span>
-                    <span class="brand-badge small px-2 py-1 rounded bg-light">Mastercard</span>
-                  </div>
-                </div>
-              </label>
-
-              <!-- PayPal Card -->
-              <label class="selection-card cursor-pointer" [class.active]="checkoutForm.get('paymentProvider')?.value === 'paypal'">
-                <input type="radio" formControlName="paymentProvider" value="paypal" class="d-none">
-                <div class="selection-card-content d-flex align-items-center justify-content-between w-100">
-                  <div class="d-flex align-items-center gap-3">
-                    <span class="selection-radio-dot"></span>
-                    <div class="payment-icon d-flex align-items-center justify-content-center rounded-3 bg-light">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-paypal"><path d="M12 2H9a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h3a6 6 0 0 0 6-6V8a6 6 0 0 0-6-6z"></path><path d="M7 10h10"></path></svg>
-                    </div>
-                    <span class="selection-card-title fw-bold text-dark">{{ 'CHECKOUT_GATEWAY_PAYPAL' | translate }}</span>
-                  </div>
-                </div>
-              </label>
-
               <!-- Paymob Card -->
               <label class="selection-card cursor-pointer" [class.active]="checkoutForm.get('paymentProvider')?.value === 'paymob'">
                 <input type="radio" formControlName="paymentProvider" value="paymob" class="d-none">
@@ -239,7 +168,7 @@
 
           <section class="checkout-card bg-white p-4 p-md-5">
             <div class="section-title-group d-flex align-items-center gap-3 mb-4">
-              <div class="section-number">5</div>
+              <div class="section-number">3</div>
               <h3 class="section-heading h4 fw-bold mb-0 text-dark">{{ 'CHECKOUT_ORDER_NOTES_TITLE' | translate }}</h3>
             </div>
 
@@ -302,19 +231,6 @@
               }
             </div>
 
-            <!-- Coupon Box -->
-            <div class="summary-coupon-box mb-4">
-              <app-coupon-box
-                [disabled]="submitting"
-                [status]="couponStatus()"
-                [activeCoupon]="activeCoupon()"
-                [message]="couponMessage()"
-                [savedAmountLabel]="couponSavedAmountLabel()"
-                (applyCoupon)="onApplyCoupon($event)"
-                (removeCoupon)="onRemoveCoupon()"
-              ></app-coupon-box>
-            </div>
-
             <!-- Summary Totals -->
             <div class="summary-totals-grid d-flex flex-column gap-2 mb-4">
               <div class="d-flex justify-content-between align-items-center text-muted">
@@ -325,22 +241,6 @@
               <div class="d-flex justify-content-between align-items-center text-muted">
                 <span>{{ 'CHECKOUT_SUBTOTAL' | translate }}</span>
                 <span class="fw-semibold text-dark">{{ cartSummary().subtotal | currencyFormat }}</span>
-              </div>
-
-              <div class="d-flex justify-content-between align-items-center text-muted">
-                <span>{{ 'CHECKOUT_SHIPPING' | translate }}</span>
-                <span class="fw-semibold text-dark">
-                  @if (cartSummary().shipping > 0) {
-                    {{ cartSummary().shipping | currencyFormat }}
-                  } @else {
-                    {{ 'CHECKOUT_SHIPPING_FREE' | translate }}
-                  }
-                </span>
-              </div>
-
-              <div class="d-flex justify-content-between align-items-center text-muted">
-                <span>{{ 'CHECKOUT_TAX' | translate }}</span>
-                <span class="fw-semibold text-dark">{{ cartSummary().tax | currencyFormat }}</span>
               </div>
 
               @if (cartSummary().discount > 0) {

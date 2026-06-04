@@ -1,8 +1,8 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CheckoutService, ICouponValidationResult, ICouponTotalsContext, ICheckoutPayload } from '../../services/checkout.service';
+import { CheckoutService, ICheckoutPayload } from '../../services/checkout.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
 import { Router } from '@angular/router';
@@ -10,7 +10,6 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
-import { CouponBoxComponent } from '../../components/coupon-box/coupon-box.component';
 import { UiState } from '../../../../core/state/ui.state';
 import { LOCAL_STORAGE_KEYS } from '../../../../core/constants';
 import { EMPTY, defer, from, Subject } from 'rxjs';
@@ -20,7 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   standalone: true,
   selector: 'app-checkout-form-page',
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, CurrencyFormatPipe, RtlDirective, CouponBoxComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, CurrencyFormatPipe, RtlDirective],
   templateUrl: './checkout-form.component.html',
   styleUrl: './checkout-form.component.css'
 })
@@ -36,18 +35,13 @@ export class CheckoutFormComponent implements OnInit {
   readonly cartItems = this.cartService.items;
   readonly cartTotals = this.cartService.totals;
   readonly cartEmpty = computed(() => this.cartItems().length === 0);
-  readonly couponStatus = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
-  readonly couponMessage = signal('');
-  readonly activeCoupon = signal<string | null>(null);
-  readonly couponDiscount = signal(0);
-  readonly couponSavedAmountLabel = signal('');
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly submitCheckoutAction = new Subject<void>();
 
   readonly cartSummary = computed(() => {
     const totals = this.cartTotals();
-    const discount = totals.discountAmount + this.couponDiscount();
+    const discount = totals.discountAmount;
     const total = Math.max(
       0,
       Number(
@@ -62,8 +56,6 @@ export class CheckoutFormComponent implements OnInit {
 
     return {
       subtotal: totals.totalPrice,
-      shipping: totals.shippingCost,
-      tax: totals.taxAmount,
       discount,
       total,
       totalQuantity: totals.totalQuantity,
@@ -79,8 +71,7 @@ export class CheckoutFormComponent implements OnInit {
     city: FormControl<string>;
     zipCode: FormControl<string>;
     country: FormControl<string>;
-    shippingOption: FormControl<'standard' | 'express'>;
-    paymentProvider: FormControl<'stripe' | 'paypal' | 'paymob'>;
+    paymentProvider: FormControl<'paymob'>;
     orderNotes: FormControl<string>;
   }>;
   submitting = false;
@@ -95,8 +86,7 @@ export class CheckoutFormComponent implements OnInit {
       city: ['', [Validators.required]],
       zipCode: ['', [Validators.required, Validators.pattern(/^[0-9]{5}$/)]],
       country: ['US', [Validators.required]],
-      shippingOption: ['standard' as 'standard', [Validators.required]],
-      paymentProvider: ['stripe' as 'stripe', [Validators.required]],
+      paymentProvider: ['paymob' as 'paymob', [Validators.required]],
       orderNotes: ['', [Validators.maxLength(300)]]
     }) as FormGroup<{
       fullName: FormControl<string>;
@@ -107,8 +97,7 @@ export class CheckoutFormComponent implements OnInit {
       city: FormControl<string>;
       zipCode: FormControl<string>;
       country: FormControl<string>;
-      shippingOption: FormControl<'standard' | 'express'>;
-      paymentProvider: FormControl<'stripe' | 'paypal' | 'paymob'>;
+      paymentProvider: FormControl<'paymob'>;
       orderNotes: FormControl<string>;
     }>;
 
@@ -189,7 +178,6 @@ export class CheckoutFormComponent implements OnInit {
           if (res.success) {
             this.cartService.clearCart();
             localStorage.removeItem(LOCAL_STORAGE_KEYS.CART);
-            this.onRemoveCoupon();
             this.uiState.showAlert('success', this.translationService.translate('CHECKOUT_SUCCESS_ORDER_PLACED'));
             this.router.navigate(['/orders']);
           }
@@ -215,54 +203,4 @@ export class CheckoutFormComponent implements OnInit {
     });
   }
 
-  onApplyCoupon(code: string): void {
-    const totals: ICouponTotalsContext = {
-      subtotal: this.cartTotals().totalPrice,
-      shippingCost: this.cartTotals().shippingCost,
-      taxAmount: this.cartTotals().taxAmount,
-      total: this.cartTotals().grandTotal,
-    };
-
-    this.couponStatus.set('loading');
-    this.couponMessage.set('');
-
-    this.checkoutService.validateCoupon(code, totals).pipe(
-      finalize(() => {
-        if (this.couponStatus() === 'loading') {
-          this.couponStatus.set('idle');
-        }
-      })
-    ).subscribe({
-      next: (result: ICouponValidationResult) => {
-        if (result.valid) {
-          this.activeCoupon.set(code);
-          this.couponDiscount.set(result.discountAmount);
-          this.couponSavedAmountLabel.set(result.savedAmountKey ?? '');
-          this.couponMessage.set(result.messageKey);
-          this.couponStatus.set('success');
-        } else {
-          this.activeCoupon.set(null);
-          this.couponDiscount.set(0);
-          this.couponSavedAmountLabel.set('');
-          this.couponMessage.set(result.messageKey);
-          this.couponStatus.set('error');
-        }
-      },
-      error: () => {
-        this.activeCoupon.set(null);
-        this.couponDiscount.set(0);
-        this.couponSavedAmountLabel.set('');
-        this.couponMessage.set('CHECKOUT_COUPON_GENERIC_ERROR');
-        this.couponStatus.set('error');
-      }
-    });
-  }
-
-  onRemoveCoupon(): void {
-    this.activeCoupon.set(null);
-    this.couponDiscount.set(0);
-    this.couponSavedAmountLabel.set('');
-    this.couponMessage.set('');
-    this.couponStatus.set('idle');
-  }
 }

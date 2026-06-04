@@ -11,8 +11,6 @@ export interface IBillingDetails {
 
 export interface ICheckoutDetails {
   billingDetails: IBillingDetails;
-  shippingOption: 'standard' | 'express';
-  paymentProvider: 'stripe' | 'paypal' | 'paymob';
-  couponCode?: string;
+  paymentProvider: 'paymob';
   orderNotes?: string;
 }
