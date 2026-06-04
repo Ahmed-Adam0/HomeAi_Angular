@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants';
-import { IOrder, IBackendOrder } from '../interfaces';
+import { IOrder, IBackendOrder, IBackendOrderItem } from '../interfaces';
 import { mapBackendToOrder } from './orders.mapper';
 
 type ApiEnvelope<T> = T | { data: T } | { result: T };
@@ -80,6 +80,18 @@ export class OrdersApiService {
   updateOrderStatus(id: string | number, status: string): Observable<IOrder> {
     return this.http
       .put<ApiEnvelope<IBackendOrder>>(`${this.apiUrl}${API_URLS.ORDERS.UPDATE_STATUS(id)}`, { status })
+      .pipe(
+        map(unwrapApiResponse),
+        map(mapBackendToOrder)
+      );
+  }
+
+  /**
+   * Updates items (quantities) on an existing pending order.
+   */
+  updateOrderItems(id: string | number, items: { productId: number; quantity: number }[]): Observable<IOrder> {
+    return this.http
+      .put<ApiEnvelope<IBackendOrder>>(`${this.apiUrl}${API_URLS.ORDERS.UPDATE_ITEMS(id)}`, { items })
       .pipe(
         map(unwrapApiResponse),
         map(mapBackendToOrder)

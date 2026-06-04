@@ -236,17 +236,276 @@
   transform: rotate(180deg);
 }
 
-.edit-modal-icon-container {
-  display: inline-flex;
-  padding: var(--fm-space-20);
-  background: rgba(184, 147, 92, 0.08);
-  border-radius: var(--fm-radius-circle);
-  color: var(--fm-color-primary-500);
-  margin-bottom: var(--fm-space-16);
+/* ==========================================================================
+   Edit Order Modal — Premium Production Design
+   Single scroll container, sticky footer, product images, responsive.
+   ========================================================================== */
+
+.edit-order-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
 }
 
-.edit-gears-svg {
-  animation: spin-gears 12s linear infinite;
+.edit-items-header {
+  flex-shrink: 0;
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--fm-border-medium);
+  margin-bottom: 2px;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+
+.edit-col-product { flex: 1; min-width: 0; }
+.edit-col-qty { width: 88px; text-align: center; }
+.edit-col-total { width: 72px; text-align: end; }
+
+/* Single scroll container — only this scrolls, no nested scrollbars */
+.edit-items-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 2px 0;
+}
+
+.edit-item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 6px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.edit-item-row:last-child {
+  border-bottom: none;
+}
+
+.edit-item-img-wrapper {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1px solid var(--fm-border-medium);
+  background: var(--fm-color-neutral-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.edit-item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.edit-item-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--fm-color-neutral-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.edit-item-price {
+  font-size: 11px;
+  color: var(--fm-color-neutral-500);
+}
+
+.edit-item-qty {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0;
+}
+
+.qty-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--fm-border-medium);
+  background: var(--fm-surface-card);
+  color: var(--fm-color-neutral-600);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+  line-height: 0;
+}
+
+.qty-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.qty-btn:not(:disabled):hover {
+  background: var(--fm-color-neutral-100);
+  border-color: var(--fm-color-neutral-300);
+}
+
+.qty-btn-minus { border-radius: 7px 0 0 7px; }
+.qty-btn-plus { border-radius: 0 7px 7px 0; }
+
+.qty-input {
+  width: 40px;
+  height: 30px;
+  border: 1px solid var(--fm-border-medium);
+  border-left: none;
+  border-right: none;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--fm-color-neutral-900);
+  background: var(--fm-surface-card);
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.qty-input:focus {
+  background: var(--fm-color-neutral-50);
+}
+
+.edit-item-total {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--fm-color-neutral-900);
+  min-width: 64px;
+  text-align: end;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+/* Sticky footer — always visible */
+.edit-form-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  margin-top: 6px;
+  border-top: 1px solid var(--fm-border-medium);
+}
+
+.edit-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+
+/* RTL overrides */
+[dir="rtl"] .qty-btn-minus { border-radius: 0 7px 7px 0; }
+[dir="rtl"] .qty-btn-plus { border-radius: 7px 0 0 7px; }
+[dir="rtl"] .qty-input {
+  border-left: 1px solid var(--fm-border-medium);
+  border-right: none;
+}
+[dir="rtl"] .edit-item-total {
+  text-align: start;
+  margin-left: 0;
+  margin-right: 10px;
+}
+
+/* Responsive: tablets */
+@media (max-width: 768px) {
+  .edit-item-img-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+
+  .edit-col-qty { width: 80px; }
+}
+
+/* Responsive: mobile */
+@media (max-width: 576px) {
+  .edit-item-img-wrapper {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+  }
+
+  .edit-item-name { font-size: 12px; }
+  .edit-item-price { font-size: 10px; }
+
+  .qty-btn { width: 28px; height: 28px; }
+  .qty-input { width: 34px; height: 28px; font-size: 12px; }
+
+  .edit-item-total {
+    min-width: 56px;
+    font-size: 12px;
+    margin-left: 8px;
+  }
+
+  [dir="rtl"] .edit-item-total {
+    margin-left: 0;
+    margin-right: 8px;
+  }
+
+  .edit-items-header { font-size: 10px; }
+  .edit-col-qty { width: 72px; }
+  .edit-col-total { width: 60px; }
+
+  .edit-form-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .edit-form-footer app-button,
+  .edit-form-footer ::ng-deep app-button {
+    width: 100%;
+  }
+
+  .edit-form-footer ::ng-deep app-button > button {
+    width: 100% !important;
+  }
+}
+
+/* Small screens: 375px and below */
+@media (max-width: 375px) {
+  .edit-item-row {
+    gap: 6px;
+    padding: 6px 4px;
+  }
+
+  .edit-item-img-wrapper {
+    width: 32px;
+    height: 32px;
+  }
+
+  .qty-btn { width: 26px; height: 26px; }
+  .qty-input { width: 30px; height: 26px; font-size: 11px; }
+
+  .edit-item-total {
+    min-width: 48px;
+    font-size: 11px;
+  }
+
+  .edit-col-qty { width: 66px; }
+  .edit-col-total { width: 52px; }
 }
 
 /* Animations Definitions */
@@ -258,11 +517,6 @@
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-16px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin-gears {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 .animate-fade-in {

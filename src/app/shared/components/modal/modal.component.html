@@ -1,11 +1,13 @@
-@if (visible) {
-  <div class="modal-backdrop d-flex align-items-center justify-content-center" (click)="onClose()">
-    <div class="modal-card rounded-4 shadow-2xl bg-white d-flex flex-column" [class]="'modal-' + size" (click)="$event.stopPropagation()">
-      <div class="modal-header d-flex justify-content-between align-items-center p-3 border-bottom">
-        <h5 class="fw-bold m-0 text-dark">{{ title }}</h5>
-        <button type="button" (click)="onClose()" class="btn-close" aria-label="Close"></button>
+@if (visible()) {
+  <div class="modal-backdrop" (click)="onBackdropClick()" role="dialog" aria-modal="true">
+    <div class="modal-card" [class.modal-sm]="size() === 'sm'" [class.modal-md]="size() === 'md'" [class.modal-lg]="size() === 'lg'" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title() }}</h5>
+        <button type="button" class="modal-close" (click)="onClose()" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
-      <div class="modal-body p-4 flex-grow-1 overflow-auto">
+      <div class="modal-body">
         <ng-content></ng-content>
       </div>
     </div>

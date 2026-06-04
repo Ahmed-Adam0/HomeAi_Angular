@@ -47,7 +47,7 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
         quantity: item.quantity,
         price: Number(item.unitPrice),
         subtotal: Number(item.unitPrice) * item.quantity,
-        productImage: '',
+        productImage: item.productImage ?? '',
       }))
     : [];
 

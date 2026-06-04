@@ -36,6 +36,7 @@ export const API_URLS = {
     DETAILS: (id: string | number) => `Order/${id}`,
     CREATE: 'Order',
     UPDATE_STATUS: (id: string | number) => `Order/${id}/status`,
+    UPDATE_ITEMS: (id: string | number) => `Order/${id}/items`,
   },
   AI: {
     RECOMMEND: 'ai/recommend',

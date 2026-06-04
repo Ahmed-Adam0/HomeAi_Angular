@@ -32,12 +32,19 @@ export interface IOrder {
   statusHistory: IOrderStatusHistory[];
 }
 
+/**
+ * Backend Order API response for individual items.
+ * Current API returns: id, productId, productName, quantity, unitPrice.
+ * Does NOT return: productNameAr, productNameEn, or any image field.
+ * Localized names and images are available via Products/{id} endpoint.
+ */
 export interface IBackendOrderItem {
   id: number;
   productId: number;
   productName: string;
   quantity: number;
   unitPrice: number;
+  productImage?: string;
 }
 
 export interface IOrderStatusHistory {

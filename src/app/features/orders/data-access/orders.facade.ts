@@ -3,7 +3,8 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { catchError, finalize, map, Observable, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrdersApiService } from './orders-api.service';
-import { IOrder, OrderStatus } from '../interfaces';
+import { ProductCacheService } from '../../../core/services/product-cache.service';
+import { IOrder, IOrderItem, OrderStatus } from '../interfaces';
 import { StatusBadgeTone } from '../../../shared/components/status-badge/status-badge.component';
 
 export type PaymentStatus = IOrder['paymentStatus'];
@@ -26,6 +27,7 @@ export interface TimelineStepVm {
 @Injectable()
 export class OrdersFacade {
   private api = inject(OrdersApiService);
+  private productCache = inject(ProductCacheService);
   private destroyRef = inject(DestroyRef);
 
   readonly orders = signal<IOrder[] | null>(null);
@@ -34,6 +36,7 @@ export class OrdersFacade {
   readonly isLoadingList = signal(false);
   readonly isLoadingDetails = signal(false);
   readonly isCancelling = signal(false);
+  readonly isSaving = signal(false);
 
   readonly listErrorKey = signal<string | null>(null);
   readonly detailsErrorKey = signal<string | null>(null);
@@ -102,6 +105,34 @@ export class OrdersFacade {
     this.loadOrderDetails(id);
   }
 
+  /**
+   * Enriches order items with localized names and images from the Products API.
+   * Uses ProductCacheService to avoid N+1 requests and deduplicate in-flight calls.
+   */
+  private enrichItems(items: IOrderItem[]): Observable<IOrderItem[]> {
+    const productIds = items
+      .map((item) => Number(item.productId))
+      .filter((id) => !isNaN(id) && id > 0);
+
+    if (productIds.length === 0) return of(items);
+
+    return this.productCache.getProducts(productIds).pipe(
+      map((products) => {
+        const productMap = new Map(products.map((p: any) => [p.id, p]));
+        return items.map((item) => {
+          const product = productMap.get(Number(item.productId));
+          if (!product) return item;
+          return {
+            ...item,
+            productNameEn: product.nameEn || item.productName,
+            productNameAr: product.nameAr || item.productName,
+            productImage: product.mainImageUrl || item.productImage,
+          };
+        });
+      })
+    );
+  }
+
   loadOrderDetails(id: string): void {
     this.isLoadingDetails.set(true);
     this.detailsErrorKey.set(null);
@@ -109,6 +140,11 @@ export class OrdersFacade {
     this.api
       .getOrderById(id)
       .pipe(
+        switchMap((order) =>
+          this.enrichItems(order.items).pipe(
+            map((enrichedItems) => ({ ...order, items: enrichedItems }))
+          )
+        ),
         catchError(() => {
           this.detailsErrorKey.set('ORDERS_ERROR_LOAD_DETAILS');
           return of(null);
@@ -118,8 +154,10 @@ export class OrdersFacade {
       )
       .subscribe({
         next: (order) => {
-          console.log('Loaded order details:', order);
-          this.selectedOrder.set(order);
+          if (order) {
+            console.log('Loaded & enriched order:', order);
+            this.selectedOrder.set(order);
+          }
         }
       });
   }
@@ -130,18 +168,45 @@ export class OrdersFacade {
   cancelOrder(id: string): Observable<IOrder> {
     this.isCancelling.set(true);
     return this.api.updateOrderStatus(id, 'Cancelled').pipe(
-      tap((updatedOrder) => {
-        this.selectedOrder.set(updatedOrder);
-        
-        // Optimistic / reactive local cache list update
+      switchMap((updatedOrder) =>
+        this.enrichItems(updatedOrder.items).pipe(
+          map((enrichedItems) => ({ ...updatedOrder, items: enrichedItems }))
+        )
+      ),
+      tap((enrichedOrder) => {
+        this.selectedOrder.set(enrichedOrder);
         const currentOrders = this.orders();
         if (currentOrders) {
           this.orders.set(
-            currentOrders.map((o) => (o.id === id ? updatedOrder : o))
+            currentOrders.map((o) => (o.id === id ? enrichedOrder : o))
           );
         }
       }),
       finalize(() => this.isCancelling.set(false))
+    );
+  }
+
+  /**
+   * Updates items (quantities) on an existing pending order and updates local state.
+   */
+  updateOrderItems(id: string, items: { productId: number; quantity: number }[]): Observable<IOrder> {
+    this.isSaving.set(true);
+    return this.api.updateOrderItems(id, items).pipe(
+      switchMap((updatedOrder) =>
+        this.enrichItems(updatedOrder.items).pipe(
+          map((enrichedItems) => ({ ...updatedOrder, items: enrichedItems }))
+        )
+      ),
+      tap((enrichedOrder) => {
+        this.selectedOrder.set(enrichedOrder);
+        const currentOrders = this.orders();
+        if (currentOrders) {
+          this.orders.set(
+            currentOrders.map((o) => (o.id === id ? enrichedOrder : o))
+          );
+        }
+      }),
+      finalize(() => this.isSaving.set(false))
     );
   }
 

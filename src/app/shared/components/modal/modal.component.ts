@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
@@ -7,14 +7,24 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrl: './modal.component.css'
 })
 export class ModalComponent {
-  @Input() title = '';
-  @Input() visible = false;
-  @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  readonly title = input('');
+  readonly visible = input(false);
+  readonly size = input<'sm' | 'md' | 'lg'>('md');
 
-  @Output() close = new EventEmitter<void>();
+  readonly close = output<void>();
+
+  @HostListener('keydown.escape')
+  onEscape(): void {
+    if (this.visible()) {
+      this.onClose();
+    }
+  }
 
   onClose(): void {
-    this.visible = false;
     this.close.emit();
+  }
+
+  onBackdropClick(): void {
+    this.onClose();
   }
 }

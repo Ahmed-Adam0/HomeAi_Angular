@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -7,14 +7,23 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrl: './confirm-dialog.component.css'
 })
 export class ConfirmDialog {
-  @Input() title = 'Confirm Action';
-  @Input() message = 'Are you sure you want to proceed?';
-  @Input() confirmText = 'Confirm';
-  @Input() cancelText = 'Cancel';
-  @Input() visible = false;
+  readonly title = input('Confirm Action');
+  readonly message = input('Are you sure you want to proceed?');
+  readonly confirmText = input('Confirm');
+  readonly cancelText = input('Cancel');
+  readonly visible = input(false);
+  readonly variant = input<'danger' | 'warning' | 'info'>('danger');
 
-  @Output() confirm = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
+  readonly confirm = output<void>();
+  readonly cancel = output<void>();
+  readonly close = output<void>();
+
+  @HostListener('keydown.escape')
+  onEscape(): void {
+    if (this.visible()) {
+      this.onCancel();
+    }
+  }
 
   onConfirm(): void {
     this.confirm.emit();
@@ -22,5 +31,10 @@ export class ConfirmDialog {
 
   onCancel(): void {
     this.cancel.emit();
+    this.close.emit();
+  }
+
+  onBackdropClick(): void {
+    this.onCancel();
   }
 }

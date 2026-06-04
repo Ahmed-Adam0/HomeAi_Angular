@@ -8,20 +8,12 @@
           <h1 class="premium-hero-title mb-1 text-white">{{ 'ORDER_DETAILS_TITLE' | translate }}</h1>
           <p class="premium-hero-subtitle text-white-50 m-0">{{ 'ORDER_DETAILS_SUBTITLE' | translate }}</p>
         </div>
-        
-        <!-- Quick back utility -->
-        <a routerLink="/orders" class="text-decoration-none">
-          <button class="hero-back-btn d-inline-flex align-items-center gap-2 px-3.5 py-1.5 rounded-lg text-white border border-white-15 bg-white-5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="back-arrow-icon"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            <span class="small">{{ 'ORDER_DETAILS_BACK' | translate }}</span>
-          </button>
-        </a>
       </div>
     </div>
   </div>
 
   <div class="container pb-5">
-    
+
     <!-- 1. loading skeleton state -->
     @if (facade.isLoadingDetails()) {
       <div class="skeleton-container d-flex flex-column gap-4">
@@ -37,7 +29,7 @@
             <div class="skeleton-line w-15 h-32"></div>
           </div>
         </div>
-        
+
         <!-- Timeline Skeleton -->
         <div class="skeleton-card p-4 rounded-xl d-flex justify-content-between align-items-center gap-3">
           <div class="skeleton-circle"></div>
@@ -48,7 +40,7 @@
           <div class="skeleton-line flex-grow-1 h-8"></div>
           <div class="skeleton-circle"></div>
         </div>
-        
+
         <!-- Main Grid Skeleton -->
         <div class="row g-4">
           <div class="col-lg-8">
@@ -142,17 +134,18 @@
                 </app-button>
               </a>
             </div>
-            
+
             <div class="action-buttons-wrapper d-flex align-items-center gap-2">
-              <app-button
-                variant="outline"
-                size="md"
-                [disabled]="!facade.canModifyOrder()"
-                (clicked)="onEdit()"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path></svg>
-                {{ 'ORDER_DETAILS_EDIT' | translate }}
-              </app-button>
+              @if (facade.canModifyOrder()) {
+                <app-button
+                  variant="outline"
+                  size="md"
+                  (clicked)="onEdit()"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="me-2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path></svg>
+                  {{ 'ORDER_DETAILS_EDIT' | translate }}
+                </app-button>
+              }
 
               <app-button
                 class="cancel-btn-premium"
@@ -222,7 +215,7 @@
                     <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_PAYMENT_METHOD' | translate }}</span>
                     <span class="details-v text-dark fw-bold">{{ order()!.paymentMethod }}</span>
                   </div>
-                  
+
                   <div class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
                     <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_PAYMENT_STATUS' | translate }}</span>
                     <div class="details-v">
@@ -248,32 +241,81 @@
       [message]="'ORDER_DETAILS_CANCEL_CONFIRM_MSG' | translate"
       [confirmText]="'ORDER_DETAILS_CANCEL_CONFIRM_YES' | translate"
       [cancelText]="'ORDER_DETAILS_CANCEL_CONFIRM_NO' | translate"
+      variant="danger"
       (confirm)="confirmCancellation()"
       (cancel)="closeConfirmDialog()"
     />
 
+    <!-- Edit Order Modal — redesigned with product images, localized names, single scroll -->
     <app-modal
       [visible]="isEditModalVisible()"
       [title]="'ORDER_DETAILS_EDIT_MODAL_TITLE' | translate"
-      (close)="closeEditModal()"
+      (close)="onCancelEdit()"
       size="md"
     >
-      <div class="edit-modal-content text-center py-4 px-2">
-        <div class="edit-modal-icon-container mb-4">
-          <svg class="edit-gears-svg animate-pulse" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--fm-color-primary-500)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
+      @if (editForm && editItemsArray && editItemsArray.length > 0) {
+        <form [formGroup]="editForm" class="edit-order-form">
+          <!-- Column headers -->
+          <div class="edit-items-header d-flex align-items-center px-1 pb-2 text-muted small fw-semibold">
+            <span class="edit-col-product">{{ 'ORDER_DETAILS_ITEMS_TITLE' | translate }}</span>
+            <div class="d-flex align-items-center flex-shrink-0">
+              <span class="edit-col-qty text-center">{{ 'ORDER_DETAILS_EDIT_QTY' | translate }}</span>
+              <span class="edit-col-total text-end">{{ 'ORDER_DETAILS_TOTAL' | translate }}</span>
+            </div>
+          </div>
+
+          <!-- Scrollable items list -->
+          <div class="edit-items-list" formArrayName="items">
+            @for (item of editItemsArray.controls; track item.value.productId; let i = $index) {
+              <div [formGroupName]="i" class="edit-item-row">
+                <div class="edit-item-img-wrapper">
+                  <img
+                    class="edit-item-img"
+                    [src]="(item.value.productImage || 'assets/images/image-placeholder.svg')"
+                    [alt]="item.value | localized:'productName'"
+                    loading="lazy"
+                    (error)="$event.target.src = 'assets/images/image-placeholder.svg'"
+                  />
+                </div>
+                <div class="edit-item-info">
+                  <span class="edit-item-name">{{ item.value | localized:'productName' }}</span>
+                  <span class="edit-item-price">{{ (item.value.price ?? 0) | currencyFormat }}</span>
+                </div>
+                <div class="edit-item-qty">
+                  <button type="button" class="qty-btn qty-btn-minus" (click)="adjustQuantity(i, -1)" [disabled]="(item.value.quantity ?? 0) <= 1" aria-label="Decrease quantity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                  <input type="number" formControlName="quantity" class="qty-input" min="1" max="99" />
+                  <button type="button" class="qty-btn qty-btn-plus" (click)="adjustQuantity(i, 1)" [disabled]="(item.value.quantity ?? 0) >= 99" aria-label="Increase quantity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                </div>
+                <div class="edit-item-total">{{ ((item.value.price ?? 0) * (item.value.quantity ?? 0)) | currencyFormat }}</div>
+              </div>
+            }
+          </div>
+
+          <!-- Sticky footer actions -->
+          <div class="edit-form-footer">
+            <app-button variant="secondary" size="md" (clicked)="onCancelEdit()">
+              {{ 'ORDER_DETAILS_EDIT_CANCEL' | translate }}
+            </app-button>
+            <app-button
+              variant="primary"
+              size="md"
+              [disabled]="!editForm.valid || facade.isSaving()"
+              [isLoading]="facade.isSaving()"
+              (clicked)="onSaveEdit()"
+            >
+              {{ 'ORDER_DETAILS_EDIT_SAVE' | translate }}
+            </app-button>
+          </div>
+        </form>
+      } @else {
+        <div class="edit-empty-state text-center py-4">
+          <p class="text-muted mb-0">{{ 'ORDER_DETAILS_EDIT_EMPTY' | translate }}</p>
         </div>
-        <h4 class="fw-bold mb-3 text-dark text-gradient-gold">{{ 'ORDER_DETAILS_EDIT_MODAL_TITLE' | translate }}</h4>
-        <p class="text-secondary leading-relaxed mb-4 fs-6">{{ 'ORDER_DETAILS_EDIT_MODAL_MSG' | translate }}</p>
-        <app-button
-          [label]="'ORDER_DETAILS_EDIT_MODAL_CLOSE' | translate"
-          variant="primary"
-          size="md"
-          (clicked)="closeEditModal()"
-        />
-      </div>
+      }
     </app-modal>
   </div>
 </div>

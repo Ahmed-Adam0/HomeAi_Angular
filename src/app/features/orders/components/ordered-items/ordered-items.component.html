@@ -7,9 +7,11 @@
   <div class="details-items">
     @for (item of items(); track item.productId) {
       <div class="details-item-row">
-        <img class="details-item-img" [src]="item.image || item.productImage" [alt]="item.name || item.productName" loading="lazy" />
+        <div class="details-item-img-wrapper">
+          <img class="details-item-img" [src]="item.productImage || item.image || 'assets/images/image-placeholder.svg'" [alt]="item | localized:'productName'" loading="lazy" (error)="$event.target.src = 'assets/images/image-placeholder.svg'" />
+        </div>
         <div class="min-w-0 flex-grow-1">
-          <div class="details-item-name">{{ item.name || item.productName }}</div>
+          <div class="details-item-name">{{ item | localized:'productName' }}</div>
           <div class="text-muted details-item-meta">
             <span>{{ 'ORDER_DETAILS_QTY' | translate }}: {{ item.quantity }}</span>
             @if (item.price) {
