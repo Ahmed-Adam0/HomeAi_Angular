@@ -7,6 +7,7 @@ import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { phoneValidator, passwordMatchValidator } from '../../../../shared/validators';
 import { IVendorRegisterRequest } from '../../interfaces/vendor-auth-request';
+import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 
 type VendorAddressForm = FormGroup<{
   city: FormControl<string>;
@@ -33,7 +34,7 @@ type VendorRegisterForm = FormGroup<{
 @Component({
   selector: 'app-vendor-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AlertComponent],
   templateUrl: './vendor-register.component.html',
   styleUrls: ['./vendor-register.component.css']
 })

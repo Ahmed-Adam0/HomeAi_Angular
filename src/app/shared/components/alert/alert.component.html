@@ -1,38 +1,54 @@
 @if (visible && message) {
-  <div class="alert-premium shadow-sm border-0 d-flex align-items-center p-3 mb-2.5 rounded-3" [class]="'alert-' + type">
-    <!-- Left Icon Wrapper -->
-    <div class="alert-icon-wrapper rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 position-relative me-3">
+  <div
+    class="alert-root"
+    [class.alert-inline]="inline"
+    [class.alert-overlay]="!inline"
+    [class.alert-success]="type === 'success'"
+    [class.alert-danger]="type === 'danger'"
+    [class.alert-warning]="type === 'warning'"
+    [class.alert-info]="type === 'info'"
+    role="alert"
+    aria-live="polite"
+  >
+    <div class="alert-icon-wrapper">
       @switch (type) {
         @case ('success') {
-          <i class="bi bi-check-lg fs-6"></i>
-          @if (message.toLowerCase().includes('favorite') || message.includes('مفضل')) {
-            <i class="bi bi-heart-fill mini-heart-badge"></i>
-          }
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="alert-svg">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="16 8 10 16 7 13"/>
+          </svg>
         }
-        @case ('danger') { <i class="bi bi-x-circle fs-6"></i> }
-        @case ('warning') { <i class="bi bi-exclamation-triangle fs-6"></i> }
-        @case ('info') { <i class="bi bi-info-circle fs-6"></i> }
+        @case ('danger') {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="alert-svg">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M15 9l-6 6M9 9l6 6"/>
+          </svg>
+        }
+        @case ('warning') {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="alert-svg">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        }
+        @case ('info') {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="alert-svg">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        }
       }
     </div>
 
-    <!-- Middle Content Wrapper -->
-    <div class="alert-content-wrapper d-flex align-items-center flex-wrap gap-2.5 flex-grow-1 overflow-hidden">
-      <span class="alert-text fw-medium" [title]="message">{{ message }}</span>
-      
-      <!-- Subtle, lightweight inline CTA for Favorites -->
-      <a
-        *ngIf="type === 'success' && (message.toLowerCase().includes('favorite') || message.includes('مفضل'))"
-        routerLink="/favorites"
-        class="alert-cta-btn font-xxxxs fw-semibold text-decoration-none text-uppercase py-1 px-2.5 rounded-pill transition-all"
-      >
-        {{ message.includes('مفضل') ? 'عرض' : 'View' }}
-      </a>
-    </div>
+    <span class="alert-text">{{ message }}</span>
 
-    <!-- Right Close Button -->
     @if (dismissible) {
-      <button type="button" (click)="onClose()" class="btn-close-premium border-0 bg-transparent rounded-circle d-flex align-items-center justify-content-center ms-3 flex-shrink-0" aria-label="Close">
-        <i class="bi bi-x fs-5"></i>
+      <button type="button" (click)="onClose()" class="alert-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="close-svg">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
       </button>
     }
   </div>

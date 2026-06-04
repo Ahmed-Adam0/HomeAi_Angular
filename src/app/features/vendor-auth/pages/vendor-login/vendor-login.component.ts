@@ -6,11 +6,12 @@ import { VendorAuthService } from '../../services/vendor-auth.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-vendor-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AlertComponent],
   templateUrl: './vendor-login.component.html',
   styleUrls: ['./vendor-login.component.css']
 })

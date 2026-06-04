@@ -1,12 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-import { RouterLink } from '@angular/router';
-import { NgIf } from '@angular/common';
-
 @Component({
   selector: 'app-alert',
   standalone: true,
-  imports: [NgIf, RouterLink],
+  imports: [],
   templateUrl: './alert.component.html',
   styleUrl: './alert.component.css'
 })
@@ -14,6 +11,7 @@ export class AlertComponent {
   @Input() type: 'success' | 'danger' | 'warning' | 'info' = 'info';
   @Input() message = '';
   @Input() dismissible = true;
+  @Input() inline = false;
 
   @Output() close = new EventEmitter<void>();
 
