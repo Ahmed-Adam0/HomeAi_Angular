@@ -12,11 +12,13 @@ import { LoadingSpinner } from '../loading-spinner/loading-spinner.component';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
 import { ReviewsService, IRatingStats } from '../../../features/products/services/reviews.service';
 import { UiState } from '../../../core/state/ui.state';
+import { localized } from '../../utils/localized';
+import { LocalizedPipe } from '../../pipes/localized.pipe';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [NgIf, RouterLink, CurrencyFormatPipe, TranslatePipe, LoadingSpinner],
+  imports: [NgIf, RouterLink, CurrencyFormatPipe, TranslatePipe, LoadingSpinner, LocalizedPipe],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css',
 })
@@ -91,7 +93,7 @@ export class ProductCard implements OnInit {
           
           // Trigger Success Toast
           const isAr = this.translationService.currentLang() === 'ar';
-          const prodName = isAr ? (this.product.nameAr || this.product.nameEn) : (this.product.nameEn || this.product.nameAr);
+          const prodName = localized(this.product, 'name', this.translationService.currentLang());
           const msg = isAr ? `تم إضافة "${prodName}" إلى المفضلة` : `"${prodName}" added to favorites`;
           this.uiState.showAlert('success', msg);
         },

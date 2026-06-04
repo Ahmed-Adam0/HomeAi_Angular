@@ -23,6 +23,8 @@ import { IProduct } from '../../../products/interfaces/iproduct';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
+import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
+import { localized } from '../../../../shared/utils/localized';
 
 @Component({
   selector: 'app-vendor-dashboard',
@@ -33,6 +35,7 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pip
     FormsModule,
     ReportReviewDialog,
     CurrencyFormatPipe,
+    LocalizedPipe,
   ],
   templateUrl: './vendor-dashboard.component.html',
   styleUrl: './vendor-dashboard.component.css',

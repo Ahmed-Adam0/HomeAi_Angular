@@ -141,7 +141,7 @@
                   <img
                     [src]="fav.productImage"
                     (error)="handleImgError($event)"
-                    [alt]="translationService.currentLang() === 'ar' ? (fav.productNameAr || fav.productName) : (fav.productNameEn || fav.productName)"
+                    [alt]="fav | localized:'productName'"
                     class="fav-card-img w-100 h-100 object-fit-cover"
                     loading="lazy"
                   />
@@ -153,7 +153,7 @@
                     {{ translationService.currentLang() === 'ar' ? 'قطعة فاخرة' : 'Premium Piece' }}
                   </p>
                   <h3 class="fav-card-title font-xs fw-bold text-dark mb-2 lh-sm">
-                    {{ translationService.currentLang() === 'ar' ? (fav.productNameAr || fav.productName) : (fav.productNameEn || fav.productName) }}
+                    {{ fav | localized:'productName' }}
                   </h3>
 
                   <!-- Price Row -->
@@ -205,18 +205,18 @@
                 <img
                   [src]="sug.mainImageUrl"
                   (error)="handleImgError($event)"
-                  [alt]="translationService.currentLang() === 'ar' ? sug.nameAr : sug.nameEn"
+                  [alt]="sug | localized:'name'"
                   class="sug-img w-100 h-100 object-fit-cover"
                   loading="lazy"
                 />
               </div>
               <div class="overflow-hidden">
                 <p class="fw-bold text-dark font-xs mb-0 text-truncate">
-                  {{ translationService.currentLang() === 'ar' ? sug.nameAr : sug.nameEn }}
+                  {{ sug | localized:'name' }}
                 </p>
                 <p class="sug-price fw-black mb-0">{{ sug.price | currencyFormat }}</p>
                 <p class="font-xxs text-secondary mb-0 text-truncate">
-                  {{ translationService.currentLang() === 'ar' ? sug.categoryNameAr : sug.categoryNameEn }}
+                  {{ sug | localized:'categoryName' }}
                 </p>
               </div>
             </div>

@@ -42,7 +42,7 @@
                 {{ translationService.currentLang() === 'ar' ? 'اختر سبب الإبلاغ...' : 'Select a moderation reason...' }}
               </option>
               <option *ngFor="let reason of reasons" [value]="reason.value">
-                {{ translationService.currentLang() === 'ar' ? reason.labelAr : reason.labelEn }}
+                {{ reason | localized:'label' }}
               </option>
             </select>
           </div>

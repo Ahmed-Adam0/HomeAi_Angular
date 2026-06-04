@@ -16,7 +16,7 @@
               </a>
             </li>
             <li class="breadcrumb-item active text-dark fw-bold" aria-current="page" *ngIf="product()">
-              {{ translationService.currentLang() === 'ar' ? product()?.nameAr : product()?.nameEn }}
+              {{ product() | localized:'name' }}
             </li>
           </ol>
         </nav>
@@ -48,7 +48,7 @@
             <!-- Main image -->
             <img
               [src]="activeImage()"
-              [alt]="translationService.currentLang() === 'ar' ? product()?.nameAr : product()?.nameEn"
+              [alt]="product() | localized:'name'"
               class="active-img w-100 h-100 object-fit-cover transition-all"
             />
 
@@ -92,7 +92,7 @@
               [class.active-thumb]="activeImage() === img"
               (click)="setActiveImage(img)"
             >
-              <img [src]="img" class="thumbnail-img w-100 h-100 object-fit-cover" [alt]="product()?.nameEn" />
+              <img [src]="img" class="thumbnail-img w-100 h-100 object-fit-cover" [alt]="product() | localized:'name'" />
             </div>
           </div>
         </div>
@@ -104,16 +104,16 @@
           <!-- Category and Brand info -->
           <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="text-uppercase fw-extrabold text-secondary letter-spacing-wide font-xs text-brand-meta">
-              {{ translationService.currentLang() === 'ar' ? product()?.workshopNameAr : product()?.workshopNameEn }}
+              {{ product() | localized:'workshopName' }}
             </span>
             <span class="badge bg-light text-dark font-xs px-3 py-1 rounded-pill border border-light">
-              {{ translationService.currentLang() === 'ar' ? product()?.categoryNameAr : product()?.categoryNameEn }}
+              {{ product() | localized:'categoryName' }}
             </span>
           </div>
 
           <!-- Product Title -->
           <h2 class="display-6 fw-extrabold text-dark tracking-tight mb-2 product-main-title">
-            {{ translationService.currentLang() === 'ar' ? product()?.nameAr : product()?.nameEn }}
+            {{ product() | localized:'name' }}
           </h2>
 
           <!-- Rating review summary -->
@@ -148,7 +148,7 @@
 
           <!-- Subtitle Short Description -->
           <p class="product-description text-secondary fs-6 mb-4 lh-lg">
-            {{ translationService.currentLang() === 'ar' ? product()?.descriptionAr : product()?.descriptionEn }}
+            {{ product() | localized:'description' }}
           </p>
 
           <!-- Integrated Spatial AI Widget Card -->
@@ -252,7 +252,7 @@
         <div *ngIf="activeTab() === 'description'" class="tab-pane-fade">
           <h4 class="fw-bold text-dark fs-5 mb-3">{{ translationService.currentLang() === 'ar' ? 'عن القطعة الفنية' : 'About the Artwork Piece' }}</h4>
           <p class="text-secondary fs-6 lh-lg mb-4">
-            {{ translationService.currentLang() === 'ar' ? product()?.descriptionAr : product()?.descriptionEn }}
+            {{ product() | localized:'description' }}
           </p>
           <div class="key-features-list">
             <h5 class="fw-extrabold text-dark fs-6 mb-3 text-uppercase tracking-wider">
@@ -283,10 +283,10 @@
                 <tbody>
                   <tr *ngFor="let spec of specifications()">
                     <td class="fw-bold text-dark font-xs w-25 bg-light-ivory py-3 px-4">
-                      {{ translationService.currentLang() === 'ar' ? spec.labelAr : spec.labelEn }}
+                      {{ spec | localized:'label' }}
                     </td>
                     <td class="text-secondary font-xs py-3 px-4">
-                      {{ translationService.currentLang() === 'ar' ? spec.valueAr : spec.valueEn }}
+                      {{ spec | localized:'value' }}
                     </td>
                   </tr>
                 </tbody>

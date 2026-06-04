@@ -7,11 +7,12 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
+import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, RouterModule, Button, EmptyStateComponent, LoadingSpinner, CurrencyFormatPipe],
+  imports: [CommonModule, RouterModule, Button, EmptyStateComponent, LoadingSpinner, CurrencyFormatPipe, LocalizedPipe],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
 })

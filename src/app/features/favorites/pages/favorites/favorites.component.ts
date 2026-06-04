@@ -21,6 +21,7 @@ import { IFavoriteItem } from '../../interfaces/ifavorite-item';
 import { IProduct } from '../../../products/interfaces/iproduct';
 import { IProductFilter } from '../../../products/interfaces/iproduct-filter';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
+import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { LOCAL_STORAGE_KEYS } from '../../../../core/constants/localstorage-keys';
 
 @Component({
@@ -31,6 +32,7 @@ import { LOCAL_STORAGE_KEYS } from '../../../../core/constants/localstorage-keys
     NgFor,
     RouterLink,
     CurrencyFormatPipe,
+    LocalizedPipe,
   ],
   templateUrl: './favorites.component.html',
   styleUrl: './favorites.component.css',

@@ -6,11 +6,13 @@ import { VendorReviewsService, IVendorReview } from '../../services/vendor-revie
 import { ReportReviewDialog } from '../../components/report-review-dialog/report-review-dialog.component';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
+import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
+import { localized } from '../../../../shared/utils/localized';
 
 @Component({
   selector: 'app-vendor-reviews',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, ReportReviewDialog],
+  imports: [CommonModule, RouterLink, FormsModule, ReportReviewDialog, LocalizedPipe],
   templateUrl: './vendor-reviews.component.html',
   styleUrl: './vendor-reviews.component.css'
 })

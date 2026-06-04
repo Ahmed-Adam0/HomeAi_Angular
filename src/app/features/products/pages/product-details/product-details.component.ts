@@ -18,6 +18,7 @@ import { LoadingSpinner } from '../../../../shared/components/loading-spinner/lo
 import { ProductCard } from '../../../../shared/components/product-card/product-card.component';
 import { LOCAL_STORAGE_KEYS } from '../../../../core/constants/localstorage-keys';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { UiState } from '../../../../core/state/ui.state';
 
 interface ISpecification {
@@ -40,7 +41,8 @@ interface ISpecification {
     LoadingSpinner,
     ProductCard,
     FormsModule,
-    TranslatePipe
+    TranslatePipe,
+    LocalizedPipe
   ],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css',

@@ -18,6 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs/operators';
 import { TranslationService } from '../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { LocalizedPipe } from '../../../shared/pipes/localized.pipe';
 import {
   LanguageOption,
   NavLink,
@@ -32,7 +33,7 @@ import { IFavoriteItem } from '../../../features/favorites/interfaces/ifavorite-
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TranslatePipe],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslatePipe, LocalizedPipe],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })

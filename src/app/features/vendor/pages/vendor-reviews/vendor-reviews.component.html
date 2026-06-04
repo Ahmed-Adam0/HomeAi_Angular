@@ -135,7 +135,7 @@
                 <p class="product-tag font-xxs text-muted mb-2">
                   <i class="bi bi-tag-fill me-1"></i>
                   {{ translationService.currentLang() === 'ar' ? 'على منتج: ' : 'On Product: ' }}
-                  <span class="fw-bold text-dark">{{ translationService.currentLang() === 'ar' ? (review.productNameAr || review.productName) : (review.productNameEn || review.productName) }}</span>
+                  <span class="fw-bold text-dark">{{ review | localized:'productName' }}</span>
                 </p>
 
                 <!-- Comment text -->

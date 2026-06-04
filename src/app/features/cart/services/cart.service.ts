@@ -9,6 +9,7 @@ import { TranslationService } from '../../../shared/i18n/translation.service';
 import { CartApiService } from './cart-api.service';
 import { AuthService } from '../../auth/services/auth.service';
 import { unwrap } from '../../../core/utils/api-utils';
+import { localized } from '../../../shared/utils/localized';
 import { firstValueFrom, filter, from, Observable, switchMap, tap, distinctUntilChanged } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 
@@ -371,7 +372,7 @@ export class CartService {
       setTimeout(async () => {
         try {
           const isAr = this.translationService.currentLang() === 'ar';
-          const productTitle = isAr ? product.nameAr : product.nameEn;
+          const productTitle = localized(product, 'name', this.translationService.currentLang());
 
           if (isNaN(quantity) || quantity <= 0) {
             const errorMsg = isAr
@@ -463,7 +464,7 @@ export class CartService {
           }
         } catch (error) {
           const isAr = this.translationService.currentLang() === 'ar';
-          const productTitle = isAr ? product.nameAr : product.nameEn;
+          const productTitle = localized(product, 'name', this.translationService.currentLang());
           const errorMsg = isAr
             ? `فشلت إضافة ${productTitle} إلى سلة التسوق. يرجى المحاولة مرة أخرى.`
             : `Failed to add ${productTitle} to your cart. Please try again.`;

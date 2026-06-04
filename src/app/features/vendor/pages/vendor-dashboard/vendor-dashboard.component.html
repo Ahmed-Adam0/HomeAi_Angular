@@ -440,7 +440,7 @@
                   <p class="product-tag font-xxs text-muted mb-2">
                     <i class="bi bi-tag-fill me-1"></i>
                     {{ translationService.currentLang() === 'ar' ? 'على منتج: ' : 'On Product: ' }}
-                    <span class="fw-bold text-dark">{{ translationService.currentLang() === 'ar' ? (review.productNameAr || review.productName) : (review.productNameEn || review.productName) }}</span>
+                    <span class="fw-bold text-dark">                    {{ review | localized:'productName' }}</span>
                   </p>
 
                   <p class="review-comment font-xs text-secondary mt-2 mb-0" style="line-height: 1.5;">

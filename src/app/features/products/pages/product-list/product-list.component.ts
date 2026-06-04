@@ -16,6 +16,7 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 
 @Component({
   selector: 'app-product-list',
@@ -29,7 +30,8 @@ import { PaginationComponent } from '../../../../shared/components/pagination/pa
     SkeletonLoader,
     EmptyStateComponent,
     TranslatePipe,
-    PaginationComponent
+    PaginationComponent,
+    LocalizedPipe
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',

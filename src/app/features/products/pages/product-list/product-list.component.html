@@ -98,7 +98,7 @@
                   (change)="applyFilters()"
                 />
                 <label class="form-check-label font-xs text-dark d-flex justify-content-between w-100" [for]="'cat-' + cat.id">
-                  <span>{{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}</span>
+                  <span>{{ cat | localized:'name' }}</span>
                 </label>
               </div>
             </div>

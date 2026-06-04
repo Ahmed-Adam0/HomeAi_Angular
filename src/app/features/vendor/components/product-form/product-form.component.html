@@ -116,7 +116,7 @@
               {{ translationService.currentLang() === 'ar' ? 'اختر قسم المنتج' : 'Select a category' }}
             </option>
             <option *ngFor="let cat of categories()" [value]="cat.id">
-              {{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}
+              {{ cat | localized:'name' }}
             </option>
           </select>
           <div class="invalid-feedback fs-8 px-2">

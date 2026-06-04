@@ -5,6 +5,7 @@ import { VendorProductService } from '../../services/vendor-product.service';
 import { ProductCard } from '../../../../shared/components/product-card/product-card.component';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
+import { localized } from '../../../../shared/utils/localized';
 
 @Component({
   selector: 'app-vendor-products',

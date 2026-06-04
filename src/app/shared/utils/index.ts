@@ -1,0 +1,1 @@
+export { localized } from './localized';

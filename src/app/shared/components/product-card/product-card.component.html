@@ -21,7 +21,7 @@
   <div class="image-wrapper overflow-hidden bg-light position-relative" [routerLink]="mode === 'customer' ? ['/products', product.id] : ['/vendor/products/edit', product.id]">
     <img
       [src]="product.mainImageUrl"
-      [alt]="translationService.currentLang() === 'ar' ? product.nameAr : product.nameEn"
+      [alt]="product | localized:'name'"
       class="product-img w-100 h-100 object-fit-cover transition-all duration-500"
       loading="lazy"
     />
@@ -39,15 +39,15 @@
     <div>
       <div class="d-flex justify-content-between align-items-center mb-1">
         <span class="product-brand text-uppercase fw-semibold text-secondary fs-7 letter-spacing-wide text-truncate" style="max-width: 60%;">
-          {{ translationService.currentLang() === 'ar' ? product.workshopNameAr : product.workshopNameEn }}
+          {{ product | localized:'workshopName' }}
         </span>
         <span class="product-category text-muted fs-7 text-truncate" style="max-width: 35%;">
-          {{ translationService.currentLang() === 'ar' ? product.categoryNameAr : product.categoryNameEn }}
+          {{ product | localized:'categoryName' }}
         </span>
       </div>
 
       <h5 class="product-title fw-bold text-dark mb-2 transition-all fs-6" [routerLink]="mode === 'customer' ? ['/products', product.id] : ['/vendor/products/edit', product.id]">
-        {{ translationService.currentLang() === 'ar' ? product.nameAr : product.nameEn }}
+        {{ product | localized:'name' }}
       </h5>
 
       <!-- Rating/New Badge Section -->

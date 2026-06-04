@@ -76,7 +76,7 @@
              class="nav-link-custom d-flex align-items-center gap-1"
              [class.active]="activeMainLink() === link.labelEn"
              (click)="selectMainLink(link.labelEn)">
-            <span>{{ translationService.currentLang() === 'ar' ? link.labelAr : link.labelEn }}</span>
+            <span>{{ link | localized:'label' }}</span>
           </a>
         </div>
       }

@@ -1,12 +1,13 @@
 import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
 @Component({
   selector: 'app-report-review-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, LocalizedPipe],
   templateUrl: './report-review-dialog.component.html',
   styleUrl: './report-review-dialog.component.css'
 })

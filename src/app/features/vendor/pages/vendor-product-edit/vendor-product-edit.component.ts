@@ -9,6 +9,7 @@ import { IProduct, IProductImage } from '../../../products/interfaces/iproduct';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
 import { AuthService } from '../../../auth/services/auth.service';
+import { localized } from '../../../../shared/utils/localized';
 
 @Component({
   selector: 'app-vendor-product-edit',

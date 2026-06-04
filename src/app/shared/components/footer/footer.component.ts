@@ -24,6 +24,7 @@ import {
 } from '../../interfaces/footer.interfaces';
 import { TranslationService } from '../../i18n/translation.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { localized } from '../../../shared/utils/localized';
 
 @Component({
   selector: 'app-footer',
@@ -51,10 +52,6 @@ export class Footer implements OnInit {
 
   readonly copyrightYear = computed(() => new Date().getFullYear());
 
-  readonly isArabic = computed(
-    () => this.translationService.currentLang() === 'ar'
-  );
-
   ngOnInit(): void {
     this.loadCategories();
   }
@@ -72,29 +69,27 @@ export class Footer implements OnInit {
   }
 
   labelForCategory(category: Category): string {
-    return this.isArabic() ? category.nameAr : category.nameEn;
+    return localized(category, 'name', this.translationService.currentLang());
   }
 
   labelForLink(link: { labelEn: string; labelAr: string }): string {
-    return this.isArabic() ? link.labelAr : link.labelEn;
+    return localized(link, 'label', this.translationService.currentLang());
   }
 
   columnTitle(column: FooterColumn): string {
-    return this.isArabic() ? column.titleAr : column.titleEn;
+    return localized(column, 'title', this.translationService.currentLang());
   }
 
   socialLabel(social: SocialLink): string {
-    return this.isArabic() ? social.labelAr : social.labelEn;
+    return localized(social, 'label', this.translationService.currentLang());
   }
 
   taglineLine1(): string {
-    const t = this.tagline();
-    return this.isArabic() ? t.line1Ar : t.line1En;
+    return localized(this.tagline(), 'line1', this.translationService.currentLang());
   }
 
   taglineLine2(): string {
-    const t = this.tagline();
-    return this.isArabic() ? t.line2Ar : t.line2En;
+    return localized(this.tagline(), 'line2', this.translationService.currentLang());
   }
 
   scrollToTop(): void {

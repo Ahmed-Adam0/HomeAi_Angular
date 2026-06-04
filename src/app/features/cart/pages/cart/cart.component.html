@@ -19,7 +19,7 @@
           <div class="item-details">
             <div class="item-header">
               <h2>
-                {{ translationService.currentLang() === 'ar' ? item.productNameAr || item.productName : item.productNameEn || item.productName }}
+                {{ item | localized:'productName' }}
               </h2>
               <button
                 type="button"

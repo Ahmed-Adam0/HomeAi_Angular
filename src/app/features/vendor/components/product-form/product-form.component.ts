@@ -5,11 +5,12 @@ import { IProduct } from '../../../products/interfaces/iproduct';
 import { ICategory } from '../../../../features/categories/interfaces/icategory';
 import { CategoryService } from '../../../../features/categories/services/category.service';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LocalizedPipe],
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.css'
 })
