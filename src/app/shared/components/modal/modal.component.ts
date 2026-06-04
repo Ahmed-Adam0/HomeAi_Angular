@@ -1,4 +1,4 @@
-import { Component, input, output, HostListener } from '@angular/core';
+import { Component, input, output, HostListener, effect } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
@@ -12,6 +12,21 @@ export class ModalComponent {
   readonly size = input<'sm' | 'md' | 'lg'>('md');
 
   readonly close = output<void>();
+
+  constructor() {
+    effect((onCleanup) => {
+      const isVisible = this.visible();
+      const prev = document.body.style.overflow;
+      if (isVisible) {
+        document.body.style.overflow = 'hidden';
+      }
+      onCleanup(() => {
+        if (isVisible) {
+          document.body.style.overflow = prev;
+        }
+      });
+    });
+  }
 
   @HostListener('keydown.escape')
   onEscape(): void {
