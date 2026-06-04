@@ -30,12 +30,10 @@
     <!-- 1. Skeleton Loaders while APIs load -->
     <div *ngIf="isLoading()" class="row g-5">
       <div class="col-lg-6">
-        <div class="active-image-container rounded-4 bg-light border border-light mb-3" style="aspect-ratio: 1/1;">
-          <app-skeleton-loader type="card" [count]="1"></app-skeleton-loader>
-        </div>
+        <app-skeleton-loader type="product-details-gallery" [count]="1"></app-skeleton-loader>
       </div>
-      <div class="col-lg-6 d-flex flex-column gap-3">
-        <app-skeleton-loader type="list" [count]="5"></app-skeleton-loader>
+      <div class="col-lg-6">
+        <app-skeleton-loader type="product-details-info" [count]="1"></app-skeleton-loader>
       </div>
     </div>
 
@@ -47,7 +45,7 @@
           <div class="active-image-container rounded-4 overflow-hidden shadow-md bg-light border border-light position-relative mb-3">
             <!-- Main image -->
             <img
-              [src]="activeImage()"
+              [appLazyImage]="activeImage()"
               [alt]="product() | localized:'name'"
               class="active-img w-100 h-100 object-fit-cover transition-all"
             />
@@ -92,7 +90,7 @@
               [class.active-thumb]="activeImage() === img"
               (click)="setActiveImage(img)"
             >
-              <img [src]="img" class="thumbnail-img w-100 h-100 object-fit-cover" [alt]="product() | localized:'name'" />
+              <img [appLazyImage]="img" class="thumbnail-img w-100 h-100 object-fit-cover" [alt]="product() | localized:'name'" />
             </div>
           </div>
         </div>

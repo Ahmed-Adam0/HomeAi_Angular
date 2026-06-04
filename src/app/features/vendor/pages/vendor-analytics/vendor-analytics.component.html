@@ -91,21 +91,10 @@
   @if (loading() && !data()) {
     <div class="vendor-analytics__loading">
       <div class="vendor-analytics__skeleton-grid">
-        @for (slot of skeletonSlots; track slot) {
-          <div class="vendor-analytics__skeleton-card">
-            <div class="vendor-analytics__skeleton-icon"></div>
-            <div class="vendor-analytics__skeleton-lines">
-              <div class="vendor-analytics__skeleton-line--short"></div>
-              <div class="vendor-analytics__skeleton-line--title"></div>
-              <div class="vendor-analytics__skeleton-line--sub"></div>
-            </div>
-          </div>
-        }
+        <app-skeleton-loader type="kpi-card" [count]="4"></app-skeleton-loader>
       </div>
       <div class="vendor-analytics__skeleton-charts">
-        <div class="vendor-analytics__skeleton-chart-card"></div>
-        <div class="vendor-analytics__skeleton-chart-card"></div>
-        <div class="vendor-analytics__skeleton-chart-card vendor-analytics__skeleton-chart-card--full"></div>
+        <app-skeleton-loader type="chart-container" [count]="2"></app-skeleton-loader>
       </div>
     </div>
   }

@@ -6,8 +6,8 @@
 
   <div class="container pb-5">
     @if (facade.isLoadingList()) {
-      <div class="orders-loading">
-        <app-loading-spinner size="lg" [overlay]="false" [message]="'ORDERS_LOADING' | translate" />
+      <div class="orders-loading card-premium p-0" style="border-radius: 12px; overflow: hidden;">
+        <app-skeleton-loader type="order-card" [count]="3"></app-skeleton-loader>
       </div>
     } @else {
       @if (facade.orderListVm().length === 0) {

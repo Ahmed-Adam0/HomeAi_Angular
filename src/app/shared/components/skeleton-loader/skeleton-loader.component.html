@@ -1,33 +1,378 @@
 <div class="skeleton-wrapper w-100">
   @for (item of arrayFromCount; track $index) {
     @switch (type) {
+      
+      <!-- 1. GENERAL SKELETON CARD (Product Listing Card) -->
       @case ('card') {
-        <div class="skeleton-card shadow-sm mb-4 rounded border-0 p-3">
-          <div class="skeleton-img skeleton-pulse rounded mb-3"></div>
-          <div class="skeleton-title skeleton-pulse w-75 mb-2"></div>
-          <div class="skeleton-text skeleton-pulse w-50 mb-3"></div>
-          <div class="skeleton-button skeleton-pulse w-100"></div>
-        </div>
-      }
-      @case ('text') {
-        <div class="skeleton-text-block mb-3">
-          <div class="skeleton-title skeleton-pulse w-25 mb-2"></div>
-          <div class="skeleton-text skeleton-pulse w-100 mb-1"></div>
-          <div class="skeleton-text skeleton-pulse w-75"></div>
-        </div>
-      }
-      @case ('circle') {
-        <div class="skeleton-circle skeleton-pulse rounded-circle mb-3"></div>
-      }
-      @case ('list') {
-        <div class="skeleton-list-item d-flex align-items-center mb-3">
-          <div class="skeleton-avatar skeleton-pulse rounded-circle me-3"></div>
-          <div class="flex-grow-1">
-            <div class="skeleton-title skeleton-pulse w-50 mb-2"></div>
-            <div class="skeleton-text skeleton-pulse w-25"></div>
+        <div class="skeleton-card card card-premium h-100 overflow-hidden border-0 shadow-sm position-relative p-0 fm-skeleton-card">
+          <!-- Favorite button skeleton -->
+          <div class="position-absolute top-0 end-0 m-3 rounded-circle fm-skeleton" style="width: 36px; height: 36px; z-index: 3;"></div>
+          <!-- Image skeleton -->
+          <div class="fm-skeleton-image fm-skeleton rounded-0" style="height: 240px; border-radius: 0;"></div>
+          <!-- Card details -->
+          <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="fm-skeleton" style="height: 12px; width: 45%; border-radius: 4px;"></div>
+                <div class="fm-skeleton" style="height: 12px; width: 25%; border-radius: 4px;"></div>
+              </div>
+              <div class="fm-skeleton mb-2" style="height: 18px; width: 85%; border-radius: 4px;"></div>
+              <div class="fm-skeleton mb-3" style="height: 14px; width: 60%; border-radius: 4px;"></div>
+            </div>
+            <!-- Pricing and Action -->
+            <div class="d-flex align-items-center justify-content-between pt-3 border-top border-light mt-auto">
+              <div class="fm-skeleton" style="width: 80px; height: 22px; border-radius: 4px;"></div>
+              <div class="fm-skeleton rounded-circle" style="width: 36px; height: 36px;"></div>
+            </div>
           </div>
         </div>
       }
+
+      <!-- 2. BASIC TEXT BLOCK -->
+      @case ('text') {
+        <div class="skeleton-text-block mb-3">
+          <div class="fm-skeleton mb-2" style="height: 18px; width: 30%; border-radius: 4px;"></div>
+          <div class="fm-skeleton mb-2.5 long" style="height: 12px; width: 100%; border-radius: 4px;"></div>
+          <div class="fm-skeleton mb-2.5 medium" style="height: 12px; width: 85%; border-radius: 4px;"></div>
+          <div class="fm-skeleton short" style="height: 12px; width: 50%; border-radius: 4px;"></div>
+        </div>
+      }
+
+      <!-- 3. BASIC CIRCLE -->
+      @case ('circle') {
+        <div class="skeleton-circle fm-skeleton rounded-circle mb-3" style="width: 80px; height: 80px;"></div>
+      }
+
+      <!-- 4. BASIC AVATAR LIST ITEM -->
+      @case ('list') {
+        <div class="skeleton-list-item d-flex align-items-center mb-3 p-2">
+          <div class="skeleton-avatar fm-skeleton rounded-circle me-3" style="width: 48px; height: 48px;"></div>
+          <div class="flex-grow-1">
+            <div class="fm-skeleton mb-2" style="height: 16px; width: 40%; border-radius: 4px;"></div>
+            <div class="fm-skeleton" style="height: 12px; width: 20%; border-radius: 4px;"></div>
+          </div>
+        </div>
+      }
+
+      <!-- 5. PRODUCT DETAILS GALLERY SKELETON -->
+      @case ('product-details-gallery') {
+        <div class="product-gallery-skeleton">
+          <!-- Active big Image space -->
+          <div class="fm-skeleton active-image-placeholder rounded-4 mb-3" style="width: 100%; aspect-ratio: 1.1; border-radius: 16px;"></div>
+          <!-- Thumbnails slider track -->
+          <div class="d-flex gap-2.5">
+            <div class="fm-skeleton rounded-3" style="width: 72px; height: 72px; border-radius: 8px;"></div>
+            <div class="fm-skeleton rounded-3" style="width: 72px; height: 72px; border-radius: 8px;"></div>
+            <div class="fm-skeleton rounded-3" style="width: 72px; height: 72px; border-radius: 8px;"></div>
+          </div>
+        </div>
+      }
+
+      <!-- 6. PRODUCT DETAILS INFORMATION SKELETON -->
+      @case ('product-details-info') {
+        <div class="product-info-skeleton d-flex flex-column gap-4">
+          <div>
+            <!-- Header Brand Meta -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="fm-skeleton" style="height: 14px; width: 25%; border-radius: 4px;"></div>
+              <div class="fm-skeleton" style="height: 22px; width: 18%; border-radius: 999px;"></div>
+            </div>
+            <!-- Main product title -->
+            <div class="fm-skeleton mb-2" style="height: 38px; width: 75%; border-radius: 6px;"></div>
+            <div class="fm-skeleton mb-3" style="height: 38px; width: 45%; border-radius: 6px;"></div>
+            <!-- Rating details -->
+            <div class="fm-skeleton mb-4" style="height: 16px; width: 35%; border-radius: 4px;"></div>
+          </div>
+
+          <!-- Price box shimmer -->
+          <div class="fm-skeleton p-4 rounded-3 mb-2" style="height: 72px; border-radius: 12px;"></div>
+
+          <!-- Description paragraph lines -->
+          <div class="d-flex flex-column gap-2 mb-3">
+            <div class="fm-skeleton" style="height: 12px; width: 100%; border-radius: 4px;"></div>
+            <div class="fm-skeleton" style="height: 12px; width: 95%; border-radius: 4px;"></div>
+            <div class="fm-skeleton" style="height: 12px; width: 98%; border-radius: 4px;"></div>
+            <div class="fm-skeleton" style="height: 12px; width: 70%; border-radius: 4px;"></div>
+          </div>
+
+          <!-- AI spatial card placeholder -->
+          <div class="p-4 rounded-4 border border-light-beige mb-2" style="border-radius: 16px;">
+            <div class="d-flex gap-3">
+              <div class="fm-skeleton rounded-circle flex-shrink-0" style="width: 48px; height: 48px;"></div>
+              <div class="flex-grow-1 d-flex flex-column gap-2.5">
+                <div class="fm-skeleton" style="height: 16px; width: 50%; border-radius: 4px;"></div>
+                <div class="fm-skeleton" style="height: 12px; width: 100%; border-radius: 4px;"></div>
+                <div class="fm-skeleton" style="height: 12px; width: 85%; border-radius: 4px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action buttons row -->
+          <div class="pt-4 border-top border-light d-flex align-items-center gap-3">
+            <div class="fm-skeleton" style="width: 130px; height: 50px; border-radius: 999px;"></div>
+            <div class="fm-skeleton flex-grow-1" style="height: 50px; border-radius: 8px;"></div>
+            <div class="fm-skeleton" style="width: 160px; height: 50px; border-radius: 8px;"></div>
+          </div>
+        </div>
+      }
+
+      <!-- 7. ORDER TABLE ROW SKELETON -->
+      @case ('order-card') {
+        <div class="order-table-skeleton-container py-3">
+          <!-- Desktop list rows mock -->
+          <div class="order-row-mock d-flex align-items-center justify-content-between p-3.5 border-bottom border-light gap-4">
+            <div class="d-flex flex-column gap-2" style="width: 20%;">
+              <div class="fm-skeleton" style="height: 16px; width: 80%; border-radius: 4px;"></div>
+              <div class="fm-skeleton" style="height: 10px; width: 50%; border-radius: 4px;"></div>
+            </div>
+            <div class="fm-skeleton" style="height: 14px; width: 15%; border-radius: 4px;"></div>
+            <div class="fm-skeleton" style="height: 14px; width: 15%; border-radius: 4px;"></div>
+            <div class="fm-skeleton" style="height: 22px; width: 15%; border-radius: 999px;"></div>
+            <div class="fm-skeleton" style="height: 22px; width: 15%; border-radius: 999px;"></div>
+            <div class="fm-skeleton" style="height: 32px; width: 120px; border-radius: 8px;"></div>
+          </div>
+        </div>
+      }
+
+      <!-- 8. ORDER DETAILS FULL WORKSPACE SKELETON -->
+      @case ('order-details') {
+        <div class="order-details-skeleton d-flex flex-column gap-4">
+          <!-- Placed Card summary shimmer -->
+          <div class="p-4 rounded-xl card card-premium border-0 shadow-sm" style="border-radius: 16px;">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+              <div class="d-flex flex-column gap-2" style="width: 40%;">
+                <div class="fm-skeleton" style="height: 14px; width: 30%; border-radius: 4px;"></div>
+                <div class="fm-skeleton" style="height: 28px; width: 70%; border-radius: 4px;"></div>
+                <div class="fm-skeleton" style="height: 12px; width: 50%; border-radius: 4px;"></div>
+              </div>
+              <div class="d-flex flex-column align-items-md-end gap-2" style="width: 25%;">
+                <div class="fm-skeleton" style="height: 14px; width: 50%; border-radius: 4px;"></div>
+                <div class="fm-skeleton" style="height: 28px; width: 100%; border-radius: 4px;"></div>
+              </div>
+            </div>
+            <div class="d-flex gap-2.5 mt-3 pt-3 border-top border-light">
+              <div class="fm-skeleton" style="width: 90px; height: 24px; border-radius: 999px;"></div>
+              <div class="fm-skeleton" style="width: 90px; height: 24px; border-radius: 999px;"></div>
+            </div>
+          </div>
+
+          <!-- Process Timeline tracker shimmer -->
+          <div class="p-4 rounded-xl card card-premium border-0 shadow-sm d-flex justify-content-between align-items-center gap-3" style="border-radius: 16px; flex-direction: row;">
+            <div class="fm-skeleton rounded-circle" style="width: 24px; height: 24px; flex-shrink: 0;"></div>
+            <div class="fm-skeleton flex-grow-1" style="height: 6px; border-radius: 3px;"></div>
+            <div class="fm-skeleton rounded-circle" style="width: 24px; height: 24px; flex-shrink: 0;"></div>
+            <div class="fm-skeleton flex-grow-1" style="height: 6px; border-radius: 3px;"></div>
+            <div class="fm-skeleton rounded-circle" style="width: 24px; height: 24px; flex-shrink: 0;"></div>
+            <div class="fm-skeleton flex-grow-1" style="height: 6px; border-radius: 3px;"></div>
+            <div class="fm-skeleton rounded-circle" style="width: 24px; height: 24px; flex-shrink: 0;"></div>
+          </div>
+
+          <!-- Main structural columns split -->
+          <div class="row g-4 text-start">
+            <div class="col-lg-8">
+              <!-- Ordered items list table skeleton -->
+              <div class="card card-premium border-0 shadow-sm p-4 h-100" style="border-radius: 16px;">
+                <div class="fm-skeleton mb-4" style="height: 22px; width: 30%; border-radius: 4px;"></div>
+                <div class="d-flex flex-column gap-3">
+                  <div *ngFor="let item of [1,2,3]" class="d-flex align-items-center gap-3 py-2.5 border-bottom border-light">
+                    <div class="fm-skeleton rounded-3" style="width: 60px; height: 60px; border-radius: 8px; flex-shrink: 0;"></div>
+                    <div class="flex-grow-1 d-flex flex-column gap-2">
+                      <div class="fm-skeleton" style="height: 14px; width: 60%; border-radius: 4px;"></div>
+                      <div class="fm-skeleton" style="height: 10px; width: 25%; border-radius: 4px;"></div>
+                    </div>
+                    <div class="fm-skeleton" style="height: 14px; width: 80px; border-radius: 4px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 d-flex flex-column gap-4">
+              <!-- Invoice summary cards -->
+              <div *ngFor="let widget of [1,2]" class="card card-premium border-0 shadow-sm p-4" style="border-radius: 16px;">
+                <div class="fm-skeleton mb-3" style="height: 20px; width: 50%; border-radius: 4px;"></div>
+                <div class="d-flex flex-column gap-2">
+                  <div class="d-flex justify-content-between"><div class="fm-skeleton" style="height: 12px; width: 40%;"></div><div class="fm-skeleton" style="height: 12px; width: 20%;"></div></div>
+                  <div class="d-flex justify-content-between"><div class="fm-skeleton" style="height: 12px; width: 35%;"></div><div class="fm-skeleton" style="height: 12px; width: 25%;"></div></div>
+                  <hr class="my-2 opacity-10">
+                  <div class="d-flex justify-content-between"><div class="fm-skeleton" style="height: 16px; width: 30%;"></div><div class="fm-skeleton" style="height: 16px; width: 35%;"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- 9. PROFILE SECTION SKELETON -->
+      @case ('profile') {
+        <div class="profile-skeleton row gy-4 text-start">
+          <!-- Sidebar Left Shimmer -->
+          <div class="col-12 col-xl-4">
+            <div class="card border-0 rounded-4 shadow-sm p-4 text-center d-flex flex-column align-items-center" style="border-radius: 16px;">
+              <div class="fm-skeleton rounded-circle mb-3" style="width: 100px; height: 100px;"></div>
+              <div class="fm-skeleton mb-2" style="height: 22px; width: 60%; border-radius: 4px;"></div>
+              <div class="fm-skeleton mb-4" style="height: 12px; width: 35%; border-radius: 4px;"></div>
+              <!-- Stat boxes grid -->
+              <div class="d-flex justify-content-between w-100 border-top border-light pt-3 mb-4">
+                <div class="d-flex flex-column gap-1 align-items-center" style="width: 30%;">
+                  <div class="fm-skeleton" style="height: 20px; width: 50%;"></div>
+                  <div class="fm-skeleton" style="height: 10px; width: 80%;"></div>
+                </div>
+                <div class="d-flex flex-column gap-1 align-items-center" style="width: 30%;">
+                  <div class="fm-skeleton" style="height: 20px; width: 50%;"></div>
+                  <div class="fm-skeleton" style="height: 10px; width: 80%;"></div>
+                </div>
+                <div class="d-flex flex-column gap-1 align-items-center" style="width: 30%;">
+                  <div class="fm-skeleton" style="height: 20px; width: 50%;"></div>
+                  <div class="fm-skeleton" style="height: 10px; width: 80%;"></div>
+                </div>
+              </div>
+              <div class="fm-skeleton w-100" style="height: 42px; border-radius: 8px;"></div>
+            </div>
+          </div>
+          <!-- Main Content Right Shimmer -->
+          <div class="col-12 col-xl-8">
+            <div class="d-flex flex-column gap-4">
+              <!-- Personal info edit form shimmer -->
+              <div class="card border-0 rounded-4 shadow-sm p-4" style="border-radius: 16px;">
+                <div class="fm-skeleton mb-4" style="height: 22px; width: 40%; border-radius: 4px;"></div>
+                <div class="row g-3">
+                  <div *ngFor="let input of [1,2,3,4]" class="col-md-6">
+                    <div class="fm-skeleton mb-1.5" style="height: 12px; width: 30%; border-radius: 4px;"></div>
+                    <div class="fm-skeleton" style="height: 42px; width: 100%; border-radius: 8px;"></div>
+                  </div>
+                </div>
+                <div class="fm-skeleton mt-4 align-self-start" style="width: 140px; height: 42px; border-radius: 24px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- 10. NOTIFICATION CARD SKELETON -->
+      @case ('notification') {
+        <div class="notification-skeleton border rounded-3 p-3.5 mb-2.5 text-start" style="border-radius: 12px;">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div class="flex-grow-1">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <!-- Badge and Title shimmers -->
+                <div class="fm-skeleton" style="height: 20px; width: 60px; border-radius: 4px;"></div>
+                <div class="fm-skeleton" style="height: 16px; width: 40%; border-radius: 4px;"></div>
+              </div>
+              <!-- Message shimmers -->
+              <div class="fm-skeleton mb-2" style="height: 12px; width: 90%; border-radius: 4px;"></div>
+              <div class="fm-skeleton" style="height: 10px; width: 15%; border-radius: 4px;"></div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- 11. KPI METRIC CARD SKELETON -->
+      @case ('kpi-card') {
+        <div class="kpi-skeleton-card p-4 card border-0 rounded-4 shadow-sm text-start" style="border-radius: 16px; min-height: 120px;">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="fm-skeleton rounded-circle flex-shrink-0" style="width: 40px; height: 40px;"></div>
+            <div class="fm-skeleton" style="height: 12px; width: 55%; border-radius: 4px;"></div>
+          </div>
+          <div class="fm-skeleton mb-2" style="height: 28px; width: 45%; border-radius: 4px;"></div>
+          <div class="fm-skeleton" style="height: 10px; width: 70%; border-radius: 4px;"></div>
+        </div>
+      }
+
+      <!-- 12. CHART SURFACE BOX SKELETON -->
+      @case ('chart-container') {
+        <div class="chart-skeleton-card p-4 card border-0 rounded-4 shadow-sm text-start" style="border-radius: 16px;">
+          <div class="mb-4">
+            <div class="fm-skeleton mb-2" style="height: 20px; width: 45%; border-radius: 4px;"></div>
+            <div class="fm-skeleton" style="height: 12px; width: 65%; border-radius: 4px;"></div>
+          </div>
+          <!-- Geometric chart outline shimmer -->
+          <div class="chart-shimmer-body d-flex align-items-end justify-content-between px-3" style="height: 240px; border-bottom: 2px solid rgba(0,0,0,0.02);">
+            <div class="fm-skeleton" style="width: 15%; height: 45%; border-radius: 8px 8px 0 0;"></div>
+            <div class="fm-skeleton" style="width: 15%; height: 75%; border-radius: 8px 8px 0 0;"></div>
+            <div class="fm-skeleton" style="width: 15%; height: 30%; border-radius: 8px 8px 0 0;"></div>
+            <div class="fm-skeleton" style="width: 15%; height: 90%; border-radius: 8px 8px 0 0;"></div>
+          </div>
+          <!-- Legend markers shimmer -->
+          <div class="d-flex justify-content-center gap-4 mt-3">
+            <div class="d-flex align-items-center gap-2"><div class="fm-skeleton rounded-circle" style="width: 10px; height: 10px;"></div><div class="fm-skeleton" style="height: 10px; width: 50px;"></div></div>
+            <div class="d-flex align-items-center gap-2"><div class="fm-skeleton rounded-circle" style="width: 10px; height: 10px;"></div><div class="fm-skeleton" style="height: 10px; width: 50px;"></div></div>
+          </div>
+        </div>
+      }
+
+      <!-- 13. VENDOR REVENUE CARD SKELETON -->
+      @case ('revenue-card') {
+        <div class="revenue-skeleton-grid py-2 text-start">
+          <div class="row g-4">
+            <div *ngFor="let kpi of [1,2,3,4]" class="col-sm-6 col-md-3">
+              <div class="card card-premium p-4 border-0 shadow-sm" style="border-radius: 16px;">
+                <div class="fm-skeleton rounded-circle mb-3" style="width: 36px; height: 36px;"></div>
+                <div class="fm-skeleton mb-2" style="height: 12px; width: 70%; border-radius: 4px;"></div>
+                <div class="fm-skeleton mb-2" style="height: 24px; width: 50%; border-radius: 4px;"></div>
+                <div class="fm-skeleton" style="height: 10px; width: 85%; border-radius: 4px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- 14. VENDOR DASHBOARD FULL PORTAL SKELETON -->
+      @case ('vendor-dashboard') {
+        <div class="vendor-dashboard-skeleton text-start">
+          <!-- 4 Grid KPI Highlights -->
+          <div class="row g-4 mb-5">
+            <div *ngFor="let metric of [1,2,3,4]" class="col-sm-6 col-lg-3">
+              <div class="card card-premium p-4 border-0 shadow-sm" style="border-radius: 16px;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div class="fm-skeleton" style="height: 14px; width: 60%; border-radius: 4px;"></div>
+                  <div class="fm-skeleton rounded-circle" style="width: 32px; height: 32px;"></div>
+                </div>
+                <div class="fm-skeleton mb-2" style="height: 28px; width: 50%; border-radius: 4px;"></div>
+                <div class="fm-skeleton" style="height: 10px; width: 70%; border-radius: 4px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trend Chart Layout & Details split -->
+          <div class="row g-4">
+            <div class="col-lg-8">
+              <!-- Large Trend Graph card shimmer -->
+              <div class="card card-premium border-0 shadow-sm p-4" style="border-radius: 16px; height: 420px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <div class="d-flex flex-column gap-1.5" style="width: 35%;">
+                    <div class="fm-skeleton" style="height: 18px; width: 100%; border-radius: 4px;"></div>
+                    <div class="fm-skeleton" style="height: 12px; width: 70%; border-radius: 4px;"></div>
+                  </div>
+                  <div class="fm-skeleton" style="width: 150px; height: 32px; border-radius: 999px;"></div>
+                </div>
+                <div class="chart-shimmer-mesh flex-grow-1" style="height: 260px; border-bottom: 2.5px solid rgba(0,0,0,0.02); overflow: hidden; position: relative;">
+                  <!-- Wavy lines or mesh blocks to visual a graph background -->
+                  <div class="fm-skeleton w-100 position-absolute" style="height: 1.5px; top: 25%; opacity: 0.2;"></div>
+                  <div class="fm-skeleton w-100 position-absolute" style="height: 1.5px; top: 50%; opacity: 0.2;"></div>
+                  <div class="fm-skeleton w-100 position-absolute" style="height: 1.5px; top: 75%; opacity: 0.2;"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-4">
+              <!-- Recent feedback notifications sidebar shimmer -->
+              <div class="card card-premium border-0 shadow-sm p-4 h-100" style="border-radius: 16px;">
+                <div class="fm-skeleton mb-4" style="height: 18px; width: 50%; border-radius: 4px;"></div>
+                <div class="d-flex flex-column gap-4">
+                  <div *ngFor="let fb of [1,2,3]" class="d-flex flex-column gap-2 pb-3.5 border-bottom border-light">
+                    <div class="d-flex justify-content-between">
+                      <div class="fm-skeleton" style="height: 14px; width: 45%; border-radius: 4px;"></div>
+                      <div class="fm-skeleton" style="height: 10px; width: 25%; border-radius: 4px;"></div>
+                    </div>
+                    <div class="fm-skeleton" style="height: 12px; width: 100%; border-radius: 4px;"></div>
+                    <div class="fm-skeleton" style="height: 12px; width: 85%; border-radius: 4px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
     }
   }
 </div>

@@ -8,7 +8,7 @@
     @for (item of items(); track item.productId) {
       <div class="details-item-row">
         <div class="details-item-img-wrapper">
-          <img class="details-item-img" [src]="item.productImage || item.image || 'assets/images/image-placeholder.svg'" [alt]="item | localized:'productName'" loading="lazy" (error)="$event.target.src = 'assets/images/image-placeholder.svg'" />
+          <img class="details-item-img" [appLazyImage]="item.productImage || item.image || 'assets/images/image-placeholder.svg'" [alt]="item | localized:'productName'" loading="lazy" (error)="$event.target.src = 'assets/images/image-placeholder.svg'" />
         </div>
         <div class="min-w-0 flex-grow-1">
           <div class="details-item-name">{{ item | localized:'productName' }}</div>

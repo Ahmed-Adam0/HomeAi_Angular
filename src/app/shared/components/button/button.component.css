@@ -176,24 +176,40 @@ button:disabled {
   box-shadow: none !important;
 }
 
-/* Deep override configuration for embedded loading spinner */
-::ng-deep app-loading-spinner .loading-overlay {
-  background: transparent !important;
-  padding: 0 !important;
-  position: static !important;
+/* Custom inline premium spinner styling for dynamic CSS animations */
+.fm-btn-spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, -50%) scale(0.7) rotate(0deg);
+  opacity: 0;
+  transition: opacity 0.25s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)), transform 0.25s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+  will-change: transform, opacity;
 }
 
-::ng-deep app-loading-spinner .spinner-msg {
-  display: none !important;
+button.fm-btn-loading .fm-btn-spinner {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1) rotate(360deg);
+  animation: fm-btn-spin-anim 0.85s linear infinite;
 }
 
-::ng-deep app-loading-spinner .spinner-container {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+.fm-btn-spinner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  box-sizing: border-box;
 }
 
-::ng-deep app-loading-spinner .spinner-ring {
-  border-color: currentColor transparent transparent transparent !important;
-  margin: 0 !important;
+@keyframes fm-btn-spin-anim {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }

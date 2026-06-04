@@ -12,11 +12,12 @@ import { RevenueCards } from '../../components';
 import { IVendorRevenue } from '../../interfaces';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { VendorService } from '../../services/vendor.service';
+import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 
 @Component({
   selector: 'app-vendor-revenue',
   standalone: true,
-  imports: [RevenueCards, TranslatePipe],
+  imports: [RevenueCards, TranslatePipe, SkeletonLoader],
   templateUrl: './vendor-revenue.component.html',
   styleUrl: './vendor-revenue.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

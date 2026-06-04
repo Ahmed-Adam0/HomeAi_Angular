@@ -21,13 +21,15 @@ export class Button {
 
   // Computed state for dynamic CSS class generation
   readonly buttonClass = computed(() => {
-    return `btn-base btn-${this.variant()} btn-${this.size()}`;
+    const baseClass = `btn-base btn-${this.variant()} btn-${this.size()}`;
+    return this.isLoading() ? `${baseClass} btn-loading fm-btn-loading` : baseClass;
   });
 
   // Computed state to merge manual disable flag and active loading state
   readonly isButtonDisabled = computed(() => {
     return this.disabled() || this.isLoading();
   });
+
 
   /**
    * Dispatches click events safely.

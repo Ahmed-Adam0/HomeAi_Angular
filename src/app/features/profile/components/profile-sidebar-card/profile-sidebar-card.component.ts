@@ -2,11 +2,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { IProfile } from '../../interfaces/iprofile';
+import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
+
 
 @Component({
   selector: 'app-profile-sidebar-card',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, LazyImageDirective],
   template: `
     <div class="sidebar-card card border-0 overflow-hidden sticky-xl-top">
       <div class="card-body p-4 p-md-5 d-flex flex-column align-items-center">
@@ -14,7 +16,7 @@ import { IProfile } from '../../interfaces/iprofile';
         <div class="avatar-container position-relative mb-4">
           <div class="avatar-circle-wrapper bg-white shadow-sm border border-2 border-white">
             <ng-container *ngIf="avatarPreview; else initialsIcon">
-              <img [src]="avatarPreview" alt="avatar preview" class="avatar-img rounded-circle" />
+              <img [appLazyImage]="avatarPreview" alt="avatar preview" class="avatar-img rounded-circle" />
             </ng-container>
             <ng-template #initialsIcon>
               <span class="avatar-initials">{{ initials }}</span>

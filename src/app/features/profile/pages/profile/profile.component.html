@@ -1,5 +1,8 @@
 <main class="profile-page container py-4 py-md-5" appRtl>
-  <div class="row gy-4">
+  @if (loading()) {
+    <app-skeleton-loader type="profile" [count]="1"></app-skeleton-loader>
+  } @else {
+    <div class="row gy-4">
     <!-- Sidebar Left Column -->
     <section class="col-12 col-xl-4">
       <app-profile-sidebar-card
@@ -84,4 +87,5 @@
       </div>
     </section>
   </div>
+  }
 </main>

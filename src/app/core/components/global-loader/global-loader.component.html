@@ -1,0 +1,31 @@
+@if (loadingService.isLoading()) {
+  <div class="fm-overlay-fullscreen active fm-gpu-optimize">
+    <div class="fm-overlay-content">
+      <div class="logo-spinner-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="brand-svg-loader">
+          <!-- Animated gradient outer ring -->
+          <circle cx="50" cy="50" r="44" stroke="url(#goldGradient)" stroke-width="2.5" fill="none" class="brand-spinner-outer" />
+          
+          <!-- Orbit trace path -->
+          <circle cx="50" cy="50" r="34" stroke="rgba(184, 147, 92, 0.08)" stroke-width="1" fill="none" />
+          
+          <!-- Modern Furniture Silhouette: Lounge Chair -->
+          <path d="M 36 62 L 36 44 C 36 36, 42 32, 50 32 C 58 32, 64 36, 64 44 L 64 62 M 30 52 L 70 52 M 43 52 L 43 72 M 57 52 L 57 72" 
+                stroke="url(#goldGradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" class="brand-logo-chair" />
+                
+          <!-- Pulsing AI Node dot -->
+          <circle cx="50" cy="44" r="3" fill="#b8935c" class="brand-logo-dot" />
+          
+          <defs>
+            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#b8935c" />
+              <stop offset="50%" stop-color="#c8a87b" />
+              <stop offset="100%" stop-color="#a37e4c" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="fm-overlay-brand">FurniMind AI</div>
+    </div>
+  </div>
+}

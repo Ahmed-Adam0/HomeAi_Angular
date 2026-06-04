@@ -20,6 +20,7 @@ import { LOCAL_STORAGE_KEYS } from '../../../../core/constants/localstorage-keys
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { UiState } from '../../../../core/state/ui.state';
+import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
 
 interface ISpecification {
   labelEn: string;
@@ -42,7 +43,8 @@ interface ISpecification {
     ProductCard,
     FormsModule,
     TranslatePipe,
-    LocalizedPipe
+    LocalizedPipe,
+    LazyImageDirective
   ],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css',

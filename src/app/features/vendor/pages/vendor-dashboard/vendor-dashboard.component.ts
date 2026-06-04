@@ -25,6 +25,7 @@ import { UiState } from '../../../../core/state/ui.state';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { localized } from '../../../../shared/utils/localized';
+import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 
 @Component({
   selector: 'app-vendor-dashboard',
@@ -36,6 +37,7 @@ import { localized } from '../../../../shared/utils/localized';
     ReportReviewDialog,
     CurrencyFormatPipe,
     LocalizedPipe,
+    SkeletonLoader,
   ],
   templateUrl: './vendor-dashboard.component.html',
   styleUrl: './vendor-dashboard.component.css',

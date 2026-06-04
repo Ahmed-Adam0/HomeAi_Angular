@@ -14,11 +14,12 @@ import { ReviewsService, IRatingStats } from '../../../features/products/service
 import { UiState } from '../../../core/state/ui.state';
 import { localized } from '../../utils/localized';
 import { LocalizedPipe } from '../../pipes/localized.pipe';
+import { LazyImageDirective } from '../../directives/lazy-image.directive';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [NgIf, RouterLink, CurrencyFormatPipe, TranslatePipe, LoadingSpinner, LocalizedPipe],
+  imports: [NgIf, RouterLink, CurrencyFormatPipe, TranslatePipe, LoadingSpinner, LocalizedPipe, LazyImageDirective],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css',
 })

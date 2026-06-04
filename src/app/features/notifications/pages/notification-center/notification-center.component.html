@@ -11,7 +11,11 @@
     }
   </div>
 
-  @if (notificationsList().length > 0) {
+  @if (isLoading()) {
+    <div class="list-group gap-2">
+      <app-skeleton-loader type="notification" [count]="3"></app-skeleton-loader>
+    </div>
+  } @else if (notificationsList().length > 0) {
     <div class="list-group gap-2">
       @for (item of notificationsList(); track item.id) {
         <div class="list-group-item list-group-item-action border rounded-3 p-3 position-relative notification-item" [class.unread-item]="!item.read" (click)="markRead(item.id)">

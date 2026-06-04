@@ -6,11 +6,12 @@ import { ProductCard } from '../../../../shared/components/product-card/product-
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
 import { localized } from '../../../../shared/utils/localized';
+import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 
 @Component({
   selector: 'app-vendor-products',
   standalone: true,
-  imports: [CommonModule, RouterLink, ProductCard],
+  imports: [CommonModule, RouterLink, ProductCard, SkeletonLoader],
   templateUrl: './vendor-products.component.html',
   styleUrl: './vendor-products.component.css'
 })

@@ -20,6 +20,7 @@ import { NAV_ROUTES } from '../../../../core/constants/app-routes';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { environment } from '../../../../../environments/environment';
+import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 
 @Component({
   selector: 'app-profile',
@@ -33,6 +34,7 @@ import { environment } from '../../../../../environments/environment';
     EditableProfileForm,
     ChangePasswordForm,
     ProfileAddressList,
+    SkeletonLoader,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',

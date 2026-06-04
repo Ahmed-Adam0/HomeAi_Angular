@@ -16,6 +16,7 @@ import { VendorOrderAnalyticsService } from '../../services/vendor-order-analyti
 import { IOrderAnalytics } from '../../interfaces';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 
 interface KpiCard {
   key: string;
@@ -48,7 +49,7 @@ function toRfc3339Start(date: Date): string {
 @Component({
   selector: 'app-vendor-analytics',
   standalone: true,
-  imports: [UIChart, DatePicker, FormsModule, CurrencyPipe, DatePipe, CurrencyFormatPipe, ProgressBar, TranslatePipe],
+  imports: [UIChart, DatePicker, FormsModule, CurrencyPipe, DatePipe, CurrencyFormatPipe, ProgressBar, TranslatePipe, SkeletonLoader],
   providers: [CurrencyFormatPipe, DatePipe],
   templateUrl: './vendor-analytics.component.html',
   styleUrl: './vendor-analytics.component.css',

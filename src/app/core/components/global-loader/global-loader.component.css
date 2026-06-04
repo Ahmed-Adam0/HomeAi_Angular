@@ -1,0 +1,67 @@
+.logo-spinner-wrap {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-svg-loader {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* 1. Outer Concentric Ring Rotation */
+.brand-spinner-outer {
+  transform-origin: 50px 50px;
+  stroke-dasharray: 220 50;
+  animation: brand-spin 1.6s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
+  will-change: transform;
+}
+
+/* 2. Furniture Drawing & Breathing effect */
+.brand-logo-chair {
+  stroke-dasharray: 180;
+  stroke-dashoffset: 0;
+  animation: chair-pulse 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* 3. AI glowing node pulse */
+.brand-logo-dot {
+  animation: dot-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes brand-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes chair-pulse {
+  0%, 100% {
+    opacity: 0.85;
+    stroke-width: 2.8px;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 3.2px;
+  }
+}
+
+@keyframes dot-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+    fill: #b8935c;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+    fill: #d4af37;
+    filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.8));
+  }
+}

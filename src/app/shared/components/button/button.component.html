@@ -5,12 +5,10 @@
   (click)="onClick($event)"
 >
   @if (isLoading()) {
-    <span class="btn-spinner-container">
-      <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
-    </span>
+    <span class="fm-btn-spinner"></span>
   }
 
-  <span class="btn-content" [class.btn-content-hidden]="isLoading()">
+  <span class="btn-content fm-btn-text" [class.btn-content-hidden]="isLoading()">
     @if (label()) {
       {{ label() }}
     } @else {
@@ -18,3 +16,4 @@
     }
   </span>
 </button>
+

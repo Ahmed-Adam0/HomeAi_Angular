@@ -28,32 +28,7 @@
       @if (revenue(); as revenueData) {
         <app-revenue-cards [revenue]="revenueData" />
       } @else {
-        <div
-          class="vendor-revenue__placeholder"
-          role="status"
-          [attr.aria-label]="'VENDOR.REVENUE_PAGE.LOADING_SUMMARY_ARIA' | translate"
-          [attr.aria-busy]="isRevenueLoading()"
-        >
-          <div
-            class="vendor-revenue__skeleton-grid vendor-revenue__skeleton-grid--kpis"
-            aria-hidden="true"
-          >
-            @for (slot of kpiSkeletonSlots; track slot) {
-              <div class="vendor-revenue__skeleton-card">
-                <div class="vendor-revenue__skeleton-icon fm-skeleton"></div>
-                <div
-                  class="vendor-revenue__skeleton-line fm-skeleton fm-skeleton-text short"
-                ></div>
-                <div
-                  class="vendor-revenue__skeleton-line fm-skeleton fm-skeleton-text title"
-                ></div>
-                <div
-                  class="vendor-revenue__skeleton-line fm-skeleton fm-skeleton-text medium"
-                ></div>
-              </div>
-            }
-          </div>
-        </div>
+        <app-skeleton-loader type="revenue-card" [count]="1"></app-skeleton-loader>
       }
     </section>
 

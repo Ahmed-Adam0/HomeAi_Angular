@@ -1,20 +1,29 @@
 import { Directive, ElementRef, Input, OnInit, Renderer2, inject } from '@angular/core';
 
 @Directive({
-  selector: 'img[appLazyImage]'
+  selector: 'img[appLazyImage]',
+  standalone: true,
 })
 export class LazyImageDirective implements OnInit {
-  private el = inject(ElementRef);
-  private renderer = inject(Renderer2);
+  private readonly el = inject(ElementRef);
+  private readonly renderer = inject(Renderer2);
 
   @Input('appLazyImage') src!: string;
-  @Input() placeholder = 'assets/images/image-placeholder.svg';
+  
+  // Transparent 1x1 pixel spacer to avoid broken image borders before loading finishes
+  private readonly transparentSpacer = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
   ngOnInit(): void {
-    this.renderer.setAttribute(this.el.nativeElement, 'src', this.placeholder);
-    this.renderer.setStyle(this.el.nativeElement, 'opacity', '0.5');
-    this.renderer.setStyle(this.el.nativeElement, 'transition', 'opacity 0.3s ease-in-out');
+    const nativeElement = this.el.nativeElement;
 
+    // Apply initial loading properties
+    this.renderer.setAttribute(nativeElement, 'src', this.transparentSpacer);
+    this.renderer.addClass(nativeElement, 'fm-skeleton');
+    this.renderer.addClass(nativeElement, 'fm-gpu-optimize');
+    this.renderer.setStyle(nativeElement, 'opacity', '0');
+    this.renderer.setStyle(nativeElement, 'transition', 'opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1)');
+
+    // Lazy load using IntersectionObserver
     if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -24,7 +33,7 @@ export class LazyImageDirective implements OnInit {
           }
         });
       });
-      observer.observe(this.el.nativeElement);
+      observer.observe(nativeElement);
     } else {
       this.loadImage();
     }
@@ -34,11 +43,26 @@ export class LazyImageDirective implements OnInit {
     if (!this.src) {
       return;
     }
+
+    const nativeElement = this.el.nativeElement;
     const img = new Image();
     img.src = this.src;
+    
     img.onload = () => {
-      this.renderer.setAttribute(this.el.nativeElement, 'src', this.src);
-      this.renderer.setStyle(this.el.nativeElement, 'opacity', '1');
+      // Transition out shimmer & fade in actual image content
+      this.renderer.removeClass(nativeElement, 'fm-skeleton');
+      this.renderer.setAttribute(nativeElement, 'src', this.src);
+      
+      // Delay slightly for visual fluid overlap
+      setTimeout(() => {
+        this.renderer.setStyle(nativeElement, 'opacity', '1');
+      }, 50);
+    };
+
+    img.onerror = () => {
+      // Clean up skeleton styling on error
+      this.renderer.removeClass(nativeElement, 'fm-skeleton');
+      this.renderer.setStyle(nativeElement, 'opacity', '0.5');
     };
   }
 }

@@ -10,6 +10,7 @@ import { StatusBadgeComponent, StatusBadgeTone } from '../../../../shared/compon
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
+import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 
 @Component({
   selector: 'app-orders',
@@ -26,6 +27,7 @@ import { RtlDirective } from '../../../../shared/directives/rtl.directive';
     TranslatePipe,
     CurrencyFormatPipe,
     RtlDirective,
+    SkeletonLoader
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css',

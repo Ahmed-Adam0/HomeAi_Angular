@@ -18,6 +18,9 @@ import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/conf
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 import { UiState } from '../../../../core/state/ui.state';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
+import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
+
 
 export interface EditItemForm {
   productId: FormControl<number>;
@@ -49,6 +52,8 @@ export interface EditItemForm {
     OrderedItemsComponent,
     ConfirmDialog,
     ModalComponent,
+    SkeletonLoader,
+    LazyImageDirective,
   ],
   templateUrl: './order-details.component.html',
   styleUrl: './order-details.component.css',
