@@ -90,6 +90,11 @@ export class Navbar implements OnInit {
       }
     });
 
+    effect(() => {
+      this.userAvatarSrc();
+      this.avatarError.set(false);
+    });
+
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),

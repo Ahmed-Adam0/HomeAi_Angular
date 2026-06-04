@@ -135,6 +135,12 @@ export class Profile {
         stats: profile.stats || undefined,
       });
 
+      this.authService.updateUserProfile({
+        name: profile.fullName,
+        email: profile.email,
+        image: profile.profileImage ?? undefined,
+      });
+
       this.loadFavoritesCount();
 
       // Fetch real orders count from API

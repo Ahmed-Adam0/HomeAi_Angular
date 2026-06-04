@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, tap, catchError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants/api-urls';
 import {
@@ -33,6 +33,7 @@ export class AuthService {
   private baseUrl = environment.apiUrl;
   private readonly authToken = signal<string | null>(null);
   private readonly userProfile = signal<AuthProfile | null>(null);
+  private profileImageFetched = false;
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -55,6 +56,7 @@ export class AuthService {
       if (savedToken) {
         this.setAuthState(savedToken);
         this.restoreCachedAvatar();
+        this.ensureProfileImage();
       }
     }
   }
@@ -275,6 +277,21 @@ export class AuthService {
         workshopId
       };
     }
+  }
+
+  private ensureProfileImage(): void {
+    const current = this.userProfile();
+    if (!current || current.image || this.profileImageFetched) return;
+    this.profileImageFetched = true;
+    setTimeout(() => {
+      this.http.get<{ profileImage?: string }>(`${this.baseUrl}${API_URLS.PROFILE.GET}`)
+        .pipe(catchError(() => of(undefined)))
+        .subscribe((data) => {
+          if (data?.profileImage) {
+            this.updateUserProfile({ image: data.profileImage });
+          }
+        });
+    });
   }
 
   private applyResponseAvatar(response: any): void {
