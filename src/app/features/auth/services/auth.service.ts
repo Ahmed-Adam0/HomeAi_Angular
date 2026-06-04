@@ -131,6 +131,31 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}${API_URLS.AUTH.RESET_PASSWORD}`, data);
   }
 
+  /**
+   * Updates the locally cached user profile (name, email, image) without
+   * re-decoding the JWT. Call this after the profile API returns updated data
+   * so that navbar and other components reading `currentUser()` reflect
+   * the change immediately.
+   */
+  updateUserProfile(updates: { name?: string; email?: string; image?: string }): void {
+    this.userProfile.update((current) => {
+      if (!current) return current;
+      const next = { ...current };
+      if (updates.name !== undefined) {
+        next.name = updates.name;
+        next.initials = updates.name
+          .split(' ')
+          .map((p: string) => p[0])
+          .join('')
+          .substring(0, 2)
+          .toUpperCase();
+      }
+      if (updates.email !== undefined) next.email = updates.email;
+      if (updates.image !== undefined) next.image = updates.image;
+      return next;
+    });
+  }
+
   logout(): void {
     if (this.isBrowser) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);

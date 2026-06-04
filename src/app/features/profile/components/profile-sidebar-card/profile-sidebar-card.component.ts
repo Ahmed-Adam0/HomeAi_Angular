@@ -21,9 +21,14 @@ import { IProfile } from '../../interfaces/iprofile';
             </ng-template>
           </div>
           <!-- Upload Camera Badge -->
-          <label class="camera-upload-badge shadow-md d-flex align-items-center justify-content-center cursor-pointer position-absolute">
-            <i class="bi bi-camera-fill"></i>
-            <input type="file" accept="image/*" hidden (change)="onFileChange($event)" />
+          <label class="camera-upload-badge shadow-md d-flex align-items-center justify-content-center position-absolute"
+                 [class.cursor-pointer]="!uploading" [class.cursor-not-allowed]="uploading">
+            @if (uploading) {
+              <span class="spinner-border spinner-border-sm text-white"></span>
+            } @else {
+              <i class="bi bi-camera-fill"></i>
+            }
+            <input type="file" accept="image/*" hidden (change)="onFileChange($event)" [disabled]="uploading" />
           </label>
         </div>
 
@@ -101,10 +106,14 @@ import { IProfile } from '../../interfaces/iprofile';
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 2px solid #ffffff;
       }
-      .camera-upload-badge:hover {
+      .camera-upload-badge:hover:not(.cursor-not-allowed) {
         background-color: var(--fm-color-primary-500);
         transform: scale(1.1);
         box-shadow: var(--fm-shadow-hover);
+      }
+      .cursor-not-allowed {
+        cursor: not-allowed !important;
+        opacity: 0.7;
       }
       :host-context([dir='rtl']) .camera-upload-badge {
         right: auto;
@@ -149,6 +158,7 @@ export class ProfileSidebarCard {
   @Input() profile: IProfile | null = null;
   @Input() avatarPreview: string | null = null;
   @Input() stats: readonly { labelKey: string; value: number }[] = [];
+  @Input() uploading = false;
   @Output() logout = new EventEmitter<void>();
   @Output() createAiDesign = new EventEmitter<void>();
   @Output() fileSelected = new EventEmitter<File>();

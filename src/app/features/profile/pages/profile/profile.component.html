@@ -6,6 +6,7 @@
         [profile]="profile()"
         [avatarPreview]="profilePreview()"
         [stats]="sidebarStats()"
+        [uploading]="imageUploading()"
         (logout)="onLogout()"
         (createAiDesign)="onCreateAiDesign()"
         (fileSelected)="handleImageSelected($event)">
@@ -38,7 +39,7 @@
         </div>
 
         <!-- Address List Card -->
-        <div class="col-12">
+        <div class="col-12" #profileAddresses>
           <app-profile-address-list
             [addresses]="profile()?.addresses ?? []"
             [submitting]="formSubmitting()"

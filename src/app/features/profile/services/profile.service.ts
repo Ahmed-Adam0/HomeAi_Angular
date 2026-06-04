@@ -55,6 +55,19 @@ export class ProfileService {
     );
   }
 
+  uploadProfileImage(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.put(`${this.baseUrl}${API_URLS.PROFILE.IMAGE_UPLOAD}`, formData).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (!environment.production) {
+          console.error('API Error in ProfileService.uploadProfileImage:', error);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
   changePassword(payload: IChangePasswordDto): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}${API_URLS.PROFILE.CHANGE_PASSWORD}`, payload);
   }

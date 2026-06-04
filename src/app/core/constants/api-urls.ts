@@ -47,6 +47,7 @@ export const API_URLS = {
     GET: 'profile',
     UPDATE: 'profile',
     CHANGE_PASSWORD: 'profile/change-password',
+    IMAGE_UPLOAD: 'Profile/image',
   },
   VENDOR: {
     ORDERS_FILTER: 'VendorOrders/orders/filter',

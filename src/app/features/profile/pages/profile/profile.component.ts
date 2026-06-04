@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -49,11 +49,15 @@ export class Profile {
   readonly loading = signal(true);
   readonly formSubmitting = signal(false);
   readonly selectedImage = signal<string | null>(null);
+  readonly imageUploading = signal(false);
 
   readonly ordersCount = signal<number>(0);
   readonly favoritesCount = signal<number>(0);
 
   readonly profilePreview = computed(() => this.selectedImage() ?? this.profile()?.profileImage ?? null);
+
+  @ViewChild('profileAddresses', { static: false })
+  private readonly profileAddressesRef?: ElementRef<HTMLElement>;
 
   readonly actionItems = computed(() => {
     const stats = this.profile()?.stats;
@@ -87,7 +91,7 @@ export class Profile {
         iconColor: '#b8935c' 
       },
       { labelKey: 'PROFILE.PAYMENT_METHODS', route: '', iconClass: 'bi-credit-card', iconBg: 'rgba(111, 66, 193, 0.08)', iconColor: '#6f42c1' },
-      { labelKey: 'PROFILE.ADDRESS', route: NAV_ROUTES.ADDRESSES, iconClass: 'bi-geo-alt', iconBg: 'rgba(25, 135, 84, 0.08)', iconColor: '#198754' },
+      { labelKey: 'PROFILE.ADDRESS', route: 'profile-addresses', iconClass: 'bi-geo-alt', iconBg: 'rgba(25, 135, 84, 0.08)', iconColor: '#198754' },
       { labelKey: 'PROFILE.NOTIFICATIONS', route: '/notifications', iconClass: 'bi-bell', iconBg: 'rgba(13, 202, 240, 0.08)', iconColor: '#0dcaf0' },
       { labelKey: 'PROFILE.PRIVACY_SECURITY', route: '', iconClass: 'bi-shield-check', iconBg: 'rgba(108, 117, 125, 0.08)', iconColor: '#6c757d' },
       { labelKey: 'PROFILE.DESIGN_PREFERENCES', route: '', iconClass: 'bi-palette', iconBg: 'rgba(253, 126, 20, 0.08)', iconColor: '#fd7e14' },
@@ -204,7 +208,7 @@ export class Profile {
     this.formSubmitting.set(true);
     const requestPayload: IUpdateProfileDto = {
       ...payload,
-      profileImage: this.selectedImage() ?? this.profile()?.profileImage ?? null,
+      profileImage: this.profile()?.profileImage ?? null,
       addresses: this.profile()?.addresses ?? [],
     };
 
@@ -218,6 +222,12 @@ export class Profile {
 
       this.profile.set(profileUpdate);
       this.selectedImage.set(null);
+
+      this.authService.updateUserProfile({
+        name: updated.fullName,
+        email: updated.email,
+        image: updated.profileImage ?? undefined,
+      });
 
       if (requestPayload.preferredLanguage !== this.translationService.currentLang()) {
         await this.translationService.setLanguage(requestPayload.preferredLanguage);
@@ -281,6 +291,13 @@ export class Profile {
         membership: this.profile()?.membership ?? 'Premium Member',
         stats: this.profile()?.stats,
       });
+
+      this.authService.updateUserProfile({
+        name: updated.fullName,
+        email: updated.email,
+        image: updated.profileImage ?? undefined,
+      });
+
       this.uiState.showAlert('success', this.translationService.translate('PROFILE.ADDRESSES_UPDATED'));
     } catch (error) {
       if (!environment.production) {
@@ -316,6 +333,10 @@ export class Profile {
   }
 
   async handleAction(action: { labelKey: string; route: string }): Promise<void> {
+    if (action.route === 'profile-addresses') {
+      this.scrollToAddresses();
+      return;
+    }
     if (action.route) {
       await this.router.navigate([action.route]);
       return;
@@ -324,10 +345,84 @@ export class Profile {
     this.uiState.showAlert('info', this.translationService.translate('PROFILE.FEATURE_COMING_SOON'));
   }
 
+  private scrollToAddresses(): void {
+    this.profileAddressesRef?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   async handleImageSelected(file: File): Promise<void> {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      this.uiState.showAlert('danger', this.translationService.translate('PROFILE.INVALID_FILE_TYPE'));
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      this.uiState.showAlert('danger', this.translationService.translate('PROFILE.FILE_TOO_LARGE'));
+      return;
+    }
+
+    this.imageUploading.set(true);
+
+    // Show local preview immediately while upload is in flight
     const preview = await this.readFileAsDataUrl(file);
     this.selectedImage.set(preview);
-    this.profile.update((current) => current ? { ...current, profileImage: preview } : current);
+
+    try {
+      // Upload to dedicated endpoint: PUT /Profile/image  (FormData, field name: "file")
+      await firstValueFrom(this.profileService.uploadProfileImage(file));
+
+      // Upload succeeded — refresh full profile from API to get the persisted image URL
+      const updated = await firstValueFrom(this.profileService.getProfile());
+      this.profile.set({
+        ...updated,
+        membership: this.profile()?.membership ?? 'Premium Member',
+        stats: this.profile()?.stats,
+      });
+      this.selectedImage.set(null);
+
+      // Sync the navbar and all downstream avatar consumers
+      this.authService.updateUserProfile({
+        name: updated.fullName,
+        email: updated.email,
+        image: updated.profileImage ?? undefined,
+      });
+
+      this.uiState.showAlert('success', this.translationService.translate('PROFILE.IMAGE_UPLOAD_SUCCESS'));
+    } catch (error) {
+      // Upload failed — revert preview
+      this.selectedImage.set(null);
+
+      if (!environment.production) {
+        console.error('Error uploading profile image:', error);
+      }
+
+      let errorMessage = this.translationService.translate('PROFILE.IMAGE_UPLOAD_ERROR');
+      if (error instanceof HttpErrorResponse) {
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.error?.errors) {
+          const validationErrors = error.error.errors;
+          const messages: string[] = [];
+          for (const key in validationErrors) {
+            if (validationErrors.hasOwnProperty(key)) {
+              const fieldErrors = validationErrors[key];
+              if (Array.isArray(fieldErrors)) {
+                messages.push(...fieldErrors);
+              } else {
+                messages.push(String(fieldErrors));
+              }
+            }
+          }
+          if (messages.length > 0) {
+            errorMessage = messages.join(' ');
+          }
+        }
+      }
+      this.uiState.showAlert('danger', errorMessage);
+    } finally {
+      this.imageUploading.set(false);
+    }
   }
 
   private readFileAsDataUrl(file: File): Promise<string> {
