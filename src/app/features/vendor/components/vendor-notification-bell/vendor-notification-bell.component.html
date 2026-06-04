@@ -1,9 +1,11 @@
-<div #bellWrapper class="notification-bell-wrapper">
+<div class="notification-bell-wrapper">
   <button
     type="button"
     class="notification-bell-btn"
-    (click)="popover.toggle($event)"
+    (click)="toggleDropdown($event)"
     [attr.aria-label]="(unreadCount() > 0 ? unreadCount() + ' unread notifications' : 'Notifications')"
+    [attr.aria-expanded]="isOpen()"
+    aria-haspopup="dialog"
   >
     <i class="pi pi-bell"></i>
     @if (unreadCount() > 0) {
@@ -11,61 +13,68 @@
     }
   </button>
 
-<p-popover #popover [appendTo]="bellWrapper" (onShow)="onPopoverShow()" styleClass="notification-dropdown" [dismissable]="true">
-      <div class="notification-dropdown-header">
-      <h3 class="notification-dropdown-title">Notifications</h3>
-      @if (notifications().length > 0 && unreadCount() > 0) {
-        <button
-          type="button"
-          class="mark-all-btn"
-          [disabled]="markingAll()"
-          (click)="markAllAsRead()"
-        >
-          @if (markingAll()) {
-            <i class="pi pi-spin pi-spinner"></i>
-          }
-          Mark all as read
-        </button>
-      }
-    </div>
+  @if (isOpen()) {
+    <div class="notification-backdrop" (click)="closeDropdown()" aria-hidden="true"></div>
 
-    <div class="notification-dropdown-body">
-      @if (loading()) {
-        <div class="notification-loading">
-          <div class="skeleton-line"></div>
-          <div class="skeleton-line"></div>
-          <div class="skeleton-line"></div>
-        </div>
-      } @else if (notifications().length === 0) {
-        <div class="notification-empty">
-          <i class="pi pi-bell-slash"></i>
-          <p>No notifications yet</p>
-        </div>
-      } @else {
-        @for (notif of notifications(); track notif.id) {
-          <div class="notification-item" [class.notification-item--unread]="!notif.isRead">
-            <div class="notification-item-icon" [class]="'notification-item-icon--' + notif.icon">
-              <i class="{{ iconClass(notif.icon) }}"></i>
-            </div>
-            <div class="notification-item-body">
-              <div class="notification-item-header">
-                <span class="notification-item-title">{{ notif.title }}</span>
-                <span class="notification-item-time">{{ notif.createdAt | date:'short' }}</span>
-              </div>
-              <p class="notification-item-message">{{ notif.message }}</p>
-            </div>
-          </div>
+    <div class="notification-dropdown" role="dialog" aria-label="Notifications" aria-modal="true">
+      <div class="notification-dropdown__header">
+        <h3 class="notification-dropdown__title">Notifications</h3>
+        @if (notifications().length > 0 && unreadCount() > 0) {
+          <button
+            type="button"
+            class="notification-dropdown__mark-btn"
+            [disabled]="markingAll()"
+            (click)="markAllAsRead()"
+          >
+            @if (markingAll()) {
+              <i class="pi pi-spin pi-spinner"></i>
+            }
+            Mark all as read
+          </button>
         }
+      </div>
+
+      <div class="notification-dropdown__body">
+        @if (loading()) {
+          <div class="notification-loading">
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+          </div>
+        } @else if (notifications().length === 0) {
+          <div class="notification-empty">
+            <i class="pi pi-bell-slash"></i>
+            <p>No notifications yet</p>
+          </div>
+        } @else {
+          @for (notif of notifications(); track notif.id) {
+            <div class="notification-item" [class.notification-item--unread]="!notif.isRead">
+              <div class="notification-item__icon" [class]="'notification-item__icon--' + notif.icon">
+                <i class="{{ iconClass(notif.icon) }}"></i>
+              </div>
+              <div class="notification-item__body">
+                <div class="notification-item__header">
+                  <span class="notification-item__title">{{ notif.title }}</span>
+                  <span class="notification-item__time">{{ notif.createdAt | date:'short' }}</span>
+                </div>
+                <p class="notification-item__message">{{ notif.message }}</p>
+              </div>
+              @if (!notif.isRead) {
+                <span class="notification-item__unread-dot" aria-hidden="true"></span>
+              }
+            </div>
+          }
+        }
+      </div>
+
+      @if (notifications().length > 0) {
+        <div class="notification-dropdown__footer">
+          <button type="button" class="notification-dropdown__view-all" (click)="viewAll()">
+            View all notifications
+            <i class="pi pi-arrow-right"></i>
+          </button>
+        </div>
       }
     </div>
-
-    @if (notifications().length > 0) {
-      <div class="notification-dropdown-footer">
-        <a class="view-all-link" (click)="viewAll()">
-          View all notifications
-          <i class="pi pi-arrow-right"></i>
-        </a>
-      </div>
-    }
-  </p-popover>
+  }
 </div>

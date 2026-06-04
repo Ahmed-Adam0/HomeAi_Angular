@@ -1,8 +1,7 @@
-﻿import { Component, computed, inject, signal, ChangeDetectionStrategy, DestroyRef, OnInit } from '@angular/core';
+﻿import { Component, computed, inject, signal, ChangeDetectionStrategy, DestroyRef, OnInit, HostListener, ElementRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Popover } from 'primeng/popover';
 import { VendorNotificationStateService } from '../../services/vendor-notification-state.service';
 import { IVendorNotificationItem, NotificationIconType } from '../../interfaces';
 import { NAV_ROUTES } from '../../../../core/constants';
@@ -10,7 +9,7 @@ import { NAV_ROUTES } from '../../../../core/constants';
 @Component({
   selector: 'app-vendor-notification-bell',
   standalone: true,
-  imports: [Popover, DatePipe],
+  imports: [DatePipe],
   templateUrl: './vendor-notification-bell.component.html',
   styleUrl: './vendor-notification-bell.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,12 +18,14 @@ export class VendorNotificationBellComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly notificationState = inject(VendorNotificationStateService);
+  private readonly elementRef = inject(ElementRef);
 
   readonly navRoutes = NAV_ROUTES;
   readonly unreadCount = this.notificationState.unreadCount;
   readonly notifications = computed(() => this.notificationState.notifications().slice(0, 5));
   readonly loading = signal(false);
   readonly markingAll = signal(false);
+  readonly isOpen = signal(false);
 
   ngOnInit(): void {
     this.notificationState.loadUnreadCount()
@@ -32,8 +33,22 @@ export class VendorNotificationBellComponent implements OnInit {
       .subscribe();
   }
 
-  onPopoverShow(): void {
-    this.loadNotificationsIfNeeded();
+  toggleDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isOpen.update(v => !v);
+    if (this.isOpen()) {
+      this.loadNotificationsIfNeeded();
+      if (window.innerWidth <= 768) {
+        document.body.style.overflow = 'hidden';
+      }
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  closeDropdown(): void {
+    this.isOpen.set(false);
+    document.body.style.overflow = '';
   }
 
   markAllAsRead(): void {
@@ -52,6 +67,7 @@ export class VendorNotificationBellComponent implements OnInit {
   }
 
   viewAll(): void {
+    this.closeDropdown();
     this.router.navigate([NAV_ROUTES.VENDOR_NOTIFICATIONS]);
   }
 
@@ -64,6 +80,19 @@ export class VendorNotificationBellComponent implements OnInit {
       system: 'pi pi-bell',
     };
     return map[type] ?? 'pi pi-bell';
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.closeDropdown();
+  }
+
+  @HostListener('document:mousedown', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    if (!this.isOpen()) return;
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.closeDropdown();
+    }
   }
 
   private loadNotifications(): void {
