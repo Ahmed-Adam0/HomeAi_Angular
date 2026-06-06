@@ -1,6 +1,17 @@
 import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
+export interface AlertAction {
+  label: string;
+  routerLink: string;
+}
+
+export interface AlertData {
+  type: 'success' | 'danger' | 'warning' | 'info';
+  message: string;
+  action?: AlertAction;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +26,7 @@ export class UiState {
   readonly sidebarVisible = signal<boolean>(false);
 
   // Global toasts/alerts signal
-  readonly activeAlert = signal<{ type: 'success' | 'danger' | 'warning' | 'info'; message: string } | null>(null);
+  readonly activeAlert = signal<AlertData | null>(null);
 
   showLoader(): void {
     this.globalLoading.set(true);
@@ -29,8 +40,8 @@ export class UiState {
     this.sidebarVisible.update((state) => !state);
   }
 
-  showAlert(type: 'success' | 'danger' | 'warning' | 'info', message: string): void {
-    this.activeAlert.set({ type, message });
+  showAlert(type: AlertData['type'], message: string, action?: AlertAction): void {
+    this.activeAlert.set(action ? { type, message, action } : { type, message });
 
     if (isPlatformBrowser(this.platformId)) {
       if (this.alertTimeout) {

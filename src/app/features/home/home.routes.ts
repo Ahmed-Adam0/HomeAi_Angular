@@ -5,6 +5,6 @@ export const homeRoutes: Routes = [
   {
     path: APP_ROUTES.HOME,
     loadComponent: () =>
-      import('./pages/home/home.component').then((m) => m.Home),
+      import('./pages/premium-home/premium-home.component').then((m) => m.PremiumHomeComponent),
   },
 ];

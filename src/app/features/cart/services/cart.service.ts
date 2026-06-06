@@ -424,7 +424,7 @@ export class CartService {
           const successMsg = isAr
             ? `تمت إضافة ${quantityToAdd} × ${productTitle} إلى سلة التسوق بنجاح.`
             : `Added ${quantityToAdd} × ${productTitle} to your cart successfully.`;
-          this.uiState.showAlert('success', successMsg);
+          this.uiState.showAlert('success', successMsg, { label: isAr ? 'عرض السلة' : 'View Cart', routerLink: '/cart' });
 
           if (this.authService.isAuthenticated()) {
             const matched = this.findCartItem(itemId);
