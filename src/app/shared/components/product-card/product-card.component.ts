@@ -96,7 +96,7 @@ export class ProductCard implements OnInit {
           const isAr = this.translationService.currentLang() === 'ar';
           const prodName = localized(this.product, 'name', this.translationService.currentLang());
           const msg = isAr ? `تم إضافة "${prodName}" إلى المفضلة` : `"${prodName}" added to favorites`;
-          this.uiState.showAlert('success', msg);
+          this.uiState.showAlert('success', msg, { label: isAr ? 'عرض المفضلة' : 'View Favorites', routerLink: '/favorites' });
         },
         error: () => {
           this.isTogglingFav.set(false);

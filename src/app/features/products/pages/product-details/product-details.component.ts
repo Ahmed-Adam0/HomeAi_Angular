@@ -368,7 +368,7 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
           const isAr = this.translationService.currentLang() === 'ar';
           const prodName = isAr ? (prod.nameAr || prod.nameEn) : (prod.nameEn || prod.nameAr);
           const msg = isAr ? `تم إضافة "${prodName}" إلى المفضلة` : `"${prodName}" added to favorites`;
-          this.uiState.showAlert('success', msg);
+          this.uiState.showAlert('success', msg, { label: isAr ? 'عرض المفضلة' : 'View Favorites', routerLink: '/favorites' });
         },
         error: (err) => {
           console.error('Failed to add favorite', err);

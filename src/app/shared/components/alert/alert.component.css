@@ -275,6 +275,78 @@
   border-color: rgba(92, 127, 147, 0.18);
 }
 
+/* ===== Action Link ===== */
+
+.alert-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.alert-success .alert-action {
+  color: #657e5d;
+}
+
+.alert-success .alert-action:hover {
+  color: #4a5f44;
+  gap: 0.55rem;
+}
+
+.alert-danger .alert-action {
+  color: #ad5c51;
+}
+
+.alert-danger .alert-action:hover {
+  color: #87443a;
+  gap: 0.55rem;
+}
+
+.alert-warning .alert-action {
+  color: #b08149;
+}
+
+.alert-warning .alert-action:hover {
+  color: #8c6333;
+  gap: 0.55rem;
+}
+
+.alert-info .alert-action {
+  color: #5c7f93;
+}
+
+.alert-info .alert-action:hover {
+  color: #446072;
+  gap: 0.55rem;
+}
+
+.alert-action:hover .alert-action-label {
+  text-decoration: underline;
+}
+
+.alert-action-arrow {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.alert-action:hover .alert-action-arrow {
+  transform: translateX(2px);
+}
+
+[dir="rtl"] .alert-action-arrow {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .alert-action:hover .alert-action-arrow {
+  transform: scaleX(-1) translateX(-2px);
+}
+
 /* ===== Animations ===== */
 
 @keyframes slideInRight {

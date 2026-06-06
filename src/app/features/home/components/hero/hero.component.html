@@ -1,94 +1,124 @@
-<section class="hero-section position-relative overflow-hidden py-5 d-flex align-items-center">
-  <!-- Soft Ambient Glow Backdrops -->
-  <div class="ambient-glow-1 position-absolute rounded-circle filter-blur z-0"></div>
-  <div class="ambient-glow-2 position-absolute rounded-circle filter-blur z-0"></div>
+<section class="hero-cinematic">
+  <!-- Scroll track: provides 300vh of scroll space -->
+  <div class="hero-cinematic__track">
+    <!-- Pinned container: stays fixed during scroll -->
+    <div class="hero-cinematic__pinned">
 
-  <div class="container position-relative z-1 py-4 py-lg-5">
-    <div class="row align-items-center g-5">
-      <!-- Left Column: Editorial Headline & Actions -->
-      <div class="col-lg-6 text-dark text-start">
-        <div class="hero-text-content">
-          <span class="badge badge-gold px-3 py-2 rounded-pill fw-bold mb-4 tracking-wide text-uppercase fs-7 animate-fade-in-down d-inline-block">
-            {{ translate('HOME_HERO_BADGE', '✨ AI-Powered Design', '✨ تصميم بالذكاء الاصطناعي') }}
-          </span>
-
-          <h1 class="display-3 fw-extrabold mb-3 tracking-tight lh-sm animate-fade-in-left hero-headline">
-            {{ translate('HOME_HERO_TITLE', 'Design Your Room Before You Buy', 'صمّم غرفتك بالكامل قبل الشراء') }}
-          </h1>
-
-          <p class="lead text-secondary-color fs-5 mb-5 animate-fade-in-left duration-700 hero-description">
-            {{ translate('HOME_HERO_DESC', 'Upload your room, share your style preferences, and let our AI create the perfect interior design with real, purchasable furniture.', 'ارفع صورة لغرفتك، وحدد تفضيلاتك في التصميم، ودع الذكاء الاصطناعي يبتكر لك الديكور المثالي بقطع أثاث حقيقية قابلة للشراء.') }}
-          </p>
-
-          <!-- Primary & Secondary CTA Buttons -->
-          <div class="d-flex flex-wrap gap-3 mb-5 animate-fade-in-up">
-            <a routerLink="/ai-chat" class="btn btn-premium px-4 py-3 d-flex align-items-center gap-2">
-              <i class="bi bi-camera-fill fs-6"></i>
-              {{ translate('HOME_HERO_CTA_UPLOAD', 'Upload Your Room', 'ارفع صورة غرفتك') }}
-            </a>
-            <a routerLink="/products" class="btn btn-ai px-4 py-3 d-flex align-items-center gap-2">
-              <i class="bi bi-sparkles fs-6"></i>
-              {{ translate('HOME_HERO_CTA_TRY', 'Try for Free', 'جرب مجاناً') }}
-            </a>
-          </div>
-
-          <!-- Statistics Row -->
-          <div class="row g-4 animate-fade-in-up duration-700 hero-stats-row">
-            <div class="col-4 col-md-4 text-start border-end border-light-beige">
-              <h3 class="fw-extrabold text-dark mb-0 fs-3 tracking-tight">50K+</h3>
-              <p class="font-xs text-secondary-color mb-0 tracking-wide">{{ translate('HOME_HERO_STAT_ROOMS', 'Rooms Designed', 'غرفة صُممت') }}</p>
-            </div>
-            <div class="col-4 col-md-4 text-start border-end border-light-beige">
-              <h3 class="fw-extrabold text-dark mb-0 fs-3 tracking-tight">10K+</h3>
-              <p class="font-xs text-secondary-color mb-0 tracking-wide">{{ translate('HOME_HERO_STAT_PRODUCTS', 'Products Used', 'منتج مستخدم') }}</p>
-            </div>
-            <div class="col-4 col-md-4 text-start">
-              <h3 class="fw-extrabold text-dark mb-0 fs-3 tracking-tight">98%</h3>
-              <p class="font-xs text-secondary-color mb-0 tracking-wide">{{ translate('HOME_HERO_STAT_CUSTOMERS', 'Happy Customers', 'عملاء سعداء') }}</p>
-            </div>
+      <!-- ROOM IMAGE LAYER -->
+      <div class="hero-cinematic__room">
+        <!-- Before state -->
+        <img
+          class="room-before"
+          src="/assets/images/hero_interior.png"
+          alt="Interior room"
+        />
+        <!-- After state: same image with enhancements overlay -->
+        <div class="room-after">
+          <img
+            class="room-after__img"
+            src="/assets/images/hero_interior.png"
+            alt="AI-enhanced interior"
+          />
+          <div class="room-after__enhance" aria-hidden="true">
+            <!-- Furniture silhouette overlays for after state -->
+            <svg class="room-after__furniture" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+              <!-- Sofa silhouette -->
+              <path class="furniture-item" d="M280 640 L280 720 L520 720 L520 640 C520 600, 480 580, 400 580 C320 580, 280 600, 280 640Z" fill="rgba(184,142,90,0.12)" stroke="rgba(184,142,90,0.2)" stroke-width="1"/>
+              <!-- Coffee table -->
+              <ellipse class="furniture-item" cx="650" cy="740" rx="100" ry="30" fill="rgba(184,142,90,0.1)" stroke="rgba(184,142,90,0.18)" stroke-width="1"/>
+              <!-- Floor lamp -->
+              <path class="furniture-item" d="M1400 580 L1400 780 M1380 580 L1420 580 M1360 540 C1360 510, 1440 510, 1440 540 L1360 540Z" fill="none" stroke="rgba(184,142,90,0.15)" stroke-width="2"/>
+              <!-- Artwork frame -->
+              <rect class="furniture-item" x="1550" y="300" width="140" height="180" rx="4" fill="rgba(184,142,90,0.08)" stroke="rgba(184,142,90,0.15)" stroke-width="1.5"/>
+              <!-- Plant -->
+              <path class="furniture-item" d="M1100 700 C1100 640, 1060 600, 1100 560 C1140 600, 1100 640, 1100 700Z" fill="rgba(120,150,100,0.12)" stroke="rgba(120,150,100,0.18)" stroke-width="1"/>
+              <!-- Rug -->
+              <ellipse class="furniture-item" cx="550" cy="790" rx="200" ry="40" fill="rgba(200,180,160,0.08)" stroke="rgba(200,180,160,0.12)" stroke-width="1"/>
+            </svg>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Layered Editorial Graphic & Floating Badges -->
-      <div class="col-lg-6 position-relative animate-fade-in-right">
-        <div class="hero-graphic-wrapper">
-          <!-- Back Decorative Layered Shadow -->
-          <div class="showcase-shadow position-absolute rounded-5 w-100 h-100 bg-gold-tint opacity-10"></div>
+      <!-- OVERLAY GRADIENT for depth -->
+      <div class="hero-cinematic__overlay"></div>
 
-          <!-- Main Core Showcase Image -->
-          <div class="main-image-container rounded-5 overflow-hidden shadow-2xl border border-white border-opacity-40 position-relative z-2">
-            <img src="/assets/images/hero_interior.png" 
-                 [alt]="translate('HOME_HERO_TITLE', 'Design Your Room Before You Buy', 'صمّم غرفتك بالكامل قبل الشراء')"
-                 class="w-100 h-100 object-fit-cover hover-scale transition-all duration-1000" />
-            
-            <!-- Elegant Centered Circular Play Overlay Button -->
-            <div class="play-btn-overlay position-absolute top-50 start-50 translate-middle z-3">
-              <button class="btn btn-play rounded-circle d-flex align-items-center justify-content-center border-0" aria-label="Play product video">
-                <i class="bi bi-play-fill fs-3 text-gold"></i>
-              </button>
-            </div>
+      <!-- ===== SCENE 1: HEADLINE ===== -->
+      <div class="hero-cinematic__headline">
+        <span class="hl-line hl-line--1">Furniture</span>
+        <span class="hl-line hl-line--2">Chosen</span>
+        <span class="hl-line hl-line--3">For You</span>
+      </div>
 
-            <!-- Floating Premium Card 1: Modern Sofa tag (top-left) -->
-            <div class="floating-badge-sofa position-absolute top-0 start-0 m-4 px-3 py-2 rounded-3 text-dark text-start z-3 border border-dark border-opacity-5 shadow-lg bg-white d-flex align-items-center gap-2 backdrop-blur">
-              <span class="fs-7 fw-bold text-dark">{{ translate('HOME_HERO_SOFA_LABEL', 'Modern Sofa', 'أريكة عصرية') }}</span>
-              <span class="badge bg-gold-light text-gold font-xs px-2 py-1 rounded">{{ translate('HOME_HERO_SOFA_PRICE', '$1,200', '١,٢٠٠ $') }}</span>
-            </div>
+      <!-- ===== SCENE 2: AI DETECTION ===== -->
+      <div class="hero-cinematic__scanline"></div>
 
-            <!-- Floating Tag 2: AI Generated (bottom-left) -->
-            <div class="floating-badge-ai position-absolute bottom-0 start-0 m-4 px-3 py-2 rounded-pill text-dark text-start z-3 border border-dark border-opacity-5 shadow-lg bg-white d-flex align-items-center gap-2 backdrop-blur">
-              <span class="ai-spark-dot"></span>
-              <span class="fs-8 fw-semibold text-secondary-color tracking-wide">{{ translate('HOME_HERO_AI_TAG', 'AI Generated Design', 'تصميم الذكاء الاصطناعي') }}</span>
-            </div>
+      <div class="hero-cinematic__dots">
+        <div class="detect-dot" style="top:32%;left:22%">
+          <span class="detect-dot__ring"></span>
+          <span class="detect-dot__label">Sofa Area</span>
+        </div>
+        <div class="detect-dot" style="top:48%;left:52%">
+          <span class="detect-dot__ring"></span>
+          <span class="detect-dot__label">Coffee Table</span>
+        </div>
+        <div class="detect-dot" style="top:58%;left:76%">
+          <span class="detect-dot__ring"></span>
+          <span class="detect-dot__label">Floor Lamp</span>
+        </div>
+        <div class="detect-dot" style="top:28%;left:62%">
+          <span class="detect-dot__ring"></span>
+          <span class="detect-dot__label">Wall Art</span>
+        </div>
+        <div class="detect-dot" style="top:72%;left:38%">
+          <span class="detect-dot__ring"></span>
+          <span class="detect-dot__label">Rug</span>
+        </div>
+      </div>
 
-            <!-- Floating Tag 3: Smart Layout Preview (bottom-right) -->
-            <div class="floating-badge-mobile position-absolute bottom-0 end-0 m-4 px-3 py-2 rounded-pill text-dark text-start z-3 border border-dark border-opacity-5 shadow-lg bg-white d-flex align-items-center gap-2 backdrop-blur">
-              <i class="bi bi-cpu-fill text-gold fs-7"></i>
-              <span class="fs-8 fw-semibold text-secondary-color tracking-wide">{{ translate('HOME_HERO_LAYOUT_TAG', 'Smart Layout Preview', 'معاينة المخطط الذكي') }}</span>
-            </div>
+      <div class="hero-cinematic__scan-status">AI Room Analysis</div>
+
+      <!-- ===== SCENE 3: PRODUCT RECOMMENDATIONS ===== -->
+      <div class="hero-cinematic__products">
+        <div class="product-card">
+          <div class="product-card__thumb" style="background:#b8a89a"></div>
+          <div class="product-card__body">
+            <span class="product-card__name">Nordic Lounge Chair</span>
+            <span class="product-card__match">
+              <span class="product-card__pct">92</span>% Match
+            </span>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-card__thumb" style="background:#c9b9a5"></div>
+          <div class="product-card__body">
+            <span class="product-card__name">Marble Coffee Table</span>
+            <span class="product-card__match">
+              <span class="product-card__pct">87</span>% Match
+            </span>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-card__thumb" style="background:#d4c8b4"></div>
+          <div class="product-card__body">
+            <span class="product-card__name">Linen Floor Lamp</span>
+            <span class="product-card__match">
+              <span class="product-card__pct">95</span>% Match
+            </span>
           </div>
         </div>
       </div>
+
+      <!-- ===== SCENE 4: BEFORE / AFTER LABELS ===== -->
+      <div class="hero-cinematic__ba">
+        <span class="ba-label ba-label--before">Original Room</span>
+        <span class="ba-label ba-label--after">AI Enhanced</span>
+      </div>
+
+      <!-- ===== SCENE 5: FINAL STATEMENT ===== -->
+      <div class="hero-cinematic__final">
+        <p class="final-text">&ldquo;Your Room Already<br />Knows What It Needs.&rdquo;</p>
+      </div>
+
     </div>
   </div>
 </section>

@@ -87,6 +87,30 @@
 
       <app-notification-bell />
 
+      <!-- Wishlist -->
+      <a [routerLink]="navRoutes.FAVORITES"
+         class="action-btn text-dark text-decoration-none position-relative"
+         aria-label="Wishlist">
+        <i class="bi bi-heart fs-5"></i>
+        @if (favoritesCount() > 0) {
+          <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
+            {{ favoritesCount() }}
+          </span>
+        }
+      </a>
+
+      <!-- Cart -->
+      <a [routerLink]="navRoutes.CART"
+         class="action-btn text-dark text-decoration-none position-relative"
+         aria-label="Shopping Cart">
+        <i class="bi bi-bag fs-5"></i>
+        @if (cartCount() > 0) {
+          <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
+            {{ cartCount() }}
+          </span>
+        }
+      </a>
+
       <div class="auth-section position-relative">
         <div class="auth-authenticated" [class.d-none]="!authService.isLoggedIn()">
           <div class="dropdown-wrapper position-relative">
@@ -157,30 +181,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Wishlist -->
-      <a [routerLink]="navRoutes.FAVORITES"
-         class="action-btn text-dark text-decoration-none position-relative"
-         aria-label="Wishlist">
-        <i class="bi bi-heart fs-5"></i>
-        @if (favoritesCount() > 0) {
-          <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
-            {{ favoritesCount() }}
-          </span>
-        }
-      </a>
-
-      <!-- Cart -->
-      <a [routerLink]="navRoutes.CART"
-         class="action-btn text-dark text-decoration-none position-relative"
-         aria-label="Shopping Cart">
-        <i class="bi bi-bag fs-5"></i>
-        @if (cartCount() > 0) {
-          <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
-            {{ cartCount() }}
-          </span>
-        }
-      </a>
 
       <!-- Mobile Hamburger Toggle -->
       <button class="mobile-toggle border-0 bg-transparent p-0 d-block d-lg-none"

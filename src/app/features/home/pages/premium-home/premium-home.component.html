@@ -1,0 +1,455 @@
+<!-- ============================================
+     SECTION 1: CINEMATIC HERO
+     ============================================ -->
+<section class="premium-hero" id="hero">
+  <div class="hero-bg-wrapper">
+    <img src="assets/images/hero_interior.png" alt="" class="hero-bg-image" loading="eager" />
+    <div class="hero-gradient-overlay"></div>
+    <div class="hero-glass-overlay"></div>
+  </div>
+
+  <div class="hero-parallax-layer"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge-wrapper">
+      <span class="hero-badge">{{ translate('HERO_BADGE', 'AI-Powered Interior Design', 'تصميم داخلي بالذكاء الاصطناعي') }}</span>
+    </div>
+
+    <h1 class="hero-headline">
+      <span class="hero-word">{{ translate('HERO_WORD1', 'Premium', 'أثاث') }}</span>
+      <span class="hero-word">{{ translate('HERO_WORD2', 'Furniture', 'عصري') }}</span>
+      <span class="hero-word hero-word-accent">{{ translate('HERO_WORD3', 'Designed For You', 'بتقنية الذكاء') }}</span>
+    </h1>
+
+    <p class="hero-subheadline">
+      {{ translate('HERO_SUB', 'Use AI to discover furniture that perfectly matches your room, style, colors and layout.', 'استخدم الذكاء الاصطناعي لاكتشاف أثاث يتناسب تماماً مع غرفتك وأسلوبك وألوانك.') }}
+    </p>
+
+    <div class="hero-cta-group">
+      <a routerLink="/products" class="hero-cta hero-cta-primary">
+        {{ translate('HERO_CTA_PRIMARY', 'Explore Collection', 'استكشف المجموعة') }}
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a routerLink="/ai-chat" class="hero-cta hero-cta-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        {{ translate('HERO_CTA_SECONDARY', 'Scan Your Room', 'امسح غرفتك') }}
+      </a>
+    </div>
+
+    <div class="hero-stats-bar">
+      <div class="hero-stat">
+        <span class="hero-stat-value">500+</span>
+        <span class="hero-stat-label">{{ translate('HERO_STAT1', 'Products', 'منتج') }}</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">50+</span>
+        <span class="hero-stat-label">{{ translate('HERO_STAT2', 'Vendors', 'بائع') }}</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">10K+</span>
+        <span class="hero-stat-label">{{ translate('HERO_STAT3', 'Happy Customers', 'عميل') }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-floating-badge hero-floating-badge-1">
+    <div class="floating-badge-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    </div>
+    <div class="floating-badge-text">
+      <span class="floating-badge-title">AI Matching</span>
+      <span class="floating-badge-sub">95% Accuracy</span>
+    </div>
+  </div>
+
+  <div class="hero-floating-badge hero-floating-badge-2">
+    <div class="floating-badge-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </div>
+    <div class="floating-badge-text">
+      <span class="floating-badge-title">Premium Quality</span>
+      <span class="floating-badge-sub">Curated Collection</span>
+    </div>
+  </div>
+
+  <div class="hero-scroll-indicator">
+    <span class="scroll-text">{{ translate('SCROLL', 'Scroll', 'اسفل') }}</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     SECTION 2: EDITORIAL SPLIT - WHY FURNIMIND
+     ============================================ -->
+<section class="editorial-section">
+  <div class="editorial-container">
+    <div class="editorial-image-wrapper">
+      <div class="editorial-image-reveal">
+        <img src="assets/images/ai_before.png" alt="FurniMind AI Room" class="editorial-image" loading="lazy" />
+        <div class="editorial-image-overlay"></div>
+        <div class="editorial-image-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <span>AI Curated</span>
+        </div>
+      </div>
+    </div>
+    <div class="editorial-content-wrapper">
+      <div class="editorial-content">
+        <span class="editorial-tag">{{ translate('WHY_TAG', 'Why FurniMind AI', 'لماذا FurniMind AI') }}</span>
+        <h2 class="editorial-heading">{{ translate('WHY_TITLE', 'Intelligence Meets Interior Design', 'الذكاء يلتقي بالتصميم الداخلي') }}</h2>
+        <p class="editorial-desc">{{ translate('WHY_DESC', 'Our advanced AI analyzes your space, understands your style, and recommends furniture that fits perfectly — in dimensions, color palette, and aesthetic.', 'يحلل الذكاء الاصطناعي المتقدم مساحتك ويفهم أسلوبك ويوصي بأثاث يتناسب تماماً مع الأبعاد ولوحة الألوان والجمالية.') }}</p>
+        <div class="editorial-features">
+          <div class="editorial-feature">
+            <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+            <div>
+              <strong>{{ translate('WHY_FEAT1_TITLE', 'AI Recommendations', 'توصيات ذكية') }}</strong>
+              <p>{{ translate('WHY_FEAT1_DESC', 'Personalized suggestions based on your room analysis.', 'اقتراحات مخصصة بناءً على تحليل غرفتك.') }}</p>
+            </div>
+          </div>
+          <div class="editorial-feature">
+            <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg></div>
+            <div>
+              <strong>{{ translate('WHY_FEAT2_TITLE', 'Personalized Furniture', 'أثاث مخصص') }}</strong>
+              <p>{{ translate('WHY_FEAT2_DESC', 'Every piece matched to your unique space dimensions.', 'كل قطعة مطابقة لأبعاد مساحتك الفريدة.') }}</p>
+            </div>
+          </div>
+          <div class="editorial-feature">
+            <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <div>
+              <strong>{{ translate('WHY_FEAT3_TITLE', 'Smart Matching', 'مطابقة ذكية') }}</strong>
+              <p>{{ translate('WHY_FEAT3_DESC', 'Style, color, and material harmony guaranteed.', 'تناسق مضمون في الأسلوب والألوان والخامات.') }}</p>
+            </div>
+          </div>
+        </div>
+        <a routerLink="/ai-chat" class="editorial-cta">
+          {{ translate('WHY_CTA', 'Discover Your Style', 'اكتشف أسلوبك') }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="editorial-card editorial-card-1">
+    <div class="card-accent"></div>
+    <span class="card-big-number">98%</span>
+    <span class="card-label">{{ translate('SATISFACTION', 'Satisfaction Rate', 'نسبة الرضا') }}</span>
+  </div>
+  <div class="editorial-card editorial-card-2">
+    <div class="card-accent"></div>
+    <span class="card-big-number">50K+</span>
+    <span class="card-label">{{ translate('ROOMS_DESIGNED', 'Rooms Designed', 'غرفة مصممة') }}</span>
+  </div>
+</section>
+
+
+<!-- ============================================
+     SECTION 3: SCROLL STORYTELLING (Apple-style)
+     ============================================ -->
+<section class="scroll-storytelling">
+  <div class="story-pin-container">
+    <div class="story-panel story-panel-1">
+      <div class="story-panel-bg">
+        <img src="assets/images/ai_before.png" alt="Upload Your Room" loading="lazy" />
+      </div>
+      <div class="story-panel-overlay"></div>
+      <div class="story-panel-content">
+        <span class="story-step">{{ translate('STORY_STEP1', 'Step 1', 'الخطوة ١') }}</span>
+        <h2 class="story-title">{{ translate('STORY_TITLE1', 'Upload Your Room', 'ارفع صورة غرفتك') }}</h2>
+        <p class="story-desc">{{ translate('STORY_DESC1', 'Start by sharing a photo of your space. Any room, any angle.', 'ابدأ بمشاركة صورة لمساحتك. أي غرفة، أي زاوية.') }}</p>
+      </div>
+    </div>
+
+    <div class="story-panel story-panel-2">
+      <div class="story-panel-bg">
+        <img src="assets/images/hero_interior.png" alt="AI Understands Your Space" loading="lazy" />
+      </div>
+      <div class="story-panel-overlay"></div>
+      <div class="story-panel-content">
+        <span class="story-step">{{ translate('STORY_STEP2', 'Step 2', 'الخطوة ٢') }}</span>
+        <h2 class="story-title">{{ translate('STORY_TITLE2', 'AI Understands Your Space', 'AI يفهم مساحتك') }}</h2>
+        <p class="story-desc">{{ translate('STORY_DESC2', 'Our AI analyzes dimensions, light, textures and spatial flow.', 'يحلل الذكاء الاصطناعي الأبعاد والإضاءة والقوام والتدفق المكاني.') }}</p>
+      </div>
+    </div>
+
+    <div class="story-panel story-panel-3">
+      <div class="story-panel-bg">
+        <img src="assets/images/ai_after.png" alt="Furniture Recommendations" loading="lazy" />
+      </div>
+      <div class="story-panel-overlay"></div>
+      <div class="story-panel-content">
+        <span class="story-step">{{ translate('STORY_STEP3', 'Step 3', 'الخطوة ٣') }}</span>
+        <h2 class="story-title">{{ translate('STORY_TITLE3', 'Smart Recommendations', 'توصيات ذكية') }}</h2>
+        <p class="story-desc">{{ translate('STORY_DESC3', 'Get furniture suggestions that match your style perfectly.', 'احصل على اقتراحات أثاث تناسب أسلوبك تماماً.') }}</p>
+      </div>
+    </div>
+
+    <div class="story-panel story-panel-4">
+      <div class="story-panel-bg">
+        <img src="assets/images/room_living.png" alt="Visualize Before Purchase" loading="lazy" />
+      </div>
+      <div class="story-panel-overlay"></div>
+      <div class="story-panel-content">
+        <span class="story-step">{{ translate('STORY_STEP4', 'Step 4', 'الخطوة ٤') }}</span>
+        <h2 class="story-title">{{ translate('STORY_TITLE4', 'Visualize Before Buying', 'تصور قبل الشراء') }}</h2>
+        <p class="story-desc">{{ translate('STORY_DESC4', 'See how furniture looks in your room with AI-powered preview.', 'شاهد كيف يبدو الأثاث في غرفتك باستخدام معاينة AI.') }}</p>
+      </div>
+    </div>
+
+    <div class="story-panel story-panel-5">
+      <div class="story-panel-bg">
+        <img src="assets/images/room_bedroom.png" alt="Order With Confidence" loading="lazy" />
+      </div>
+      <div class="story-panel-overlay"></div>
+      <div class="story-panel-content">
+        <span class="story-step">{{ translate('STORY_STEP5', 'Step 5', 'الخطوة ٥') }}</span>
+        <h2 class="story-title">{{ translate('STORY_TITLE5', 'Order With Confidence', 'اطلب بثقة') }}</h2>
+        <p class="story-desc">{{ translate('STORY_DESC5', 'Purchase knowing exactly how it fits, matches and looks.', 'اشترِ وأنت تعرف بالضبط كيف سيكون الملاءمة والتطابق والمظهر.') }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     SECTION 4: FEATURED CATEGORIES (Masonry Editorial)
+     ============================================ -->
+<section class="categories-section">
+  <div class="categories-parallax"></div>
+  <div class="categories-container">
+    <div class="categories-header reveal-on-scroll">
+      <span class="categories-tag">{{ translate('CAT_TAG', 'Collections', 'المجموعات') }}</span>
+      <h2 class="categories-heading">{{ translate('CAT_TITLE', 'Explore By Room', 'استكشف حسب الغرفة') }}</h2>
+    </div>
+
+    @if (isLoading()) {
+      <div class="categories-loading">
+        <div class="category-skeleton category-skeleton-tall"></div>
+        <div class="category-skeleton category-skeleton-wide"></div>
+        <div class="category-skeleton category-skeleton-square"></div>
+        <div class="category-skeleton category-skeleton-small"></div>
+        <div class="category-skeleton category-skeleton-small"></div>
+      </div>
+    } @else if (error()) {
+      <div class="categories-error">
+        <p>{{ error() }}</p>
+      </div>
+    } @else if (categories().length === 0) {
+      <div class="categories-empty">
+        <p>{{ translate('CAT_EMPTY', 'No categories available', 'لا توجد فئات متاحة') }}</p>
+      </div>
+    } @else {
+      <div class="category-masonry">
+        @for (cat of categories(); track trackByCategoryId($index, cat); let i = $index) {
+          <a [routerLink]="'/products'" [queryParams]="{categoryId: cat.id}" [class]="'category-card ' + getCardClass(i, categories().length)">
+            <img [src]="cat.imageUrl" [alt]="categoryName(cat)" class="category-img" loading="lazy" />
+            <div class="category-overlay"></div>
+            <div class="category-info">
+              <h3 class="category-name">{{ categoryName(cat) }}</h3>
+              @if (cat.productCount != null) {
+                <span class="category-count">{{ cat.productCount }} {{ translate('CAT_PRODUCTS', 'Products', 'منتج') }}</span>
+              }
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+
+<!-- ============================================
+     SECTION 5: OUR PRODUCTS (Dynamic Showcase)
+     ============================================ -->
+<section class="showcase-section">
+  <div class="showcase-bg"></div>
+  <div class="showcase-container">
+    <div class="products-header">
+      <span class="products-tag">{{ translate('PRODUCTS_TAG', 'Our Collection', 'مجموعتنا') }}</span>
+      <h2 class="products-heading">{{ translate('PRODUCTS_TITLE', 'OUR PRODUCTS', 'منتجاتنا') }}</h2>
+      <p class="products-subtitle">{{ translate('PRODUCTS_SUB', 'Handpicked pieces for your perfect space', 'قطع مختارة بعناية لمساحتك المثالية') }}</p>
+    </div>
+
+    @if (!isProductsLoading() && !productsError()) {
+      <div class="products-pills">
+        <button
+          class="pill-btn"
+          [class.pill-active]="activeCategoryId() === null"
+          (click)="filterByCategory(null)">
+          {{ translate('PILL_ALL', 'All', 'الكل') }}
+        </button>
+        @for (cat of categories(); track cat.id) {
+          <button
+            class="pill-btn"
+            [class.pill-active]="activeCategoryId() === cat.id"
+            (click)="filterByCategory(cat.id)">
+            {{ categoryName(cat) }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (isProductsLoading()) {
+      <div class="products-skeleton-pills">
+        <span class="skeleton-pill"></span>
+        <span class="skeleton-pill"></span>
+        <span class="skeleton-pill"></span>
+        <span class="skeleton-pill"></span>
+        <span class="skeleton-pill"></span>
+      </div>
+      <div class="products-grid">
+        @for (_ of [1,2,3,4,5,6,7,8,9]; track $index) {
+          <div class="product-skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-line skeleton-line-short"></div>
+              <div class="skeleton-line skeleton-line-medium"></div>
+              <div class="skeleton-line skeleton-line-long"></div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else if (productsError()) {
+      <div class="products-error">
+        <p>{{ productsError() }}</p>
+      </div>
+    } @else if (filteredProducts().length === 0) {
+      <div class="products-empty">
+        <p>{{ translate('PRODUCTS_EMPTY', 'No products found in this category', 'لا توجد منتجات في هذه الفئة') }}</p>
+      </div>
+    } @else {
+      <div class="products-grid">
+        @for (product of filteredProducts(); track product.id) {
+          <div
+            class="product-card"
+            role="link"
+            tabindex="0"
+            [attr.aria-label]="productName(product)"
+            (click)="openProduct(product.id)"
+            (keydown.enter)="openProduct(product.id)"
+            (keydown.space)="$event.preventDefault(); openProduct(product.id)">
+            <div class="product-card-image-wrap">
+              <img
+                [src]="product.mainImageUrl"
+                [alt]="productName(product)"
+                class="product-card-img"
+                loading="lazy"
+              />
+              <div class="product-card-rating" *ngIf="product.averageRating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>{{ product.averageRating }}</span>
+              </div>
+              <button
+                class="product-card-fav"
+                [class.fav-active]="isFavorite(product.id)"
+                [class.is-loading]="isTogglingFav(product.id)"
+                [disabled]="isTogglingFav(product.id)"
+                (click)="toggleFavorite($event, product.id)"
+                [attr.aria-label]="isFavorite(product.id) ? translate('FAV_REMOVE', 'Remove from favorites', 'إزالة من المفضلة') : translate('FAV_ADD', 'Add to favorites', 'أضف إلى المفضلة')">
+                @if (isTogglingFav(product.id)) {
+                  <span class="cart-btn-spinner"></span>
+                } @else {
+                  <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="isFavorite(product.id) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                }
+              </button>
+            </div>
+            <div class="product-card-body">
+              <h3 class="product-card-name">{{ productName(product) }}</h3>
+              <div class="product-card-footer">
+                <span class="product-card-price">{{ formatPrice(product.price) }}</span>
+                <button
+                  class="product-card-cart-btn"
+                  [class.is-loading]="isAddingToCart(product.id)"
+                  [class.is-success]="isCartSuccess(product.id)"
+                  [disabled]="isAddingToCart(product.id)"
+                  (click)="addToCart($event, product)"
+                  attr.aria-label="{{ translate('ADD_TO_CART', 'Add to cart', 'أضف إلى السلة') }}">
+                  @if (isAddingToCart(product.id)) {
+                    <span class="cart-btn-spinner"></span>
+                    <span>{{ translate('ADDING', 'Adding...', 'جاري الإضافة') }}</span>
+                  } @else if (isCartSuccess(product.id)) {
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>{{ translate('ADDED', 'Added', 'تمت الإضافة') }}</span>
+                  } @else {
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <span>{{ translate('ADD', 'Add', 'أضف') }}</span>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="products-cta">
+      <a routerLink="/products" class="products-view-all">
+        {{ translate('VIEW_ALL_PRODUCTS', 'View All Products', 'عرض جميع المنتجات') }}
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     SECTION 6: GRAND AI CTA — Emotional Climax
+     ============================================ -->
+<section class="cta-ai-section">
+  <div class="cta-bg-wrapper">
+    <img src="assets/images/hero_interior.png" alt="" class="cta-bg" loading="lazy" />
+    <div class="cta-overlay"></div>
+    <div class="cta-gradient-overlay"></div>
+  </div>
+  <div class="cta-content">
+    <div class="cta-particle cta-particle-1"></div>
+    <div class="cta-particle cta-particle-2"></div>
+    <div class="cta-particle cta-particle-3"></div>
+    <div class="cta-particle cta-particle-4"></div>
+    <div class="cta-particle cta-particle-5"></div>
+
+    <div class="cta-floating cta-floating-1">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    </div>
+    <div class="cta-floating cta-floating-2">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <div class="cta-floating cta-floating-3">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </div>
+
+    <span class="cta-badge">{{ translate('CTA_AI_BADGE', 'AI Powered', 'مدعوم بالذكاء الاصطناعي') }}</span>
+
+    <div class="cta-counter-wrapper">
+      <span class="cta-counter-label">{{ translate('CTA_COUNTER_LABEL', 'Accuracy', 'دقة') }}</span>
+      <span class="cta-counter">0%</span>
+    </div>
+
+    <h2 class="cta-headline">{{ translate('CTA_AI_TITLE', 'Transform Your Home With Intelligence', 'حوّل منزلك بالذكاء الاصطناعي') }}</h2>
+
+    <p class="cta-description">{{ translate('CTA_AI_DESC', 'Join 50,000+ homeowners who redesigned their spaces with AI-powered precision. Upload a photo and get personalized furniture recommendations in seconds — perfectly matched to your dimensions, style, and color palette.', 'انضم إلى أكثر من ٥٠,٠٠٠ من أصحاب المنازل الذين أعادوا تصميم مساحاتهم بدقة الذكاء الاصطناعي. ارفع صورة واحصل على توصيات أثاث مخصصة في ثوانٍ - متطابقة تماماً مع أبعادك وأسلوبك وألوانك.') }}</p>
+
+    <div class="cta-stats-row">
+      <div class="cta-stat-item">
+        <span class="cta-stat-value">50K+</span>
+        <span class="cta-stat-label">{{ translate('CTA_STAT1', 'Rooms Transformed', 'غرفة محوّلة') }}</span>
+      </div>
+      <div class="cta-stat-divider"></div>
+      <div class="cta-stat-item">
+        <span class="cta-stat-value">98%</span>
+        <span class="cta-stat-label">{{ translate('CTA_STAT2', 'Satisfaction Rate', 'نسبة الرضا') }}</span>
+      </div>
+      <div class="cta-stat-divider"></div>
+      <div class="cta-stat-item">
+        <span class="cta-stat-value">3min</span>
+        <span class="cta-stat-label">{{ translate('CTA_STAT3', 'Average Scan', 'متوسط المسح') }}</span>
+      </div>
+    </div>
+
+    <a routerLink="/ai-chat" class="cta-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      {{ translate('CTA_AI_BTN', 'Scan Your Room Now', 'امسح غرفتك الآن') }}
+    </a>
+  </div>
+</section>

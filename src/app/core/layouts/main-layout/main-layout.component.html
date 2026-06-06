@@ -16,6 +16,7 @@
       <app-alert
         [type]="alert.type"
         [message]="alert.message"
+        [action]="alert.action ?? null"
         (close)="uiState.dismissAlert()">
       </app-alert>
     </div>
