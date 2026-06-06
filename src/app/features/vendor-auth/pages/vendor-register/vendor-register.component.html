@@ -18,8 +18,8 @@
         <p>{{ t().pageSubtitle }}</p>
       </div>
 
-      <app-alert *ngIf="successMessage" type="success" [message]="successMessage" [dismissible]="false" [inline]="true"></app-alert>
-      <app-alert *ngIf="errorMessage" type="danger" [message]="errorMessage" [dismissible]="false" [inline]="true"></app-alert>
+      <div class="inline-success" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="inline-error" *ngIf="errorMessage">{{ errorMessage }}</div>
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
 

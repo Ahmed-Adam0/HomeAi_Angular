@@ -273,55 +273,30 @@
 }
 
 /* ═══════════════════════════════
-   CUSTOM ALERTS
+   INLINE ALERTS
 ═══════════════════════════════ */
-.alert-custom {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  font-size: 13.5px;
-  font-weight: 500;
-  animation: alertSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.alert-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.alert-custom-success {
-  background: #f0fdf4;
-  color: #166534;
-  border: 1px solid #bbf7d0;
-}
-
-.alert-custom-success .alert-icon {
-  color: #16a34a;
-}
-
-.alert-custom-error {
-  background: #fef2f2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-}
-
-.alert-custom-error .alert-icon {
+.inline-error {
   color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  direction: rtl;
 }
 
-@keyframes alertSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+[dir="ltr"] .inline-error {
+  direction: ltr;
+}
+
+.inline-success {
+  color: #166534;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  direction: rtl;
+}
+
+[dir="ltr"] .inline-success {
+  direction: ltr;
 }
 
 /* زر التسجيل */

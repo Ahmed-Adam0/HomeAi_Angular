@@ -20,21 +20,11 @@
       </div>
 
       @if (successMessage) {
-        <div class="alert-custom alert-custom-success">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="alert-icon">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-          <span>{{ successMessage }}</span>
-        </div>
+        <div class="inline-success">{{ successMessage }}</div>
       }
 
       @if (errorMessage) {
-        <div class="alert-custom alert-custom-error">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="alert-icon">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-          </svg>
-          <span>{{ errorMessage }}</span>
-        </div>
+        <div class="inline-error">{{ errorMessage }}</div>
       }
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">

@@ -18,7 +18,7 @@
         <p>{{ t().pageSubtitle }}</p>
       </div>
 
-      <app-alert *ngIf="errorMessage" type="danger" [message]="errorMessage" [dismissible]="false" [inline]="true"></app-alert>
+      <div class="inline-error" *ngIf="errorMessage">{{ errorMessage }}</div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
 

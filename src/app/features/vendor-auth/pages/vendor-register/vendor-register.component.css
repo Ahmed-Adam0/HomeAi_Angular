@@ -249,6 +249,30 @@
   text-decoration: underline;
 }
 
+.inline-error {
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  direction: rtl;
+}
+
+[dir="ltr"] .inline-error {
+  direction: ltr;
+}
+
+.inline-success {
+  color: #166534;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  direction: rtl;
+}
+
+[dir="ltr"] .inline-success {
+  direction: ltr;
+}
+
 .auth-visual-side {
   flex: 1;
   display: flex;
