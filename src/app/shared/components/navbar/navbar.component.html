@@ -85,7 +85,9 @@
     <!-- Desktop Actions (Right Side) -->
     <div class="actions-area d-flex align-items-center gap-3">
 
-      <app-notification-bell />
+      @if (isAuthenticated()) {
+        <app-notification-bell />
+      }
 
       <!-- Wishlist -->
       <a [routerLink]="navRoutes.FAVORITES"

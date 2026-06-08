@@ -67,6 +67,7 @@ export class Navbar implements OnInit {
   private scrollRAF = 0;
 
   readonly cartCount = computed(() => this.cartService.itemCount());
+  readonly isAuthenticated = this.authService.isAuthenticated;
   readonly currentUrl = signal<string>('');
 
   readonly userAvatarSrc = computed<string | null>(() => {

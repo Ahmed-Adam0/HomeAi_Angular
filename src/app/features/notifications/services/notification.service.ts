@@ -1,13 +1,15 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable, throwError, tap, map, timer, Subject, switchMap } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
+import { catchError, Observable, throwError, tap, map, timer, Subject, switchMap, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { environment } from '../../../../environments/environment';
-import { API_URLS } from '../../../core/constants';
+import { API_URLS, LOCAL_STORAGE_KEYS } from '../../../core/constants';
 import { PaginatedResponse } from '../data-access/dto/notifications-response.dto';
 import { UnreadCount } from '../data-access/dto/unread-count.dto';
 import { mapNotificationsResponse, NotificationsMappedResult } from '../data-access/mappers/notification.mapper';
 import { INotificationItem } from '../interfaces/inotification';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +17,12 @@ import { INotificationItem } from '../interfaces/inotification';
 export class NotificationService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
+  private readonly authService = inject(AuthService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private readonly notificationsById = signal<Record<number, INotificationItem>>({});
   readonly currentPageNotifications = signal<INotificationItem[]>([]);
+  readonly notifications = signal<INotificationItem[]>([]);
   readonly unreadCount = signal<number>(0);
   readonly loading = signal(false);
   readonly unreadCountLoading = signal(false);
@@ -27,9 +32,8 @@ export class NotificationService {
   private errorCooldownMs = 5000;
   private lastErrorTime = 0;
 
-  readonly notifications = computed(() =>
-    Object.values(this.notificationsById())
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()),
+  readonly unreadCountFromNotifications = computed(() =>
+    this.notifications().filter((notification) => !notification.isRead).length,
   );
 
   private setError(message: string): void {
@@ -40,6 +44,25 @@ export class NotificationService {
   }
 
   loadNotifications(page: number, pageSize: number): Observable<NotificationsMappedResult> {
+    const hasSession = this.isBrowser && !!localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+
+    if (!this.authService.isLoggedIn() || !hasSession) {
+      this.loading.set(false);
+      this.error.set(null);
+      this.currentPageNotifications.set([]);
+      this.notifications.set([]);
+      this.unreadCount.set(0);
+      return of({
+        items: [],
+        totalCount: 0,
+        totalPages: 0,
+        pageNumber: page,
+        pageSize,
+        hasPreviousPage: false,
+        hasNextPage: false,
+      });
+    }
+
     this.loading.set(true);
     this.error.set(null);
 
@@ -62,6 +85,7 @@ export class NotificationService {
           });
           return next;
         });
+        this.syncNotificationSignals();
         this.loading.set(false);
       }),
       catchError((err: HttpErrorResponse) => {
@@ -73,6 +97,15 @@ export class NotificationService {
   }
 
   loadUnreadCount(): Observable<number> {
+    const hasSession = this.isBrowser && !!localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+
+    if (!this.authService.isLoggedIn() || !hasSession) {
+      this.unreadCount.set(0);
+      this.unreadCountLoading.set(false);
+      this.unreadCountError.set(null);
+      return of(0);
+    }
+
     this.unreadCountLoading.set(true);
     this.unreadCountError.set(null);
 
@@ -82,6 +115,7 @@ export class NotificationService {
       map((dto) => dto.unreadCount ?? 0),
       tap((count) => {
         this.unreadCount.set(count);
+        this.syncNotificationSignals();
         this.unreadCountLoading.set(false);
       }),
       catchError((err: HttpErrorResponse) => {
@@ -92,12 +126,37 @@ export class NotificationService {
     );
   }
 
+  addNotification(notification: INotificationItem): void {
+    const normalizedNotification: INotificationItem = {
+      ...notification,
+      createdAt: notification.createdAt instanceof Date ? notification.createdAt : new Date(notification.createdAt),
+    };
+
+    this.notificationsById.update((previous) => ({
+      [normalizedNotification.id]: normalizedNotification,
+      ...previous,
+    }));
+
+    this.currentPageNotifications.update((items) => [
+      normalizedNotification,
+      ...items.filter((item) => item.id !== normalizedNotification.id),
+    ]);
+
+    this.syncNotificationSignals();
+    this.unreadCount.update((count) => count + (normalizedNotification.isRead ? 0 : 1));
+  }
+
+  refreshNotifications(page = 1, pageSize = 5): Observable<NotificationsMappedResult> {
+    return this.loadNotifications(page, pageSize);
+  }
+
   markAsRead(notificationId: number): Observable<void> {
     const previousNotifications = this.notificationsById();
     const previousPageNotifications = this.currentPageNotifications();
     const previousUnreadCount = this.unreadCount();
 
     this.applyReadState(notificationId, true);
+    this.syncNotificationSignals();
     this.unreadCount.update((count) => Math.max(0, count - 1));
 
     return this.http.put<void>(
@@ -119,6 +178,7 @@ export class NotificationService {
     const previousUnreadCount = this.unreadCount();
 
     this.applyReadStateToAll(true);
+    this.syncNotificationSignals();
     this.unreadCount.set(0);
 
     return this.http.put<void>(
@@ -132,6 +192,14 @@ export class NotificationService {
         return throwError(() => error);
       }),
     );
+  }
+
+  private syncNotificationSignals(): void {
+    const sortedNotifications = Object.values(this.notificationsById())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    this.notifications.set(sortedNotifications);
+    this.unreadCount.set(sortedNotifications.filter((notification) => !notification.isRead).length);
   }
 
   private applyReadState(notificationId: number, isRead: boolean): void {
@@ -166,6 +234,10 @@ export class NotificationService {
     this.currentPageNotifications.update((items) =>
       items.map((notification) => ({ ...notification, isRead })),
     );
+  }
+
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
   }
 
   private parseHttpError(err: HttpErrorResponse): string {

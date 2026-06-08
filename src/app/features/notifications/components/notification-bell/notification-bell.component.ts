@@ -5,6 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { NotificationService } from '../../services/notification.service';
 import { NAV_ROUTES } from '../../../../core/constants';
+import { AuthService } from '../../../../features/auth/services/auth.service';
 
 @Component({
   selector: 'app-notification-bell',
@@ -17,10 +18,12 @@ import { NAV_ROUTES } from '../../../../core/constants';
 export class NotificationBellComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly authService = inject(AuthService);
   readonly notificationService = inject(NotificationService);
   private readonly elementRef = inject(ElementRef);
 
   readonly navRoutes = NAV_ROUTES;
+  readonly isAuthenticated = this.authService.isAuthenticated;
   readonly unreadCount = this.notificationService.unreadCount;
   readonly unreadCountLoading = this.notificationService.unreadCountLoading;
   readonly notifications = computed(() => this.notificationService.notifications().slice(0, 5));
@@ -30,6 +33,10 @@ export class NotificationBellComponent implements OnInit {
   readonly isOpen = signal(false);
 
   ngOnInit(): void {
+    if (!this.authService.isAuthenticated()) {
+      return;
+    }
+
     this.notificationService.loadUnreadCount()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
