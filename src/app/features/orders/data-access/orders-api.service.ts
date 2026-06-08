@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants';
-import { IOrder, IBackendOrder, IBackendOrderItem } from '../interfaces';
+import { IOrder, IBackendOrder } from '../interfaces';
 import { mapBackendToOrder } from './orders.mapper';
 
 type ApiEnvelope<T> = T | { data: T } | { result: T };
@@ -63,14 +63,13 @@ export class OrdersApiService {
 
   /**
    * Submits a checkout payload to create a new order on the backend.
-   * Maps the returned BackendOrder to IOrder.
+   * The backend now returns paymentUrl directly in the order creation response.
    */
-  createOrder(payload: any): Observable<IOrder> {
+  createOrder(payload: any): Observable<{ id: number; paymentUrl: string }> {
     return this.http
-      .post<ApiEnvelope<IBackendOrder>>(`${this.apiUrl}${API_URLS.ORDERS.CREATE}`, payload)
+      .post<ApiEnvelope<{ id: number; paymentUrl: string }>>(`${this.apiUrl}${API_URLS.ORDERS.CREATE}`, payload)
       .pipe(
-        map(unwrapApiResponse),
-        map(mapBackendToOrder)
+        map(unwrapApiResponse)
       );
   }
 

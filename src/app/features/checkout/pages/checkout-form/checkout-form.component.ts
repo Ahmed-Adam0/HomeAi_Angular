@@ -5,7 +5,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CheckoutService, ICheckoutPayload } from '../../services/checkout.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
@@ -27,7 +26,6 @@ export class CheckoutFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private checkoutService = inject(CheckoutService);
   private cartService = inject(CartService);
-  private router = inject(Router);
   private translationService = inject(TranslationService);
   private uiState = inject(UiState);
 
@@ -142,6 +140,7 @@ export class CheckoutFormComponent implements OnInit {
       }
 
       this.submitting = true;
+      const formValues = this.checkoutForm.getRawValue();
       return from(this.cartService.awaitPendingSyncs()).pipe(
         switchMap(() => from(this.cartService.syncCartFromBackend())),
         switchMap(() => {
@@ -150,7 +149,6 @@ export class CheckoutFormComponent implements OnInit {
             return EMPTY;
           }
 
-          const formValues = this.checkoutForm.getRawValue();
           const addressParts: string[] = [
             formValues.addressLine1,
             formValues.addressLine2,
@@ -175,11 +173,12 @@ export class CheckoutFormComponent implements OnInit {
           return this.checkoutService.submitCheckout(orderPayload);
         }),
         tap((res) => {
-          if (res.success) {
+          if (res.success && res.paymentUrl) {
             this.cartService.clearCart();
             localStorage.removeItem(LOCAL_STORAGE_KEYS.CART);
-            this.uiState.showAlert('success', this.translationService.translate('CHECKOUT_SUCCESS_ORDER_PLACED'));
-            this.router.navigate(['/orders']);
+            window.location.href = res.paymentUrl;
+          } else {
+            this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_PAYMENT_INIT'));
           }
         }),
         catchError((err: HttpErrorResponse | Error) => {

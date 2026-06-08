@@ -33,11 +33,12 @@ export class CheckoutService {
   private ordersApi = inject(OrdersApiService);
   private cartService = inject(CartService);
 
-  submitCheckout(payload: ICheckoutPayload): Observable<{ success: boolean; orderId: string }> {
+  submitCheckout(payload: ICheckoutPayload): Observable<{ success: boolean; orderId: number; paymentUrl: string }> {
     return this.ordersApi.createOrder(payload).pipe(
       map((order) => ({
         success: true,
-        orderId: order.id
+        orderId: order.id,
+        paymentUrl: order.paymentUrl
       }))
     );
   }

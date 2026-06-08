@@ -1,8 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { IPaymentIntent, IPaymentMethod, PaymentProvider } from '../interfaces/ipayment';
+import { IPaymobPaymentRequest, IPaymobPaymentResponse } from '../interfaces';
 import { environment } from '../../../../environments/environment';
+import { API_URLS } from '../../../core/constants/api-urls';
+import { unwrap } from '../../../core/utils/api-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +33,13 @@ export class PaymentService {
     // Scaffold dynamic endpoint loading using environment config
     // return this.http.post<IPaymentIntent>(`${environment.apiUrl}payment/intent`, { amount, currency, provider });
     return of(mockIntent);
+  }
+
+  createPaymobPayment(payload: IPaymobPaymentRequest): Observable<IPaymobPaymentResponse> {
+    return this.http.post<IPaymobPaymentResponse>(
+      `${environment.apiUrl}${API_URLS.PAYMENTS.PAYMOB}`,
+      payload
+    ).pipe(map((res) => unwrap<IPaymobPaymentResponse>(res)));
   }
 
   processPayment(transactionId: string): Observable<{ success: boolean; message: string }> {

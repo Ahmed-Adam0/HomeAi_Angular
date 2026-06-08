@@ -38,6 +38,11 @@ export const API_URLS = {
     UPDATE_STATUS: (id: string | number) => `Order/${id}/status`,
     UPDATE_ITEMS: (id: string | number) => `Order/${id}/items`,
   },
+  PAYMENTS: {
+    PAYMOB: 'payments/paymob',
+    PAYMOB_WEBHOOK: 'payments/paymob/webhook',
+    PAYMOB_CALLBACK: 'payments/paymob/callback',
+  },
   AI: {
     RECOMMEND: 'ai/recommend',
     CHAT: 'ai/chat',

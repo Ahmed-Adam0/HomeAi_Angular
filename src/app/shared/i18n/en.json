@@ -193,6 +193,7 @@
   "CHECKOUT_ERROR_VALIDATION": "Please verify your input. Some fields in the checkout form are invalid.",
   "CHECKOUT_ERROR_NETWORK": "A network error occurred. Please check your internet connection.",
   "CHECKOUT_ERROR_GENERIC": "An error occurred while placing your order. Please try again.",
+  "CHECKOUT_ERROR_PAYMENT_INIT": "Failed to initialize payment. Please try again.",
   "ORDERS_TITLE": "Orders",
   "ORDERS_SUBTITLE": "Track your purchases with real-time status and delivery insights.",
   "ORDERS_LOADING": "Loading orders...",
