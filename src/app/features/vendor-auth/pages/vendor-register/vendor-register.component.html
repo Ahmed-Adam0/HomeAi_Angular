@@ -19,7 +19,7 @@
       </div>
 
       <div class="inline-success" *ngIf="successMessage">{{ successMessage }}</div>
-      <div class="inline-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="inline-error" *ngIf="displayedError()">{{ displayedError() }}</div>
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
 
@@ -35,6 +35,7 @@
             <input type="text" id="fullName" formControlName="fullName" [placeholder]="t().fullNamePlaceholder" [class.is-invalid]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid" />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.hasError('required')">{{ t().fullNameRequired }}</div>
+          <div class="error-msg" *ngIf="getFieldError('fullName')">{{ getFieldError('fullName') }}</div>
         </div>
 
         <div class="form-group">
@@ -50,6 +51,7 @@
           </div>
           <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')">{{ t().emailRequired }}</div>
           <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')">{{ t().emailInvalid }}</div>
+          <div class="error-msg" *ngIf="getFieldError('email')">{{ getFieldError('email') }}</div>
         </div>
 
         <div class="form-group">
@@ -64,6 +66,7 @@
           </div>
           <div class="error-msg" *ngIf="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.hasError('required')">{{ t().phoneRequired }}</div>
           <div class="error-msg" *ngIf="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.hasError('invalidPhone')">{{ t().phoneInvalid }}</div>
+          <div class="error-msg" *ngIf="getFieldError('phoneNumber')">{{ getFieldError('phoneNumber') }}</div>
         </div>
 
         <div class="form-group">
@@ -78,6 +81,7 @@
             <input type="password" id="password" formControlName="password" [placeholder]="t().passwordPlaceholder" [class.is-invalid]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('required')">{{ t().passwordRequired }}</div>
+          <div class="error-msg" *ngIf="getFieldError('password')">{{ getFieldError('password') }}</div>
         </div>
 
         <div class="form-group">
@@ -91,6 +95,7 @@
             <input type="password" id="confirmPassword" formControlName="confirmPassword" [placeholder]="t().passwordPlaceholder" [class.is-invalid]="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('mismatch'))" />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.hasError('mismatch')">{{ t().passwordMismatch }}</div>
+          <div class="error-msg" *ngIf="getFieldError('confirmPassword')">{{ getFieldError('confirmPassword') }}</div>
         </div>
 
         <div class="form-group">

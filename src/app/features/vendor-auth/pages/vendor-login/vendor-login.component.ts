@@ -1,9 +1,10 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { VendorAuthService } from '../../services/vendor-auth.service';
 import { AuthService } from '../../../auth/services/auth.service';
+import { AuthErrorHandler } from '../../../auth/services/auth-error-handler.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
@@ -24,8 +25,23 @@ export class VendorLogin {
 
   loginForm: FormGroup;
   isLoading = false;
-  errorMessage = '';
   returnUrl = '';
+  private errorPayload = signal<unknown | null>(null);
+  private overrideErrorMessage = signal<string | null>(null);
+  private readonly authErrorHandler = inject(AuthErrorHandler);
+  private backendErrors: Record<string, string> = {};
+
+  // Helper to expose field-specific error messages
+  getFieldError(controlName: string): string {
+    return this.backendErrors[controlName] || '';
+  }
+  readonly displayedError = computed(() => {
+    const override = this.overrideErrorMessage();
+    if (override) {
+      return override;
+    }
+    return this.errorPayload() ? this.authErrorHandler.handle(this.errorPayload()!, 'login') : '';
+  });
 
   readonly navRoutes = NAV_ROUTES;
   readonly currentLang = this.translationService.currentLang;
@@ -73,23 +89,7 @@ export class VendorLogin {
     }
   } as const;
 
-  private readonly backendErrorMap = [
-    {
-      matcher: (payload: any) => payload?.code === 'INVALID_CREDENTIALS' || payload?.message?.toLowerCase().includes('invalid credentials') || payload?.message?.toLowerCase().includes('incorrect password') || payload?.message?.toLowerCase().includes('بيانات الدخول'),
-      ar: 'بيانات الدخول غير صحيحة، حاول مجدداً.',
-      en: 'Login failed. Please check your credentials and try again.'
-    },
-    {
-      matcher: (payload: any) => payload?.code === 'USER_NOT_FOUND' || payload?.message?.toLowerCase().includes('user not found') || payload?.message?.toLowerCase().includes('المستخدم غير موجود'),
-      ar: 'المستخدم غير موجود. تأكد من بياناتك.',
-      en: 'User not found. Please verify your login information.'
-    },
-    {
-      matcher: (payload: any) => payload?.code === 'ACCOUNT_LOCKED' || payload?.message?.toLowerCase().includes('account locked') || payload?.message?.toLowerCase().includes('تم قفل الحساب'),
-      ar: 'تم قفل الحساب مؤقتاً. تواصل مع الدعم.',
-      en: 'Your account is temporarily locked. Please contact support.'
-    }
-  ];
+  private readonly authErrorHandler = inject(AuthErrorHandler);
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -107,7 +107,8 @@ export class VendorLogin {
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
+    this.errorPayload.set(null);
+    this.overrideErrorMessage.set(null);
 
     this.vendorAuthService.login(this.loginForm.value).subscribe({
       next: () => {
@@ -115,9 +116,9 @@ export class VendorLogin {
         if (this.authService.isCustomer()) {
           console.warn('[VendorLogin] - Customer account detected on vendor login. Rejecting and logging out.');
           this.authService.logout();
-          this.errorMessage = this.currentLang() === 'ar'
+          this.overrideErrorMessage.set(this.currentLang() === 'ar'
             ? 'حسابات العملاء غير مسموح لها بتسجيل الدخول من هنا.'
-            : 'Customer accounts are not allowed to log in here.';
+            : 'Customer accounts are not allowed to log in here.');
           return;
         }
         const destination = this.returnUrl || NAV_ROUTES.VENDOR_DASHBOARD;
@@ -125,23 +126,22 @@ export class VendorLogin {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = this.localizeBackendError(err.error);
+        this.errorPayload.set(err);
+        // Map backend errors to field-level messages using Customer Auth architecture
+        this.backendErrors = {};
+        const fieldErrors = this.authErrorHandler.getFieldErrors(err, {
+          'Email': 'email',
+          'Password': 'password'
+        });
+        for (const fe of fieldErrors) {
+          this.backendErrors[fe.field] = fe.message;
+          const control = this.loginForm.get(fe.field);
+          if (control) {
+            control.setErrors({ ...(control.errors || {}), backend: true });
+            control.markAsTouched();
+          }
+        }
       }
     });
-  }
-
-  private localizeBackendError(errorPayload: any): string {
-    const found = this.backendErrorMap.find(item => item.matcher(errorPayload));
-    if (found) {
-      return this.currentLang() === 'ar' ? found.ar : found.en;
-    }
-
-    if (typeof errorPayload?.message === 'string') {
-      return errorPayload.message;
-    }
-
-    return this.currentLang() === 'ar'
-      ? this.translations.ar.defaultLoginError
-      : this.translations.en.defaultLoginError;
   }
 }

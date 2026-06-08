@@ -18,7 +18,7 @@
         <p>{{ t().pageSubtitle }}</p>
       </div>
 
-      <div class="inline-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="inline-error" *ngIf="displayedError()">{{ displayedError() }}</div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
 
@@ -41,6 +41,7 @@
           </div>
           <div class="error-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')">{{ t().emailRequired }}</div>
           <div class="error-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')">{{ t().emailInvalid }}</div>
+          <div class="error-msg" *ngIf="getFieldError('email')">{{ getFieldError('email') }}</div>
         </div>
 
         <div class="form-group">
@@ -64,6 +65,7 @@
             />
           </div>
           <div class="error-msg" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')">{{ t().passwordRequired }}</div>
+          <div class="error-msg" *ngIf="getFieldError('password')">{{ getFieldError('password') }}</div>
         </div>
 
         <button type="submit" class="btn-submit" [disabled]="loginForm.invalid || isLoading">

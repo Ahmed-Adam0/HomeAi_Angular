@@ -1,10 +1,11 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { VendorAuthService } from '../../services/vendor-auth.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { AuthErrorHandler } from '../../../auth/services/auth-error-handler.service';
 import { phoneValidator, passwordMatchValidator } from '../../../../shared/validators';
 import { IVendorRegisterRequest } from '../../interfaces/vendor-auth-request';
 
@@ -45,8 +46,11 @@ export class VendorRegister {
 
   registerForm: VendorRegisterForm;
   isLoading = false;
-  errorMessage = '';
   successMessage = '';
+  private errorPayload = signal<unknown | null>(null);
+  private backendErrors: Record<string, string> = {};
+  private readonly authErrorHandler = inject(AuthErrorHandler);
+  readonly displayedError = computed(() => this.errorPayload() ? this.authErrorHandler.handle(this.errorPayload()!) : '');
 
   readonly navRoutes = NAV_ROUTES;
   readonly currentLang = this.translationService.currentLang;
@@ -136,24 +140,6 @@ export class VendorRegister {
     }
   } as const;
 
-  private readonly backendErrorMap = [
-    {
-      matcher: (payload: any) => payload?.code === 'EMAIL_EXISTS' || payload?.message?.toLowerCase().includes('email already') || payload?.message?.toLowerCase().includes('البريد الإلكتروني مستخدم'),
-      ar: 'البريد الإلكتروني مستخدم بالفعل. حاول بريداً آخر.',
-      en: 'This email is already in use. Please use a different email.'
-    },
-    {
-      matcher: (payload: any) => payload?.code === 'INVALID_PHONE' || payload?.message?.toLowerCase().includes('invalid phone') || payload?.message?.toLowerCase().includes('رقم الهاتف غير صحيح'),
-      ar: 'رقم الهاتف غير صالح. تأكد من كتابة رقم صحيح.',
-      en: 'The phone number is invalid. Please provide a valid number.'
-    },
-    {
-      matcher: (payload: any) => payload?.code === 'ACCOUNT_EXISTS' || payload?.message?.toLowerCase().includes('account exists') || payload?.message?.toLowerCase().includes('الحساب موجود بالفعل'),
-      ar: 'الحساب موجود بالفعل. قم بتسجيل الدخول أو استخدم بريداً آخر.',
-      en: 'An account already exists with this information. Please log in or use a different email.'
-    }
-  ];
-
   constructor() {
     this.registerForm = this.fb.nonNullable.group({
       fullName: ['', [Validators.required, Validators.minLength(3)]],
@@ -180,6 +166,10 @@ export class VendorRegister {
     return this.registerForm.get('workshopAddress') as VendorAddressForm;
   }
 
+  getFieldError(controlName: string): string {
+    return this.backendErrors[controlName] || '';
+  }
+
   onSubmit(): void {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
@@ -187,7 +177,8 @@ export class VendorRegister {
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
+    this.errorPayload.set(null);
+    this.backendErrors = {};
     this.successMessage = '';
 
     const value = this.registerForm.getRawValue();
@@ -220,23 +211,29 @@ export class VendorRegister {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = this.localizeBackendError(err.error);
+        this.errorPayload.set(err);
+
+        const fieldErrors = this.authErrorHandler.getFieldErrors(err, {
+          'Email': 'email',
+          'Password': 'password',
+          'FullName': 'fullName',
+          'PhoneNumber': 'phoneNumber',
+          'ConfirmPassword': 'confirmPassword'
+        });
+
+        for (const fe of fieldErrors) {
+          this.backendErrors[fe.field] = fe.message;
+          const control = this.registerForm.get(fe.field);
+          if (control) {
+            if (fe.field === 'email' && fe.errorKey === 'emailAlreadyExists') {
+              control.setErrors({ emailAlreadyExists: true });
+            } else {
+              control.setErrors({ ...control.errors, backend: true });
+            }
+            control.markAsTouched();
+          }
+        }
       }
     });
-  }
-
-  private localizeBackendError(errorPayload: any): string {
-    const found = this.backendErrorMap.find(item => item.matcher(errorPayload));
-    if (found) {
-      return this.currentLang() === 'ar' ? found.ar : found.en;
-    }
-
-    if (typeof errorPayload?.message === 'string') {
-      return errorPayload.message;
-    }
-
-    return this.currentLang() === 'ar'
-      ? this.translations.ar.defaultRegisterError
-      : this.translations.en.defaultRegisterError;
   }
 }
