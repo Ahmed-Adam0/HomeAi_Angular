@@ -28,7 +28,6 @@ export class VendorLogin {
   returnUrl = '';
   private errorPayload = signal<unknown | null>(null);
   private overrideErrorMessage = signal<string | null>(null);
-  private readonly authErrorHandler = inject(AuthErrorHandler);
   private backendErrors: Record<string, string> = {};
 
   // Helper to expose field-specific error messages
