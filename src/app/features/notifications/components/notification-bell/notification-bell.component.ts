@@ -37,7 +37,7 @@ export class NotificationBellComponent implements OnInit {
       return;
     }
 
-    this.notificationService.loadUnreadCount()
+    this.notificationService.ensureUnreadCountLoaded()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }

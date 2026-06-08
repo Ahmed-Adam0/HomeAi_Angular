@@ -1,7 +1,7 @@
-import { Injectable, computed, inject, signal, PLATFORM_ID } from '@angular/core';
+import { Injectable, computed, DestroyRef, effect, inject, signal, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { catchError, Observable, throwError, tap, map, timer, Subject, switchMap, of } from 'rxjs';
+import { catchError, Observable, throwError, tap, map, timer, Subject, switchMap, of, finalize, shareReplay } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { environment } from '../../../../environments/environment';
 import { API_URLS, LOCAL_STORAGE_KEYS } from '../../../core/constants';
@@ -19,7 +19,10 @@ export class NotificationService {
   private readonly apiUrl = environment.apiUrl;
   private readonly authService = inject(AuthService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
 
+  private unreadCountRequest: Observable<number> | null = null;
+  private unreadCountLoaded = false;
   private readonly notificationsById = signal<Record<number, INotificationItem>>({});
   readonly currentPageNotifications = signal<INotificationItem[]>([]);
   readonly notifications = signal<INotificationItem[]>([]);
@@ -35,6 +38,26 @@ export class NotificationService {
   readonly unreadCountFromNotifications = computed(() =>
     this.notifications().filter((notification) => !notification.isRead).length,
   );
+
+  constructor() {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    effect(() => {
+      if (this.authService.isAuthenticated()) {
+        this.ensureUnreadCountLoaded()
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => { /* loaded */ },
+            error: () => { /* errors are tracked inside service */ },
+          });
+      } else {
+        this.unreadCountLoaded = false;
+        this.unreadCount.set(0);
+      }
+    });
+  }
 
   private setError(message: string): void {
     const now = Date.now();
@@ -96,6 +119,33 @@ export class NotificationService {
     );
   }
 
+  ensureUnreadCountLoaded(): Observable<number> {
+    const hasSession = this.isBrowser && !!localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+
+    if (!this.authService.isLoggedIn() || !hasSession) {
+      this.unreadCount.set(0);
+      this.unreadCountLoading.set(false);
+      this.unreadCountError.set(null);
+      this.unreadCountLoaded = false;
+      return of(0);
+    }
+
+    if (this.unreadCountLoaded) {
+      return of(this.unreadCount());
+    }
+
+    if (this.unreadCountRequest) {
+      return this.unreadCountRequest;
+    }
+
+    this.unreadCountRequest = this.loadUnreadCount().pipe(
+      shareReplay({ bufferSize: 1, refCount: false }),
+      finalize(() => { this.unreadCountRequest = null; }),
+    );
+
+    return this.unreadCountRequest;
+  }
+
   loadUnreadCount(): Observable<number> {
     const hasSession = this.isBrowser && !!localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
 
@@ -103,6 +153,7 @@ export class NotificationService {
       this.unreadCount.set(0);
       this.unreadCountLoading.set(false);
       this.unreadCountError.set(null);
+      this.unreadCountLoaded = false;
       return of(0);
     }
 
@@ -115,7 +166,7 @@ export class NotificationService {
       map((dto) => dto.unreadCount ?? 0),
       tap((count) => {
         this.unreadCount.set(count);
-        this.syncNotificationSignals();
+        this.unreadCountLoaded = true;
         this.unreadCountLoading.set(false);
       }),
       catchError((err: HttpErrorResponse) => {
@@ -199,7 +250,6 @@ export class NotificationService {
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
     this.notifications.set(sortedNotifications);
-    this.unreadCount.set(sortedNotifications.filter((notification) => !notification.isRead).length);
   }
 
   private applyReadState(notificationId: number, isRead: boolean): void {

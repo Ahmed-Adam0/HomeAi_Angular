@@ -125,7 +125,7 @@ export class NotificationCenterComponent implements OnInit {
 
   private loadUnreadCount(): void {
     this.notificationService
-      .loadUnreadCount()
+      .ensureUnreadCountLoaded()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }
