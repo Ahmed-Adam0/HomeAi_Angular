@@ -1,0 +1,142 @@
+<div class="payment-success-wrapper" appRtl *ngIf="isValidated()">
+  <!-- Delight Layer Background Decoration -->
+  <div class="delight-container" aria-hidden="true">
+    <div class="glow-spot primary-glow"></div>
+    <div class="glow-spot secondary-glow"></div>
+    <div class="glow-spot tertiary-glow"></div>
+    
+    <!-- Floating particles -->
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    
+    <!-- Abstract Furniture Silhouettes -->
+    <div class="furniture-silhouette chair-silhouette">
+      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M30 75 L30 45 L70 45 L70 75 M30 55 L70 55 M42 45 L42 25 L58 25 L58 45" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    
+    <div class="furniture-silhouette lamp-silhouette">
+      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M50 80 L50 25 M38 25 L62 25 L54 15 L46 15 Z M35 80 L65 80" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="success-content-container">
+    <!-- Section 1 — Premium Success Hero -->
+    <header class="success-hero" role="banner">
+      <div class="success-icon-wrapper">
+        <div class="pulse-ring ring-1"></div>
+        <div class="pulse-ring ring-2"></div>
+        <div class="checkmark-circle">
+          <svg class="checkmark-svg" viewBox="0 0 52 52" aria-hidden="true">
+            <circle class="checkmark-circle-stroke" cx="26" cy="26" r="23" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14 27 L22 35 L38 19"/>
+          </svg>
+        </div>
+      </div>
+      <h1 class="hero-headline" id="success-heading">{{ 'PAYMENT_SUCCESS.HERO_TITLE' | translate }}</h1>
+      <p class="hero-supporting-copy">{{ 'PAYMENT_SUCCESS.HERO_SUPPORTING_COPY' | translate }}</p>
+    </header>
+
+    <!-- Section 2 — Order Summary Card -->
+    <section class="order-summary-section" aria-labelledby="summary-heading">
+      <div class="summary-card">
+        <h2 class="card-title" id="summary-heading">{{ 'PAYMENT_SUCCESS.ORDER_SUMMARY_TITLE' | translate }}</h2>
+        
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="item-label">{{ 'PAYMENT_SUCCESS.ORDER_NUMBER' | translate }}</span>
+            <span class="item-value font-mono fw-bold" id="order-number-val">#{{ orderNumber() }}</span>
+          </div>
+
+          <div class="summary-item">
+            <span class="item-label">{{ 'PAYMENT_SUCCESS.PAYMENT_STATUS' | translate }}</span>
+            <div class="item-value">
+              <span class="premium-badge paid-badge" aria-label="Payment status is paid">
+                <span class="badge-dot"></span>
+                <span class="badge-text fw-bold">{{ 'PAYMENT_SUCCESS.BADGE_PAID' | translate }}</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="summary-item">
+            <span class="item-label">{{ 'PAYMENT_SUCCESS.PURCHASE_DATE' | translate }}</span>
+            <span class="item-value" id="purchase-date-val">{{ purchaseDate() | date:'mediumDate' }}</span>
+          </div>
+
+          <div class="summary-item" *ngIf="totalAmount() !== null">
+            <span class="item-label">{{ 'PAYMENT_SUCCESS.TOTAL_AMOUNT' | translate }}</span>
+            <span class="item-value fw-bold text-brand" id="total-amount-val">{{ totalAmount()! | currencyFormat }}</span>
+          </div>
+
+          <div class="summary-item">
+            <span class="item-label">{{ 'PAYMENT_SUCCESS.TRANSACTION_REF' | translate }}</span>
+            <span class="item-value font-mono text-muted fs-sm" id="transaction-ref-val">{{ transactionRef() }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3 — Order Journey Timeline -->
+    <section class="order-timeline-section" aria-labelledby="timeline-heading">
+      <h2 class="timeline-section-title" id="timeline-heading">{{ 'PAYMENT_SUCCESS.TIMELINE.TITLE' | translate }}</h2>
+      
+      <div class="timeline-container">
+        <!-- Background Track Line -->
+        <div class="timeline-track">
+          <div class="timeline-track-progress"></div>
+        </div>
+
+        <div class="timeline-steps">
+          <div class="timeline-step" 
+               *ngFor="let step of timelineSteps(); let i = index"
+               [class.completed]="step.isComplete"
+               [class.active]="step.isActive"
+               [attr.aria-current]="step.isActive ? 'step' : null">
+            
+            <div class="step-marker-container">
+              <div class="step-marker">
+                <span class="marker-dot" *ngIf="!step.isComplete"></span>
+                <svg class="step-check-icon" *ngIf="step.isComplete" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+            </div>
+            
+            <div class="step-content">
+              <span class="step-number" aria-hidden="true">0{{ i + 1 }}</span>
+              <h3 class="step-label">{{ step.labelKey | translate }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 — Recommended Actions -->
+    <footer class="actions-section">
+      <app-button
+        [label]="'PAYMENT_SUCCESS.CTA_VIEW_ORDERS' | translate"
+        variant="primary"
+        size="lg"
+        [attr.aria-label]="'View my placed orders details'"
+        (clicked)="viewOrders()">
+      </app-button>
+      <app-button
+        [label]="'PAYMENT_SUCCESS.CTA_CONTINUE_SHOPPING' | translate"
+        variant="outline"
+        size="lg"
+        [attr.aria-label]="'Continue shopping in marketplace'"
+        (clicked)="continueShopping()">
+      </app-button>
+    </footer>
+  </div>
+</div>
+
+<!-- Fallback Loading Guard Display during redirect evaluation -->
+<div class="validation-fallback" *ngIf="!isValidated()" role="status" aria-live="polite">
+  <div class="fallback-spinner"></div>
+  <p class="fallback-text">{{ 'PAYMENT_SUCCESS.REDIRECTING' | translate }}</p>
+</div>
