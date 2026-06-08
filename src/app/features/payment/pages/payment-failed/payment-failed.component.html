@@ -1,0 +1,42 @@
+<div class="payment-failed-container" appRtl>
+  <!-- Ambient glow background decoration -->
+  <div class="glow-container">
+    <div class="glow-spot spot-primary"></div>
+    <div class="glow-spot spot-danger"></div>
+  </div>
+
+  <div class="card-wrapper">
+    <!-- Icon area -->
+    <div class="icon-section">
+      <div class="warning-circle-pulse">
+        <svg class="warning-svg" viewBox="0 0 52 52">
+          <circle class="warning-circle" cx="26" cy="26" r="23" fill="none"/>
+          <path class="warning-cross-line-1" fill="none" d="M16 16 L36 36"/>
+          <path class="warning-cross-line-2" fill="none" d="M36 16 L16 36"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Copy area -->
+    <div class="text-section">
+      <h1 class="headline">{{ 'PAYMENT_FAILED.HERO_TITLE' | translate }}</h1>
+      <p class="supporting-text">{{ 'PAYMENT_FAILED.HERO_SUPPORTING_COPY' | translate }}</p>
+    </div>
+
+    <!-- Actions area -->
+    <div class="actions-section">
+      <app-button
+        [label]="'PAYMENT_FAILED.CTA_RETRY' | translate"
+        variant="danger"
+        size="lg"
+        (clicked)="retryCheckout()">
+      </app-button>
+      <app-button
+        [label]="'PAYMENT_FAILED.CTA_BACK_TO_CART' | translate"
+        variant="outline"
+        size="lg"
+        (clicked)="backToCart()">
+      </app-button>
+    </div>
+  </div>
+</div>

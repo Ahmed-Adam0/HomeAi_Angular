@@ -1,0 +1,834 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--fm-color-neutral-50, #faf9f6);
+  font-family: var(--fm-font-sans);
+  color: var(--fm-color-neutral-800, #38332c);
+  overflow-x: hidden;
+  position: relative;
+}
+
+.payment-success-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--fm-space-64, 64px) var(--fm-space-24, 24px);
+  position: relative;
+  z-index: 2;
+}
+
+/* ==========================================================================
+   1. DELIGHT LAYER & BACKGROUND DECORATIONS
+   ========================================================================== */
+.delight-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ambient glow spots */
+.glow-spot {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(130px);
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+}
+
+.primary-glow {
+  width: 500px;
+  height: 500px;
+  background-color: var(--fm-color-primary-500, #b8935c);
+  top: -10%;
+  left: 10%;
+  animation: driftGlow 25s infinite alternate ease-in-out;
+}
+
+.secondary-glow {
+  width: 600px;
+  height: 600px;
+  background-color: var(--fm-color-success-500, #657e5d);
+  bottom: -15%;
+  right: 10%;
+  animation: driftGlow 30s infinite alternate-reverse ease-in-out;
+}
+
+.tertiary-glow {
+  width: 400px;
+  height: 400px;
+  background-color: var(--fm-color-primary-200, #e6d6c3);
+  top: 40%;
+  right: 20%;
+  opacity: 0.04;
+}
+
+/* Floating abstract particles */
+.particle {
+  position: absolute;
+  background-color: var(--fm-color-primary-400, #c8a87b);
+  border-radius: 50%;
+  opacity: 0.15;
+}
+
+.p1 { width: 8px; height: 8px; top: 20%; left: 15%; animation: floatParticle 8s infinite ease-in-out; }
+.p2 { width: 12px; height: 12px; bottom: 30%; left: 25%; animation: floatParticle 12s infinite ease-in-out 1s; }
+.p3 { width: 6px; height: 6px; top: 35%; right: 15%; animation: floatParticle 10s infinite ease-in-out 2s; }
+
+/* Elegant minimalist furniture wireframes */
+.furniture-silhouette {
+  position: absolute;
+  color: var(--fm-color-primary-500, #b8935c);
+  opacity: 0.025;
+  transition: transform 1.5s var(--fm-ease-smooth);
+}
+
+.chair-silhouette {
+  width: 150px;
+  height: 150px;
+  bottom: 15%;
+  left: 5%;
+  transform: rotate(-10deg);
+  animation: slowFloat 18s infinite ease-in-out;
+}
+
+.lamp-silhouette {
+  width: 130px;
+  height: 180px;
+  top: 15%;
+  right: 6%;
+  transform: rotate(5deg);
+  animation: slowFloat 22s infinite ease-in-out alternate;
+}
+
+/* ==========================================================================
+   2. SECTION 1 — PREMIUM HERO
+   ========================================================================== */
+.success-content-container {
+  max-width: 680px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fm-space-40, 40px);
+}
+
+.success-hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: heroEntrance 1s var(--fm-ease-smooth) forwards;
+}
+
+/* Success animated icon */
+.success-icon-wrapper {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin-bottom: var(--fm-space-24, 24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkmark-circle {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: var(--fm-shadow-md);
+  border: 1px solid rgba(184, 147, 92, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.checkmark-svg {
+  width: 44px;
+  height: 44px;
+}
+
+.checkmark-circle-stroke {
+  stroke: var(--fm-color-success-500, #657e5d);
+  stroke-width: 3;
+  stroke-dasharray: 150;
+  stroke-dashoffset: 150;
+  animation: drawCircle 0.7s var(--fm-ease-smooth) 0.2s forwards;
+}
+
+.checkmark-check {
+  stroke: var(--fm-color-success-500, #657e5d);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: drawCheck 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+/* Dual Expanding pulse rings */
+.pulse-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--fm-color-success-100, #e5ece0);
+  background-color: var(--fm-color-success-50, #f4f7f3);
+  z-index: 1;
+  opacity: 0;
+}
+
+.ring-1 {
+  width: 96px;
+  height: 96px;
+  animation: rippleRing 2.4s cubic-bezier(0.16, 1, 0.3, 1) 1.2s infinite;
+}
+
+.ring-2 {
+  width: 124px;
+  height: 124px;
+  animation: rippleRing 2.4s cubic-bezier(0.16, 1, 0.3, 1) 2s infinite;
+}
+
+.hero-headline {
+  font-family: var(--fm-font-display, serif);
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fm-color-neutral-900, #1f1c18);
+  margin-bottom: var(--fm-space-12, 12px);
+}
+
+.hero-supporting-copy {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--fm-color-neutral-600, #70675a);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   3. SECTION 2 — ORDER SUMMARY CARD
+   ========================================================================== */
+.order-summary-section {
+  animation: cardFadeUp 1s var(--fm-ease-smooth) 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.summary-card {
+  background: var(--fm-glass-bg, rgba(255, 255, 255, 0.75));
+  border: 1px solid var(--fm-glass-border, rgba(184, 147, 92, 0.15));
+  border-radius: var(--fm-radius-lg, 16px);
+  box-shadow: var(--fm-shadow-lg);
+  backdrop-filter: var(--fm-glass-blur, blur(20px));
+  -webkit-backdrop-filter: var(--fm-glass-blur, blur(20px));
+  padding: var(--fm-space-32, 32px);
+  position: relative;
+  transition: var(--fm-transition-card-hover);
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--fm-shadow-hover);
+  border-color: rgba(184, 147, 92, 0.25);
+}
+
+.card-title {
+  font-family: var(--fm-font-display, serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--fm-color-neutral-900, #1f1c18);
+  margin-bottom: var(--fm-space-24, 24px);
+  letter-spacing: -0.01em;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--fm-space-24, 24px) var(--fm-space-32, 32px);
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fm-space-4, 4px);
+}
+
+.item-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fm-color-neutral-500, #8c8375);
+}
+
+.item-value {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--fm-color-neutral-800, #38332c);
+}
+
+/* Animated Paid badge */
+.premium-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fm-space-8, 8px);
+  padding: var(--fm-space-4, 4px) var(--fm-space-12, 12px);
+  border-radius: var(--fm-radius-pill, 9999px);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.paid-badge {
+  background-color: var(--fm-color-success-50, #f4f7f3);
+  color: var(--fm-color-success-600, #4a5f44);
+  border: 1px solid rgba(101, 126, 93, 0.2);
+  box-shadow: 0 2px 8px rgba(101, 126, 93, 0.05);
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--fm-color-success-500, #657e5d);
+  position: relative;
+}
+
+.badge-dot::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: inherit;
+  animation: dotPulse 1.6s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   4. SECTION 3 — ORDER JOURNEY TIMELINE
+   ========================================================================== */
+.order-timeline-section {
+  animation: cardFadeUp 1s var(--fm-ease-smooth) 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.timeline-section-title {
+  font-family: var(--fm-font-display, serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--fm-color-neutral-900, #1f1c18);
+  margin-bottom: var(--fm-space-24, 24px);
+  letter-spacing: -0.01em;
+}
+
+.timeline-container {
+  position: relative;
+  width: 100%;
+  padding: var(--fm-space-16, 16px) 0;
+}
+
+/* Background Progress Line Track */
+.timeline-track {
+  position: absolute;
+  top: 36px;
+  left: 4%;
+  right: 4%;
+  height: 2px;
+  background-color: var(--fm-color-neutral-200, #e8e4dc);
+  z-index: 1;
+}
+
+.timeline-track-progress {
+  width: 20%; /* Fills up to completed step 1 */
+  height: 100%;
+  background-color: var(--fm-color-primary-400, #c8a87b);
+  transition: width 1s var(--fm-ease-smooth);
+}
+
+.timeline-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.step-marker-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--fm-space-12, 12px);
+}
+
+.step-marker {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 2px solid var(--fm-color-neutral-200, #e8e4dc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s var(--fm-ease-smooth);
+}
+
+.marker-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--fm-color-neutral-300, #d9d3c7);
+  transition: all 0.4s var(--fm-ease-smooth);
+}
+
+.step-check-icon {
+  width: 16px;
+  height: 16px;
+  color: white;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.4s var(--fm-ease-bounce);
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fm-space-4, 4px);
+}
+
+.step-number {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--fm-color-neutral-400, #b3ab9d);
+  transition: color 0.4s var(--fm-ease-smooth);
+}
+
+.step-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--fm-color-neutral-500, #8c8375);
+  transition: color 0.4s var(--fm-ease-smooth);
+  max-width: 120px;
+}
+
+/* Timeline State Modifiers */
+/* Completed State */
+.timeline-step.completed .step-marker {
+  background-color: var(--fm-color-success-500, #657e5d);
+  border-color: var(--fm-color-success-500, #657e5d);
+  box-shadow: 0 4px 10px rgba(101, 126, 93, 0.15);
+}
+
+.timeline-step.completed .step-check-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.timeline-step.completed .step-number {
+  color: var(--fm-color-success-600, #4a5f44);
+}
+
+.timeline-step.completed .step-label {
+  color: var(--fm-color-neutral-800, #38332c);
+  font-weight: 600;
+}
+
+/* Active State */
+.timeline-step.active .step-marker {
+  border-color: var(--fm-color-primary-500, #b8935c);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px var(--fm-color-primary-soft, rgba(184, 147, 92, 0.12));
+}
+
+.timeline-step.active .marker-dot {
+  background-color: var(--fm-color-primary-500, #b8935c);
+  transform: scale(1.3);
+}
+
+.timeline-step.active .step-number {
+  color: var(--fm-color-primary-500, #b8935c);
+}
+
+.timeline-step.active .step-label {
+  color: var(--fm-color-primary-500, #b8935c);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   5. SECTION 4 — RECOMMENDED ACTIONS
+   ========================================================================== */
+.actions-section {
+  display: flex;
+  justify-content: center;
+  gap: var(--fm-space-16, 16px);
+  margin-top: var(--fm-space-12, 12px);
+  animation: cardFadeUp 1s var(--fm-ease-smooth) 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.actions-section ::ng-deep app-button {
+  flex: 1;
+  max-width: 220px;
+}
+
+.actions-section ::ng-deep .btn-base {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   6. VALIDATION FALLBACK / LOADING GUARD
+   ========================================================================== */
+.validation-fallback {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--fm-color-neutral-50, #faf9f6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--fm-space-20, 20px);
+  z-index: 100;
+}
+
+.fallback-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--fm-color-neutral-200, #e8e4dc);
+  border-top-color: var(--fm-color-primary-500, #b8935c);
+  border-radius: 50%;
+  animation: spinnerRotate 0.8s linear infinite;
+}
+
+.fallback-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--fm-color-neutral-600, #70675a);
+}
+
+/* ==========================================================================
+   7. ANIMATION KEYFRAMES
+   ========================================================================== */
+@keyframes heroEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drawCircle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes rippleRing {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes dotPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes spinnerRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes driftGlow {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(40px, 40px) scale(1.1);
+  }
+}
+
+@keyframes floatParticle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes slowFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(3deg);
+  }
+}
+
+/* ==========================================================================
+   8. RESPONSIVE DESIGN & ADAPTIVE TIMELINE
+   ========================================================================== */
+@media (max-width: 768px) {
+  .payment-success-wrapper {
+    padding: var(--fm-space-40, 40px) var(--fm-space-16, 16px);
+  }
+
+  .success-hero {
+    margin-bottom: var(--fm-space-12, 12px);
+  }
+
+  .hero-headline {
+    font-size: 2rem;
+  }
+
+  .hero-supporting-copy {
+    font-size: 1rem;
+  }
+
+  .summary-card {
+    padding: var(--fm-space-24, 24px) var(--fm-space-20, 20px);
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+    gap: var(--fm-space-16, 16px);
+  }
+
+  /* Transform Timeline to Vertical on Mobile */
+  .timeline-container {
+    padding: 0;
+  }
+
+  .timeline-track {
+    top: 0;
+    left: 20px;
+    bottom: 0;
+    width: 2px;
+    height: calc(100% - 40px);
+  }
+
+  .timeline-track-progress {
+    width: 100%;
+    height: 25%;
+    transition: height 1s var(--fm-ease-smooth);
+  }
+
+  .timeline-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--fm-space-32, 32px);
+  }
+
+  .timeline-step {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+  }
+
+  .step-marker-container {
+    margin-bottom: 0;
+    margin-right: var(--fm-space-16, 16px);
+  }
+
+  .step-content {
+    align-items: flex-start;
+  }
+
+  .step-label {
+    max-width: none;
+    font-size: 1rem;
+  }
+
+  .actions-section {
+    flex-direction: column;
+    gap: var(--fm-space-12, 12px);
+  }
+
+  .actions-section ::ng-deep app-button {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+/* ==========================================================================
+   9. RTL SUPPORT (AUTOMATICALLY ALIGNED VIA RTL DIRECTIVE)
+   ========================================================================== */
+[dir="rtl"] .timeline-track {
+  left: auto;
+  right: 20px;
+}
+
+[dir="rtl"] .step-marker-container {
+  margin-right: 0;
+  margin-left: var(--fm-space-16, 16px);
+}
+
+[dir="rtl"] .timeline-step {
+  text-align: right;
+}
+
+[dir="rtl"] .timeline-step .step-content {
+  align-items: flex-start;
+}
+
+@media (min-width: 769px) {
+  [dir="rtl"] .timeline-track {
+    left: 4%;
+    right: 4%;
+  }
+}
+
+/* ==========================================================================
+   10. REDUCED MOTION SUPPORT (WCAG ACCESSIBILITY COMPLIANCE)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .glow-spot,
+  .particle,
+  .furniture-silhouette,
+  .pulse-ring,
+  .badge-dot::after {
+    animation: none !important;
+  }
+
+  .card-wrapper,
+  .success-hero,
+  .summary-card,
+  .order-timeline-section,
+  .actions-section {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .checkmark-circle-stroke,
+  .checkmark-check,
+  .warning-circle,
+  .warning-cross-line-1,
+  .warning-cross-line-2 {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+/* ==========================================================================
+   11. DARK MODE STYLING
+   ========================================================================== */
+:host-context(.dark-mode) {
+  background-color: var(--fm-color-neutral-950, #12100e);
+  color: var(--fm-color-neutral-200, #e8e4dc);
+}
+
+:host-context(.dark-mode) .glow-spot {
+  opacity: 0.04;
+}
+
+:host-context(.dark-mode) .checkmark-circle {
+  background-color: var(--fm-color-neutral-900, #1f1c18);
+  border-color: rgba(184, 147, 92, 0.05);
+}
+
+:host-context(.dark-mode) .hero-headline {
+  color: #ffffff;
+}
+
+:host-context(.dark-mode) .hero-supporting-copy {
+  color: var(--fm-color-neutral-400, #b3ab9d);
+}
+
+:host-context(.dark-mode) .summary-card {
+  background: rgba(31, 28, 24, 0.7);
+  border-color: rgba(184, 147, 92, 0.08);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+:host-context(.dark-mode) .card-title {
+  color: #ffffff;
+}
+
+:host-context(.dark-mode) .item-value {
+  color: var(--fm-color-neutral-100, #f4f2ee);
+}
+
+:host-context(.dark-mode) .paid-badge {
+  background-color: rgba(101, 126, 93, 0.1);
+  color: #a4c49d;
+  border-color: rgba(101, 126, 93, 0.3);
+}
+
+:host-context(.dark-mode) .timeline-section-title {
+  color: #ffffff;
+}
+
+:host-context(.dark-mode) .step-marker {
+  background-color: var(--fm-color-neutral-900, #1f1c18);
+  border-color: var(--fm-color-neutral-800, #38332c);
+}
+
+:host-context(.dark-mode) .timeline-track {
+  background-color: var(--fm-color-neutral-800, #38332c);
+}
+
+:host-context(.dark-mode) .timeline-step.completed .step-marker {
+  background-color: var(--fm-color-success-600, #4a5f44);
+  border-color: var(--fm-color-success-600, #4a5f44);
+}
+
+:host-context(.dark-mode) .timeline-step.completed .step-label {
+  color: var(--fm-color-neutral-200, #e8e4dc);
+}
+
+:host-context(.dark-mode) .timeline-step.active .step-marker {
+  border-color: var(--fm-color-primary-400, #c8a87b);
+  background-color: var(--fm-color-neutral-900, #1f1c18);
+}
