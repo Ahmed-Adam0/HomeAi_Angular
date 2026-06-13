@@ -22,6 +22,7 @@ interface AuthProfile {
   tier: string;
   workshopId?: number;
   image?: string;
+  preferredLanguage?: 'en' | 'ar';
 }
 
 @Injectable({
@@ -138,12 +139,12 @@ export class AuthService {
   }
 
   /**
-   * Updates the locally cached user profile (name, email, image) without
+   * Updates the locally cached user profile (name, email, image, preferredLanguage) without
    * re-decoding the JWT. Call this after the profile API returns updated data
    * so that navbar and other components reading `currentUser()` reflect
    * the change immediately.
    */
-  updateUserProfile(updates: { name?: string; email?: string; image?: string }): void {
+  updateUserProfile(updates: { name?: string; email?: string; image?: string; preferredLanguage?: 'en' | 'ar' }): void {
     this.userProfile.update((current) => {
       if (!current) return current;
       const next = { ...current };
@@ -158,6 +159,7 @@ export class AuthService {
       }
       if (updates.email !== undefined) next.email = updates.email;
       if (updates.image !== undefined) next.image = updates.image;
+      if (updates.preferredLanguage !== undefined) next.preferredLanguage = updates.preferredLanguage;
       return next;
     });
     if (updates.image !== undefined && this.isBrowser) {

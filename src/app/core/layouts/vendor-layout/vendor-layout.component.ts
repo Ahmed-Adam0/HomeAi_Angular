@@ -52,7 +52,10 @@ export class VendorLayoutComponent {
   }
 
   selectLanguage(lang: 'en' | 'ar'): void {
+    console.log(`[VendorLayout.selectLanguage] called with lang=${lang}`);
     this.translationService.setLanguage(lang);
+    console.log('[VendorLayout.selectLanguage] calling syncToBackend');
+    this.translationService.syncToBackend(lang);
   }
 
   logout() {

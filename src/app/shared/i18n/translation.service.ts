@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../../features/auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TranslationService {
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
   private platformId = inject(PLATFORM_ID);
   private baseUrl = environment.apiUrl;
   
@@ -68,29 +70,85 @@ export class TranslationService {
         }
       }
     } catch (error) {
-      if (!environment.production) {
-        console.warn('Failed to sync language from backend.', error);
-      }
+      console.warn('Failed to sync language from backend.', error);
     }
   }
 
   async syncToBackend(lang: 'en' | 'ar'): Promise<void> {
-    if (!isPlatformBrowser(this.platformId)) return;
+    console.log(`[syncToBackend] ENTERED with lang=${lang}, browser=${isPlatformBrowser(this.platformId)}, hasAuth=${this.hasAuthToken()}`);
+    if (!isPlatformBrowser(this.platformId)) {
+      console.warn('[syncToBackend] Not browser, skipping');
+      return;
+    }
+    if (!this.hasAuthToken()) {
+      console.warn('[syncToBackend] No auth token, skipping. User must be logged in to persist language.');
+      return;
+    }
+
+    const url = `${this.baseUrl}profile`;
+    console.log(`[syncToBackend] Starting GET ${url}`);
 
     try {
       const profile = await firstValueFrom(
-        this.http.get<Record<string, any>>(`${this.baseUrl}profile`)
+        this.http.get<{
+          fullName: string;
+          userName?: string | null;
+          email: string;
+          phoneNumber?: string | null;
+          preferredLanguage?: string;
+          addresses?: Array<{
+            id?: string;
+            label?: string;
+            addressLine1: string;
+            addressLine2?: string;
+            city?: string;
+            country?: string;
+            postalCode?: string;
+            primary?: boolean;
+          }>;
+          profileImage?: string | null;
+        }>(url)
       );
+
+      console.log('[syncToBackend] GET profile succeeded', profile);
+
+      // Sanitize addresses exactly like ProfileService.updateProfile does
+      const sanitizedAddresses = (profile.addresses || []).map((addr) => {
+        const isTemporaryId = typeof addr.id === 'string' && String(addr.id).startsWith('addr_');
+        return {
+          ...(isTemporaryId || !addr.id ? {} : { id: addr.id }),
+          label: addr.label,
+          addressLine1: addr.addressLine1,
+          addressLine2: addr.addressLine2,
+          city: addr.city,
+          country: addr.country,
+          postalCode: addr.postalCode,
+          primary: addr.primary,
+        };
+      });
+
+      const putPayload = {
+        fullName: profile.fullName ?? '',
+        userName: profile.userName ?? null,
+        email: profile.email ?? null,
+        phoneNumber: profile.phoneNumber ?? null,
+        preferredLanguage: lang,
+        addresses: sanitizedAddresses,
+        profileImage: profile.profileImage ?? null,
+      };
+      console.log(`[syncToBackend] Sending PUT ${url} with payload:`, putPayload);
+
       await firstValueFrom(
-        this.http.put(`${this.baseUrl}profile`, {
-          ...profile,
-          preferredLanguage: lang
-        })
+        this.http.put(url, putPayload)
       );
+
+      console.log(`[syncToBackend] PUT succeeded. preferredLanguage=${lang}`);
+
+      // After successful backend persistence, update the local auth user state
+      this.authService.updateUserProfile({ preferredLanguage: lang });
+      console.log('[syncToBackend] AuthService updated');
     } catch (error) {
-      if (!environment.production) {
-        console.warn('Failed to persist language to backend.', error);
-      }
+      console.error('[syncToBackend] FAILED to persist language preference to backend.', error);
     }
   }
 

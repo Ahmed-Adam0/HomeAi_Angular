@@ -205,9 +205,12 @@ export class Navbar implements OnInit {
   }
 
   selectLanguage(lang: LanguageOption): void {
+    console.log(`[Navbar.selectLanguage] called with code=${lang.code}`);
     this.selectedLanguage.set(lang);
     this.isLanguageDropdownOpen.set(false);
     this.translationService.setLanguage(lang.code);
+    console.log('[Navbar.selectLanguage] calling syncToBackend');
+    this.translationService.syncToBackend(lang.code as 'en' | 'ar');
     this.languageChange.emit(lang);
   }
 

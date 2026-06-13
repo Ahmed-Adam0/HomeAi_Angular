@@ -139,6 +139,7 @@ export class Profile {
         name: profile.fullName,
         email: profile.email,
         image: profile.profileImage ?? undefined,
+        preferredLanguage: profile.preferredLanguage,
       });
 
       this.loadFavoritesCount();
@@ -235,6 +236,7 @@ export class Profile {
         name: updated.fullName,
         email: updated.email,
         image: updated.profileImage ?? undefined,
+        preferredLanguage: updated.preferredLanguage,
       });
 
       if (requestPayload.preferredLanguage !== this.translationService.currentLang()) {
@@ -304,6 +306,7 @@ export class Profile {
         name: updated.fullName,
         email: updated.email,
         image: updated.profileImage ?? undefined,
+        preferredLanguage: updated.preferredLanguage,
       });
 
       this.uiState.showAlert('success', this.translationService.translate('PROFILE.ADDRESSES_UPDATED'));
