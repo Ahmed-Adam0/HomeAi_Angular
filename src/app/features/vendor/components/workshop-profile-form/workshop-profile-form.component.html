@@ -107,7 +107,7 @@
               <label class="form-label font-medium text-dark small mb-2" for="fullName">{{ 'vendor.profile.fullName' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-person"></i></span>
-                <input id="fullName" type="text" class="form-control premium-input ps-5" formControlName="fullName" [class.is-invalid]="submitted() && form.controls.fullName.invalid" />
+                <input id="fullName" type="text" class="form-control premium-input ps-5" formControlName="fullName" [class.is-invalid]="submitted() && form.controls.fullName.invalid" appAutoDir />
               </div>
               @if (submitted() && form.controls.fullName.errors?.['required']) {
                 <div class="invalid-feedback d-block mt-1">{{ 'VALIDATION.REQUIRED' | translate }}</div>
@@ -117,7 +117,7 @@
               <label class="form-label font-medium text-dark small mb-2" for="email">{{ 'vendor.profile.email' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-envelope"></i></span>
-                <input id="email" type="email" class="form-control premium-input ps-5" formControlName="email" [class.is-invalid]="submitted() && form.controls.email.invalid" />
+                <input id="email" type="email" class="form-control premium-input ps-5" formControlName="email" [class.is-invalid]="submitted() && form.controls.email.invalid" appAutoDir />
               </div>
               @if (submitted() && form.controls.email.errors?.['required']) {
                 <div class="invalid-feedback d-block mt-1">{{ 'VALIDATION.REQUIRED' | translate }}</div>
@@ -130,7 +130,7 @@
               <label class="form-label font-medium text-dark small mb-2" for="phoneNumber">{{ 'vendor.profile.phoneNumber' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-telephone"></i></span>
-                <input id="phoneNumber" type="tel" class="form-control premium-input ps-5" formControlName="phoneNumber" [class.is-invalid]="submitted() && form.controls.phoneNumber.invalid" />
+                <input id="phoneNumber" type="tel" class="form-control premium-input ps-5" formControlName="phoneNumber" [class.is-invalid]="submitted() && form.controls.phoneNumber.invalid" appAutoDir />
               </div>
               @if (submitted() && form.controls.phoneNumber.errors?.['required']) {
                 <div class="invalid-feedback d-block mt-1">{{ 'VALIDATION.REQUIRED' | translate }}</div>
@@ -166,28 +166,28 @@
               <label class="form-label font-medium text-dark small mb-2" for="workshopNameAr">{{ 'vendor.profile.workshopNameAr' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-type"></i></span>
-                <input id="workshopNameAr" type="text" class="form-control premium-input ps-5" formControlName="workshopNameAr" />
+                <input id="workshopNameAr" type="text" class="form-control premium-input ps-5" formControlName="workshopNameAr" appAutoDir />
               </div>
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label font-medium text-dark small mb-2" for="workshopNameEn">{{ 'vendor.profile.workshopNameEn' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-type-bold"></i></span>
-                <input id="workshopNameEn" type="text" class="form-control premium-input ps-5" formControlName="workshopNameEn" />
+                <input id="workshopNameEn" type="text" class="form-control premium-input ps-5" formControlName="workshopNameEn" appAutoDir />
               </div>
             </div>
             <div class="col-12">
               <label class="form-label font-medium text-dark small mb-2" for="descriptionAr">{{ 'vendor.profile.descriptionAr' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute textarea-icon ms-3 text-muted"><i class="bi bi-text-paragraph"></i></span>
-                <textarea id="descriptionAr" class="form-control premium-input ps-5" formControlName="descriptionAr" rows="3" style="padding-top:16px;min-height:80px;resize:vertical;"></textarea>
+                <textarea id="descriptionAr" class="form-control premium-input ps-5" formControlName="descriptionAr" rows="3" style="padding-top:16px;min-height:80px;resize:vertical;" appAutoDir></textarea>
               </div>
             </div>
             <div class="col-12">
               <label class="form-label font-medium text-dark small mb-2" for="descriptionEn">{{ 'vendor.profile.descriptionEn' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute textarea-icon ms-3 text-muted"><i class="bi bi-text-paragraph"></i></span>
-                <textarea id="descriptionEn" class="form-control premium-input ps-5" formControlName="descriptionEn" rows="3" style="padding-top:16px;min-height:80px;resize:vertical;"></textarea>
+                <textarea id="descriptionEn" class="form-control premium-input ps-5" formControlName="descriptionEn" rows="3" style="padding-top:16px;min-height:80px;resize:vertical;" appAutoDir></textarea>
               </div>
             </div>
           </div>
@@ -210,35 +210,35 @@
               <label class="form-label font-medium text-dark small mb-2" for="city">{{ 'vendor.profile.city' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-building"></i></span>
-                <input id="city" type="text" class="form-control premium-input ps-5" formControlName="city" />
+                <input id="city" type="text" class="form-control premium-input ps-5" formControlName="city" appAutoDir />
               </div>
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label font-medium text-dark small mb-2" for="area">{{ 'vendor.profile.area' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-pin-map"></i></span>
-                <input id="area" type="text" class="form-control premium-input ps-5" formControlName="area" />
+                <input id="area" type="text" class="form-control premium-input ps-5" formControlName="area" appAutoDir />
               </div>
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label font-medium text-dark small mb-2" for="street">{{ 'vendor.profile.street' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-signpost-2"></i></span>
-                <input id="street" type="text" class="form-control premium-input ps-5" formControlName="street" />
+                <input id="street" type="text" class="form-control premium-input ps-5" formControlName="street" appAutoDir />
               </div>
             </div>
             <div class="col-12 col-md-6">
               <label class="form-label font-medium text-dark small mb-2" for="buildingNumber">{{ 'vendor.profile.buildingNumber' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"><i class="bi bi-door-closed"></i></span>
-                <input id="buildingNumber" type="text" class="form-control premium-input ps-5" formControlName="buildingNumber" />
+                <input id="buildingNumber" type="text" class="form-control premium-input ps-5" formControlName="buildingNumber" appAutoDir />
               </div>
             </div>
             <div class="col-12">
               <label class="form-label font-medium text-dark small mb-2" for="notes">{{ 'vendor.profile.notes' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute textarea-icon ms-3 text-muted"><i class="bi bi-chat-dots"></i></span>
-                <textarea id="notes" class="form-control premium-input ps-5" formControlName="notes" rows="2" style="padding-top:16px;min-height:60px;resize:vertical;"></textarea>
+                <textarea id="notes" class="form-control premium-input ps-5" formControlName="notes" rows="2" style="padding-top:16px;min-height:60px;resize:vertical;" appAutoDir></textarea>
               </div>
             </div>
           </div>

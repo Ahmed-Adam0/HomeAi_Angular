@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { strongPasswordValidator, passwordMatchValidator } from '../../../../shared/validators';
 import { IChangePasswordDto } from '../../interfaces/ichange-password.dto';
 import { ProfileService } from '../../services/profile.service';
@@ -13,7 +14,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 @Component({
   selector: 'app-change-password-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective, AutoDirectionDirective],
   template: `
     <div appRtl class="change-password-card card border-0 overflow-hidden">
       <div class="card-body p-4 p-md-5">
@@ -31,7 +32,8 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
                 type="password"
                 class="form-control premium-input ps-5"
                 [class.is-invalid]="oldPassword.invalid && oldPassword.touched"
-                formControlName="oldPassword" />
+                formControlName="oldPassword"
+                appAutoDir />
             </div>
             <div class="invalid-feedback d-block mt-1" *ngIf="oldPassword.invalid && oldPassword.touched">
               {{ 'PROFILE.OLD_PASSWORD_REQUIRED' | translate }}
@@ -50,7 +52,8 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
                 type="password"
                 class="form-control premium-input ps-5"
                 [class.is-invalid]="newPassword.invalid && newPassword.touched"
-                formControlName="newPassword" />
+                formControlName="newPassword"
+                appAutoDir />
             </div>
             <div class="invalid-feedback d-block mt-1" *ngIf="newPassword.invalid && newPassword.touched">
               <ng-container *ngIf="newPassword.hasError('required')">
@@ -74,7 +77,8 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
                 type="password"
                 class="form-control premium-input ps-5"
                 [class.is-invalid]="(confirmNewPassword.invalid && confirmNewPassword.touched) || passwordForm.hasError('passwordMismatch')"
-                formControlName="confirmNewPassword" />
+                formControlName="confirmNewPassword"
+                appAutoDir />
             </div>
             <div class="invalid-feedback d-block mt-1" *ngIf="(confirmNewPassword.invalid && confirmNewPassword.touched) || passwordForm.hasError('passwordMismatch')">
               <ng-container *ngIf="confirmNewPassword.hasError('required')">

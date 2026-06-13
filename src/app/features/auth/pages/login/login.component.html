@@ -45,6 +45,7 @@
               [placeholder]="t().emailPlaceholder"
               [class.is-invalid]="showValidation('email')"
               [class.is-valid]="showSuccess('email')"
+              appAutoDir
             />
             @if (showSuccess('email')) {
               <span class="field-status-icon success-icon">
@@ -91,6 +92,7 @@
               [placeholder]="t().passwordPlaceholder"
               [class.is-invalid]="showValidation('password')"
               [class.is-valid]="showSuccess('password')"
+              appAutoDir
             />
             @if (showSuccess('password')) {
               <span class="field-status-icon success-icon">

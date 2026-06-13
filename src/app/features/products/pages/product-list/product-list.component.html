@@ -50,6 +50,7 @@
                 [placeholder]="'NAV_SEARCH_PLACEHOLDER' | translate" 
                 [(ngModel)]="activeFilters.query"
                 (input)="applyFilters()"
+                appAutoDir
               />
               <span class="sidebar-search-icon-wrapper position-absolute start-0 top-50 translate-middle-y ms-3">
                 <i class="bi bi-search font-xs"></i>
@@ -138,6 +139,7 @@
                   [placeholder]="'FILTER_MIN' | translate"
                   [(ngModel)]="activeFilters.minPrice"
                   (change)="applyFilters()"
+                  appAutoDir
                 />
               </div>
               <div class="input-group input-group-sm rounded-3 overflow-hidden border border-light">
@@ -150,6 +152,7 @@
                   [placeholder]="'FILTER_MAX' | translate"
                   [(ngModel)]="activeFilters.maxPrice"
                   (change)="applyFilters()"
+                  appAutoDir
                 />
               </div>
             </div>

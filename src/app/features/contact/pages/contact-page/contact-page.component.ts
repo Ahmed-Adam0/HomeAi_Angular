@@ -14,11 +14,12 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { ContactService } from '../../services/contact.service';
 import type { ContactInfo, SupportOption, FAQItem } from '../../models/contact.models';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 
 @Component({
   selector: 'app-contact-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, TranslatePipe],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, TranslatePipe, AutoDirectionDirective],
   templateUrl: './contact-page.component.html',
   styleUrl: './contact-page.component.css',
 })

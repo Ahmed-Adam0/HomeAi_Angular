@@ -250,7 +250,7 @@
                   <button type="button" class="qty-btn qty-btn-minus" (click)="adjustQuantity(i, -1)" [disabled]="(item.value.quantity ?? 0) <= 1" aria-label="Decrease quantity">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                   </button>
-                  <input type="number" formControlName="quantity" class="qty-input" min="1" max="99" />
+                  <input type="number" formControlName="quantity" class="qty-input" min="1" max="99" appAutoDir />
                   <button type="button" class="qty-btn qty-btn-plus" (click)="adjustQuantity(i, 1)" [disabled]="(item.value.quantity ?? 0) >= 99" aria-label="Increase quantity">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                   </button>

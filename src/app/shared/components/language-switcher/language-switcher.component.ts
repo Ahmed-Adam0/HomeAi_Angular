@@ -14,5 +14,6 @@ export class LanguageSwitcher {
     const current = this.translationService.currentLang();
     const next = current === 'en' ? 'ar' : 'en';
     this.translationService.setLanguage(next);
+    this.translationService.syncToBackend(next);
   }
 }

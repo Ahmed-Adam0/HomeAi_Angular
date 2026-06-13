@@ -37,6 +37,7 @@
               formControlName="email"
               [placeholder]="t().emailPlaceholder"
               [class.is-invalid]="otpForm.get('email')?.touched && otpForm.get('email')?.invalid"
+              appAutoDir
             />
           </div>
           <div class="error-msg" *ngIf="otpForm.get('email')?.touched && otpForm.get('email')?.hasError('required')">{{ t().emailRequired }}</div>
@@ -57,6 +58,7 @@
               formControlName="otpCode"
               [placeholder]="t().otpPlaceholder"
               [class.is-invalid]="otpForm.get('otpCode')?.touched && otpForm.get('otpCode')?.invalid"
+              appAutoDir
             />
           </div>
           <div class="error-msg" *ngIf="otpForm.get('otpCode')?.touched && otpForm.get('otpCode')?.hasError('required')">{{ t().otpRequired }}</div>

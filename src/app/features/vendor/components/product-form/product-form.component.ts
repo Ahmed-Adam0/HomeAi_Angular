@@ -6,17 +6,19 @@ import { ICategory } from '../../../../features/categories/interfaces/icategory'
 import { CategoryService } from '../../../../features/categories/services/category.service';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LocalizedPipe],
+  imports: [CommonModule, ReactiveFormsModule, LocalizedPipe, AutoDirectionDirective],
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.css'
 })
 export class ProductForm implements OnInit, OnChanges {
   @Input() initialData: Partial<IProduct> | null = null;
   @Input() isSubmitting = false;
+  @Input() imageCount = 0;
   
   @Output() formSubmit = new EventEmitter<Partial<IProduct>>();
   @Output() cancel = new EventEmitter<void>();
@@ -48,6 +50,12 @@ export class ProductForm implements OnInit, OnChanges {
         isActive: this.initialData.isActive ?? true
       });
     }
+    if (changes['imageCount'] && this.productForm) {
+      const imagesControl = this.productForm.get('images');
+      if (imagesControl) {
+        imagesControl.setValue(this.imageCount > 0 ? 'valid' : '');
+      }
+    }
   }
 
   private initForm(): void {
@@ -58,7 +66,8 @@ export class ProductForm implements OnInit, OnChanges {
       descriptionEn: ['', [Validators.required, Validators.minLength(5)]],
       price: ['', [Validators.required, Validators.min(1)]],
       categoryId: ['', [Validators.required]],
-      isActive: [true]
+      isActive: [true],
+      images: ['', [Validators.required]]
     });
   }
 

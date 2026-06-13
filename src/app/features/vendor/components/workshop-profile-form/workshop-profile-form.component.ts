@@ -12,13 +12,14 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
 import { IVendorProfile } from '../../interfaces/iworkshop-profile';
 
 @Component({
   selector: 'app-workshop-profile-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective, AutoDirectionDirective],
   templateUrl: './workshop-profile-form.component.html',
   styleUrl: './workshop-profile-form.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

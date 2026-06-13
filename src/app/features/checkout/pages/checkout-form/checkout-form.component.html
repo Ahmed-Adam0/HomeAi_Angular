@@ -22,7 +22,7 @@
               <div class="col-md-6">
                 <div class="form-group-custom">
                   <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_FULL_NAME' | translate }}</label>
-                  <input type="text" formControlName="fullName" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'جون دو' : 'John Doe'">
+                  <input type="text" formControlName="fullName" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'جون دو' : 'John Doe'" appAutoDir>
                   @if (checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.errors?.['required']) {
                     <div class="text-danger-custom small mt-1">
                       {{ currentLang() === 'ar' ? 'الاسم الكامل مطلوب.' : 'Full name is required.' }}
@@ -40,7 +40,7 @@
               <div class="col-md-6">
                 <div class="form-group-custom">
                   <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_EMAIL' | translate }}</label>
-                  <input type="email" formControlName="email" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'john@example.com' : 'john@example.com'">
+                  <input type="email" formControlName="email" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'john@example.com' : 'john@example.com'" appAutoDir>
                   @if (checkoutForm.get('email')?.touched) {
                     @if (checkoutForm.get('email')?.errors?.['required']) {
                       <div class="text-danger-custom small mt-1">
@@ -59,7 +59,7 @@
               <div class="col-md-6">
                 <div class="form-group-custom">
                   <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_PHONE' | translate }}</label>
-                  <input type="text" formControlName="phone" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? '+1234567890' : '+1234567890'">
+                  <input type="text" formControlName="phone" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? '+1234567890' : '+1234567890'" appAutoDir>
                   @if (checkoutForm.get('phone')?.touched) {
                     @if (checkoutForm.get('phone')?.errors?.['required']) {
                       <div class="text-danger-custom small mt-1">
@@ -78,7 +78,7 @@
               <div class="col-md-6">
                 <div class="form-group-custom">
                   <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ZIP' | translate }}</label>
-                  <input type="text" formControlName="zipCode" class="form-control-custom" placeholder="10001">
+                  <input type="text" formControlName="zipCode" class="form-control-custom" placeholder="10001" appAutoDir>
                   @if (checkoutForm.get('zipCode')?.touched) {
                     @if (checkoutForm.get('zipCode')?.errors?.['required']) {
                       <div class="text-danger-custom small mt-1">
@@ -97,7 +97,7 @@
               <div class="col-12">
                 <div class="form-group-custom">
                   <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS1' | translate }}</label>
-                  <input type="text" formControlName="addressLine1" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? '123 الشارع الرئيسي' : '123 Main St'">
+                  <input type="text" formControlName="addressLine1" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? '123 الشارع الرئيسي' : '123 Main St'" appAutoDir>
                   @if (checkoutForm.get('addressLine1')?.touched && checkoutForm.get('addressLine1')?.errors?.['required']) {
                     <div class="text-danger-custom small mt-1">
                       {{ currentLang() === 'ar' ? 'العنوان مطلوب.' : 'Address line 1 is required.' }}
@@ -110,7 +110,7 @@
               <div class="col-12">
                 <div class="form-group-custom">
                   <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS2' | translate }}</label>
-                  <input type="text" formControlName="addressLine2" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم الشقة، الجناح، إلخ (اختياري)' : 'Apartment, suite, unit, etc. (optional)'">
+                  <input type="text" formControlName="addressLine2" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم الشقة، الجناح، إلخ (اختياري)' : 'Apartment, suite, unit, etc. (optional)'" appAutoDir>
                 </div>
               </div>
 
@@ -118,7 +118,7 @@
               <div class="col-md-6">
                 <div class="form-group-custom">
                   <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_CITY' | translate }}</label>
-                  <input type="text" formControlName="city" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'نيويورك' : 'New York'">
+                  <input type="text" formControlName="city" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'نيويورك' : 'New York'" appAutoDir>
                   @if (checkoutForm.get('city')?.touched && checkoutForm.get('city')?.errors?.['required']) {
                     <div class="text-danger-custom small mt-1">
                       {{ currentLang() === 'ar' ? 'المدينة مطلوبة.' : 'City is required.' }}
@@ -131,7 +131,7 @@
               <div class="col-md-6">
                 <div class="form-group-custom">
                   <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_COUNTRY' | translate }}</label>
-                  <input type="text" formControlName="country" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'أدخل اسم الدولة' : 'Enter your country'">
+                  <input type="text" formControlName="country" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'أدخل اسم الدولة' : 'Enter your country'" appAutoDir>
                   @if (checkoutForm.get('country')?.touched && checkoutForm.get('country')?.errors?.['required']) {
                     <div class="text-danger-custom small mt-1">
                       {{ currentLang() === 'ar' ? 'الدولة مطلوبة.' : 'Country is required.' }}
@@ -179,7 +179,8 @@
                 formControlName="orderNotes"
                 rows="5"
                 class="form-control-custom checkout-notes-textarea"
-                [placeholder]="currentLang() === 'ar' ? 'اكتب ملاحظات إضافية للطلب...' : 'Write any special instructions for your order...'"></textarea>
+                [placeholder]="currentLang() === 'ar' ? 'اكتب ملاحظات إضافية للطلب...' : 'Write any special instructions for your order...'"
+                appAutoDir></textarea>
 
               <div class="notes-meta d-flex align-items-center justify-content-between gap-3 mt-2 flex-wrap">
                 <span class="text-muted small">{{ 'CHECKOUT_ORDER_NOTES_HELP' | translate }}</span>

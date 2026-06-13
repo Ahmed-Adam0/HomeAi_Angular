@@ -7,11 +7,12 @@ import { AuthErrorHandler } from '../../services/auth-error-handler.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AutoDirectionDirective],
   templateUrl: './forgot-password.component.html',
   styleUrls: ['../login/login.component.css']
 })

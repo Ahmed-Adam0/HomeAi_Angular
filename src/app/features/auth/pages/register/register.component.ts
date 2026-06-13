@@ -6,11 +6,12 @@ import { AuthService } from '../../services/auth.service';
 import { AuthErrorHandler } from '../../services/auth-error-handler.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AutoDirectionDirective],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
@@ -197,6 +198,7 @@ export class Register implements OnDestroy {
       next: () => {
         this.isLoading = false;
         this.successMessage = this.t().successMessage;
+        this.translationService.setLanguage(formData.preferredLanguage as 'en' | 'ar');
         if (this.successTimeout) clearTimeout(this.successTimeout);
         this.successTimeout = setTimeout(() => {
           this.router.navigate([NAV_ROUTES.LOGIN]);

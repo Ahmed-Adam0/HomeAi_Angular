@@ -23,6 +23,7 @@
             class="form-control rounded-pill px-3 py-2 fs-7"
             [class.is-invalid]="isInvalid('nameEn')"
             [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل اسم المنتج بالإنجليزية' : 'Enter product name in English'"
+            appAutoDir
           />
           <div class="invalid-feedback fs-8 px-2">
             {{ translationService.currentLang() === 'ar' ? 'الاسم بالإنجليزية مطلوب (3 أحرف على الأقل)' : 'English name is required (min 3 characters)' }}
@@ -41,6 +42,7 @@
             class="form-control rounded-pill px-3 py-2 fs-7"
             [class.is-invalid]="isInvalid('nameAr')"
             [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل اسم المنتج بالعربية' : 'Enter product name in Arabic'"
+            appAutoDir
           />
           <div class="invalid-feedback fs-8 px-2">
             {{ translationService.currentLang() === 'ar' ? 'الاسم بالعربية مطلوب (3 أحرف على الأقل)' : 'Arabic name is required (min 3 characters)' }}
@@ -59,6 +61,7 @@
             rows="4"
             [class.is-invalid]="isInvalid('descriptionEn')"
             [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل وصف المنتج بالإنجليزية...' : 'Enter product description in English...'"
+            appAutoDir
           ></textarea>
           <div class="invalid-feedback fs-8 px-2">
             {{ translationService.currentLang() === 'ar' ? 'الوصف بالإنجليزية مطلوب (5 أحرف على الأقل)' : 'English description is required (min 5 characters)' }}
@@ -77,6 +80,7 @@
             rows="4"
             [class.is-invalid]="isInvalid('descriptionAr')"
             [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل وصف المنتج بالعربية...' : 'Enter product description in Arabic...'"
+            appAutoDir
           ></textarea>
           <div class="invalid-feedback fs-8 px-2">
             {{ translationService.currentLang() === 'ar' ? 'الوصف بالعربية مطلوب (5 أحرف على الأقل)' : 'Arabic description is required (min 5 characters)' }}
@@ -95,6 +99,7 @@
             class="form-control rounded-pill px-3 py-2 fs-7"
             [class.is-invalid]="isInvalid('price')"
             [placeholder]="translationService.currentLang() === 'ar' ? 'مثال: 4500' : 'Example: 4500'"
+            appAutoDir
           />
           <div class="invalid-feedback fs-8 px-2">
             {{ translationService.currentLang() === 'ar' ? 'السعر مطلوب ويجب أن يكون أكبر من 0' : 'Price is required and must be greater than 0' }}
@@ -140,6 +145,13 @@
             </label>
           </div>
         </div>
+
+        <!-- Images Validation Message -->
+        <div class="col-12">
+          <div *ngIf="isInvalid('images')" class="alert alert-warning fs-7 d-flex align-items-center gap-2 mt-2 mb-0 rounded-3 py-2 px-3 border-0">
+            {{ translationService.currentLang() === 'ar' ? 'يرجى إضافة صورة واحدة على الأقل للمنتج' : 'Please add at least one product image' }}
+          </div>
+        </div>
       </div>
     </div>
 
@@ -158,7 +170,7 @@
       <button
         type="submit"
         class="btn btn-dark rounded-pill px-4 py-2 fs-7 fw-semibold shadow-sm d-flex align-items-center gap-2 border-0"
-        [disabled]="isSubmitting"
+        [disabled]="isSubmitting || productForm.invalid"
       >
         <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         {{ translationService.currentLang() === 'ar' ? 'حفظ الحقول' : 'Save Details' }}

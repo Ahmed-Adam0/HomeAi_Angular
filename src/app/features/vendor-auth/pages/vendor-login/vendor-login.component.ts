@@ -7,11 +7,12 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { AuthErrorHandler } from '../../../auth/services/auth-error-handler.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 
 @Component({
   selector: 'app-vendor-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AutoDirectionDirective],
   templateUrl: './vendor-login.component.html',
   styleUrls: ['./vendor-login.component.css']
 })
@@ -120,6 +121,7 @@ export class VendorLogin {
             : 'Customer accounts are not allowed to log in here.');
           return;
         }
+        this.translationService.syncFromBackend();
         const destination = this.returnUrl || NAV_ROUTES.VENDOR_DASHBOARD;
         this.router.navigateByUrl(destination, { replaceUrl: true });
       },

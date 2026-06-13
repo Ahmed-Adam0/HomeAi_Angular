@@ -37,6 +37,7 @@
               formControlName="email"
               [placeholder]="t().emailPlaceholder"
               [class.is-invalid]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
+              appAutoDir
             />
           </div>
           <div class="error-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')">{{ t().emailRequired }}</div>
@@ -62,6 +63,7 @@
               formControlName="password"
               [placeholder]="t().passwordPlaceholder"
               [class.is-invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+              appAutoDir
             />
           </div>
           <div class="error-msg" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')">{{ t().passwordRequired }}</div>

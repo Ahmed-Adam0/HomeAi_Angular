@@ -7,10 +7,11 @@ import { AuthErrorHandler } from '../../services/auth-error-handler.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import{environment} from '../../../../../environments/environment';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AutoDirectionDirective],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 
@@ -149,6 +150,7 @@ export class Login implements OnInit, AfterViewInit {
             : 'Vendor accounts are not allowed to log in here. Please use the Vendor Portal.';
           return;
         }
+        this.translationService.syncFromBackend();
         const destination = this.returnUrl || NAV_ROUTES.HOME;
         this.router.navigateByUrl(destination, { replaceUrl: true });
       },
@@ -254,9 +256,10 @@ export class Login implements OnInit, AfterViewInit {
           this.authService.logout();
           this.errorMessage = this.currentLang() === 'ar'
             ? 'حسابات الموردين غير مسموح لها بتسجيل الدخول من هنا. يرجى استخدام بوابة الموردين.'
-            : 'Vendor accounts are not allowed to log in here. Please use the Vendor Portal.';
+            : 'Customer accounts are not allowed to log in here.';
           return;
         }
+        this.translationService.syncFromBackend();
         const destination = this.returnUrl || NAV_ROUTES.HOME;
         this.router.navigateByUrl(destination, { replaceUrl: true });
       },

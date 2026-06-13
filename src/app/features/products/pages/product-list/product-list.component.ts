@@ -17,6 +17,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 
 @Component({
   selector: 'app-product-list',
@@ -31,7 +32,8 @@ import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
     EmptyStateComponent,
     TranslatePipe,
     PaginationComponent,
-    LocalizedPipe
+    LocalizedPipe,
+    AutoDirectionDirective
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',

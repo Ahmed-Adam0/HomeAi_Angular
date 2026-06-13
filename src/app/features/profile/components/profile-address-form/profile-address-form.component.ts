@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { IAddressDto } from '../../interfaces/iaddress.dto';
 
 @Component({
   selector: 'app-profile-address-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective, AutoDirectionDirective],
   template: `
     <div appRtl class="address-form-container p-4 rounded-4 border bg-white mb-3">
       <h4 class="h6 text-dark font-semibold mb-3">
@@ -30,7 +31,8 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
               class="form-control premium-input ps-5"
               type="text"
               placeholder="e.g. Home, Work"
-              formControlName="label" />
+              formControlName="label"
+              appAutoDir />
           </div>
         </div>
 
@@ -48,7 +50,8 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
               class="form-control premium-input ps-5"
               [class.is-invalid]="addressLine1Control.invalid && addressLine1Control.touched"
               type="text"
-              formControlName="addressLine1" />
+              formControlName="addressLine1"
+              appAutoDir />
           </div>
           <div class="invalid-feedback d-block mt-1" *ngIf="addressLine1Control.invalid && addressLine1Control.touched">
             {{ 'PROFILE.STREET_ADDRESS' | translate }} is required.
@@ -68,7 +71,8 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
               id="addressLine2"
               class="form-control premium-input ps-5"
               type="text"
-              formControlName="addressLine2" />
+              formControlName="addressLine2"
+              appAutoDir />
           </div>
         </div>
 
@@ -86,7 +90,8 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
               class="form-control premium-input ps-5"
               [class.is-invalid]="cityControl.invalid && cityControl.touched"
               type="text"
-              formControlName="city" />
+              formControlName="city"
+              appAutoDir />
           </div>
           <div class="invalid-feedback d-block mt-1" *ngIf="cityControl.invalid && cityControl.touched">
             {{ 'PROFILE.CITY' | translate }} is required.
@@ -107,7 +112,8 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
               class="form-control premium-input ps-5"
               [class.is-invalid]="countryControl.invalid && countryControl.touched"
               type="text"
-              formControlName="country" />
+              formControlName="country"
+              appAutoDir />
           </div>
           <div class="invalid-feedback d-block mt-1" *ngIf="countryControl.invalid && countryControl.touched">
             {{ 'PROFILE.COUNTRY' | translate }} is required.
@@ -127,7 +133,8 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
               id="postalCode"
               class="form-control premium-input ps-5"
               type="text"
-              formControlName="postalCode" />
+              formControlName="postalCode"
+              appAutoDir />
           </div>
         </div>
 

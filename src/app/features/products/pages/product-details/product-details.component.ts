@@ -21,6 +21,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { UiState } from '../../../../core/state/ui.state';
 import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 
 interface ISpecification {
   labelEn: string;
@@ -44,7 +45,8 @@ interface ISpecification {
     FormsModule,
     TranslatePipe,
     LocalizedPipe,
-    LazyImageDirective
+    LazyImageDirective,
+    AutoDirectionDirective
   ],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css',

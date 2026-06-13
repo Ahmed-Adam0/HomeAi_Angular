@@ -19,6 +19,7 @@
       <div class="d-flex flex-column gap-4">
         <!-- Reusable Product Form -->
         <app-product-form
+          [imageCount]="selectedFiles.length"
           [isSubmitting]="submitting()"
           (formSubmit)="onFormSubmit($event)"
           (cancel)="onCancel()"

@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { IProfile } from '../../interfaces/iprofile';
 import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
 
 @Component({
   selector: 'app-editable-profile-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective, AutoDirectionDirective],
   template: `
     <div appRtl class="profile-form-card card border-0 overflow-hidden">
       <div class="card-body p-4 p-md-5">
@@ -42,7 +43,8 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
                   [class.is-invalid]="fullName.invalid && fullName.touched"
                   type="text"
                   formControlName="fullName"
-                  [readonly]="!isEditMode()" />
+                  [readonly]="!isEditMode()"
+                  appAutoDir />
               </div>
               <div class="invalid-feedback d-block mt-1" *ngIf="fullName.invalid && fullName.touched">
                 {{ 'PROFILE.FULL_NAME' | translate }} is required.
@@ -62,7 +64,8 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
                   [class.is-invalid]="email.invalid && email.touched"
                   type="email"
                   formControlName="email"
-                  [readonly]="!isEditMode()" />
+                  [readonly]="!isEditMode()"
+                  appAutoDir />
               </div>
               <div class="invalid-feedback d-block mt-1" *ngIf="email.invalid && email.touched">
                 <ng-container *ngIf="email.hasError('required')">
@@ -86,7 +89,8 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
                   class="form-control premium-input ps-5"
                   type="tel"
                   formControlName="phoneNumber"
-                  [readonly]="!isEditMode()" />
+                  [readonly]="!isEditMode()"
+                  appAutoDir />
               </div>
             </div>
 
@@ -101,7 +105,8 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
                   class="form-control premium-input ps-5 text-truncate"
                   type="text"
                   [value]="formattedAddress"
-                  readonly />
+                  readonly
+                  appAutoDir />
               </div>
               <div class="small text-muted mt-1" *ngIf="isEditMode()">
                 * Address values can be managed in the Address section below.

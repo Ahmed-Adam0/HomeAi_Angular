@@ -6,6 +6,7 @@ import { VendorAuthService } from '../../services/vendor-auth.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { AuthErrorHandler } from '../../../auth/services/auth-error-handler.service';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { phoneValidator, passwordMatchValidator } from '../../../../shared/validators';
 import { IVendorRegisterRequest } from '../../interfaces/vendor-auth-request';
 
@@ -34,7 +35,7 @@ type VendorRegisterForm = FormGroup<{
 @Component({
   selector: 'app-vendor-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, AutoDirectionDirective],
   templateUrl: './vendor-register.component.html',
   styleUrls: ['./vendor-register.component.css']
 })
@@ -205,6 +206,7 @@ export class VendorRegister {
       next: () => {
         this.isLoading = false;
         this.successMessage = this.t().successMessage;
+        this.translationService.setLanguage(payload.preferredLanguage as 'en' | 'ar');
         setTimeout(() => {
           this.router.navigate([NAV_ROUTES.VENDOR_LOGIN]);
         }, 1800);

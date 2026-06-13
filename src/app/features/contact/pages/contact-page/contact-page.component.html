@@ -81,7 +81,7 @@
             <div class="form-row">
               <div class="form-group">
                 <div class="floating-input-wrap">
-                  <input type="text" id="name" formControlName="name" class="form-input" placeholder=" " autocomplete="name">
+                  <input type="text" id="name" formControlName="name" class="form-input" placeholder=" " autocomplete="name" appAutoDir>
                   <label for="name" class="form-label-float">{{ 'CONTACT.FORM.NAME' | translate }}</label>
                 </div>
                 @if (f.name.touched && f.name.invalid) {
@@ -93,7 +93,7 @@
               </div>
               <div class="form-group">
                 <div class="floating-input-wrap">
-                  <input type="email" id="email" formControlName="email" class="form-input" placeholder=" " autocomplete="email">
+                  <input type="email" id="email" formControlName="email" class="form-input" placeholder=" " autocomplete="email" appAutoDir>
                   <label for="email" class="form-label-float">{{ 'CONTACT.FORM.EMAIL' | translate }}</label>
                 </div>
                 @if (f.email.touched && f.email.invalid) {
@@ -107,7 +107,7 @@
             <div class="form-row">
               <div class="form-group">
                 <div class="floating-input-wrap">
-                  <input type="tel" id="phone" formControlName="phone" class="form-input" placeholder=" " autocomplete="tel">
+                  <input type="tel" id="phone" formControlName="phone" class="form-input" placeholder=" " autocomplete="tel" appAutoDir>
                   <label for="phone" class="form-label-float">{{ 'CONTACT.FORM.PHONE' | translate }}</label>
                 </div>
                 @if (f.phone.touched && f.phone.invalid) {
@@ -119,7 +119,7 @@
               </div>
               <div class="form-group">
                 <div class="floating-input-wrap">
-                  <input type="text" id="subject" formControlName="subject" class="form-input" placeholder=" ">
+                  <input type="text" id="subject" formControlName="subject" class="form-input" placeholder=" " appAutoDir>
                   <label for="subject" class="form-label-float">{{ 'CONTACT.FORM.SUBJECT' | translate }}</label>
                 </div>
                 @if (f.subject.touched && f.subject.invalid) {
@@ -132,7 +132,7 @@
             </div>
             <div class="form-group">
               <div class="floating-input-wrap">
-                <textarea id="message" formControlName="message" class="form-input form-textarea" placeholder=" " rows="5"></textarea>
+                <textarea id="message" formControlName="message" class="form-input form-textarea" placeholder=" " rows="5" appAutoDir></textarea>
                 <label for="message" class="form-label-float">{{ 'CONTACT.FORM.MESSAGE' | translate }}</label>
               </div>
               @if (f.message.touched && f.message.invalid) {

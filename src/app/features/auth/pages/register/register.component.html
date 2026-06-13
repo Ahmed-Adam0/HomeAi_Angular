@@ -45,6 +45,7 @@
               [placeholder]="t().fullNamePlaceholder"
               [class.is-invalid]="showValidation('fullName')"
               [class.is-valid]="showSuccess('fullName')"
+              appAutoDir
             />
             @if (showSuccess('fullName')) {
               <span class="field-status-icon success-icon">
@@ -85,6 +86,7 @@
               [placeholder]="t().emailPlaceholder"
               [class.is-invalid]="showValidation('email')"
               [class.is-valid]="showSuccess('email')"
+              appAutoDir
             />
             @if (showSuccess('email')) {
               <span class="field-status-icon success-icon">
@@ -130,6 +132,7 @@
               [placeholder]="t().phonePlaceholder"
               [class.is-invalid]="showValidation('phoneNumber')"
               [class.is-valid]="showSuccess('phoneNumber')"
+              appAutoDir
             />
             @if (showSuccess('phoneNumber')) {
               <span class="field-status-icon success-icon">
@@ -170,6 +173,7 @@
               formControlName="password"
               [class.is-invalid]="showValidation('password')"
               [class.is-valid]="showSuccess('password')"
+              appAutoDir
             />
             @if (showSuccess('password')) {
               <span class="field-status-icon success-icon">
@@ -219,6 +223,7 @@
               formControlName="confirmPassword"
               [class.is-invalid]="showValidation('confirmPassword')"
               [class.is-valid]="showSuccess('confirmPassword')"
+              appAutoDir
             />
             @if (showSuccess('confirmPassword')) {
               <span class="field-status-icon success-icon">

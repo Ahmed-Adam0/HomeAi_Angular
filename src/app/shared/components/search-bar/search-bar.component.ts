@@ -2,10 +2,11 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { AutoDirectionDirective } from '../../directives/auto-direction.directive';
 
 @Component({
   selector: 'app-search-bar',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AutoDirectionDirective],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.css'
 })

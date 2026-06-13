@@ -8,6 +8,7 @@ import { phoneValidator } from '../../../../shared/validators/phone.validator';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
 import { LOCAL_STORAGE_KEYS } from '../../../../core/constants';
@@ -18,7 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   standalone: true,
   selector: 'app-checkout-form-page',
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, CurrencyFormatPipe, RtlDirective],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, CurrencyFormatPipe, RtlDirective, AutoDirectionDirective],
   templateUrl: './checkout-form.component.html',
   styleUrl: './checkout-form.component.css'
 })

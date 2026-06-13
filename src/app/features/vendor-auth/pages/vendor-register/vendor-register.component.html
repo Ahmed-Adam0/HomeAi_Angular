@@ -32,7 +32,7 @@
                 <circle cx="12" cy="7" r="4"/>
               </svg>
             </span>
-            <input type="text" id="fullName" formControlName="fullName" [placeholder]="t().fullNamePlaceholder" [class.is-invalid]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid" />
+            <input type="text" id="fullName" formControlName="fullName" [placeholder]="t().fullNamePlaceholder" [class.is-invalid]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid" appAutoDir />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.hasError('required')">{{ t().fullNameRequired }}</div>
           <div class="error-msg" *ngIf="getFieldError('fullName')">{{ getFieldError('fullName') }}</div>
@@ -47,7 +47,7 @@
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
             </span>
-            <input type="email" id="email" formControlName="email" [placeholder]="t().emailPlaceholder" [class.is-invalid]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" />
+            <input type="email" id="email" formControlName="email" [placeholder]="t().emailPlaceholder" [class.is-invalid]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" appAutoDir />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('required')">{{ t().emailRequired }}</div>
           <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.hasError('email')">{{ t().emailInvalid }}</div>
@@ -62,7 +62,7 @@
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
             </span>
-            <input type="text" id="phoneNumber" formControlName="phoneNumber" [placeholder]="t().phonePlaceholder" [class.is-invalid]="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.invalid" />
+            <input type="text" id="phoneNumber" formControlName="phoneNumber" [placeholder]="t().phonePlaceholder" [class.is-invalid]="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.invalid" appAutoDir />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.hasError('required')">{{ t().phoneRequired }}</div>
           <div class="error-msg" *ngIf="registerForm.get('phoneNumber')?.touched && registerForm.get('phoneNumber')?.hasError('invalidPhone')">{{ t().phoneInvalid }}</div>
@@ -78,7 +78,7 @@
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
               </svg>
             </span>
-            <input type="password" id="password" formControlName="password" [placeholder]="t().passwordPlaceholder" [class.is-invalid]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" />
+            <input type="password" id="password" formControlName="password" [placeholder]="t().passwordPlaceholder" [class.is-invalid]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" appAutoDir />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.hasError('required')">{{ t().passwordRequired }}</div>
           <div class="error-msg" *ngIf="getFieldError('password')">{{ getFieldError('password') }}</div>
@@ -92,7 +92,7 @@
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
             </span>
-            <input type="password" id="confirmPassword" formControlName="confirmPassword" [placeholder]="t().passwordPlaceholder" [class.is-invalid]="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('mismatch'))" />
+            <input type="password" id="confirmPassword" formControlName="confirmPassword" [placeholder]="t().passwordPlaceholder" [class.is-invalid]="registerForm.get('confirmPassword')?.touched && (registerForm.get('confirmPassword')?.invalid || registerForm.hasError('mismatch'))" appAutoDir />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.hasError('mismatch')">{{ t().passwordMismatch }}</div>
           <div class="error-msg" *ngIf="getFieldError('confirmPassword')">{{ getFieldError('confirmPassword') }}</div>
@@ -113,7 +113,7 @@
         <div class="form-group">
           <label for="workshopNameAr">{{ t().workshopNameArLabel }}</label>
           <div class="input-wrapper">
-            <input type="text" id="workshopNameAr" formControlName="workshopNameAr" [placeholder]="t().workshopNameArLabel" [class.is-invalid]="registerForm.get('workshopNameAr')?.touched && registerForm.get('workshopNameAr')?.invalid" />
+            <input type="text" id="workshopNameAr" formControlName="workshopNameAr" [placeholder]="t().workshopNameArLabel" [class.is-invalid]="registerForm.get('workshopNameAr')?.touched && registerForm.get('workshopNameAr')?.invalid" appAutoDir />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('workshopNameAr')?.touched && registerForm.get('workshopNameAr')?.hasError('required')">{{ t().workshopNameRequired }}</div>
         </div>
@@ -121,7 +121,7 @@
         <div class="form-group">
           <label for="workshopNameEn">{{ t().workshopNameEnLabel }}</label>
           <div class="input-wrapper">
-            <input type="text" id="workshopNameEn" formControlName="workshopNameEn" [placeholder]="t().workshopNameEnLabel" [class.is-invalid]="registerForm.get('workshopNameEn')?.touched && registerForm.get('workshopNameEn')?.invalid" />
+            <input type="text" id="workshopNameEn" formControlName="workshopNameEn" [placeholder]="t().workshopNameEnLabel" [class.is-invalid]="registerForm.get('workshopNameEn')?.touched && registerForm.get('workshopNameEn')?.invalid" appAutoDir />
           </div>
           <div class="error-msg" *ngIf="registerForm.get('workshopNameEn')?.touched && registerForm.get('workshopNameEn')?.hasError('required')">{{ t().workshopNameRequired }}</div>
         </div>
@@ -129,7 +129,7 @@
         <div class="form-group">
           <label for="descriptionAr">{{ t().descriptionArLabel }}</label>
           <div class="input-wrapper">
-            <textarea id="descriptionAr" formControlName="descriptionAr" [placeholder]="t().descriptionArLabel" [class.is-invalid]="registerForm.get('descriptionAr')?.touched && registerForm.get('descriptionAr')?.invalid"></textarea>
+            <textarea id="descriptionAr" formControlName="descriptionAr" [placeholder]="t().descriptionArLabel" [class.is-invalid]="registerForm.get('descriptionAr')?.touched && registerForm.get('descriptionAr')?.invalid" appAutoDir></textarea>
           </div>
           <div class="error-msg" *ngIf="registerForm.get('descriptionAr')?.touched && registerForm.get('descriptionAr')?.hasError('required')">{{ t().descriptionRequired }}</div>
         </div>
@@ -137,7 +137,7 @@
         <div class="form-group">
           <label for="descriptionEn">{{ t().descriptionEnLabel }}</label>
           <div class="input-wrapper">
-            <textarea id="descriptionEn" formControlName="descriptionEn" [placeholder]="t().descriptionEnLabel" [class.is-invalid]="registerForm.get('descriptionEn')?.touched && registerForm.get('descriptionEn')?.invalid"></textarea>
+            <textarea id="descriptionEn" formControlName="descriptionEn" [placeholder]="t().descriptionEnLabel" [class.is-invalid]="registerForm.get('descriptionEn')?.touched && registerForm.get('descriptionEn')?.invalid" appAutoDir></textarea>
           </div>
           <div class="error-msg" *ngIf="registerForm.get('descriptionEn')?.touched && registerForm.get('descriptionEn')?.hasError('required')">{{ t().descriptionRequired }}</div>
         </div>
@@ -146,35 +146,35 @@
           <div class="form-group">
             <label for="city">{{ t().cityLabel }}</label>
             <div class="input-wrapper">
-              <input type="text" id="city" formControlName="city" [placeholder]="t().cityLabel" [class.is-invalid]="addressGroup.get('city')?.touched && addressGroup.get('city')?.invalid" />
+              <input type="text" id="city" formControlName="city" [placeholder]="t().cityLabel" [class.is-invalid]="addressGroup.get('city')?.touched && addressGroup.get('city')?.invalid" appAutoDir />
             </div>
           </div>
 
           <div class="form-group">
             <label for="area">{{ t().areaLabel }}</label>
             <div class="input-wrapper">
-              <input type="text" id="area" formControlName="area" [placeholder]="t().areaLabel" [class.is-invalid]="addressGroup.get('area')?.touched && addressGroup.get('area')?.invalid" />
+              <input type="text" id="area" formControlName="area" [placeholder]="t().areaLabel" [class.is-invalid]="addressGroup.get('area')?.touched && addressGroup.get('area')?.invalid" appAutoDir />
             </div>
           </div>
 
           <div class="form-group">
             <label for="street">{{ t().streetLabel }}</label>
             <div class="input-wrapper">
-              <input type="text" id="street" formControlName="street" [placeholder]="t().streetLabel" [class.is-invalid]="addressGroup.get('street')?.touched && addressGroup.get('street')?.invalid" />
+              <input type="text" id="street" formControlName="street" [placeholder]="t().streetLabel" [class.is-invalid]="addressGroup.get('street')?.touched && addressGroup.get('street')?.invalid" appAutoDir />
             </div>
           </div>
 
           <div class="form-group">
             <label for="buildingNumber">{{ t().buildingNumberLabel }}</label>
             <div class="input-wrapper">
-              <input type="text" id="buildingNumber" formControlName="buildingNumber" [placeholder]="t().buildingNumberLabel" [class.is-invalid]="addressGroup.get('buildingNumber')?.touched && addressGroup.get('buildingNumber')?.invalid" />
+              <input type="text" id="buildingNumber" formControlName="buildingNumber" [placeholder]="t().buildingNumberLabel" [class.is-invalid]="addressGroup.get('buildingNumber')?.touched && addressGroup.get('buildingNumber')?.invalid" appAutoDir />
             </div>
           </div>
 
           <div class="form-group">
             <label for="notes">{{ t().notesLabel }}</label>
             <div class="input-wrapper">
-              <textarea id="notes" formControlName="notes" [placeholder]="t().notesLabel"></textarea>
+              <textarea id="notes" formControlName="notes" [placeholder]="t().notesLabel" appAutoDir></textarea>
             </div>
           </div>
         </div>
