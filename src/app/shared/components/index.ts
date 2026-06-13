@@ -15,3 +15,5 @@ export * from './search-bar/search-bar.component';
 export * from './section-title/section-title.component';
 export * from './page-header/page-header.component';
 export * from './status-badge/status-badge.component';
+export * from './toast/toast.component';
+export * from './confirm-dialog/confirm-dialog-container.component';

@@ -14,6 +14,7 @@ export function mapVendorProfileResponseDto(dto: IVendorProfileResponseDto): IVe
     descriptionEn: dto.descriptionEn ?? null,
     workshopAddress: mapWorkshopAddress(dto.workshopAddress),
     logoUrl: dto.logoUrl ?? null,
+    profileImage: dto.profileImage ?? null,
   };
 }
 

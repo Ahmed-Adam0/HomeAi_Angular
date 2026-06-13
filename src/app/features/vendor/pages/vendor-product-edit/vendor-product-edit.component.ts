@@ -10,6 +10,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import { UiState } from '../../../../core/state/ui.state';
 import { AuthService } from '../../../auth/services/auth.service';
 import { localized } from '../../../../shared/utils/localized';
+import { DialogService } from '../../../../shared/services/dialog.service';
 
 @Component({
   selector: 'app-vendor-product-edit',
@@ -25,6 +26,7 @@ export class VendorProductEdit implements OnInit {
   private router = inject(Router);
   readonly translationService = inject(TranslationService);
   private uiState = inject(UiState);
+  private dialogService = inject(DialogService);
   private platformId = inject(PLATFORM_ID);
 
   readonly productId = signal<string | number>('');
@@ -155,34 +157,41 @@ export class VendorProductEdit implements OnInit {
     });
   }
 
-  onDeleteImage(imageId: number): void {
+  async onDeleteImage(imageId: number): Promise<void> {
     const isAr = this.translationService.currentLang() === 'ar';
-    if (confirm(isAr ? 'هل أنت متأكد من رغبتك في حذف هذه الصورة؟' : 'Are you sure you want to delete this image?')) {
-      this.uiState.showLoader();
-      this.vendorProductService.deleteImage(this.productId(), imageId).subscribe({
-        next: () => {
-          this.uiState.hideLoader();
-          this.uiState.showAlert(
-            'success',
-            isAr ? 'تم حذف الصورة بنجاح.' : 'Image deleted successfully.'
-          );
-          // Update local state by filtering out the image
-          this.product.update(current => {
-            if (!current) return null;
-            const updatedImages = (current.images || []).filter(img => img.id !== imageId);
-            return { ...current, images: updatedImages };
-          });
-        },
-        error: (err) => {
-          console.error('Failed to delete image', err);
-          this.uiState.showAlert(
-            'danger',
-            isAr ? 'فشل حذف الصورة.' : 'Failed to delete image.'
-          );
-          this.uiState.hideLoader();
-        }
-      });
-    }
+    const confirmed = await this.dialogService.openConfirm({
+      title: isAr ? 'حذف الصورة' : 'Delete Image',
+      message: isAr ? 'هل أنت متأكد من رغبتك في حذف هذه الصورة؟' : 'Are you sure you want to delete this image?',
+      confirmText: isAr ? 'حذف' : 'Delete',
+      cancelText: isAr ? 'إلغاء' : 'Cancel',
+    });
+
+    if (!confirmed) return;
+
+    this.uiState.showLoader();
+    this.vendorProductService.deleteImage(this.productId(), imageId).subscribe({
+      next: () => {
+        this.uiState.hideLoader();
+        this.uiState.showAlert(
+          'success',
+          isAr ? 'تم حذف الصورة بنجاح.' : 'Image deleted successfully.'
+        );
+        // Update local state by filtering out the image
+        this.product.update(current => {
+          if (!current) return null;
+          const updatedImages = (current.images || []).filter(img => img.id !== imageId);
+          return { ...current, images: updatedImages };
+        });
+      },
+      error: (err) => {
+        console.error('Failed to delete image', err);
+        this.uiState.showAlert(
+          'danger',
+          isAr ? 'فشل حذف الصورة.' : 'Failed to delete image.'
+        );
+        this.uiState.hideLoader();
+      }
+    });
   }
 
   onSetPrimaryImage(imageId: number): void {

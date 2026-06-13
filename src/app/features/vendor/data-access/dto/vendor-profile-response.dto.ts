@@ -17,4 +17,5 @@ export interface IVendorProfileResponseDto {
   descriptionEn: string | null;
   workshopAddress: IVendorWorkshopAddressDto;
   logoUrl?: string | null;
+  profileImage?: string | null;
 }

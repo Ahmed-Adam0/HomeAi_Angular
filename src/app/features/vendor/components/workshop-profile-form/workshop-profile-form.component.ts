@@ -31,10 +31,12 @@ export class WorkshopProfileForm {
   readonly loading = input(false);
   readonly saving = input(false);
   readonly uploadingLogo = input(false);
+  readonly uploadingAvatar = input(false);
   readonly editing = input(false);
 
   readonly saveProfile = output<IVendorProfile>();
   readonly uploadLogo = output<File>();
+  readonly uploadAvatar = output<File>();
   readonly editProfile = output<void>();
   readonly cancelEdit = output<void>();
 
@@ -80,6 +82,14 @@ export class WorkshopProfileForm {
     () => this.loading() && !this.profile()
   );
 
+  protected readonly pendingAvatarFile = signal<File | null>(null);
+  protected readonly pendingAvatarPreview = signal<string | null>(null);
+  protected readonly pendingLogoFile = signal<File | null>(null);
+  protected readonly pendingLogoPreview = signal<string | null>(null);
+
+  protected readonly hasPendingAvatar = computed(() => this.pendingAvatarFile() !== null);
+  protected readonly hasPendingLogo = computed(() => this.pendingLogoFile() !== null);
+
   constructor() {
     effect(() => {
       const profile = this.profile();
@@ -109,6 +119,12 @@ export class WorkshopProfileForm {
         this.submitted.set(false);
       }
     });
+
+    effect(() => {
+      this.profile();
+      this.cancelPendingAvatar();
+      this.cancelPendingLogo();
+    });
   }
 
   protected onToggleEdit(): void {
@@ -122,14 +138,21 @@ export class WorkshopProfileForm {
   private readonly ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 
   protected readonly logoError = signal<string | null>(null);
+  protected readonly avatarError = signal<string | null>(null);
 
-  protected onFileSelected(event: Event): void {
+  private readFileAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  protected async onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
-
-    console.log(file.name);
-    console.log(file.type);
 
     if (!this.ALLOWED_MIME_TYPES.includes(file.type)) {
       this.logoError.set('vendor.profile.error.invalidImageType');
@@ -138,7 +161,66 @@ export class WorkshopProfileForm {
     }
 
     this.logoError.set(null);
+
+    const preview = await this.readFileAsDataUrl(file);
+    this.pendingLogoFile.set(file);
+    this.pendingLogoPreview.set(preview);
+    input.value = '';
+  }
+
+  protected async onAvatarSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    if (!this.ALLOWED_MIME_TYPES.includes(file.type)) {
+      this.avatarError.set('vendor.profile.error.invalidImageType');
+      input.value = '';
+      return;
+    }
+
+    this.avatarError.set(null);
+
+    const preview = await this.readFileAsDataUrl(file);
+    this.pendingAvatarFile.set(file);
+    this.pendingAvatarPreview.set(preview);
+    input.value = '';
+  }
+
+  protected onSaveAvatar(): void {
+    const file = this.pendingAvatarFile();
+    if (!file) return;
+
+    this.pendingAvatarFile.set(null);
+    this.pendingAvatarPreview.set(null);
+    this.uploadAvatar.emit(file);
+  }
+
+  protected onCancelAvatar(): void {
+    this.cancelPendingAvatar();
+  }
+
+  protected onSaveLogo(): void {
+    const file = this.pendingLogoFile();
+    if (!file) return;
+
+    this.pendingLogoFile.set(null);
+    this.pendingLogoPreview.set(null);
     this.uploadLogo.emit(file);
+  }
+
+  protected onCancelLogo(): void {
+    this.cancelPendingLogo();
+  }
+
+  private cancelPendingAvatar(): void {
+    this.pendingAvatarFile.set(null);
+    this.pendingAvatarPreview.set(null);
+  }
+
+  private cancelPendingLogo(): void {
+    this.pendingLogoFile.set(null);
+    this.pendingLogoPreview.set(null);
   }
 
   protected onSubmit(): void {
@@ -173,6 +255,8 @@ export class WorkshopProfileForm {
   }
 
   protected onCancel(): void {
+    this.cancelPendingAvatar();
+    this.cancelPendingLogo();
     this.submitted.set(false);
     this.cancelEdit.emit();
   }

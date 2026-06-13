@@ -17,6 +17,7 @@ export interface IVendorProfile {
   descriptionEn: string | null;
   workshopAddress: IVendorWorkshopAddress;
   logoUrl?: string | null;
+  profileImage?: string | null;
 }
 
 export interface IVendorProfileUpdateRequest {

@@ -12,6 +12,7 @@ import { LoadingSpinner } from '../loading-spinner/loading-spinner.component';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
 import { ReviewsService, IRatingStats } from '../../../features/products/services/reviews.service';
 import { UiState } from '../../../core/state/ui.state';
+import { DialogService } from '../../services/dialog.service';
 import { localized } from '../../utils/localized';
 import { LocalizedPipe } from '../../pipes/localized.pipe';
 import { LazyImageDirective } from '../../directives/lazy-image.directive';
@@ -36,6 +37,7 @@ export class ProductCard implements OnInit {
   private authService = inject(AuthService);
   private reviewsService = inject(ReviewsService);
   private uiState = inject(UiState);
+  private dialogService = inject(DialogService);
   private platformId = inject(PLATFORM_ID);
 
   readonly isFavorite = computed(() => this.favoritesService.isFavorited(this.product.id));
@@ -129,7 +131,7 @@ export class ProductCard implements OnInit {
     this.delete.emit(this.product.id);
   }
 
-  onStatusToggle(event: Event): void {
+  async onStatusToggle(event: Event): Promise<void> {
     event.preventDefault();
     event.stopPropagation();
     const checkbox = event.target as HTMLInputElement;
@@ -137,18 +139,30 @@ export class ProductCard implements OnInit {
     
     const isAr = this.translationService.currentLang() === 'ar';
     if (!newStatus) {
-      const msg = isAr 
-        ? 'هل أنت متأكد من رغبتك في أرشفة هذا المنتج؟ سيتم إزالته من المتجر العام وإخفائه عن العملاء.' 
-        : 'Are you sure you want to archive this product? It will be removed from the public marketplace and hidden from customers.';
-      if (!confirm(msg)) {
+      const confirmed = await this.dialogService.openConfirm({
+        title: isAr ? 'أرشفة المنتج' : 'Archive Product',
+        message: isAr 
+          ? 'هل أنت متأكد من رغبتك في أرشفة هذا المنتج؟ سيتم إزالته من المتجر العام وإخفائه عن العملاء.' 
+          : 'Are you sure you want to archive this product? It will be removed from the public marketplace and hidden from customers.',
+        confirmText: isAr ? 'أرشفة' : 'Archive',
+        cancelText: isAr ? 'إلغاء' : 'Cancel',
+        variant: 'warning',
+      });
+      if (!confirmed) {
         checkbox.checked = true;
         return;
       }
     } else {
-      const msg = isAr 
-        ? 'هل ترغب في إعادة تفعيل هذا المنتج وعرضه في المتجر للعملاء؟' 
-        : 'Do you want to re-activate this product and show it in the marketplace to customers?';
-      if (!confirm(msg)) {
+      const confirmed = await this.dialogService.openConfirm({
+        title: isAr ? 'إعادة تفعيل المنتج' : 'Reactivate Product',
+        message: isAr 
+          ? 'هل ترغب في إعادة تفعيل هذا المنتج وعرضه في المتجر للعملاء؟' 
+          : 'Do you want to re-activate this product and show it in the marketplace to customers?',
+        confirmText: isAr ? 'تفعيل' : 'Activate',
+        cancelText: isAr ? 'إلغاء' : 'Cancel',
+        variant: 'info',
+      });
+      if (!confirmed) {
         checkbox.checked = false;
         return;
       }

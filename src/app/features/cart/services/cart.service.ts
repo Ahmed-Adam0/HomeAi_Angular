@@ -293,8 +293,9 @@ export class CartService {
       const productNameEn =
         item.productNameEn || item.productName || item.product?.nameEn || item.product?.name || '';
       const productNameAr = item.productNameAr || item.product?.nameAr || productNameEn;
+      const rawImages: string[] = Array.isArray(item.images) ? item.images : [];
       const productImage =
-        item.productImage || item.imageUrl || item.product?.mainImageUrl || item.product?.imageUrl || '';
+        rawImages[0] || item.productImage || item.imageUrl || item.product?.mainImageUrl || item.product?.imageUrl || '';
 
       return {
         id: itemId,
@@ -304,6 +305,7 @@ export class CartService {
         productNameEn,
         productNameAr,
         productImage,
+        images: rawImages,
         price,
         quantity: qty,
         subtotal: Number((price * qty).toFixed(2)),
@@ -406,6 +408,7 @@ export class CartService {
               subtotal: Number(((item.quantity + quantityToAdd) * item.price).toFixed(2)),
             }));
           } else {
+            const rawImages: string[] = product.mainImageUrl ? [product.mainImageUrl] : [];
             const newItem: ICartItem = {
               id: itemId,
               productId: itemId,
@@ -413,6 +416,7 @@ export class CartService {
               productNameEn: product.nameEn,
               productNameAr: product.nameAr,
               productImage: product.mainImageUrl,
+              images: rawImages,
               price: productPrice,
               quantity: quantityToAdd,
               subtotal: Number((productPrice * quantityToAdd).toFixed(2)),

@@ -33,6 +33,7 @@ export class VendorWorkshopProfile implements OnInit {
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
   protected readonly uploadingLogo = signal(false);
+  protected readonly uploadingAvatar = signal(false);
   protected readonly isEditing = signal(false);
 
   ngOnInit(): void {
@@ -106,6 +107,29 @@ export class VendorWorkshopProfile implements OnInit {
           console.error('[VendorWorkshopProfile] error.error:', err.error);
           console.error('[VendorWorkshopProfile] error.error.errors:', (err.error as any)?.errors);
           this.uiState.showAlert('danger', 'vendor.profile.error.logoUploadFailed');
+        },
+      });
+  }
+
+  protected onUploadAvatar(file: File): void {
+    this.uploadingAvatar.set(true);
+
+    this.vendorService
+      .uploadProfileImage(file)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.uploadingAvatar.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          this.loadProfile();
+          this.uiState.showAlert('success', 'vendor.profile.success.avatarUpdated');
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('[VendorWorkshopProfile] Failed to upload avatar:', err);
+          console.error('[VendorWorkshopProfile] error.error:', err.error);
+          console.error('[VendorWorkshopProfile] error.error.errors:', (err.error as any)?.errors);
+          this.uiState.showAlert('danger', 'vendor.profile.error.avatarUploadFailed');
         },
       });
   }

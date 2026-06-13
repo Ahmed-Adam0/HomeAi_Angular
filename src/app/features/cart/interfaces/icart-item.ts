@@ -6,6 +6,7 @@ export interface ICartItem {
   productNameEn?: string;
   productNameAr?: string;
   productImage: string;
+  images?: string[];
   price: number;
   quantity: number;
   selectedColor?: string;

@@ -2,7 +2,7 @@ import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CheckoutService, ICheckoutPayload } from '../../services/checkout.service';
+import { CheckoutService, ICheckoutPayload, ICheckoutResult } from '../../services/checkout.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -173,8 +173,11 @@ export class CheckoutFormComponent implements OnInit {
 
           return this.checkoutService.submitCheckout(orderPayload);
         }),
-        tap((res) => {
+        tap((res: ICheckoutResult) => {
           if (res.success && res.paymentUrl) {
+            if (!res.profileAddressSaved) {
+              this.uiState.showAlert('warning', this.translationService.translate('CHECKOUT_PROFILE_ADDRESS_WARNING'));
+            }
             this.cartService.clearCart();
             localStorage.removeItem(LOCAL_STORAGE_KEYS.CART);
             window.location.href = res.paymentUrl;

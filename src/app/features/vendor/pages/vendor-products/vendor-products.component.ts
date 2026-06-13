@@ -7,6 +7,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import { UiState } from '../../../../core/state/ui.state';
 import { localized } from '../../../../shared/utils/localized';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
+import { DialogService } from '../../../../shared/services/dialog.service';
 
 @Component({
   selector: 'app-vendor-products',
@@ -19,6 +20,7 @@ export class VendorProducts implements OnInit {
   private vendorProductService = inject(VendorProductService);
   readonly translationService = inject(TranslationService);
   private uiState = inject(UiState);
+  private dialogService = inject(DialogService);
   private platformId = inject(PLATFORM_ID);
 
   readonly products = this.vendorProductService.products;
@@ -73,25 +75,30 @@ export class VendorProducts implements OnInit {
     this.searchQuery.set(input.value);
   }
 
-  onDeleteProduct(productId: number): void {
+  async onDeleteProduct(productId: number): Promise<void> {
     const isAr = this.translationService.currentLang() === 'ar';
-    const confirmMsg = isAr ? 'هل أنت متأكد من رغبتك في حذف هذا المنتج نهائياً؟' : 'Are you sure you want to permanently delete this product?';
-    
-    if (confirm(confirmMsg)) {
-      this.uiState.showLoader();
-      this.vendorProductService.deleteProduct(productId).subscribe({
-        next: () => {
-          this.products.update(prev => prev.filter(p => p.id !== productId));
-          this.uiState.showAlert('success', isAr ? 'تم حذف المنتج بنجاح.' : 'Product deleted successfully.');
-          this.uiState.hideLoader();
-        },
-        error: (err) => {
-          console.error('Failed to delete product', err);
-          this.uiState.showAlert('danger', isAr ? 'فشل حذف المنتج.' : 'Failed to delete product.');
-          this.uiState.hideLoader();
-        }
-      });
-    }
+    const confirmed = await this.dialogService.openConfirm({
+      title: isAr ? 'حذف المنتج' : 'Delete Product',
+      message: isAr ? 'هل أنت متأكد من رغبتك في حذف هذا المنتج نهائياً؟' : 'Are you sure you want to permanently delete this product?',
+      confirmText: isAr ? 'حذف' : 'Delete',
+      cancelText: isAr ? 'إلغاء' : 'Cancel',
+    });
+
+    if (!confirmed) return;
+
+    this.uiState.showLoader();
+    this.vendorProductService.deleteProduct(productId).subscribe({
+      next: () => {
+        this.products.update(prev => prev.filter(p => p.id !== productId));
+        this.uiState.showAlert('success', isAr ? 'تم حذف المنتج بنجاح.' : 'Product deleted successfully.');
+        this.uiState.hideLoader();
+      },
+      error: (err) => {
+        console.error('Failed to delete product', err);
+        this.uiState.showAlert('danger', isAr ? 'فشل حذف المنتج.' : 'Failed to delete product.');
+        this.uiState.hideLoader();
+      }
+    });
   }
 
   onStatusChange(event: { id: number; isActive: boolean }): void {

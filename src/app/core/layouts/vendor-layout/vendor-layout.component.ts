@@ -7,12 +7,14 @@ import { RtlDirective } from '../../../shared/directives/rtl.directive';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../shared/i18n/translation.service';
 import { VendorNotificationBellComponent } from "../../../features/vendor/components";
+import { ConfirmDialogContainer } from '../../../shared/components/confirm-dialog/confirm-dialog-container.component';
+import { ToastContainer } from '../../../shared/components/toast/toast.component';
 
 
 @Component({
   selector: 'app-vendor-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, RtlDirective, TranslatePipe, VendorNotificationBellComponent],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, RtlDirective, TranslatePipe, VendorNotificationBellComponent, ConfirmDialogContainer, ToastContainer],
   templateUrl: './vendor-layout.component.html',
   styleUrl: './vendor-layout.component.css',
 

@@ -1,8 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
 import { OrdersApiService } from '../../orders/data-access/orders-api.service';
 import { CartService } from '../../cart/services/cart.service';
+import { ProfileService } from '../../profile/services/profile.service';
+import { IAddressDto } from '../../profile/interfaces/iaddress.dto';
 
 export interface ICheckoutItem {
   productId: number;
@@ -26,20 +28,80 @@ export interface ICheckoutPayload {
   orderNotes?: string;
 }
 
+export interface ICheckoutResult {
+  success: boolean;
+  orderId: number;
+  paymentUrl: string;
+  profileAddressSaved: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class CheckoutService {
   private ordersApi = inject(OrdersApiService);
   private cartService = inject(CartService);
+  private profileService = inject(ProfileService);
 
-  submitCheckout(payload: ICheckoutPayload): Observable<{ success: boolean; orderId: number; paymentUrl: string }> {
+  submitCheckout(payload: ICheckoutPayload): Observable<ICheckoutResult> {
     return this.ordersApi.createOrder(payload).pipe(
-      map((order) => ({
-        success: true,
-        orderId: order.id,
-        paymentUrl: order.paymentUrl
-      }))
+      switchMap((order) =>
+        this.saveAddressToProfile(payload).pipe(
+          map((saved) => ({
+            success: true,
+            orderId: order.id,
+            paymentUrl: order.paymentUrl,
+            profileAddressSaved: saved,
+          }))
+        )
+      )
+    );
+  }
+
+  private saveAddressToProfile(payload: ICheckoutPayload): Observable<boolean> {
+    const newAddress: IAddressDto = {
+      addressLine1: payload.addressLine1?.trim() || '',
+      addressLine2: payload.addressLine2?.trim() || '',
+      city: payload.city?.trim() || '',
+      postalCode: payload.zipCode?.trim() || '',
+      country: payload.country?.trim() || '',
+    };
+
+    if (!newAddress.addressLine1 || !newAddress.city) {
+      return of(false);
+    }
+
+    return this.profileService.getProfile().pipe(
+      switchMap((profile) => {
+        const existingAddresses = profile.addresses || [];
+
+        const isDuplicate = existingAddresses.some(
+          (addr) =>
+            addr.addressLine1?.toLowerCase() === newAddress.addressLine1.toLowerCase() &&
+            addr.city?.toLowerCase() === newAddress.city!.toLowerCase() &&
+            addr.country?.toLowerCase() === newAddress.country!.toLowerCase()
+        );
+
+        if (isDuplicate) {
+          return of(true);
+        }
+
+        const updatedAddresses = [...existingAddresses, newAddress];
+
+        return this.profileService.updateProfile({
+          fullName: payload.fullName || '',
+          preferredLanguage: 'en',
+          email: payload.email || null,
+          phoneNumber: payload.phoneNumber || null,
+          profileImage: null,
+          userName: null,
+          addresses: updatedAddresses,
+        }).pipe(
+          map(() => true),
+          catchError(() => of(false))
+        );
+      }),
+      catchError(() => of(false))
     );
   }
 }

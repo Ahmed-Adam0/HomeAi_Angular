@@ -12,7 +12,7 @@
       <div class="cart-items-panel">
         <div class="cart-item-card" [class.is-removing]="cartService.isItemRemoving(item.id)" *ngFor="let item of items()">
           <div class="item-media">
-            <img [src]="item.productImage" [alt]="item.productName" />
+            <img [src]="item.images?.length ? item.images?.[0] : 'assets/images/image-placeholder.svg'" [alt]="item.productName" />
             
           </div>
 

@@ -169,6 +169,18 @@ export class VendorService {
     );
   }
 
+  uploadProfileImage(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    console.log('[VendorService] profileImage file:', file.name, file.type, file.size);
+
+    return this.http.put(
+      `${this.apiUrl}${API_URLS.PROFILE.IMAGE_UPLOAD}`,
+      formData
+    );
+  }
+
   getNotifications(page: number, pageSize: number): Observable<INotificationsMappedResult> {
     return this.http
       .get<IVendorNotificationsResponseDto>(

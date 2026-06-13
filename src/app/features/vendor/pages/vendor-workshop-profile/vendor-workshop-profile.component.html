@@ -6,9 +6,11 @@
         [loading]="loading()"
         [saving]="saving()"
         [uploadingLogo]="uploadingLogo()"
+        [uploadingAvatar]="uploadingAvatar()"
         [editing]="isEditing()"
         (saveProfile)="onSaveProfile($event)"
         (uploadLogo)="onUploadLogo($event)"
+        (uploadAvatar)="onUploadAvatar($event)"
         (editProfile)="editProfile()"
         (cancelEdit)="cancelEdit()"
       />

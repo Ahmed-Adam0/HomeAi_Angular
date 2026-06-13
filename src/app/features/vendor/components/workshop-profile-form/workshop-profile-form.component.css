@@ -56,12 +56,40 @@ textarea.premium-input {
 }
 
 /* ==========================================
-   VENDOR LOGO
+   PROFILE AVATAR (larger, circular)
+   ========================================== */
+.vendor-avatar-wrapper {
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--fm-color-primary-soft);
+  border: 3px solid var(--fm-border-medium);
+  box-shadow: var(--fm-shadow-md);
+  flex-shrink: 0;
+}
+
+.vendor-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vendor-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+  color: var(--fm-color-primary-400);
+  background: var(--fm-color-primary-soft);
+}
+
+/* ==========================================
+   WORKSHOP LOGO (smaller, rounded square)
    ========================================== */
 .vendor-logo-wrapper {
-  width: 5rem;
-  height: 5rem;
-  border-radius: var(--fm-radius-xl);
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: var(--fm-radius-lg);
   overflow: hidden;
   background: var(--fm-color-primary-soft);
   border: 2px solid var(--fm-border-medium);
@@ -80,11 +108,15 @@ textarea.premium-input {
   color: var(--fm-color-primary-400);
 }
 
-.vendor-logo-overlay {
+/* ==========================================
+   IMAGE OVERLAY (shared)
+   ========================================== */
+.vendor-image-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.36);
+  background: rgba(0, 0, 0, 0.40);
   backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   opacity: 0;
   cursor: pointer;
   color: #fff;
@@ -92,28 +124,101 @@ textarea.premium-input {
   transition: opacity var(--fm-transition-duration-fast) var(--fm-ease-smooth);
 }
 
-.vendor-logo-wrapper:hover .vendor-logo-overlay {
+.vendor-avatar-wrapper:hover .vendor-image-overlay,
+.vendor-logo-wrapper:hover .vendor-image-overlay {
   opacity: 1;
 }
 
-.vendor-logo-overlay.is-loading {
+.vendor-image-overlay.is-loading {
   opacity: 1;
   cursor: default;
 }
 
-.vendor-change-logo {
+/* ==========================================
+   IMAGE LABEL
+   ========================================== */
+.vendor-image-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--fm-color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ==========================================
+   CHANGE BUTTON
+   ========================================== */
+.vendor-change-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 500;
   color: var(--fm-color-primary-600);
-  transition: color var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+  background: transparent;
+  border: 1px solid var(--fm-color-primary-200);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  transition: all var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+  white-space: nowrap;
 }
 
-.vendor-change-logo:hover {
+.vendor-change-btn:hover {
   color: var(--fm-color-primary-700);
+  background: var(--fm-color-primary-soft);
+  border-color: var(--fm-color-primary-300);
 }
 
-.vendor-change-logo.is-loading {
-  opacity: 0.65;
+.vendor-change-btn.is-uploading {
+  opacity: 0.5;
   pointer-events: none;
+}
+
+/* ==========================================
+   SAVE / CANCEL BUTTONS
+   ========================================== */
+.vendor-save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--fm-color-primary-600);
+  border: none;
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  cursor: pointer;
+  transition: background var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+  line-height: 1.5;
+}
+
+.vendor-save-btn:hover {
+  background: var(--fm-color-primary-700);
+}
+
+.vendor-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--fm-color-neutral-600);
+  background: transparent;
+  border: 1px solid var(--fm-border-medium);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  cursor: pointer;
+  transition: all var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+  line-height: 1.5;
+}
+
+.vendor-cancel-btn:hover {
+  color: var(--fm-color-neutral-800);
+  background: var(--fm-color-neutral-100);
+  border-color: var(--fm-color-neutral-400);
 }
 
 /* ==========================================
@@ -202,8 +307,17 @@ textarea.premium-input {
     padding: var(--fm-space-24);
   }
 
+  .vendor-avatar-wrapper {
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+
   .vendor-logo-wrapper {
-    width: 4rem;
-    height: 4rem;
+    width: 3.75rem;
+    height: 3.75rem;
+  }
+
+  .vendor-avatar-placeholder {
+    font-size: 1.5rem;
   }
 }
