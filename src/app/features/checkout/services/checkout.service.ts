@@ -89,12 +89,12 @@ export class CheckoutService {
         const updatedAddresses = [...existingAddresses, newAddress];
 
         return this.profileService.updateProfile({
-          fullName: payload.fullName || '',
-          preferredLanguage: 'en',
-          email: payload.email || null,
-          phoneNumber: payload.phoneNumber || null,
-          profileImage: null,
-          userName: null,
+          fullName: profile.fullName,
+          preferredLanguage: profile.preferredLanguage || 'en',
+          email: profile.email,
+          phoneNumber: profile.phoneNumber || null,
+          profileImage: profile.profileImage || null,
+          userName: profile.userName || null,
           addresses: updatedAddresses,
         }).pipe(
           map(() => true),
