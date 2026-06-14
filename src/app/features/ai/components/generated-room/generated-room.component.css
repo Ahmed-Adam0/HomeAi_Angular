@@ -1,0 +1,131 @@
+.room-wrapper {
+  background: var(--fm-color-neutral-50, #faf9f6);
+  height: 100%;
+}
+
+.room-container {
+  max-width: 1050px;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--fm-color-neutral-200, #e8e4dc);
+  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+}
+
+.room-image {
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Hotspots styling */
+.hotspot-wrapper {
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.hotspot-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: var(--fm-color-neutral-900, #1f1c18);
+  border: 7px solid rgba(255, 255, 255, 0.35);
+  background-clip: padding-box;
+  box-shadow: 0 4px 12px rgba(29, 27, 24, 0.15);
+  cursor: pointer;
+  outline: none;
+  font-family: var(--fm-font-sans);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--fm-transition-fast);
+}
+
+/* Pulsing effect around hotspot */
+.hotspot-btn::after {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
+  animation: hotspot-pulse 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes hotspot-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.hotspot-wrapper:hover .hotspot-btn,
+.hotspot-wrapper.active .hotspot-btn {
+  background-color: #8e6d45; /* Warm gold brown matching design selection */
+  color: #ffffff;
+  border-color: rgba(142, 109, 69, 0.35);
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(142, 109, 69, 0.4);
+}
+
+/* Tooltip / Label styling */
+.hotspot-label {
+  position: absolute;
+  bottom: 52px; /* place above the button */
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background-color: #314d43; /* Dark green/teal matching design tags */
+  color: #ffffff;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms ease;
+  z-index: 11;
+  letter-spacing: 0.2px;
+}
+
+.hotspot-label::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #314d43 transparent transparent transparent;
+}
+
+.hotspot-wrapper:hover .hotspot-label,
+.hotspot-wrapper.active .hotspot-label {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Proceed button styling (Teal/dark green pill design) */
+.btn-proceed {
+  background-color: #2b4c3f; /* Deep luxury green from mockup */
+  color: #ffffff;
+  border-radius: var(--fm-radius-pill, 9999px);
+  padding: 10px 28px;
+  transition: var(--fm-transition-fast);
+  border: none;
+}
+
+.btn-proceed:hover {
+  background-color: #1f392f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(43, 76, 63, 0.25);
+  color: #ffffff;
+}
+
+.btn-proceed:active {
+  transform: translateY(0);
+}

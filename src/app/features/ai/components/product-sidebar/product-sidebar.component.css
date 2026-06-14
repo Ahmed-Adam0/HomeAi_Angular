@@ -1,0 +1,135 @@
+.sidebar-container {
+  width: 380px;
+  background-color: #ffffff;
+  z-index: 100;
+  height: 100%;
+}
+
+.sidebar-header {
+  min-height: 70px;
+  background: #ffffff;
+}
+
+.btn-close-sidebar {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--fm-transition-fast);
+}
+
+.btn-close-sidebar:hover i {
+  color: var(--fm-color-primary-500, #b8935c) !important;
+}
+
+.product-detail-card {
+  background: #fbfbf9; /* Clean linen light travertine background */
+  border: 1px solid var(--fm-color-neutral-300, #d9d3c7) !important;
+  box-shadow: var(--fm-shadow-sm);
+  transition: var(--fm-transition-fast);
+}
+
+.product-detail-card:hover {
+  border-color: var(--fm-color-primary-300, #d7be9f) !important;
+  box-shadow: var(--fm-shadow-md);
+}
+
+.brand-tag {
+  top: 15px;
+  left: 15px; /* Aligned left like design */
+  background-color: #ffffff;
+  color: #8e6d45; /* Brand theme color */
+  border: 1px solid var(--fm-color-primary-200, #e6d6c3);
+  letter-spacing: 0.8px;
+  border-radius: var(--fm-radius-xs, 4px);
+  text-transform: uppercase;
+}
+
+[dir="rtl"] .brand-tag {
+  left: auto;
+  right: 15px;
+}
+
+.product-image-container {
+  height: 200px;
+  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  background-color: #ffffff;
+}
+
+.stock-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--fm-color-success-500, #657e5d);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(101, 126, 93, 0.25);
+}
+
+.spec-title {
+  color: var(--fm-color-neutral-500, #8c8375);
+  letter-spacing: 1.2px;
+}
+
+.spec-item {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200, #e8e4dc) !important;
+  transition: var(--fm-transition-fast);
+}
+
+.spec-item:hover {
+  border-color: var(--fm-color-primary-300, #d7be9f) !important;
+  background-color: var(--fm-color-primary-50, #faf6f0);
+}
+
+/* Customizer buttons */
+.btn-customizer {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  transition: var(--fm-transition-fast);
+  color: var(--fm-color-neutral-800, #38332c);
+  font-weight: 500;
+}
+
+.btn-customizer:hover {
+  background-color: var(--fm-color-primary-50, #faf6f0);
+  border-color: var(--fm-color-primary-500, #b8935c);
+  color: var(--fm-color-primary-800, #6b502e);
+}
+
+/* Footer & Buttons */
+.sidebar-footer {
+  border-top: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  box-shadow: 0 -4px 12px rgba(29, 27, 24, 0.03);
+}
+
+.btn-add-cart {
+  background-color: #8e6d45; /* Signature dark luxury gold from mockups */
+  color: #ffffff;
+  border-radius: var(--fm-radius-pill, 9999px); /* pill design */
+  border: none;
+  transition: var(--fm-transition-fast);
+}
+
+.btn-add-cart:hover {
+  background-color: #725432;
+  box-shadow: 0 6px 16px rgba(142, 109, 69, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-add-cart:active {
+  transform: translateY(0);
+}
+
+.btn-action-outline {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  color: var(--fm-color-neutral-700, #544d43);
+  border-radius: var(--fm-radius-pill, 9999px); /* pill design */
+  transition: var(--fm-transition-fast);
+}
+
+.btn-action-outline:hover {
+  background-color: var(--fm-color-neutral-50, #faf9f6);
+  border-color: var(--fm-color-neutral-500, #8c8375);
+  color: var(--fm-color-neutral-900, #1f1c18);
+}

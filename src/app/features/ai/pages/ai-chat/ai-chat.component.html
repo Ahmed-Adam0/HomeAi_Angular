@@ -1,1 +1,22 @@
-<p>ai-chat works!</p>
+<div class="assistant-page-container d-flex flex-column flex-lg-row overflow-hidden font-sans">
+  <!-- Left Side: Chat Panel -->
+  <div class="chat-sidebar-section flex-shrink-0">
+    <app-chat-panel class="d-block h-100"></app-chat-panel>
+  </div>
+
+  <!-- Center Area: Generated Room Panel -->
+  <div class="room-display-section flex-grow-1">
+    <app-generated-room class="d-block h-100"></app-generated-room>
+  </div>
+
+  <!-- Right Side: Slide-in Drawer Details -->
+  @if (aiService.isSidebarOpen()) {
+    <div class="product-sidebar-section flex-shrink-0">
+      <app-product-sidebar class="d-block h-100"></app-product-sidebar>
+    </div>
+  }
+</div>
+
+<!-- Modal Overlays -->
+<app-design-summary-modal></app-design-summary-modal>
+<app-inspiration-analysis-modal></app-inspiration-analysis-modal>
