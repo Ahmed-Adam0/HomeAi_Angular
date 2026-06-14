@@ -1,0 +1,127 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(18, 16, 14, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1030;
+}
+
+.modal-card {
+  width: 95%;
+  max-width: 850px;
+  background: #ffffff;
+  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--fm-shadow-xl);
+  overflow: hidden;
+}
+
+.modal-title {
+  font-family: var(--fm-font-display, 'Outfit', serif);
+  font-weight: 700;
+  color: var(--fm-color-neutral-900, #1f1c18);
+}
+
+.btn-close-modal {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--fm-transition-fast);
+}
+
+.btn-close-modal:hover i {
+  color: var(--fm-color-primary-500, #b8935c) !important;
+}
+
+.preview-img-box {
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  background-color: var(--fm-color-neutral-200, #e8e4dc);
+  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  border-radius: var(--fm-radius-md, 12px);
+}
+
+.badge-finalized {
+  top: 12px;
+  right: 12px;
+  background-color: #2b4c3f; /* Deep green accent matching proceeds */
+  color: #ffffff;
+  box-shadow: var(--fm-shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--fm-radius-xs, 4px);
+}
+
+[dir="rtl"] .badge-finalized {
+  right: auto;
+  left: 12px;
+}
+
+.total-estimate-card {
+  background: var(--fm-color-primary-50, #faf6f0);
+  border: 1px solid var(--fm-color-primary-200, #e6d6c3) !important;
+  border-radius: var(--fm-radius-md, 12px);
+}
+
+.total-estimate-card h3 {
+  font-family: var(--fm-font-sans);
+  color: var(--fm-color-neutral-900, #1f1c18);
+}
+
+.items-list {
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.item-card {
+  background: #ffffff; /* pure white inside list */
+  border: 1px solid var(--fm-color-neutral-200, #e8e4dc) !important;
+  border-radius: var(--fm-radius-md, 12px) !important;
+  transition: var(--fm-transition-fast);
+}
+
+.item-card:hover {
+  border-color: var(--fm-color-primary-300, #d7be9f) !important;
+  box-shadow: var(--fm-shadow-sm);
+}
+
+.item-img-box {
+  width: 70px;
+  height: 70px;
+  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  border-radius: var(--fm-radius-sm, 8px);
+}
+
+.btn-continue-editing {
+  cursor: pointer;
+  transition: var(--fm-transition-fast);
+}
+
+.btn-continue-editing:hover {
+  color: var(--fm-color-primary-500, #b8935c) !important;
+}
+
+.btn-create-order {
+  background-color: #2b4c3f; /* Deep luxury green matching proceeds */
+  border-radius: var(--fm-radius-pill, 9999px);
+  border: none;
+  transition: var(--fm-transition-fast);
+}
+
+.btn-create-order:hover {
+  background-color: #1f392f;
+  box-shadow: 0 4px 12px rgba(43, 76, 63, 0.25);
+  transform: translateY(-1px);
+}
+
+.text-gold {
+  color: #8e6d45;
+}

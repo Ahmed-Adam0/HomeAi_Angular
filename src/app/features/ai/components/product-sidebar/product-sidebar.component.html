@@ -1,0 +1,123 @@
+<div class="sidebar-container d-flex flex-column h-100 bg-white shadow-lg border-start">
+  @if (aiService.selectedProduct(); as product) {
+    <!-- Header -->
+    <div class="sidebar-header p-3 border-bottom d-flex align-items-center justify-content-between">
+      <h3 class="fs-6.5 fw-bold text-dark mb-0 font-display">Selected Product</h3>
+      <button type="button" class="btn-close-sidebar border-0 bg-transparent text-muted" (click)="close()" aria-label="Close">
+        <i class="bi bi-x-lg fs-5"></i>
+      </button>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="sidebar-body flex-grow-1 p-3 overflow-y-auto">
+      <!-- Detail Card -->
+      <div class="product-detail-card border rounded-4 p-3 mb-4 bg-light-cream position-relative">
+        <span class="brand-tag position-absolute font-secondary fs-9 fw-bold px-2 py-0.5 rounded shadow-sm">
+          {{ product.workshopNameEn }}
+        </span>
+
+        <div class="product-image-container rounded-3 overflow-hidden bg-white mb-3 shadow-xs">
+          <img [src]="product.mainImageUrl" alt="{{ product.nameEn }}" class="w-100 h-100 object-fit-cover" />
+        </div>
+
+        <div class="product-meta">
+          <span class="fs-8 text-gold fw-semibold text-uppercase tracking-wider font-secondary d-block mb-1">
+            {{ product.categoryNameEn }}
+          </span>
+          <h4 class="fs-6 fw-bold text-dark font-sans mb-2">{{ product.nameEn }}</h4>
+          
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <span class="fs-5 fw-bold text-dark font-sans">${{ product.price }}</span>
+            <div class="d-flex align-items-center gap-1">
+              <span class="stock-dot"></span>
+              <span class="fs-8 fw-semibold text-success text-uppercase tracking-wider font-secondary">In Stock</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Specifications -->
+      <div class="mb-4">
+        <h5 class="spec-title fs-8 text-uppercase tracking-widest text-muted fw-bold mb-3 font-secondary">Specifications</h5>
+        
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="spec-item p-2.5 rounded border bg-light-cream">
+              <span class="d-block fs-9 text-muted font-secondary mb-1">Material</span>
+              <span class="d-block fs-7.5 fw-bold text-dark font-sans">{{ aiService.selectedMaterial()[product.id] || 'N/A' }}</span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="spec-item p-2.5 rounded border bg-light-cream">
+              <span class="d-block fs-9 text-muted font-secondary mb-1">Wood Type</span>
+              <span class="d-block fs-7.5 fw-bold text-dark font-sans">{{ aiService.selectedWoodType()[product.id] || 'N/A' }}</span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="spec-item p-2.5 rounded border bg-light-cream">
+              <span class="d-block fs-9 text-muted font-secondary mb-1">Color</span>
+              <span class="d-block fs-7.5 fw-bold text-dark font-sans">{{ aiService.selectedColor()[product.id] || 'N/A' }}</span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="spec-item p-2.5 rounded border bg-light-cream">
+              <span class="d-block fs-9 text-muted font-secondary mb-1">Dimensions</span>
+              <span class="d-block fs-7.5 fw-bold text-dark font-sans">{{ aiService.dimensions()[product.id] || 'N/A' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customizations -->
+      <div class="mb-4">
+        <h5 class="spec-title fs-8 text-uppercase tracking-widest text-muted fw-bold mb-3 font-secondary">Customization</h5>
+        
+        <div class="d-flex flex-column gap-2">
+          @if ((aiService.selectedWoodType()[product.id] || 'N/A') !== 'N/A') {
+            <button class="btn btn-customizer text-start d-flex align-items-center justify-content-between p-2.5 rounded border"
+                    (click)="cycleWoodType(product.id)">
+              <span class="fs-7.5 font-sans">Change Wood Type</span>
+              <i class="bi bi-chevron-right fs-8 text-muted"></i>
+            </button>
+          }
+          <button class="btn btn-customizer text-start d-flex align-items-center justify-content-between p-2.5 rounded border"
+                  (click)="cycleColor(product.id)">
+            <span class="fs-7.5 font-sans">Change Color</span>
+            <i class="bi bi-chevron-right fs-8 text-muted"></i>
+          </button>
+          <button class="btn btn-customizer text-start d-flex align-items-center justify-content-between p-2.5 rounded border"
+                  (click)="cycleMaterial(product.id)">
+            <span class="fs-7.5 font-sans">Change Material</span>
+            <i class="bi bi-chevron-right fs-8 text-muted"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="sidebar-footer p-3 border-top bg-white">
+      <button class="btn btn-add-cart w-100 mb-2.5 py-2.5 fw-bold font-sans d-flex align-items-center justify-content-center gap-2"
+              (click)="addToCart()">
+        <i class="bi bi-cart-plus-fill"></i>
+        <span>Add To Cart</span>
+      </button>
+
+      <div class="row g-2">
+        <div class="col-6">
+          <button class="btn btn-action-outline w-100 py-2 fs-7.5 fw-semibold font-sans d-flex align-items-center justify-content-center gap-1.5"
+                  (click)="replaceProduct()">
+            <i class="bi bi-arrow-left-right"></i>
+            <span>Replace</span>
+          </button>
+        </div>
+        <div class="col-6">
+          <button class="btn btn-action-outline w-100 py-2 fs-7.5 fw-semibold font-sans d-flex align-items-center justify-content-center gap-1.5"
+                  (click)="editProduct()">
+            <i class="bi bi-pencil-square"></i>
+            <span>Edit</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

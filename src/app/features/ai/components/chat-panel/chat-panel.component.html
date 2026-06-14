@@ -1,0 +1,74 @@
+<div class="chat-container d-flex flex-column h-100">
+  <!-- Header -->
+  <div class="chat-header p-3 border-bottom d-flex align-items-center justify-content-between">
+    <div>
+      <h3 class="fs-6 fw-bold text-dark mb-0 font-display">AI Furniture Assistant</h3>
+      <div class="d-flex align-items-center gap-1.5 mt-0.5">
+        <span class="status-dot"></span>
+        <span class="fs-9 text-muted font-secondary fw-semibold text-uppercase tracking-wider">Online</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages List -->
+  <div class="chat-messages flex-grow-1 p-3 overflow-y-auto" #scrollContainer>
+    @for (msg of aiService.messages(); track msg.timestamp) {
+      <div class="message-wrapper d-flex gap-2.5 mb-4" [class.user-wrapper]="msg.sender === 'user'">
+        <!-- Robot/AI Avatar -->
+        @if (msg.sender === 'ai') {
+          <div class="avatar-box ai-avatar d-flex align-items-center justify-content-center flex-shrink-0">
+            <i class="bi bi-robot"></i>
+          </div>
+        }
+
+        <!-- Bubble -->
+        <div class="message-bubble font-sans" [class.user-bubble]="msg.sender === 'user'">
+          <p class="mb-0 fs-7.5 lh-base">{{ msg.text }}</p>
+        </div>
+
+        <!-- User Avatar -->
+        @if (msg.sender === 'user') {
+          <div class="avatar-box user-avatar d-flex align-items-center justify-content-center flex-shrink-0">
+            <i class="bi bi-person-fill"></i>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Typing indicator -->
+    @if (aiService.isTyping()) {
+      <div class="message-wrapper d-flex gap-2.5 mb-4">
+        <div class="avatar-box ai-avatar d-flex align-items-center justify-content-center flex-shrink-0">
+          <i class="bi bi-robot"></i>
+        </div>
+        <div class="message-bubble typing-bubble d-flex align-items-center gap-1">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Bottom Input area -->
+  <div class="chat-input-bar p-3 border-top bg-white">
+    <div class="input-wrapper d-flex align-items-center gap-2 px-3 py-2 rounded-pill border">
+      <!-- Upload inspiration button -->
+      <button type="button" class="action-btn border-0 bg-transparent text-muted" (click)="openInspirationUpload()" title="Upload Inspiration">
+        <i class="bi bi-image fs-5 hover-gold"></i>
+      </button>
+
+      <!-- Input field -->
+      <input type="text"
+             class="form-control border-0 p-0 bg-transparent fs-7.5 shadow-none"
+             placeholder="Ask for changes..."
+             [(ngModel)]="inputMessage"
+             (keyup.enter)="sendMessage()" />
+
+      <!-- Send button -->
+      <button type="button" class="action-btn send-btn border-0 bg-transparent text-muted" (click)="sendMessage()" [disabled]="!inputMessage.trim()">
+        <i class="bi bi-send-fill fs-5" [class.text-gold]="inputMessage.trim()"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+@if (aiService.isSummaryOpen()) {
+  <div class="modal-backdrop d-flex align-items-center justify-content-center" (click)="close()">
+    <div class="modal-card p-4 rounded-4 shadow-xl bg-white" (click)="$event.stopPropagation()">
+      <!-- Header -->
+      <div class="modal-header d-flex justify-content-between align-items-start border-bottom pb-3">
+        <div>
+          <h2 class="fs-5.5 fw-bold text-dark mb-1 font-display">Design Summary</h2>
+          <p class="fs-8 text-muted font-secondary mb-0">Review your AI-generated interior space</p>
+        </div>
+        <button type="button" class="btn-close-modal border-0 bg-transparent text-muted" (click)="close()" aria-label="Close">
+          <i class="bi bi-x-lg fs-5"></i>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="modal-body py-4">
+        <div class="row g-4">
+          <!-- Left preview area -->
+          <div class="col-md-5 d-flex flex-column gap-3">
+            <div class="preview-img-box position-relative rounded-3 overflow-hidden shadow-sm">
+              <img [src]="aiService.currentRoom().imageUrl" alt="Room Design" class="w-100 h-100 object-fit-cover" />
+              <span class="badge-finalized position-absolute font-secondary fs-9 fw-bold px-2.5 py-1 rounded d-flex align-items-center gap-1">
+                <i class="bi bi-check-lg"></i>
+                <span>Finalized</span>
+              </span>
+            </div>
+
+            <!-- Total Estimate -->
+            <div class="total-estimate-card border rounded-3 p-3 bg-light-cream">
+              <span class="fs-9 text-uppercase tracking-widest text-muted fw-bold d-block mb-1.5 font-secondary">Total Estimate</span>
+              <h3 class="fs-3 fw-bold text-dark font-sans mb-1">${{ aiService.totalEstimate() }}</h3>
+              <div class="d-flex align-items-center gap-1.5 fs-8.5 text-muted font-sans">
+                <i class="bi bi-box-seam"></i>
+                <span>{{ aiService.roomProducts().length }} items selected</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right item list area -->
+          <div class="col-md-7 d-flex flex-column">
+            <h4 class="fs-8 text-uppercase tracking-widest text-muted fw-bold mb-3 font-secondary">Selected Furniture List</h4>
+            <div class="items-list flex-grow-1 overflow-y-auto pr-1 d-flex flex-column gap-2.5">
+              @for (product of aiService.roomProducts(); track product.id) {
+                <div class="item-card d-flex gap-3 border rounded-3 p-2.5 bg-light-cream position-relative">
+                  <div class="item-img-box rounded overflow-hidden flex-shrink-0 bg-white">
+                    <img [src]="product.mainImageUrl" alt="{{ product.nameEn }}" class="w-100 h-100 object-fit-cover" />
+                  </div>
+                  <div class="flex-grow-1 min-width-0">
+                    <h5 class="fs-7 fw-bold text-dark font-sans text-truncate mb-0.5">{{ product.nameEn }}</h5>
+                    <p class="fs-8.5 text-muted font-sans mb-1.5">
+                      {{ aiService.selectedMaterial()[product.id] || 'N/A' }} • {{ aiService.selectedWoodType()[product.id] || 'N/A' }}
+                    </p>
+                    <span class="fs-9 text-muted font-secondary d-block">{{ aiService.dimensions()[product.id] || 'N/A' }}</span>
+                  </div>
+                  <div class="text-end flex-shrink-0 d-flex flex-column justify-content-between align-items-end">
+                    <span class="fs-7 fw-bold text-dark font-sans">${{ product.price }}</span>
+                    <span class="fs-9.5 text-gold fw-bold font-secondary text-uppercase tracking-wider">{{ product.workshopNameEn }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer d-flex justify-content-end gap-3 border-top pt-3">
+        <button class="btn btn-continue-editing d-flex align-items-center gap-1.5 fs-7.5 fw-bold font-sans text-muted border-0 bg-transparent"
+                (click)="close()">
+          <i class="bi bi-pencil"></i>
+          <span>Continue Editing</span>
+        </button>
+        <button class="btn btn-create-order d-flex align-items-center gap-2 px-4 py-2 fw-bold font-sans text-white shadow-sm"
+                (click)="createOrder()">
+          <i class="bi bi-bag"></i>
+          <span>Create Order</span>
+          <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+}

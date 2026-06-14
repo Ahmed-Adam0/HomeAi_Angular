@@ -3,6 +3,11 @@ import { APP_ROUTES } from '../../core/constants';
 
 export const aiRoutes: Routes = [
   {
+    path: 'rooms',
+    redirectTo: APP_ROUTES.AI_CHAT,
+    pathMatch: 'full',
+  },
+  {
     path: APP_ROUTES.AI_CHAT,
     loadComponent: () =>
       import('./pages/ai-chat/ai-chat.component').then((m) => m.AiChat),
