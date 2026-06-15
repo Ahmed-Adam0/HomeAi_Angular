@@ -61,6 +61,7 @@ export class NotificationBellComponent implements OnInit {
   }
 
   markAsRead(id: number): void {
+    if (!id || id <= 0) return;
     if (this.markingIds().has(id)) return;
 
     this.markingIds.update((ids) => new Set(ids).add(id));

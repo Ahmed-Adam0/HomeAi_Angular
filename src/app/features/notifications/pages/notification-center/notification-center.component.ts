@@ -10,9 +10,10 @@ import {
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize } from 'rxjs';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { NotificationService } from '../../services/notification.service';
+import { NotificationHubService } from '../../services/notification-hub.service';
 import { NotificationsMappedResult } from '../../data-access/mappers/notification.mapper';
 
 export interface PaginationMeta {
@@ -34,6 +35,7 @@ export interface PaginationMeta {
 })
 export class NotificationCenterComponent implements OnInit {
   readonly notificationService = inject(NotificationService);
+  private readonly hubService = inject(NotificationHubService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
 
@@ -99,6 +101,16 @@ export class NotificationCenterComponent implements OnInit {
   ngOnInit(): void {
     this.loadNotifications();
     this.loadUnreadCount();
+
+    this.hubService.newNotifications$
+      .pipe(
+        debounceTime(300),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.pagination.update((p) => ({ ...p, totalCount: p.totalCount + 1 }));
+        this.loadUnreadCount();
+      });
   }
 
   private loadNotifications(): void {
@@ -131,6 +143,7 @@ export class NotificationCenterComponent implements OnInit {
   }
 
   onMarkAsRead(id: number): void {
+    if (!id || id <= 0) return;
     if (this.markingIds().has(id)) return;
 
     this.markingIds.update((ids) => new Set(ids).add(id));

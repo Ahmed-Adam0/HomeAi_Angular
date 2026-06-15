@@ -10,6 +10,7 @@ import { UnreadCount } from '../data-access/dto/unread-count.dto';
 import { mapNotificationsResponse, NotificationsMappedResult } from '../data-access/mappers/notification.mapper';
 import { INotificationItem } from '../interfaces/inotification';
 import { AuthService } from '../../auth/services/auth.service';
+import { NotificationHubService } from './notification-hub.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,7 @@ export class NotificationService {
   private readonly authService = inject(AuthService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly hubService = inject(NotificationHubService);
 
   private unreadCountRequest: Observable<number> | null = null;
   private unreadCountLoaded = false;
@@ -57,6 +59,12 @@ export class NotificationService {
         this.unreadCount.set(0);
       }
     });
+
+    this.hubService.newNotifications$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((notification) => {
+        this.addNotification(notification);
+      });
   }
 
   private setError(message: string): void {
@@ -184,13 +192,13 @@ export class NotificationService {
     };
 
     this.notificationsById.update((previous) => ({
-      [normalizedNotification.id]: normalizedNotification,
       ...previous,
+      [normalizedNotification.id]: normalizedNotification,
     }));
 
     this.currentPageNotifications.update((items) => [
       normalizedNotification,
-      ...items.filter((item) => item.id !== normalizedNotification.id),
+      ...items,
     ]);
 
     this.syncNotificationSignals();
@@ -202,6 +210,10 @@ export class NotificationService {
   }
 
   markAsRead(notificationId: number): Observable<void> {
+    if (!notificationId || notificationId <= 0) {
+      return of(void 0);
+    }
+
     const previousNotifications = this.notificationsById();
     const previousPageNotifications = this.currentPageNotifications();
     const previousUnreadCount = this.unreadCount();
