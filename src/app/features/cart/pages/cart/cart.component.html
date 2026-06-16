@@ -21,6 +21,17 @@
               <h2>
                 {{ item | localized:'productName' }}
               </h2>
+              <p *ngIf="item.vendorNameAr || item.vendorNameEn" class="item-vendor text-muted font-xs mb-1">
+                {{ translationService.currentLang() === 'ar' ? item.vendorNameAr : item.vendorNameEn }}
+              </p>
+              <div *ngIf="item.options?.length" class="item-options mt-1 d-flex flex-wrap gap-1">
+                <span *ngFor="let opt of item.options" class="badge bg-light text-dark border font-xxs py-1 px-2 rounded-pill">
+                  {{ translationService.currentLang() === 'ar' ? (opt.nameAr || opt.name) : (opt.nameEn || opt.name) }}
+                  <span class="text-secondary small" *ngIf="opt.priceDelta > 0">
+                    (+{{ opt.priceDelta | currencyFormat }})
+                  </span>
+                </span>
+              </div>
               <button
                 type="button"
                 class="remove-action"
@@ -37,6 +48,9 @@
 
             <p class="item-price">
               {{ item.price | currencyFormat }}
+              <span *ngIf="item.isPriceStale" class="badge bg-warning text-dark ms-2 font-xxs" title="Price updated by vendor">
+                {{ translationService.currentLang() === 'ar' ? 'سعر محدّث' : 'Price updated' }}
+              </span>
             </p>
 
             <div class="item-meta">

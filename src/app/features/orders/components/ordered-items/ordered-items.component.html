@@ -26,6 +26,24 @@
               <span class="mx-2">•</span>
               <span>{{ 'ORDER_DETAILS_MATERIAL' | translate }}: {{ item.selectedMaterial }}</span>
             }
+            @if (item.attributes?.length) {
+              <div class="d-flex flex-wrap gap-1 mt-1">
+                <span *ngFor="let attr of item.attributes" class="badge bg-light text-dark border font-xxs py-1 px-2 rounded-pill">
+                  <span class="fw-semibold">
+                    {{ translationService.currentLang() === 'ar' ? attr.nameAr : attr.nameEn }}:
+                  </span>
+                  {{ translationService.currentLang() === 'ar' ? attr.valueAr : attr.valueEn }}
+                </span>
+              </div>
+            } @else if (item.snapshotOptions?.length) {
+              <span class="mx-2">•</span>
+              <span *ngFor="let opt of item.snapshotOptions" class="badge bg-light text-dark border font-xxs py-0.5 px-1.5 rounded-pill me-1 d-inline-block">
+                {{ opt.name }}
+                <span class="text-secondary small" *ngIf="opt.priceDelta > 0">
+                  (+{{ opt.priceDelta | currencyFormat }})
+                </span>
+              </span>
+            }
           </div>
         </div>
         <div class="details-item-price">{{ (item.total || item.subtotal) | currencyFormat }}</div>

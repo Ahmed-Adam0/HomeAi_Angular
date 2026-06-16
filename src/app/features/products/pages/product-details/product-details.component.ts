@@ -78,6 +78,7 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
   readonly product = signal<IProduct | undefined>(undefined);
   readonly isLoading = signal<boolean>(true);
   readonly activeImage = signal<string>('');
+  readonly selectedOptions = signal<Record<number, number>>({});
   
   // Images Gallery
   readonly productImages = computed<string[]>(() => {
@@ -101,6 +102,32 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
   });
 
   readonly itemQuantity = signal<number>(1);
+
+  readonly dynamicPrice = computed(() => {
+    const prod = this.product();
+    if (!prod) return 0;
+    const base = prod.basePrice ?? prod.price ?? 0;
+    let delta = 0;
+    if (prod.materials) {
+      for (const mat of prod.materials) {
+        const selectedId = this.selectedOptions()[mat.materialId];
+        if (selectedId) {
+          const opt = mat.options.find(o => o.id === selectedId);
+          if (opt) {
+            delta += opt.priceDelta;
+          }
+        }
+      }
+    }
+    return base + delta;
+  });
+
+  selectOption(materialId: number, optionId: number): void {
+    this.selectedOptions.update(prev => ({
+      ...prev,
+      [materialId]: optionId
+    }));
+  }
 
   // Favorites States
   readonly isFavorite = computed(() => this.favoritesService.isFavorited(this.product()?.id ?? 0));
@@ -165,6 +192,16 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
         if (data) {
           this.product.set(data);
           this.activeImage.set(data.mainImageUrl);
+
+          const initialSelections: Record<number, number> = {};
+          if (data.materials) {
+            for (const mat of data.materials) {
+              if (mat.options && mat.options.length > 0) {
+                initialSelections[mat.materialId] = mat.options[0].id;
+              }
+            }
+          }
+          this.selectedOptions.set(initialSelections);
           
           // Generate context-aware architectural specifications based on category/name
           this.generateSpecifications(data);
@@ -338,7 +375,8 @@ export class ProductDetails implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    this.cartService.addToCart(product, this.itemQuantity());
+    const selectedOptionIds = Object.values(this.selectedOptions());
+    this.cartService.addToCart(product, this.itemQuantity(), selectedOptionIds);
   }
 
   toggleFavorite(event: Event): void {

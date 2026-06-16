@@ -107,18 +107,19 @@
         </div>
 
         <!-- Category select list -->
-        <div class="col-md-6">
+        <div class="col-md-4">
           <label for="categoryId" class="form-label fs-7 fw-bold text-dark">
-            {{ translationService.currentLang() === 'ar' ? 'القسم *' : 'Category *' }}
+            {{ translationService.currentLang() === 'ar' ? 'القسم الرئيسي *' : 'Category *' }}
           </label>
           <select
             id="categoryId"
             formControlName="categoryId"
             class="form-select rounded-pill px-3 py-2 fs-7 cursor-pointer"
             [class.is-invalid]="isInvalid('categoryId')"
+            (change)="onCategoryChange()"
           >
             <option value="" disabled selected>
-              {{ translationService.currentLang() === 'ar' ? 'اختر قسم المنتج' : 'Select a category' }}
+              {{ translationService.currentLang() === 'ar' ? 'اختر القسم الرئيسي' : 'Select category' }}
             </option>
             <option *ngFor="let cat of categories()" [value]="cat.id">
               {{ cat | localized:'name' }}
@@ -126,6 +127,110 @@
           </select>
           <div class="invalid-feedback fs-8 px-2">
             {{ translationService.currentLang() === 'ar' ? 'يرجى اختيار قسم للمنتج' : 'Please select a category' }}
+          </div>
+        </div>
+
+        <!-- SubCategory select list -->
+        <div class="col-md-4">
+          <label for="subCategoryId" class="form-label fs-7 fw-bold text-dark">
+            {{ translationService.currentLang() === 'ar' ? 'القسم الفرعي *' : 'Subcategory *' }}
+          </label>
+          <select
+            id="subCategoryId"
+            formControlName="subCategoryId"
+            class="form-select rounded-pill px-3 py-2 fs-7 cursor-pointer"
+            [class.is-invalid]="isInvalid('subCategoryId')"
+            (change)="onSubcategoryChange()"
+          >
+            <option value="" disabled selected>
+              {{ translationService.currentLang() === 'ar' ? 'اختر القسم الفرعي' : 'Select subcategory' }}
+            </option>
+            <option *ngFor="let sub of subcategories()" [value]="sub.id">
+              {{ sub | localized:'name' }}
+            </option>
+          </select>
+          <div class="invalid-feedback fs-8 px-2">
+            {{ translationService.currentLang() === 'ar' ? 'يرجى اختيار قسم فرعي' : 'Please select a subcategory' }}
+          </div>
+        </div>
+
+        <!-- ProductType select list -->
+        <div class="col-md-4">
+          <label for="productTypeId" class="form-label fs-7 fw-bold text-dark">
+            {{ translationService.currentLang() === 'ar' ? 'نوع المنتج *' : 'Product Type *' }}
+          </label>
+          <select
+            id="productTypeId"
+            formControlName="productTypeId"
+            class="form-select rounded-pill px-3 py-2 fs-7 cursor-pointer"
+            [class.is-invalid]="isInvalid('productTypeId')"
+          >
+            <option value="" disabled selected>
+              {{ translationService.currentLang() === 'ar' ? 'اختر نوع المنتج' : 'Select product type' }}
+            </option>
+            <option *ngFor="let pt of productTypes()" [value]="pt.id">
+              {{ pt | localized:'name' }}
+            </option>
+          </select>
+          <div class="invalid-feedback fs-8 px-2">
+            {{ translationService.currentLang() === 'ar' ? 'يرجى اختيار نوع للمنتج' : 'Please select a product type' }}
+          </div>
+        </div>
+
+        <!-- Customizable Options Selection -->
+        <div class="col-12 mt-4" *ngIf="availableMaterials().length > 0">
+          <label class="form-label fs-7 fw-bold text-dark mb-2">
+            {{ translationService.currentLang() === 'ar' ? 'خيارات التخصيص المتاحة للمنتج' : 'Available Customization Options' }}
+          </label>
+          <p class="text-muted fs-8 mb-3">
+            {{ translationService.currentLang() === 'ar' ? 'حدد الخيارات التي يمكن للعملاء اختيارها وتخصيصها لهذا المنتج.' : 'Select the options that customers can choose and customize for this product.' }}
+          </p>
+          <div class="row g-3">
+            <div class="col-md-6 col-lg-4" *ngFor="let material of availableMaterials()">
+              <div class="card border border-light rounded-3 p-3 bg-light-soft h-100" style="background-color: rgba(31,28,24,0.02)">
+                <h6 class="fs-7 fw-bold text-dark mb-2 border-bottom border-light pb-2">
+                  {{ material | localized:'name' }}
+                </h6>
+                <div class="d-flex flex-column gap-2">
+                  <div *ngIf="!material.options?.length" class="text-muted fs-8">
+                    {{ translationService.currentLang() === 'ar' ? 'لا توجد خيارات مضافة بعد.' : 'No options added yet.' }}
+                  </div>
+                  <div class="form-check-option-row" *ngFor="let option of material.options">
+                    <div class="d-flex align-items-center gap-2">
+                      <input
+                        type="checkbox"
+                        [id]="'opt-' + option.id"
+                        class="form-check-input cursor-pointer flex-shrink-0"
+                        style="width: 1.1em; height: 1.1em; margin-top: 0;"
+                        [checked]="isOptionSelected(option.id)"
+                        (change)="toggleOption(option.id, option.priceDelta ?? option.priceOption ?? 0)"
+                      />
+                      <label [for]="'opt-' + option.id" class="form-check-label fs-8 cursor-pointer fw-semibold text-dark flex-grow-1 mb-0">
+                        {{ option | localized:'value' }}
+                      </label>
+                    </div>
+                    <!-- Price input: shown when option is selected -->
+                    <div *ngIf="isOptionSelected(option.id)" class="option-price-input mt-2 ms-4">
+                      <label class="fs-9 text-muted d-block mb-1">
+                        {{ translationService.currentLang() === 'ar' ? 'سعر هذا الخيار (EGP)' : 'Option price (EGP)' }}
+                      </label>
+                      <div class="input-group input-group-sm" style="max-width: 160px;">
+                        <span class="input-group-text bg-light border-end-0 text-muted fs-8">EGP</span>
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          class="form-control border-start-0 fs-8 rounded-end"
+                          [value]="getOptionPrice(option.id)"
+                          (input)="setOptionPrice(option.id, +$any($event.target).value)"
+                          [placeholder]="translationService.currentLang() === 'ar' ? 'مثال: 150' : 'e.g. 150'"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

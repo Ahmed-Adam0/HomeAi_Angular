@@ -1,0 +1,122 @@
+/* Vendor Materials Premium Page Styles */
+
+.vendor-materials {
+  background-color: #faf9f6;
+  min-height: 100vh;
+  font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+.vendor-materials__eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #b8935c !important;
+}
+
+.vendor-materials__title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.25rem;
+  letter-spacing: -0.02em;
+  color: #1f1c18;
+}
+
+.vendor-materials__meta-badge {
+  background-color: rgba(184, 147, 92, 0.1) !important;
+  color: #b8935c !important;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+}
+
+/* Card Styling */
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.03) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03) !important;
+}
+
+.bg-gold-soft {
+  background-color: rgba(184, 147, 92, 0.08) !important;
+}
+
+.text-gold {
+  color: #b8935c !important;
+}
+
+.bg-success-soft {
+  background-color: rgba(40, 167, 69, 0.08) !important;
+  color: #28a745 !important;
+}
+
+/* Form Controls */
+.form-control, .form-select {
+  border: 1px solid rgba(31, 28, 24, 0.12);
+  background-color: #ffffff;
+  color: #1f1c18;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #b8935c;
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.15);
+  background-color: #ffffff;
+}
+
+.btn-dark {
+  background-color: #1f1c18 !important;
+  color: #ffffff !important;
+  transition: all 0.25s ease;
+}
+
+.btn-dark:hover {
+  background-color: #b8935c !important;
+  transform: translateY(-1px);
+}
+
+.btn-dark:disabled {
+  background-color: rgba(31, 28, 24, 0.5) !important;
+  cursor: not-allowed;
+}
+
+/* Options List Table */
+.table th {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.75rem 0.5rem;
+}
+
+.table td {
+  padding: 0.75rem 0.5rem;
+}
+
+.btn-link {
+  color: #dc3545;
+  transition: all 0.2s ease;
+}
+
+.btn-link:hover {
+  color: #bd2130;
+  transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vendor-materials__content {
+  animation: fadeIn 0.4s ease-out forwards;
+}

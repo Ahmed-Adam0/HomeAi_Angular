@@ -43,13 +43,19 @@ export class VendorProductAdd {
 
     // Strict Creation Payload matching POST /api/Products
     const productPayload = {
+      name: productData.nameEn || productData.nameAr || '',
+      description: productData.descriptionEn || productData.descriptionAr || '',
+      basePrice: Number(productData.price),
+      productTypeId: Number(productData.productTypeId),
       categoryId: Number(productData.categoryId),
+      subCategoryId: Number(productData.subCategoryId),
       nameAr: productData.nameAr || '',
       nameEn: productData.nameEn || '',
       descriptionAr: productData.descriptionAr || '',
       descriptionEn: productData.descriptionEn || '',
       price: Number(productData.price),
-      isActive: productData.isActive ?? true
+      isActive: productData.isActive ?? true,
+      materialOptions: (productData as any).materialOptions || []
     };
 
     // 1. Create Product first
