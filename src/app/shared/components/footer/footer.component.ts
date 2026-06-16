@@ -1,14 +1,11 @@
 import {
   Component,
-  HostListener,
   OnInit,
-  PLATFORM_ID,
   computed,
   inject,
   input,
   signal,
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import { NAV_ROUTES } from '../../../core/constants/app-routes';
@@ -35,7 +32,6 @@ import { localized } from '../../../shared/utils/localized';
 })
 export class Footer implements OnInit {
   private readonly categoryService = inject(CategoryService);
-  private readonly platformId = inject(PLATFORM_ID);
 
   protected readonly translationService = inject(TranslationService);
   protected readonly navRoutes = NAV_ROUTES;
@@ -48,20 +44,11 @@ export class Footer implements OnInit {
 
   readonly footerCategories = signal<Category[]>(NavbarConstants.CATEGORIES);
   readonly isLoadingCategories = signal(false);
-  readonly showScrollTop = signal(false);
 
   readonly copyrightYear = computed(() => new Date().getFullYear());
 
   ngOnInit(): void {
     this.loadCategories();
-  }
-
-  @HostListener('window:scroll', [])
-  onWindowScroll(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-    this.showScrollTop.set(window.scrollY > 400);
   }
 
   categoryRoute(category: Category): string[] {
@@ -90,13 +77,6 @@ export class Footer implements OnInit {
 
   taglineLine2(): string {
     return localized(this.tagline(), 'line2', this.translationService.currentLang());
-  }
-
-  scrollToTop(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   private loadCategories(): void {

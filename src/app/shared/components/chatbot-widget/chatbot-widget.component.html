@@ -1,0 +1,65 @@
+@if (!isOpen()) {
+  <button class="chatbot-fab" (click)="toggleChat()" aria-label="Open chat">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+  </button>
+}
+
+@if (isOpen()) {
+  <div class="chatbot-panel">
+    <div class="chatbot-header">
+      <span class="chatbot-header-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a10 10 0 0 1 10 10c0 4.5-3.5 8.2-8 9.5V21a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4.5C2 11.6 5.5 7.8 10 6.5"></path>
+          <path d="M8 12h.01"></path>
+          <path d="M12 12h.01"></path>
+          <path d="M16 12h.01"></path>
+        </svg>
+        FurniMind Assistant
+      </span>
+      <button class="chatbot-close" (click)="closeChat()" aria-label="Close chat">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div #messagesContainer class="chatbot-messages">
+      @for (message of messages(); track trackById($index, message)) {
+        <div class="chatbot-message" [class.message-user]="message.sender === 'user'" [class.message-bot]="message.sender === 'bot'">
+          <div class="message-bubble">
+            {{ message.content }}
+          </div>
+        </div>
+      }
+
+      @if (loading() && messages().length > 0) {
+        <div class="chatbot-message message-bot">
+          <div class="message-bubble message-typing">
+            Typing...
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="chatbot-input">
+      <input
+        type="text"
+        [(ngModel)]="messageInput"
+        (keyup.enter)="sendMessage()"
+        (keydown.enter)="$event.preventDefault()"
+        placeholder="Type a message..."
+        class="chatbot-input-field"
+        [disabled]="loading()"
+      />
+      <button class="chatbot-send" (click)="sendMessage()" [disabled]="loading() || !messageInput.trim()" aria-label="Send message">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+}

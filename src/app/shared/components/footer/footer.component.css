@@ -352,57 +352,6 @@
   outline-offset: 2px;
 }
 
-/* ── Scroll to top ── */
-.footer-scroll-top {
-  position: fixed !important;
-  right: 28px !important;
-  bottom: 28px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 42px !important;
-  height: 42px !important;
-  padding: 0 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 50% !important;
-  background-color: rgba(17, 17, 17, 0.82) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  color: #ffffff !important;
-  cursor: pointer;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(12px) scale(0.9);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
-  transition:
-    opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.25s ease,
-    border-color 0.25s ease,
-    color 0.25s ease !important;
-  z-index: 1050 !important;
-}
-
-.footer-scroll-top--visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
-}
-
-.footer-scroll-top:hover,
-.footer-scroll-top:focus-visible {
-  background-color: #b8935c !important;
-  border-color: #b8935c !important;
-  color: #111111 !important;
-  transform: translateY(-3px) scale(1.05) !important;
-}
-
-.footer-scroll-top:focus-visible {
-  outline: 2px solid #b8935c !important;
-  outline-offset: 3px;
-}
-
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -478,13 +427,6 @@
     padding-inline: var(--fm-space-16);
   }
 
-  .footer-scroll-top {
-    right: 20px !important;
-    bottom: 20px !important;
-    width: 38px !important;
-    height: 38px !important;
-  }
-
   .footer-main {
     padding-block: var(--fm-space-40) var(--fm-space-32);
   }
@@ -551,12 +493,6 @@
     flex-wrap: wrap;
   }
 
-  .footer-scroll-top {
-    right: 14px !important;
-    bottom: 14px !important;
-    width: 34px !important;
-    height: 34px !important;
-  }
 }
 
 /* Tablet narrow */
@@ -587,14 +523,4 @@
   transform: translateX(-4px);
 }
 
-:host-context([dir='rtl']) .footer-scroll-top {
-  right: auto !important;
-  left: 28px !important;
-}
 
-@media (max-width: 575px) {
-  :host-context([dir='rtl']) .footer-scroll-top {
-    left: 20px !important;
-    right: auto !important;
-  }
-}

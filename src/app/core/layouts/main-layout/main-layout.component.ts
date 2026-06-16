@@ -8,10 +8,12 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
 import { AuthRequiredDialogComponent } from '../../components/auth-required-dialog/auth-required-dialog.component';
 import { ConfirmDialogContainer } from '../../../shared/components/confirm-dialog/confirm-dialog-container.component';
 import { ToastContainer } from '../../../shared/components/toast/toast.component';
+import { ChatbotWidget } from '../../../shared/components/chatbot-widget/chatbot-widget.component';
+import { ScrollToTop } from '../../../shared/components/scroll-to-top/scroll-to-top.component';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterOutlet, Navbar, Footer, RtlDirective, AlertComponent, AuthRequiredDialogComponent, ConfirmDialogContainer, ToastContainer],
+  imports: [RouterOutlet, Navbar, Footer, RtlDirective, AlertComponent, AuthRequiredDialogComponent, ConfirmDialogContainer, ToastContainer, ChatbotWidget, ScrollToTop],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
