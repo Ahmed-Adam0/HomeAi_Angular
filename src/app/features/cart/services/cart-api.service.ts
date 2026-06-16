@@ -21,19 +21,20 @@ export class CartApiService {
   /**
    * Add a product/item to the backend cart.
    */
-  addItem(productId: number, quantity: number): Observable<any> {
+  addItem(productId: number, quantity: number, selectedOptionIds: number[] = []): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}${API_URLS.CART.ADD_ITEM}`, {
       productId,
       quantity,
+      selectedOptionIds,
     });
   }
 
   /**
    * Update an item's quantity in the backend cart.
+   * API: PUT /api/Cart/items — body: { cartItemId, quantity }
    */
   updateItem(cartItemId: number, quantity: number): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}${API_URLS.CART.UPDATE_ITEM}`, {
-      id: cartItemId,
+    return this.http.put<any>(`${this.apiUrl}${API_URLS.CART.UPDATE_ITEM(cartItemId)}`, {
       cartItemId,
       quantity,
     });

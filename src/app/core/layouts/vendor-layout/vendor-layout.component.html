@@ -25,6 +25,14 @@
 
       <div class="nav-section">
         <span class="nav-section-title">{{ 'VENDOR.LAYOUT.SIDEBAR_MANAGEMENT' | translate }}</span>
+        <a [routerLink]="navRoutes.VENDOR_PRODUCTS" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
+          <i class="bi bi-box-seam-fill"></i>
+          <span>{{ translationService.currentLang() === 'ar' ? 'المنتجات' : 'Products' }}</span>
+        </a>
+        <a [routerLink]="navRoutes.VENDOR_MATERIALS" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
+          <i class="bi bi-sliders"></i>
+          <span>{{ translationService.currentLang() === 'ar' ? 'الخامات والخيارات' : 'Materials & Options' }}</span>
+        </a>
         <a [routerLink]="navRoutes.VENDOR_ORDERS" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
           <i class="bi bi-bag-check-fill"></i>
           <span>{{ 'VENDOR.LAYOUT.NAV_ORDERS' | translate }}</span>

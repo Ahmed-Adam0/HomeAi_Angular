@@ -205,5 +205,25 @@ export class VendorService {
     return this.http
       .put<void>(`${this.apiUrl}${API_URLS.VENDOR.NOTIFICATIONS_READ_ALL}`, null);
   }
+
+  getVendorMaterials(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}${API_URLS.VENDOR.MATERIALS}`);
+  }
+
+  createMaterial(nameAr: string, nameEn: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}${API_URLS.VENDOR.CREATE_GROUP}`, { nameAr, nameEn });
+  }
+
+  deleteMaterial(groupId: string | number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}${API_URLS.VENDOR.DELETE_GROUP(groupId)}`);
+  }
+
+  createOption(groupId: string | number, valueAr: string, valueEn: string, priceDelta: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}${API_URLS.VENDOR.ADD_OPTION(groupId)}`, { valueAr, valueEn, priceDelta });
+  }
+
+  deleteOption(optionId: string | number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}${API_URLS.VENDOR.DELETE_OPTION(optionId)}`);
+  }
 }
 

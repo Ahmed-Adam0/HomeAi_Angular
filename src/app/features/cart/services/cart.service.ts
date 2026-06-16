@@ -106,7 +106,8 @@ export class CartService {
     for (const item of items) {
       const productKey = this.normalizeKey(item.productId || item.id);
       const cartKey = this.normalizeKey(item.cartItemId || item.id);
-      const mapKey = productKey || cartKey;
+      const optionKey = (item.selectedOptionIds || []).slice().sort().join('-');
+      const mapKey = (productKey || cartKey) + (optionKey ? '_' + optionKey : '');
 
       const existing = grouped.get(mapKey);
       if (existing) {
@@ -288,14 +289,31 @@ export class CartService {
       const productId = normalizedProductId || (normalizedId && normalizedId !== cartItemId ? normalizedId : '');
       const itemId = cartItemId || productId || normalizedId;
       const qty = Math.max(1, Math.round(Number(item.quantity) || 1));
-      const price = Math.max(0, Number(item.price || item.product?.price || 0));
+      const price = Math.max(0, Number(item.calculatedUnitPrice ?? item.price ?? item.product?.price ?? item.product?.basePrice ?? 0));
 
       const productNameEn =
         item.productNameEn || item.productName || item.product?.nameEn || item.product?.name || '';
       const productNameAr = item.productNameAr || item.product?.nameAr || productNameEn;
-      const rawImages: string[] = Array.isArray(item.images) ? item.images : [];
+      const rawImages: string[] = Array.isArray(item.images) ? item.images :
+        (Array.isArray(item.productImages) ? item.productImages : []);
       const productImage =
-        rawImages[0] || item.productImage || item.imageUrl || item.product?.mainImageUrl || item.product?.imageUrl || '';
+        rawImages[0] || item.variantImageUrl || item.productImage || item.imageUrl || item.product?.mainImageUrl || item.product?.imageUrl || '';
+
+      // Map live/cached price from API response
+      const livePrice = item.livePrice != null ? Number(item.livePrice) : undefined;
+      const cachedPrice = item.cachedPrice != null ? Number(item.cachedPrice) : undefined;
+      const isPriceStale = item.isPriceStale === true;
+      const finalPrice = livePrice ?? cachedPrice ?? price;
+
+      // Map selectedAttributes from backend into options array
+      const backendAttributes: any[] = Array.isArray(item.selectedAttributes) ? item.selectedAttributes : [];
+      const mappedOptions = backendAttributes.map((attr: any) => ({
+        name: attr.attributeNameEn || attr.attributeName || '',
+        nameEn: attr.attributeNameEn || attr.attributeName || '',
+        nameAr: attr.attributeNameAr || attr.attributeName || '',
+        priceDelta: 0,
+      }));
+      const optionsToUse = mappedOptions.length ? mappedOptions : (item.options || []);
 
       return {
         id: itemId,
@@ -306,11 +324,17 @@ export class CartService {
         productNameAr,
         productImage,
         images: rawImages,
-        price,
+        price: finalPrice,
+        livePrice,
+        isPriceStale,
         quantity: qty,
-        subtotal: Number((price * qty).toFixed(2)),
+        subtotal: Number((finalPrice * qty).toFixed(2)),
         selectedColor: item.selectedColor || item.color,
         selectedMaterial: item.selectedMaterial || item.material,
+        selectedOptionIds: item.selectedOptionIds || [],
+        options: optionsToUse,
+        vendorNameEn: item.vendorNameEn || '',
+        vendorNameAr: item.vendorNameAr || '',
       };
     });
 
@@ -362,7 +386,7 @@ export class CartService {
     }
   }
 
-  addToCart(product: IProduct, quantity = 1): Promise<void> {
+  addToCart(product: IProduct, quantity = 1, selectedOptionIds: number[] = []): Promise<void> {
     const itemId = this.normalizeKey(product.id);
     if (this.loadingStates()[itemId]?.adding) {
       return Promise.resolve();
@@ -386,7 +410,24 @@ export class CartService {
           }
 
           const quantityToAdd = Math.round(Number(quantity));
-          const productPrice = Math.max(0, Number(product.price) || 0);
+          
+          let optionPrice = 0;
+          const optionsData: { name: string; priceDelta: number }[] = [];
+          if (product.materials) {
+            for (const mat of product.materials) {
+              const selectedId = selectedOptionIds.find(id => mat.options.some(o => o.id === id));
+              if (selectedId) {
+                const opt = mat.options.find(o => o.id === selectedId);
+                if (opt) {
+                  optionPrice += opt.priceDelta;
+                  optionsData.push({ name: opt.name, priceDelta: opt.priceDelta });
+                }
+              }
+            }
+          }
+          const basePrice = Math.max(0, Number(product.basePrice ?? product.price) || 0);
+          const productPrice = basePrice + optionPrice;
+
           const existingItem = this.findCartItem(itemId);
           const currentQty = existingItem ? existingItem.quantity : 0;
           const newQty = currentQty + quantityToAdd;
@@ -420,6 +461,8 @@ export class CartService {
               price: productPrice,
               quantity: quantityToAdd,
               subtotal: Number((productPrice * quantityToAdd).toFixed(2)),
+              selectedOptionIds,
+              options: optionsData
             };
 
             this.items.update((current) => [...current, newItem]);
@@ -446,7 +489,7 @@ export class CartService {
             const quantityToSync = matched?.quantity ?? newQty;
             const observable = cartItemIdVal
               ? this.cartApi.updateItem(Number(cartItemIdVal), quantityToSync)
-              : this.cartApi.addItem(Number(itemId), quantityToAdd);
+              : this.cartApi.addItem(Number(itemId), quantityToAdd, selectedOptionIds);
 
             const p = observable.toPromise()
               .then((response) => {

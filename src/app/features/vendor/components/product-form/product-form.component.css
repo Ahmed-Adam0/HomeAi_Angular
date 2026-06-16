@@ -67,3 +67,35 @@
 [dir="rtl"] .form-select {
   background-position: left 0.75rem center;
 }
+
+/* Option row with price input */
+.form-check-option-row {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(31, 28, 24, 0.06);
+}
+
+.form-check-option-row:last-child {
+  border-bottom: none;
+}
+
+.option-price-input .input-group-text {
+  font-size: 0.72rem;
+  border: 1px solid rgba(31, 28, 24, 0.15);
+  border-right: none;
+  color: #888;
+}
+
+.option-price-input .form-control {
+  font-size: 0.78rem;
+  border: 1px solid rgba(31, 28, 24, 0.15);
+  padding: 0.3rem 0.6rem;
+}
+
+.option-price-input .form-control:focus {
+  border-color: #b8935c;
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.15);
+}
+
+.fs-9 {
+  font-size: 0.68rem;
+}

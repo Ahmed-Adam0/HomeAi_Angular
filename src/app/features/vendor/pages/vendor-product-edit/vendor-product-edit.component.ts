@@ -79,12 +79,18 @@ export class VendorProductEdit implements OnInit {
 
     // Strict Update Payload matching PUT /api/Products/{id} - WITHOUT isActive to isolate status updates
     const productPayload = {
+      name: updatedData.nameEn || updatedData.nameAr || '',
+      description: updatedData.descriptionEn || updatedData.descriptionAr || '',
+      basePrice: Number(updatedData.price),
+      productTypeId: Number(updatedData.productTypeId),
       categoryId: Number(updatedData.categoryId),
+      subCategoryId: Number(updatedData.subCategoryId),
       nameAr: updatedData.nameAr || '',
       nameEn: updatedData.nameEn || '',
       descriptionAr: updatedData.descriptionAr || '',
       descriptionEn: updatedData.descriptionEn || '',
-      price: Number(updatedData.price)
+      price: Number(updatedData.price),
+      materialOptions: (updatedData as any).materialOptions || []
     };
 
     const updateObs = this.vendorProductService.updateProduct(this.productId(), productPayload);
@@ -94,13 +100,6 @@ export class VendorProductEdit implements OnInit {
 
     forkJoin([updateObs, statusObs]).subscribe({
       next: ([updatedProd, statusResult]) => {
-        // Ensure final product model reflects the active status
-        const finalProduct = {
-          ...updatedProd,
-          isActive: newActive
-        };
-        this.product.set(finalProduct);
-
         this.submitting.set(false);
         this.uiState.hideLoader();
         this.uiState.showAlert(
@@ -109,6 +108,8 @@ export class VendorProductEdit implements OnInit {
             ? 'تم حفظ تفاصيل المنتج بنجاح.'
             : 'Product details saved successfully.'
         );
+        // Reload product from backend to refresh all fields (including materialGroups)
+        this.loadProduct(this.productId());
       },
       error: (err) => {
         console.error('Failed to update product', err);

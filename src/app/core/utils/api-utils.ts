@@ -271,10 +271,85 @@ export function normalizeProduct(prod: any): any {
     ? true
     : (prod.isActive === true || prod.isActive === 1 || prod.isActive === 'true');
 
+  const basePrice = prod.basePrice ?? prod.price ?? 0;
+  const name = prod.name || prod.nameEn || prod.nameAr || '';
+  const description = prod.description || prod.descriptionEn || prod.descriptionAr || '';
+
+  let materials = prod.materials;
+  if (prod.materialGroups && Array.isArray(prod.materialGroups)) {
+    materials = prod.materialGroups.map((group: any) => ({
+      materialId: group.id,
+      name: group.nameEn || group.nameAr || '',
+      nameAr: group.nameAr || '',
+      nameEn: group.nameEn || '',
+      options: (group.options || []).map((opt: any) => ({
+        id: opt.id,
+        name: opt.valueEn || opt.valueAr || '',
+        valueAr: opt.valueAr || '',
+        valueEn: opt.valueEn || '',
+        priceDelta: Number(opt.priceOption !== undefined ? opt.priceOption : (opt.priceDelta || 0))
+      }))
+    }));
+  } else if (prod.attributes && Array.isArray(prod.attributes)) {
+    materials = prod.attributes.map((attr: any) => ({
+      materialId: attr.id,
+      name: attr.nameEn || attr.nameAr || '',
+      nameAr: attr.nameAr || '',
+      nameEn: attr.nameEn || '',
+      options: (attr.values || []).map((val: any) => ({
+        id: val.id,
+        name: val.valueEn || val.valueAr || '',
+        valueAr: val.valueAr || '',
+        valueEn: val.valueEn || '',
+        priceDelta: Number(val.priceDelta || 0)
+      }))
+    }));
+  }
+
+  let vendorMaterialOptionIds = prod.vendorMaterialOptionIds;
+  if (!vendorMaterialOptionIds) {
+    vendorMaterialOptionIds = [];
+    if (prod.materialOptions && Array.isArray(prod.materialOptions)) {
+      vendorMaterialOptionIds = prod.materialOptions.map((mo: any) => mo.vendorMaterialOptionId);
+    } else if (prod.materialGroups && Array.isArray(prod.materialGroups)) {
+      for (const group of prod.materialGroups) {
+        if (group.options) {
+          for (const opt of group.options) {
+            vendorMaterialOptionIds.push(opt.id);
+          }
+        }
+      }
+    } else if (prod.attributes && Array.isArray(prod.attributes)) {
+      for (const attr of prod.attributes) {
+        if (attr.values) {
+          for (const val of attr.values) {
+            vendorMaterialOptionIds.push(val.id);
+          }
+        }
+      }
+    } else if (materials && Array.isArray(materials)) {
+      for (const mat of materials) {
+        if (mat.options) {
+          for (const opt of mat.options) {
+            vendorMaterialOptionIds.push(opt.id);
+          }
+        }
+      }
+    }
+  }
+
   return {
     ...prod,
+    price: basePrice,
+    basePrice: basePrice,
+    nameEn: prod.nameEn || name,
+    nameAr: prod.nameAr || name,
+    descriptionEn: prod.descriptionEn || description,
+    descriptionAr: prod.descriptionAr || description,
     mainImageUrl: resolvedUrl,
     images,
-    isActive
+    isActive,
+    materials,
+    vendorMaterialOptionIds
   };
 }

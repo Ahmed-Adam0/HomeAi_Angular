@@ -21,6 +21,8 @@ export const API_URLS = {
     LIST: 'Products',
     DETAILS: (id: string | number) => `Products/${id}`,
     CATEGORIES: 'Categories',
+    SUBCATEGORIES: (categoryId: string | number) => `SubCategories/category/${categoryId}`,
+    PRODUCT_TYPES: (subCategoryId: string | number) => `ProductTypes/subcategory/${subCategoryId}`,
     SEARCH: 'Products',
     FEATURED: 'Products',
   },
@@ -28,7 +30,7 @@ export const API_URLS = {
     GET: 'Cart',
     CLEAR: 'Cart',
     ADD_ITEM: 'Cart/items',
-    UPDATE_ITEM: 'Cart/items',
+    UPDATE_ITEM: (id: string | number) => `Cart/items/${id}`,
     REMOVE_ITEM: (id: string | number) => `Cart/items/${id}`,
   },
   ORDERS: {
@@ -74,6 +76,11 @@ export const API_URLS = {
     NOTIFICATION_READ: (id: number) => `internal-notifications/${id}/read`,
     NOTIFICATIONS_READ_ALL: 'internal-notifications/read-all',
     NOTIFICATIONS_UNREAD_COUNT: 'internal-notifications/unread-count',
+    MATERIALS: 'VendorMaterials',
+    CREATE_GROUP: 'VendorMaterials/Groups',
+    DELETE_GROUP: (groupId: string | number) => `VendorMaterials/Groups/${groupId}`,
+    ADD_OPTION: (groupId: string | number) => `VendorMaterials/Groups/${groupId}/Options`,
+    DELETE_OPTION: (optionId: string | number) => `VendorMaterials/Options/${optionId}`,
   },
 } as const;
 

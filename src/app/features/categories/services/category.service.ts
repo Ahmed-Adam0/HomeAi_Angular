@@ -27,4 +27,22 @@ export class CategoryService {
       })
     );
   }
+
+  getSubcategories(categoryId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}${API_URLS.PRODUCTS.SUBCATEGORIES(categoryId)}`).pipe(
+      catchError((error) => {
+        console.error(`Subcategories API request failed for category ${categoryId}:`, error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  getProductTypes(subCategoryId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}${API_URLS.PRODUCTS.PRODUCT_TYPES(subCategoryId)}`).pipe(
+      catchError((error) => {
+        console.error(`ProductTypes API request failed for subcategory ${subCategoryId}:`, error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

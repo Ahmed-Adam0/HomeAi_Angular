@@ -42,6 +42,8 @@ export const APP_ROUTES = {
   VENDOR_SETTINGS: 'settings',
   VENDOR_DASHBOARD: 'dashboard',
   VENDOR_REVIEWS: 'reviews',
+  VENDOR_PRODUCTS: 'products',
+  VENDOR_MATERIALS: 'materials',
 
   AI_CHAT: 'ai-chat',
 
@@ -89,6 +91,8 @@ export const NAV_ROUTES = {
   VENDOR_NOTIFICATIONS: '/vendor/notifications',
   VENDOR_DASHBOARD: '/vendor/dashboard',
   VENDOR_REVIEWS: '/vendor/reviews',
+  VENDOR_PRODUCTS: '/vendor/products',
+  VENDOR_MATERIALS: '/vendor/materials',
 
   AI_CHAT: '/ai-chat',
 

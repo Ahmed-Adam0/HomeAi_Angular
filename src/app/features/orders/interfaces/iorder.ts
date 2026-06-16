@@ -45,6 +45,21 @@ export interface IBackendOrderItem {
   quantity: number;
   unitPrice: number;
   productImage?: string;
+  /** Snapshot options stored at order time (legacy format) */
+  snapshotBasePrice?: number;
+  snapshotOptions?: {
+    name: string;
+    priceDelta: number;
+  }[];
+  finalUnitPrice?: number;
+  totalItemPrice?: number;
+  /** Immutable attribute snapshot returned by order API */
+  attributes?: {
+    nameAr: string;
+    nameEn: string;
+    valueAr: string;
+    valueEn: string;
+  }[];
 }
 
 export interface IOrderStatusHistory {
