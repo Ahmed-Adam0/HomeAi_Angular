@@ -1,6 +1,8 @@
 import { Component, ElementRef, inject, PLATFORM_ID, Renderer2, AfterViewInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HeroSectionComponent } from '../../components/hero-section/hero-section.component';
+import { InteriorCategoriesShowcaseComponent } from '../../components/interior-categories-showcase/interior-categories-showcase.component';
+import { LatestCollectionsComponent } from '../../components/latest-collections/latest-collections.component';
 import { CategoryStripComponent } from '../../components/category-strip/category-strip.component';
 import { FeaturedProductsComponent } from '../../../products/components/featured-products/featured-products.component';
 import { AiHowItWorksComponent } from '../../components/ai-how-it-works/ai-how-it-works.component';
@@ -11,6 +13,8 @@ import { TestimonialsStatsComponent } from '../../components/testimonials-stats/
   standalone: true,
   imports: [
     HeroSectionComponent,
+    InteriorCategoriesShowcaseComponent,
+    LatestCollectionsComponent,
     CategoryStripComponent,
     AiHowItWorksComponent,
     FeaturedProductsComponent,
@@ -30,7 +34,7 @@ export class Home implements AfterViewInit {
       // preventing a race condition where elements are observed at (0, 0) height and trigger instantly.
       setTimeout(() => {
         const sections = this.el.nativeElement.querySelectorAll(
-          'app-category-strip, app-ai-how-it-works, app-featured-products, app-testimonials-stats'
+          'app-interior-categories-showcase, app-latest-collections, app-category-strip, app-ai-how-it-works, app-featured-products, app-testimonials-stats'
         );
 
         const observerOptions = {

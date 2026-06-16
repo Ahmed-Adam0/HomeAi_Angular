@@ -775,6 +775,14 @@
   "PAYMENT_FAILED.TITLE": "Payment Failed",
   "PAYMENT_FAILED.HERO_TITLE": "Payment Failed ✦",
   "PAYMENT_FAILED.CTA_BACK_TO_CART": "Go to Cart",
+  "LATEST_COLLECTIONS_TITLE": "Our latest collections",
+  "SHOW_ALL_PRODUCTS": "Show all products",
+  "QUICK_VIEW": "Quick view",
+  "LOAD_ERROR_TITLE": "Failed to load collections",
+  "LOAD_ERROR_MSG": "Please check your network connection and try again.",
+  "RETRY": "Retry",
+  "NO_PRODUCTS_FOUND": "No collections available",
+  "NO_PRODUCTS_DESC": "We're updating our collection catalogue. Check back soon!",
   "HOME": {
     "HERO": {
       "OUR_OFFER": "Our offer",
@@ -793,6 +801,14 @@
         "DESCRIPTION": "Experience the art of fine dining and sleeping in spaces designed to bring harmony and warmth to your daily routines.",
         "BUTTON": "Shop the Look"
       }
+    },
+    "SHOWCASE": {
+      "TITLE": "Interior Categories Showcase",
+      "SUBTITLE": "Premium Curation",
+      "BEIGE_TITLE": "Beige Interior",
+      "BEIGE_BTN": "More",
+      "KITCHEN_TITLE": "Kitchen Furniture",
+      "KITCHEN_BTN": "More"
     }
   }
 }

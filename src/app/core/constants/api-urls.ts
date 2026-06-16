@@ -45,7 +45,7 @@ export const API_URLS = {
   },
   AI: {
     RECOMMEND: 'ai/recommend',
-    CHAT: 'ai/chat',
+    CHAT: 'chat',
     VISUAL_SEARCH: 'ai/visual-search',
   },
   PROFILE: {

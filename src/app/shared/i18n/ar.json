@@ -775,6 +775,14 @@
   "PAYMENT_FAILED.TITLE": "فشل الدفع",
   "PAYMENT_FAILED.HERO_TITLE": "فشلت عملية الدفع ✦",
   "PAYMENT_FAILED.CTA_BACK_TO_CART": "الذهاب إلى عربة التسوق",
+  "LATEST_COLLECTIONS_TITLE": "أحدث مجموعاتنا",
+  "SHOW_ALL_PRODUCTS": "عرض جميع المنتجات",
+  "QUICK_VIEW": "عرض سريع",
+  "LOAD_ERROR_TITLE": "فشل تحميل المجموعات",
+  "LOAD_ERROR_MSG": "يرجى التحقق من اتصال الشبكة والمحاولة مرة أخرى.",
+  "RETRY": "إعادة المحاولة",
+  "NO_PRODUCTS_FOUND": "لا توجد مجموعات متاحة",
+  "NO_PRODUCTS_DESC": "نحن نعمل على تحديث كتالوج المجموعات. تحقق مجددًا قريبًا!",
   "HOME": {
     "HERO": {
       "OUR_OFFER": "عروضنا",
@@ -793,6 +801,14 @@
         "DESCRIPTION": "اختبر فن تناول الطعام والنوم في مساحات مصممة لتحقيق الانسجام والدفء في روتينك اليومي.",
         "BUTTON": "تسوق المظهر"
       }
+    },
+    "SHOWCASE": {
+      "TITLE": "معرض فئات التصميم الداخلي",
+      "SUBTITLE": "تشكيلات راقية المنسقة",
+      "BEIGE_TITLE": "التصميم الداخلي البيج",
+      "BEIGE_BTN": "المزيد",
+      "KITCHEN_TITLE": "أثاث المطبخ",
+      "KITCHEN_BTN": "المزيد"
     }
   }
 }

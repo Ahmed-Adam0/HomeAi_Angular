@@ -1,0 +1,171 @@
+.interior-showcase {
+  background-color: var(--fm-color-neutral-950, #12100e);
+  border-bottom: 1px solid rgba(184, 147, 92, 0.08);
+  padding: 5.5rem 0;
+  position: relative;
+}
+
+/* Typography & Colors */
+.text-gold {
+  color: var(--fm-color-primary-500, #b8935c) !important;
+  font-family: var(--fm-font-sans), sans-serif;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+}
+
+.font-serif {
+  font-family: 'Outfit', 'Playfair Display', var(--fm-font-display), serif !important;
+  font-weight: 700;
+}
+
+.main-title {
+  font-size: 2.5rem !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.25 !important;
+}
+
+/* Premium divider line */
+.premium-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(184, 147, 92, 0) 0%, rgba(184, 147, 92, 0.3) 50%, rgba(184, 147, 92, 0) 100%);
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+/* Showcase Cards Grid */
+.showcase-card {
+  height: 520px;
+  border-radius: var(--fm-radius-2xl, 32px);
+  position: relative;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transition: transform 0.6s var(--fm-ease-smooth), box-shadow 0.6s var(--fm-ease-smooth);
+  will-change: transform, box-shadow;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Card Background Image with zoom transition */
+.showcase-card-bg {
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+  z-index: 1;
+}
+
+/* Gradient dark overlay */
+.showcase-card-overlay {
+  background: linear-gradient(to top, rgba(18, 16, 14, 0.85) 0%, rgba(18, 16, 14, 0.4) 50%, rgba(18, 16, 14, 0.1) 100%);
+  transition: background-color 0.5s ease, opacity 0.5s ease;
+  z-index: 2;
+}
+
+/* Content Area */
+.showcase-card-content {
+  z-index: 3;
+  text-align: start;
+}
+
+/* Typography inside card */
+.showcase-card-title {
+  font-family: 'Outfit', 'Playfair Display', var(--fm-font-display), serif;
+  font-weight: 600;
+  font-size: 2.25rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Button "More" */
+.showcase-card-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--fm-radius-pill, 9999px);
+  font-family: var(--fm-font-sans), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-arrow {
+  display: inline-block;
+  transition: transform 0.3s var(--fm-ease-smooth);
+}
+
+/* Hover Animations */
+.showcase-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45);
+}
+
+.showcase-card:hover .showcase-card-bg {
+  transform: scale(1.06);
+}
+
+.showcase-card:hover .showcase-card-overlay {
+  background: linear-gradient(to top, rgba(18, 16, 14, 0.95) 0%, rgba(18, 16, 14, 0.55) 60%, rgba(18, 16, 14, 0.2) 100%);
+}
+
+.showcase-card:hover .showcase-card-btn {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--fm-color-neutral-950, #12100e);
+}
+
+.showcase-card:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+/* RTL Specific Styles */
+[dir="rtl"] .showcase-card-title {
+  font-family: 'Cairo', sans-serif !important;
+  font-weight: 700;
+}
+
+[dir="rtl"] .showcase-card-btn {
+  font-family: 'Cairo', sans-serif !important;
+}
+
+[dir="rtl"] .showcase-card:hover .btn-arrow {
+  transform: translateX(-4px);
+}
+
+[dir="rtl"] .header-left {
+  text-align: right !important;
+}
+
+/* Responsive Overrides */
+@media (max-width: 991px) {
+  .showcase-card {
+    height: 420px;
+  }
+  .showcase-card-title {
+    font-size: 1.85rem;
+  }
+  .main-title {
+    font-size: 2rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .interior-showcase {
+    padding: 3.5rem 0;
+  }
+  .showcase-card {
+    height: 350px;
+    border-radius: var(--fm-radius-xl, 24px);
+  }
+  .showcase-card-title {
+    font-size: 1.6rem;
+  }
+  .main-title {
+    font-size: 1.75rem !important;
+  }
+  .header-row {
+    margin-bottom: 2.5rem !important;
+  }
+}
