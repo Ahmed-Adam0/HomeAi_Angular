@@ -1,0 +1,475 @@
+/* ==========================================================================
+   FURNIMIND AI - COZYCORNER MODERN HERO SECTION STYLES
+   ========================================================================== */
+
+:host {
+  display: block;
+  width: 100%;
+  position: relative;
+}
+
+.hero-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 650px;
+  background-color: var(--fm-color-neutral-950, #12100e);
+  overflow: visible; /* Crucial: allows categories to overlap bottom boundary */
+}
+
+/* ==========================================================================
+   BACKGROUND CANVAS SLIDER & CENTER-OUTWARD MASK REVEAL
+   ========================================================================== */
+
+.hero-slides-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.4s ease; /* Fallback fade if needed */
+}
+
+/* Active slide base state */
+.hero-slide.active {
+  opacity: 1;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+/* Previous slide remains fully visible behind the active clip-path animation */
+.hero-slide.previous {
+  opacity: 1;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Image styling */
+.slide-media-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  will-change: transform;
+}
+
+/* Dark cozy overlay behind typography */
+.hero-dark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 16, 14, 0.25) 0%,
+    rgba(18, 16, 14, 0.5) 60%,
+    rgba(18, 16, 14, 0.75) 100%
+  );
+  z-index: 1;
+}
+
+/* ==========================================================================
+   TRANSITION SLICES & OVERLAY
+   ========================================================================== */
+
+.transition-slices-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 5; /* Sits between active slide content and slide media wrapper */
+  pointer-events: none;
+}
+
+.slice-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform, opacity, clip-path;
+  transform-origin: center center;
+}
+
+.slice-image-el {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.transition-dark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(12, 10, 9, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 2; /* On top of slices */
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   HERO CONTENT (TYPOGRAPHY OVER IMAGE)
+   ========================================================================== */
+
+.hero-content-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-inline-start: 10%;
+  padding-inline-end: 10%;
+  z-index: 10; /* Render on top of transition overlay and blur */
+}
+
+.hero-content {
+  max-width: 850px;
+  text-align: start;
+}
+
+.hero-subtitle {
+  display: inline-block;
+  font-family: var(--fm-font-sans), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--fm-color-primary-400, #c5a880);
+  text-transform: uppercase;
+  letter-spacing: 0.3em; /* Architectural spacing */
+  margin-bottom: 1.25rem;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.hero-title {
+  font-family: var(--fm-font-display), serif;
+  font-size: clamp(2.8rem, 8vw, 6.8rem); /* Oversized modern */
+  font-weight: 200; /* Thin luxury modern */
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0 0 2rem 0;
+}
+
+/* Masked typography layout */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.12em; /* Prevents descender clipping */
+  margin-bottom: -0.12em;
+}
+
+.word-content {
+  display: inline-block;
+  transform: translateY(105%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.word-spacer {
+  display: inline-block;
+}
+
+.hero-description {
+  font-family: var(--fm-font-sans), sans-serif;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 580px;
+  margin: 0 0 3rem 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Premium Border Button */
+.hero-cta-wrapper {
+  display: inline-block;
+}
+
+.hero-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.1rem 3rem;
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  font-family: var(--fm-font-sans), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 0; /* Premium sharp architectural look */
+  opacity: 0;
+  will-change: transform, opacity, background-color, border-color;
+  transition: background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              gap 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hero-cta-btn:hover {
+  background-color: #ffffff;
+  color: #12100e;
+  border-color: #ffffff;
+  gap: 1.25rem;
+}
+
+.hero-cta-btn i {
+  font-size: 0.85rem;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ==========================================================================
+   VERTICAL INDICATOR DOTS (ON THE SIDE)
+   ========================================================================== */
+
+.hero-indicators-bar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 3.5rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.hero-indicators-bar.rtl-layout {
+  right: auto;
+  left: 3.5rem;
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.indicator-dot:hover {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+.indicator-dot.active {
+  background-color: #ffffff;
+  transform: scale(1.35);
+}
+
+/* ==========================================================================
+   FLOATING PILL CATEGORIES OVERLAPPING THE BOTTOM BOUNDARY
+   ========================================================================== */
+
+.hero-floating-categories {
+  position: absolute;
+  bottom: -2rem; /* Overlaps bottom border by exactly half the card height */
+  left: 0;
+  right: 0;
+  z-index: 15;
+  padding-inline-start: 10%;
+  padding-inline-end: 10%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.categories-header {
+  display: flex;
+  align-items: center;
+}
+
+.categories-title {
+  font-family: var(--fm-font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  text-transform: capitalize;
+  opacity: 0.95;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Horizontal scrolling deck of category pills */
+.categories-scroll-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem 0.25rem;
+}
+
+.categories-scroll-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, Edge */
+}
+
+.category-pill-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #ffffff;
+  border-radius: var(--fm-radius-pill, 9999px);
+  padding: 0.45rem 1.4rem 0.45rem 0.45rem; /* Image on left has smaller padding on left side */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(29, 27, 24, 0.03);
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: pillFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.8s;
+}
+
+/* RTL spacing flip: circular image is on the right side of the card, text on the left */
+.hero-container[dir="rtl"] .category-pill-card {
+  padding: 0.45rem 0.45rem 0.45rem 1.4rem;
+  flex-direction: row-reverse;
+}
+
+@keyframes pillFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.category-pill-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(184, 147, 92, 0.18);
+  border-color: rgba(184, 147, 92, 0.15);
+}
+
+.pill-image-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pill-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--fm-ease-smooth);
+}
+
+.category-pill-card:hover .pill-img {
+  transform: scale(1.12);
+}
+
+.pill-title {
+  font-family: var(--fm-font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--fm-color-neutral-800, #38332c);
+  white-space: nowrap;
+}
+
+.category-pill-card:hover .pill-title {
+  color: var(--fm-color-primary-600, #a37e4c);
+}
+
+/* ==========================================================================
+   RESPONSIVENESS & MEDIA QUERIES
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+  .hero-content-wrapper,
+  .hero-floating-categories {
+    padding-inline-start: 6%;
+    padding-inline-end: 6%;
+  }
+  .hero-indicators-bar {
+    right: 2rem;
+  }
+  .hero-indicators-bar.rtl-layout {
+    left: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-container {
+    height: 100vh;
+    min-height: 550px;
+  }
+  
+  .hero-content-wrapper,
+  .hero-floating-categories {
+    padding-inline-start: 1.5rem;
+    padding-inline-end: 1.5rem;
+  }
+  
+  .hero-indicators-bar {
+    display: none; /* Hide side dots on small screens for layout space */
+  }
+  
+  .hero-title {
+    line-height: 1.15;
+  }
+
+  .hero-floating-categories {
+    bottom: -2rem; /* Retain overlap position */
+  }
+
+  .category-pill-card {
+    padding: 0.4rem 1.1rem 0.4rem 0.4rem;
+  }
+
+  .hero-container[dir="rtl"] .category-pill-card {
+    padding: 0.4rem 0.4rem 0.4rem 1.1rem;
+  }
+
+  .pill-image-box {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2.25rem;
+  }
+}

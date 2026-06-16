@@ -1,6 +1,6 @@
 import { Component, ElementRef, inject, PLATFORM_ID, Renderer2, AfterViewInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HeroComponent } from '../../components/hero/hero.component';
+import { HeroSectionComponent } from '../../components/hero-section/hero-section.component';
 import { CategoryStripComponent } from '../../components/category-strip/category-strip.component';
 import { FeaturedProductsComponent } from '../../../products/components/featured-products/featured-products.component';
 import { AiHowItWorksComponent } from '../../components/ai-how-it-works/ai-how-it-works.component';
@@ -10,7 +10,7 @@ import { TestimonialsStatsComponent } from '../../components/testimonials-stats/
   selector: 'app-home',
   standalone: true,
   imports: [
-    HeroComponent,
+    HeroSectionComponent,
     CategoryStripComponent,
     AiHowItWorksComponent,
     FeaturedProductsComponent,

@@ -1,0 +1,91 @@
+<section class="hero-container" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'" (mousemove)="onMouseMove($event)">
+  <!-- Background Canvas Slider -->
+  <div class="hero-slides-track">
+    @for (slide of slides; track trackBySlideId($index, slide)) {
+      <div class="hero-slide"
+           [class.active]="$index === currentSlideIndex()"
+           [class.previous]="$index === previousSlideIndex() && isTransitioning()"
+           [class.transitioning]="$index === currentSlideIndex() && isTransitioning()">
+        
+        <!-- Image Canvas -->
+        <div class="slide-media-wrapper">
+          <img [src]="slide.image" [alt]="translate(slide.titleKey)" class="slide-image" />
+          <div class="hero-dark-overlay"></div>
+        </div>
+
+        <!-- Typography overlay (Left-aligned, minimal, luxury-styled) -->
+        <div class="hero-content-wrapper">
+          <div class="hero-content">
+            <span class="hero-subtitle">✦ CozyCorner Collection</span>
+            
+            <h1 class="hero-title">
+              @for (word of getWords(translate(slide.titleKey)); track $index) {
+                <span class="word-mask">
+                  <span class="word-content">{{ word }}</span>
+                </span>
+                @if (!$last) {
+                  <span class="word-spacer">&nbsp;</span>
+                }
+              }
+            </h1>
+
+            @if (slide.descriptionKey) {
+              <p class="hero-description">{{ translate(slide.descriptionKey) }}</p>
+            }
+
+            @if (slide.buttonKey) {
+              <div class="hero-cta-wrapper">
+                <a class="hero-cta-btn" [routerLink]="['/products']">
+                  <span>{{ translate(slide.buttonKey) }}</span>
+                  <i class="pi" [ngClass]="translationService.currentLang() === 'ar' ? 'pi-arrow-left' : 'pi-arrow-right'"></i>
+                </a>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Dynamic Slice Overlay (Active during transitions) -->
+  @if (isTransitioning()) {
+    <div class="transition-slices-container">
+      @for (slice of slices; track slice.index) {
+        <div class="slice-panel" 
+             [style.clip-path]="slice.startClip" 
+             [attr.data-slice-index]="slice.index">
+          <img [src]="slides[previousSlideIndex()].image" class="slice-image-el" />
+        </div>
+      }
+      <div class="transition-dark-overlay"></div>
+    </div>
+  }
+
+  <!-- Vertical Slider Indicators (Right side in LTR, Left in RTL) -->
+  <div class="hero-indicators-bar" [class.rtl-layout]="translationService.currentLang() === 'ar'">
+    @for (slide of slides; track trackBySlideId($index, slide)) {
+      <button class="indicator-dot"
+              [class.active]="$index === currentSlideIndex()"
+              (click)="selectSlide($index)"
+              [attr.aria-label]="'Go to slide ' + ($index + 1)">
+      </button>
+    }
+  </div>
+
+  <!-- Floating Categories (Bottom edge overlapping boundary) -->
+  <div class="hero-floating-categories">
+    <div class="categories-header">
+      <span class="categories-title">{{ translate('HOME.HERO.OUR_OFFER') }}</span>
+    </div>
+    <div class="categories-scroll-container">
+      @for (cat of categories(); track trackByCategoryId($index, cat)) {
+        <div class="category-pill-card" [routerLink]="['/products']" [queryParams]="{ categoryId: cat.id }">
+          <div class="pill-image-box">
+            <img [src]="cat.imageUrl" [alt]="translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn" class="pill-img" />
+          </div>
+          <span class="pill-title">{{ translationService.currentLang() === 'ar' ? cat.nameAr : cat.nameEn }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>

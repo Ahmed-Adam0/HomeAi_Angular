@@ -774,8 +774,26 @@
   "PAYMENT_SUCCESS.REDIRECTING": "Validating payment details...",
   "PAYMENT_FAILED.TITLE": "Payment Failed",
   "PAYMENT_FAILED.HERO_TITLE": "Payment Failed ✦",
-  "PAYMENT_FAILED.HERO_SUPPORTING_COPY": "We were unable to process your transaction. Please verify your payment details and try again, or select a different payment method.",
-  "PAYMENT_FAILED.CTA_RETRY": "Try Again",
-  "PAYMENT_FAILED.CTA_BACK_TO_CART": "Go to Cart"
+  "PAYMENT_FAILED.CTA_BACK_TO_CART": "Go to Cart",
+  "HOME": {
+    "HERO": {
+      "OUR_OFFER": "Our offer",
+      "SLIDE_1": {
+        "TITLE": "Bring Comfort Home",
+        "DESCRIPTION": "Discover our curated selection of luxury living room furniture designed to combine comfort with timeless aesthetics.",
+        "BUTTON": "Explore Collection"
+      },
+      "SLIDE_2": {
+        "TITLE": "Designed For Modern Living",
+        "DESCRIPTION": "Transform your home with functional pieces crafted from premium materials that stand the test of time.",
+        "BUTTON": "Discover More"
+      },
+      "SLIDE_3": {
+        "TITLE": "Elegant spaces curated for you",
+        "DESCRIPTION": "Experience the art of fine dining and sleeping in spaces designed to bring harmony and warmth to your daily routines.",
+        "BUTTON": "Shop the Look"
+      }
+    }
+  }
 }
 

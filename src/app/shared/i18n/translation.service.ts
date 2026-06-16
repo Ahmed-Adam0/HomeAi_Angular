@@ -45,15 +45,31 @@ export class TranslationService {
       
       try {
         const data = await firstValueFrom(
-          this.http.get<Record<string, string>>(`/assets/i18n/${lang}.json`)
+          this.http.get<any>(`/assets/i18n/${lang}.json`)
         );
-        this.translations.set(data);
+        this.translations.set(this.flattenTranslations(data));
       } catch (error) {
         console.error(`Failed to load translations for: ${lang}`, error);
       }
     } else {
       this.translations.set({});
     }
+  }
+
+  private flattenTranslations(obj: any, prefix = ''): Record<string, string> {
+    const result: Record<string, string> = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        const newKey = prefix ? `${prefix}.${key}` : key;
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+          Object.assign(result, this.flattenTranslations(value, newKey));
+        } else {
+          result[newKey] = String(value);
+        }
+      }
+    }
+    return result;
   }
 
   async syncFromBackend(): Promise<void> {
