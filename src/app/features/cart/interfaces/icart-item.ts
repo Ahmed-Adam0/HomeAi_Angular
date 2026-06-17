@@ -22,6 +22,8 @@ export interface ICartItem {
     name: string;
     nameAr?: string;
     nameEn?: string;
+    valueAr?: string;
+    valueEn?: string;
     priceDelta: number;
   }[];
   vendorNameEn?: string;

@@ -34,7 +34,7 @@ export class CartApiService {
    * API: PUT /api/Cart/items — body: { cartItemId, quantity }
    */
   updateItem(cartItemId: number, quantity: number): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}${API_URLS.CART.UPDATE_ITEM(cartItemId)}`, {
+    return this.http.put<any>(`${this.apiUrl}${API_URLS.CART.UPDATE_ITEM}`, {
       cartItemId,
       quantity,
     });
