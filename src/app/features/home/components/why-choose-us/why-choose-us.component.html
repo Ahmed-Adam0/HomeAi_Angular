@@ -1,0 +1,27 @@
+<section class="why-choose-section" id="why-choose-us-section">
+  <div class="why-choose-container">
+    <h2 class="why-choose-title">{{ 'WHY_CHOOSE_US.TITLE' | translate }}</h2>
+    
+    <div class="why-choose-grid">
+      <div *ngFor="let card of features" class="why-choose-card">
+        <div class="why-choose-card-number-wrapper">
+          <span class="why-choose-card-number">{{ card.numberStr }}</span>
+          <div class="why-choose-card-line"></div>
+        </div>
+        
+        <div class="why-choose-image-container">
+          <img 
+            [src]="card.image" 
+            [alt]="card.titleKey | translate" 
+            class="why-choose-img"
+            (error)="handleImageError($event)"
+            loading="lazy"
+          >
+        </div>
+        
+        <h3 class="why-choose-card-title">{{ card.titleKey | translate }}</h3>
+        <p class="why-choose-card-description">{{ card.descKey | translate }}</p>
+      </div>
+    </div>
+  </div>
+</section>

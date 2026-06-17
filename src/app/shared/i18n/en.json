@@ -96,6 +96,9 @@
   "NAV_BLOG": "Blog",
   "NAV_CONTACT_US": "Contact",
   "NAV_ROOMS": "AI Accent",
+  "EXPLORE_IN_3D_TITLE": "Interactive AI Room Showcase",
+  "EXPLORE_IN_3D_SUBTITLE": "Virtual Showroom",
+  "EXPLORE_IN_3D_DESC": "Click furniture hotspots inside the AI-designed room to explore and inspect them in 3D before buying.",
   "NAV_INSPIRATIONS": "Inspirations",
   "NAV_OFFERS": "Offers & promotions",
   "NAV_SEARCH_PLACEHOLDER": "Search for products",
@@ -786,6 +789,14 @@
   "SUCCESSFULLY_ADDED": "Successfully added to cart",
   "CHECKOUT": "Checkout",
   "VIEW_CART": "View Cart",
+  "SUBTOTAL": "Subtotal",
+  "FREE_SHIPPING_MSG": "Free shipping on orders over EGP 500",
+  "YOUR_CART_IS_EMPTY": "Your cart is empty",
+  "MINI_CART": "Mini Cart",
+  "START_SHOPPING": "Start Shopping",
+  "QTY": "Qty",
+  "ITEM": "item",
+  "ITEMS": "items",
   "HOME": {
     "HERO": {
       "OUR_OFFER": "Our offer",
@@ -813,6 +824,15 @@
       "KITCHEN_TITLE": "Kitchen Furniture",
       "KITCHEN_BTN": "More"
     }
+  },
+  "WHY_CHOOSE_US": {
+    "TITLE": "Why CozyCorner?",
+    "CRAFTSMANSHIP_TITLE": "Premium Craftsmanship",
+    "CRAFTSMANSHIP_DESC": "We use advanced woodworking techniques and carefully selected materials.",
+    "MATERIALS_TITLE": "High Quality Materials",
+    "MATERIALS_DESC": "We select durable materials to create unique furniture pieces.",
+    "DETAILS_TITLE": "Attention To Details",
+    "DETAILS_DESC": "Every detail is carefully finished to deliver a premium experience."
   }
 }
 

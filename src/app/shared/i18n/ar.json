@@ -96,6 +96,9 @@
   "NAV_BLOG": "المدونة",
   "NAV_CONTACT_US": "اتصل بنا",
   "NAV_ROOMS": "لمسة الذكاء",
+  "EXPLORE_IN_3D_TITLE": "عرض الغرفة التفاعلي بالذكاء الاصطناعي",
+  "EXPLORE_IN_3D_SUBTITLE": "صالون افتراضي فاخر",
+  "EXPLORE_IN_3D_DESC": "اضغط على نقاط الأثاث الساخنة داخل الغرفة لاستكشاف النماذج ثلاثية الأبعاد والتفاعل معها قبل الشراء.",
   "NAV_INSPIRATIONS": "الأفكار الملهمة",
   "NAV_OFFERS": "العروض والتنزيلات",
   "NAV_SEARCH_PLACEHOLDER": "ابحث عن المنتجات...",
@@ -786,6 +789,14 @@
   "SUCCESSFULLY_ADDED": "تمت الإضافة إلى السلة بنجاح",
   "CHECKOUT": "الدفع",
   "VIEW_CART": "عرض السلة",
+  "SUBTOTAL": "المجموع الفرعي",
+  "FREE_SHIPPING_MSG": "الشحن مجاني للطلبات فوق 500 ج.م",
+  "YOUR_CART_IS_EMPTY": "سلة التسوق فارغة",
+  "MINI_CART": "عربة التسوق",
+  "START_SHOPPING": "ابدأ التسوق",
+  "QTY": "الكمية",
+  "ITEM": "منتج",
+  "ITEMS": "منتجات",
   "HOME": {
     "HERO": {
       "OUR_OFFER": "عروضنا",
@@ -813,6 +824,15 @@
       "KITCHEN_TITLE": "أثاث المطبخ",
       "KITCHEN_BTN": "المزيد"
     }
+  },
+  "WHY_CHOOSE_US": {
+    "TITLE": "لماذا CozyCorner؟",
+    "CRAFTSMANSHIP_TITLE": "حرفية متميزة",
+    "CRAFTSMANSHIP_DESC": "نحن نستخدم تقنيات نجارة متقدمة ومواد مختارة بعناية.",
+    "MATERIALS_TITLE": "مواد عالية الجودة",
+    "MATERIALS_DESC": "نحن نختار مواد متينة لابتكار قطع أثاث فريدة من نوعها.",
+    "DETAILS_TITLE": "الاهتمام بالتفاصيل",
+    "DETAILS_DESC": "كل تفصيل يتم تشطيبه بعناية لتقديم تجربة راقية."
   }
 }
 

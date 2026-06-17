@@ -5,11 +5,16 @@
     <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
       <!-- Social Links -->
       <div class="social-links d-flex gap-3">
-        <a href="https://facebook.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-        <a href="https://instagram.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-        <a href="https://twitter.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
-        <a href="https://linkedin.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-        <a href="https://youtube.com" target="_blank" class="text-white opacity-75 hover-opacity-100" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+        <a href="https://facebook.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+          aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://instagram.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+          aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://twitter.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+          aria-label="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
+        <a href="https://linkedin.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+          aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        <a href="https://youtube.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+          aria-label="YouTube"><i class="bi bi-youtube"></i></a>
       </div>
 
       <!-- Contact Info -->
@@ -19,31 +24,39 @@
 
       <!-- Utility Links & Dropdowns -->
       <div class="utility-links d-flex align-items-center gap-3">
-        <a routerLink="/about" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{ 'NAV_ABOUT_US' | translate }}</a>
+        <a routerLink="/about" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{
+          'NAV_ABOUT_US' | translate }}</a>
         <span class="bar-separator">•</span>
-        <a routerLink="/contact" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{ 'NAV_CONTACT_US' | translate }}</a>
+        <a routerLink="/contact" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{
+          'NAV_CONTACT_US' | translate }}</a>
         <span class="bar-separator">•</span>
 
         <!-- Language Dropdown -->
-        <div class="dropdown-wrapper position-relative">
-          <button class="dropdown-trigger text-white bg-transparent border-0 opacity-75 hover-opacity-100 fs-7 p-0 d-flex align-items-center gap-1"
-                  (click)="toggleLanguageDropdown($event)">
+        <div class="dropdown-wrapper"
+             (mouseenter)="openLanguageDropdown()"
+             (mouseleave)="closeLanguageDropdownWithDelay()">
+          <button
+            class="dropdown-trigger text-white bg-transparent border-0 opacity-75 hover-opacity-100 fs-7 p-0 d-flex align-items-center gap-1"
+            (click)="toggleLanguageDropdown($event)">
             <span>{{ selectedLanguage().label }}</span>
             <i class="bi bi-chevron-down fs-8"></i>
           </button>
-          @if (isLanguageDropdownOpen()) {
-            <ul class="dropdown-menu-custom position-absolute mt-2 py-1 shadow bg-white rounded list-unstyled z-3">
+          <div class="dropdown-panel dropdown-panel--language" [class.open]="isLanguageDropdownOpen()"
+               (mouseenter)="cancelLanguageDropdownClose()"
+               (mouseleave)="closeLanguageDropdownWithDelay()">
+            <ul class="dropdown-menu-custom py-1 shadow bg-white rounded list-unstyled m-0">
               @for (lang of languages(); track lang.code) {
-                <li>
-                  <button class="dropdown-item-custom w-100 text-start px-3 py-1-5 border-0 bg-transparent fs-7 d-flex align-items-center gap-2"
-                          (click)="selectLanguage(lang)">
-                     <span>{{ lang.flag }}</span>
-                     <span>{{ lang.label }}</span>
-                  </button>
-                </li>
+              <li>
+                <button
+                  class="dropdown-item-custom w-100 text-start px-3 py-1-5 border-0 bg-transparent fs-7 d-flex align-items-center gap-2"
+                  (click)="selectLanguage(lang)">
+                  <span>{{ lang.flag }}</span>
+                  <span>{{ lang.label }}</span>
+                </button>
+              </li>
               }
             </ul>
-          }
+          </div>
         </div>
       </div>
     </div>
@@ -51,146 +64,254 @@
 
   <!-- Main Navigation Bar -->
   <header class="main-header" [class.scrolled]="isScrolled()" (click)="closeAllFloatingDropdowns()">
-  <div class="container d-flex align-items-center justify-content-between py-3 header-container">
+    <div class="container d-flex align-items-center justify-content-between py-3 header-container">
 
-    <!-- Brand Logo Area -->
-    <a routerLink="/" class="logo-area d-flex align-items-center gap-2 text-decoration-none">
-      <img src="assets/icons/logo.png" alt="FurniMind" style="height: 38px; width: auto;" />
-    </a>
+      <!-- Brand Logo Area -->
+      <a routerLink="/" class="logo-area d-flex align-items-center gap-2 text-decoration-none">
+        <img src="assets/icons/logo.png" alt="FurniMind" style="height: 38px; width: auto;" />
+      </a>
 
-    <!-- Desktop Menu Navigation (Center) -->
-    <nav class="desktop-nav d-none d-lg-flex align-items-center gap-4">
-      @for (link of mainNavLinks(); track link.labelEn) {
+      <!-- Desktop Menu Navigation (Center) -->
+      <nav class="desktop-nav d-none d-lg-flex align-items-center gap-4">
+        @for (link of mainNavLinks(); track link.labelEn) {
         <div class="nav-item-wrapper">
-          <a [routerLink]="link.route"
-             routerLinkActive="active"
-             [routerLinkActiveOptions]="{ exact: link.route === '/' }"
-             class="nav-link-custom d-flex align-items-center gap-1"
-             [class.active]="activeMainLink() === link.labelEn"
-             (click)="selectMainLink(link.labelEn)">
+          <a [routerLink]="link.route" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: link.route === '/' }"
+            class="nav-link-custom d-flex align-items-center gap-1" [class.active]="activeMainLink() === link.labelEn"
+            (click)="selectMainLink(link.labelEn)">
             <span>{{ link | localized:'label' }}</span>
           </a>
         </div>
-      }
-    </nav>
+        }
+      </nav>
 
-    <!-- Desktop Actions (Right Side) -->
-    <div class="actions-area d-flex align-items-center gap-3">
+      <!-- Desktop Actions (Right Side) -->
+      <div class="actions-area d-flex align-items-center gap-3">
 
-      @if (isAuthenticated()) {
+        @if (isAuthenticated()) {
         <app-notification-bell />
-      }
+        }
 
-      <!-- Wishlist -->
-      <a [routerLink]="navRoutes.FAVORITES"
-         class="action-btn text-dark text-decoration-none position-relative"
-         aria-label="Wishlist">
-        <i class="bi bi-heart fs-5"></i>
-        @if (favoritesCount() > 0) {
-          <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
+        <!-- Wishlist -->
+        <a [routerLink]="navRoutes.FAVORITES" class="action-btn text-dark text-decoration-none position-relative"
+          aria-label="Wishlist">
+          <i class="bi bi-heart fs-5"></i>
+          @if (favoritesCount() > 0) {
+          <span
+            class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
             {{ favoritesCount() }}
           </span>
-        }
-      </a>
+          }
+        </a>
 
-      <!-- Cart -->
-      <a [routerLink]="navRoutes.CART"
-         class="action-btn text-dark text-decoration-none position-relative"
-         aria-label="Shopping Cart">
-        <i class="bi bi-bag fs-5"></i>
-        @if (cartCount() > 0) {
-          <span class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
-            {{ cartCount() }}
-          </span>
-        }
-      </a>
+        <!-- Rebuilt Cart Wrapper -->
+        <div class="dropdown-wrapper cart-wrapper" (mouseenter)="openCartDropdown()"
+          (mouseleave)="closeCartDropdownWithDelay()">
+          <!-- Unify cart icon trigger -->
+          <a [routerLink]="navRoutes.CART" class="action-btn text-dark text-decoration-none position-relative d-flex"
+            aria-label="Shopping Cart" (click)="toggleCartDropdown($event)">
+            <i class="bi bi-bag fs-5"></i>
+            @if (cartCount() > 0) {
+            <span
+              class="badge-custom position-absolute top-0 start-100 translate-middle rounded-circle bg-gold text-white d-flex align-items-center justify-content-center">
+              {{ cartCount() }}
+            </span>
+            }
+          </a>
 
-      <div class="auth-section position-relative">
-        <div class="auth-authenticated" [class.d-none]="!authService.isLoggedIn()">
-          <div class="dropdown-wrapper position-relative">
-            <button (click)="toggleProfileDropdown($event)"
-                    class="profile-avatar-trigger border-0 bg-transparent position-relative d-flex align-items-center justify-content-center"
-                    [attr.aria-expanded]="isProfileDropdownOpen()"
-                    aria-label="User Account Options">
-              <div class="avatar-ring-outer">
-                <div class="avatar-ring-inner position-relative">
-                  <img [attr.src]="userAvatarSrc() || undefined"
-                       alt="Profile"
-                       class="avatar-image w-100 h-100 rounded-circle object-fit-cover"
-                       [class.d-none]="!userAvatarSrc() || avatarError()"
-                       (error)="onAvatarError()" />
-                  <span class="avatar-initials"
-                        [class.d-none]="userAvatarSrc() && !avatarError()">
-                    {{ authService.currentUser()?.initials || 'FM' }}
-                  </span>
+          <div class="dropdown-panel dropdown-panel--cart" [class.open]="isCartDropdownOpen()"
+               (mouseenter)="cancelCartDropdownClose()"
+               (mouseleave)="closeCartDropdownWithDelay()">
+            <div class="cart-dropdown-surface">
+              <div class="cart-dropdown-header">
+                <div class="cart-dropdown-heading-group">
+                  <span class="cart-dropdown-kicker">Mini cart</span>
+                  <div class="cart-dropdown-title-row">
+                    <span class="cart-dropdown-title">{{ 'CART' | translate }}</span>
+                    <span class="cart-dropdown-count">{{ cartCount() }} items</span>
+                  </div>
+                </div>
+                <span class="cart-dropdown-accent"></span>
+              </div>
+
+              @if (cartItems().length === 0) {
+              <div class="cart-dropdown-empty">
+                <div class="cart-empty-icon">
+                  <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                    <rect x="8" y="20" width="48" height="36" rx="4" stroke="#d1d5db" stroke-width="2" fill="#fafafa" />
+                    <path d="M8 24h48" stroke="#d1d5db" stroke-width="2" />
+                    <circle cx="24" cy="42" r="6" stroke="#d1d5db" stroke-width="2" fill="#fafafa" />
+                    <circle cx="44" cy="42" r="6" stroke="#d1d5db" stroke-width="2" fill="#fafafa" />
+                    <path d="M20 20l4-10h16l4 10" stroke="#d1d5db" stroke-width="2" fill="none" />
+                    <path d="M32 12v8" stroke="#d1d5db" stroke-width="2" />
+                  </svg>
+                </div>
+                <p class="cart-empty-text">{{ 'YOUR_CART_IS_EMPTY' | translate }}</p>
+                <a [routerLink]="navRoutes.PRODUCTS" class="cart-empty-cta" (click)="closeAllFloatingDropdowns()">
+                  {{ 'START_SHOPPING' | translate }}
+                </a>
+              </div>
+              } @else {
+              <div class="cart-dropdown-items">
+                @for (item of cartItems(); track item.id) {
+                <div class="cart-dropdown-item">
+                  <div class="cart-item-image-wrapper">
+                    <img [src]="item.productImage" [alt]="item.productName" class="cart-item-image"
+                      (error)="onCartImageError($event)" />
+                    <span class="cart-item-qty-badge">{{ item.quantity }}</span>
+                  </div>
+                  <div class="cart-item-info">
+                    <p class="cart-item-vendor cart-item-vendor--fallback">Curated premium piece</p>
+                    <p class="cart-item-name">{{ item.productName }}</p>
+                    <div class="cart-item-variants">
+                      @if (item.selectedColor) {
+                      <span class="cart-item-color">
+                        <span class="color-dot" [style.background]="item.selectedColor"></span>
+                        {{ item.selectedColor }}
+                      </span>
+                      }
+                      @if (item.selectedMaterial) {
+                      <span class="cart-item-material">{{ item.selectedMaterial }}</span>
+                      }
+                    </div>
+                    <div class="cart-item-details">
+                      <span class="cart-item-qty-pill">Qty {{ item.quantity }}</span>
+                      <span class="cart-item-price">{{ item.price | currencyFormat }}</span>
+                    </div>
+                  </div>
+                  <button type="button" class="cart-item-remove" (click)="removeCartItem(item.id, $event)"
+                    aria-label="Remove item" title="Remove">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </div>
+                }
+              </div>
+
+              <div class="cart-dropdown-footer">
+                <div class="cart-free-shipping">
+                  <div class="cart-free-shipping-copy">
+                    <i class="bi bi-truck"></i>
+                    <span>{{ 'FREE_SHIPPING_MSG' | translate }}</span>
+                  </div>
+                  <div class="cart-free-shipping-bar" aria-hidden="true">
+                    <span class="cart-free-shipping-bar-fill"></span>
+                  </div>
+                </div>
+                <div class="cart-subtotal">
+                  <span class="cart-subtotal-label">{{ 'SUBTOTAL' | translate }} ({{ cartCount() }} {{ 'ITEMS' |
+                    translate }})</span>
+                  <span class="cart-subtotal-value">{{ cartSubtotal() | currencyFormat }}</span>
+                </div>
+                <a [routerLink]="'/checkout'" class="cart-checkout-btn" (click)="closeAllFloatingDropdowns()">
+                  <span>{{ 'CHECKOUT' | translate }}</span>
+                  <i class="bi bi-arrow-right"></i>
+                </a>
+                <div class="cart-bottom-links">
+                  <a [routerLink]="navRoutes.CART" class="cart-bottom-link" (click)="closeAllFloatingDropdowns()">
+                    <i class="bi bi-bag"></i>
+                    {{ 'VIEW_CART' | translate }}
+                  </a>
+                  <button type="button" class="cart-continue-link" (click)="closeAllFloatingDropdowns()">
+                    {{ 'CONTINUE_SHOPPING' | translate }}
+                  </button>
                 </div>
               </div>
-              <span class="online-indicator"></span>
-            </button>
+              }
+            </div>
+          </div>
+        </div>
 
-            @if (isProfileDropdownOpen()) {
-              <div class="profile-dropdown-card shadow-lg bg-white rounded z-3 position-absolute mt-2 p-0" (click)="$event.stopPropagation()">
+        <div class="auth-section position-relative">
+          <div class="auth-authenticated" [class.d-none]="!authService.isLoggedIn()">
+            <div class="dropdown-wrapper position-relative">
+              <button (click)="toggleProfileDropdown($event)"
+                class="profile-avatar-trigger border-0 bg-transparent position-relative d-flex align-items-center justify-content-center"
+                [attr.aria-expanded]="isProfileDropdownOpen()" aria-label="User Account Options">
+                <div class="avatar-ring-outer">
+                  <div class="avatar-ring-inner position-relative">
+                    <img [attr.src]="userAvatarSrc() || undefined" alt="Profile"
+                      class="avatar-image w-100 h-100 rounded-circle object-fit-cover"
+                      [class.d-none]="!userAvatarSrc() || avatarError()" (error)="onAvatarError()" />
+                    <span class="avatar-initials" [class.d-none]="userAvatarSrc() && !avatarError()">
+                      {{ authService.currentUser()?.initials || 'FM' }}
+                    </span>
+                  </div>
+                </div>
+                <span class="online-indicator"></span>
+              </button>
+
+              @if (isProfileDropdownOpen()) {
+              <div class="profile-dropdown-card shadow-lg bg-white rounded z-3 position-absolute mt-2 p-0"
+                (click)="$event.stopPropagation()">
                 <div class="profile-dropdown-header p-3 border-bottom">
-                  <span class="user-fullname d-block fw-bold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
+                  <span class="user-fullname d-block fw-bold text-dark fs-7">{{ authService.currentUser()?.name
+                    }}</span>
                   <span class="user-email d-block text-muted fs-8">{{ authService.currentUser()?.email }}</span>
                   <div class="mt-2 text-start">
-                    <span class="user-badge py-0.5 px-2 rounded-pill fs-9 fw-bold text-gold">{{ authService.currentUser()?.tier }}</span>
+                    <span class="user-badge py-0.5 px-2 rounded-pill fs-9 fw-bold text-gold">{{
+                      authService.currentUser()?.tier }}</span>
                   </div>
                 </div>
 
                 <div class="profile-dropdown-body py-1">
-                  <a routerLink="/profile" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
+                  <a routerLink="/profile"
+                    class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5"
+                    (click)="isProfileDropdownOpen.set(false)">
                     <i class="bi bi-person-fill text-muted item-icon"></i>
                     <span>{{ 'NAV_MY_PROFILE' | translate }}</span>
                   </a>
-                  <a routerLink="/orders" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
+                  <a routerLink="/orders"
+                    class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5"
+                    (click)="isProfileDropdownOpen.set(false)">
                     <i class="bi bi-card-list text-muted item-icon"></i>
                     <span>{{ 'NAV_MY_ORDERS' | translate }}</span>
                   </a>
-                  <a routerLink="/ai-chat" class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5" (click)="isProfileDropdownOpen.set(false)">
+                  <a routerLink="/ai-chat"
+                    class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5"
+                    (click)="isProfileDropdownOpen.set(false)">
                     <i class="bi bi-cpu-fill text-gold item-icon"></i>
                     <span class="fw-semibold">{{ 'NAV_SAVED_SPACES' | translate }}</span>
                   </a>
                 </div>
 
                 <div class="profile-dropdown-footer border-top p-2 bg-light-cream">
-                  <button (click)="onLogout()" class="w-100 logout-btn-premium py-1.5 px-3 border-0 bg-transparent rounded text-danger fs-7 d-flex align-items-center gap-2.5">
+                  <button (click)="onLogout()"
+                    class="w-100 logout-btn-premium py-1.5 px-3 border-0 bg-transparent rounded text-danger fs-7 d-flex align-items-center gap-2.5">
                     <i class="bi bi-box-arrow-right"></i>
                     <span>{{ 'NAV_LOGOUT' | translate }}</span>
                   </button>
                 </div>
               </div>
-            }
+              }
+            </div>
+          </div>
+
+          <div class="auth-unauthenticated" [class.d-none]="authService.isLoggedIn()">
+            <div class="auth-guest-actions d-flex align-items-center gap-2">
+              <a routerLink="/auth/login" class="login-action-btn text-decoration-none fs-7 fw-bold" aria-label="Login">
+                <span>{{ 'NAV_LOGIN' | translate }}</span>
+              </a>
+              <a routerLink="/auth/register" class="register-action-btn text-decoration-none fs-7 fw-bold"
+                aria-label="Register">
+                <span>{{ 'NAV_REGISTER' | translate }}</span>
+              </a>
+            </div>
           </div>
         </div>
 
-        <div class="auth-unauthenticated" [class.d-none]="authService.isLoggedIn()">
-          <div class="auth-guest-actions d-flex align-items-center gap-2">
-            <a routerLink="/auth/login" class="login-action-btn text-decoration-none fs-7 fw-bold" aria-label="Login">
-              <span>{{ 'NAV_LOGIN' | translate }}</span>
-            </a>
-            <a routerLink="/auth/register" class="register-action-btn text-decoration-none fs-7 fw-bold" aria-label="Register">
-              <span>{{ 'NAV_REGISTER' | translate }}</span>
-            </a>
-          </div>
-        </div>
+        <!-- Mobile Hamburger Toggle -->
+        <button class="mobile-toggle border-0 bg-transparent p-0 d-block d-lg-none" (click)="toggleMobileMenu()"
+          [attr.aria-expanded]="isMobileMenuOpen()" aria-label="Toggle Navigation">
+          <i class="bi bi-list fs-3 text-dark"></i>
+        </button>
       </div>
-
-      <!-- Mobile Hamburger Toggle -->
-      <button class="mobile-toggle border-0 bg-transparent p-0 d-block d-lg-none"
-              (click)="toggleMobileMenu()"
-              [attr.aria-expanded]="isMobileMenuOpen()"
-              aria-label="Toggle Navigation">
-        <i class="bi bi-list fs-3 text-dark"></i>
-      </button>
     </div>
-  </div>
-</header>
+  </header>
 </div>
 
 <!-- Mobile Navigation Drawer -->
 <div class="mobile-drawer position-fixed top-0 bottom-0 start-0 shadow-lg bg-white z-5 d-flex flex-column"
-     [class.show]="isMobileMenuOpen()">
+  [class.show]="isMobileMenuOpen()">
   <!-- Drawer Header -->
   <div class="drawer-header d-flex align-items-center justify-content-between p-3 border-bottom">
     <div class="logo-area d-flex align-items-center gap-2">
@@ -208,32 +329,32 @@
 
       <!-- Products -->
       <a routerLink="/products"
-         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
-         (click)="selectMainLink('Products')">
+        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+        (click)="selectMainLink('Products')">
         <i class="bi bi-grid-fill text-gold fs-7"></i>
         <span>{{ 'NAV_PRODUCTS' | translate }}</span>
       </a>
 
       <!-- AI Accent -->
       <a routerLink="/rooms"
-         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
-         (click)="selectMainLink('AI Accent')">
+        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+        (click)="selectMainLink('AI Accent')">
         <i class="bi bi-magic text-gold fs-7"></i>
         <span>{{ 'NAV_ROOMS' | translate }}</span>
       </a>
 
       <!-- Inspirations -->
       <a routerLink="/inspirations"
-         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
-         (click)="selectMainLink('Inspirations')">
+        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+        (click)="selectMainLink('Inspirations')">
         <i class="bi bi-lightbulb-fill fs-7"></i>
         <span>{{ 'NAV_INSPIRATIONS' | translate }}</span>
       </a>
 
       <!-- Offers -->
       <a routerLink="/offers"
-         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
-         (click)="selectMainLink('Offers & promotions')">
+        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+        (click)="selectMainLink('Offers & promotions')">
         <i class="bi bi-percent fs-7"></i>
         <span>{{ 'NAV_OFFERS' | translate }}</span>
       </a>
@@ -244,23 +365,26 @@
 
     <!-- Secondary Utilities -->
     <div class="mobile-utilities d-flex flex-column gap-2 mb-4">
-      <a routerLink="/about" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{ 'NAV_ABOUT_US' | translate }}</a>
-      <a routerLink="/blog" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{ 'NAV_BLOG' | translate }}</a>
-      <a routerLink="/contact" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{ 'NAV_CONTACT_US' | translate }}</a>
+      <a routerLink="/about" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{
+        'NAV_ABOUT_US' | translate }}</a>
+      <a routerLink="/blog" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{ 'NAV_BLOG'
+        | translate }}</a>
+      <a routerLink="/contact" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{
+        'NAV_CONTACT_US' | translate }}</a>
     </div>
 
     <!-- Language inside drawer -->
     <div class="mobile-selectors bg-light-cream p-3 rounded mb-4">
-      <label class="fs-9 text-uppercase tracking-wider text-muted fw-bold d-block mb-2">{{ 'NAV_LANGUAGE' | translate }}</label>
+      <label class="fs-9 text-uppercase tracking-wider text-muted fw-bold d-block mb-2">{{ 'NAV_LANGUAGE' | translate
+        }}</label>
       <div class="d-flex gap-2">
         @for (lang of languages(); track lang.code) {
-          <button type="button"
-                  class="mobile-lang-btn d-flex align-items-center gap-2 py-2 px-3 w-100 justify-content-center rounded-pill border fs-7 fw-semibold"
-                  [class.mobile-lang-btn--active]="lang.code === selectedLanguage().code"
-                  (click)="selectLanguage(lang)">
-            <span>{{ lang.flag }}</span>
-            <span>{{ lang.label }}</span>
-          </button>
+        <button type="button"
+          class="mobile-lang-btn d-flex align-items-center gap-2 py-2 px-3 w-100 justify-content-center rounded-pill border fs-7 fw-semibold"
+          [class.mobile-lang-btn--active]="lang.code === selectedLanguage().code" (click)="selectLanguage(lang)">
+          <span>{{ lang.flag }}</span>
+          <span>{{ lang.label }}</span>
+        </button>
         }
       </div>
     </div>
@@ -269,14 +393,13 @@
     <div class="mobile-auth-drawer border-top pt-3">
       <div class="mobile-auth-authenticated" [class.d-none]="!authService.isLoggedIn()">
         <div class="d-flex align-items-center gap-2.5 mb-3 px-1">
-          <div class="avatar-mini bg-gold rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-7 position-relative overflow-hidden">
-            <img [attr.src]="userAvatarSrc() || undefined"
-                 alt="Profile"
-                 class="w-100 h-100 rounded-circle object-fit-cover"
-                 [class.d-none]="!userAvatarSrc() || avatarError()"
-                 (error)="onAvatarError()" />
+          <div
+            class="avatar-mini bg-gold rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-7 position-relative overflow-hidden">
+            <img [attr.src]="userAvatarSrc() || undefined" alt="Profile"
+              class="w-100 h-100 rounded-circle object-fit-cover" [class.d-none]="!userAvatarSrc() || avatarError()"
+              (error)="onAvatarError()" />
             <span class="avatar-initials-mini position-absolute top-50 start-50 translate-middle fw-bold"
-                  [class.d-none]="userAvatarSrc() && !avatarError()">
+              [class.d-none]="userAvatarSrc() && !avatarError()">
               {{ authService.currentUser()?.initials || 'FM' }}
             </span>
           </div>
@@ -286,19 +409,26 @@
           </div>
         </div>
         <div class="d-flex flex-column gap-2">
-          <a routerLink="/profile" class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2" (click)="toggleMobileMenu()">
+          <a routerLink="/profile"
+            class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
+            (click)="toggleMobileMenu()">
             <i class="bi bi-person text-gold fs-6"></i>
             <span>{{ 'NAV_MY_PROFILE' | translate }}</span>
           </a>
-          <a routerLink="/orders" class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2" (click)="toggleMobileMenu()">
+          <a routerLink="/orders"
+            class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
+            (click)="toggleMobileMenu()">
             <i class="bi bi-card-list text-gold fs-6"></i>
             <span>{{ 'NAV_MY_ORDERS' | translate }}</span>
           </a>
-          <a routerLink="/ai-chat" class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2" (click)="toggleMobileMenu()">
+          <a routerLink="/ai-chat"
+            class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
+            (click)="toggleMobileMenu()">
             <i class="bi bi-cpu text-gold fs-6"></i>
             <span class="fw-semibold">{{ 'NAV_SAVED_SPACES' | translate }}</span>
           </a>
-          <button (click)="onLogout(); toggleMobileMenu()" class="border-0 bg-transparent text-start text-danger fs-7 py-1.5 px-1 d-flex align-items-center gap-2">
+          <button (click)="onLogout(); toggleMobileMenu()"
+            class="border-0 bg-transparent text-start text-danger fs-7 py-1.5 px-1 d-flex align-items-center gap-2">
             <i class="bi bi-box-arrow-right fs-6"></i>
             <span>{{ 'NAV_LOGOUT' | translate }}</span>
           </button>
@@ -306,11 +436,15 @@
       </div>
       <div class="mobile-auth-unauthenticated" [class.d-none]="authService.isLoggedIn()">
         <div class="d-flex flex-column gap-2">
-          <a routerLink="/auth/login" class="btn btn-gold-outline w-100 rounded-pill fs-7 py-2 fw-bold d-flex align-items-center justify-content-center gap-2" (click)="toggleMobileMenu()">
+          <a routerLink="/auth/login"
+            class="btn btn-gold-outline w-100 rounded-pill fs-7 py-2 fw-bold d-flex align-items-center justify-content-center gap-2"
+            (click)="toggleMobileMenu()">
             <i class="bi bi-box-arrow-in-right"></i>
             <span>{{ 'NAV_LOGIN' | translate }}</span>
           </a>
-          <a routerLink="/auth/register" class="btn btn-gold w-100 rounded-pill fs-7 py-2 text-white fw-bold d-flex align-items-center justify-content-center gap-2" (click)="toggleMobileMenu()">
+          <a routerLink="/auth/register"
+            class="btn btn-gold w-100 rounded-pill fs-7 py-2 text-white fw-bold d-flex align-items-center justify-content-center gap-2"
+            (click)="toggleMobileMenu()">
             <i class="bi bi-person-plus"></i>
             <span>{{ 'NAV_REGISTER' | translate }}</span>
           </a>
@@ -331,7 +465,11 @@
 
 <!-- Backdrop (Mobile/Tablet drawer trigger overlay) -->
 @if (isMobileMenuOpen()) {
-  <div class="drawer-backdrop position-fixed top-0 bottom-0 start-0 end-0 z-4"
-       (click)="toggleMobileMenu()">
-  </div>
+<div class="drawer-backdrop position-fixed top-0 bottom-0 start-0 end-0 z-4" (click)="toggleMobileMenu()">
+</div>
+}
+
+<!-- Mobile Dropdown Backdrop -->
+@if (isCartDropdownOpen() || isLanguageDropdownOpen()) {
+<div class="dropdown-mobile-backdrop d-lg-none" (click)="closeAllFloatingDropdowns()"></div>
 }

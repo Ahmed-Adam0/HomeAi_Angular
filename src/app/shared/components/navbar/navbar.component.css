@@ -624,8 +624,499 @@
     height: 14px;
     font-size: 0.55rem;
   }
+}
 
-  .auth-guest-actions {
+/* ==========================================================================
+   4. Reusable Dropdown Component System (Desktop & Mobile)
+   ========================================================================== */
+
+/* 1. Relative Trigger Wrapper */
+.dropdown-wrapper {
+  position: relative;
+}
+
+/* 2. Absolute Floating Panel (Desktop Layout) */
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 15px);
+  inset-inline-end: 0; /* Respects logical properties for RTL direction */
+  z-index: 99999;
+  
+  /* Smooth Transitions closed state */
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+              transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+              visibility 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 3. Open State class */
+.dropdown-panel.open {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Specific Panel Customizations */
+.dropdown-panel--language {
+  width: 160px;
+}
+
+.dropdown-panel--cart {
+  width: 380px;
+  max-width: calc(100vw - 2rem);
+}
+
+/* Localized positioning overrides */
+[dir="rtl"] .dropdown-panel {
+  right: auto;
+  left: 0;
+}
+
+/* ==========================================================================
+   4a. Premium Cart Dropdown Content Styling
+   ========================================================================== */
+.cart-dropdown-surface {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-dropdown-header {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid #f3f1ed;
+  position: relative;
+}
+
+.cart-dropdown-kicker {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #b8935c;
+  margin-bottom: 4px;
+}
+
+.cart-dropdown-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.cart-dropdown-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e1b18;
+  letter-spacing: -0.01em;
+}
+
+.cart-dropdown-count {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #8a847c;
+}
+
+.cart-dropdown-accent {
+  position: absolute;
+  bottom: 0;
+  left: 24px;
+  width: 40px;
+  height: 2px;
+  background-color: #b8935c;
+}
+
+[dir="rtl"] .cart-dropdown-accent {
+  left: auto;
+  right: 24px;
+}
+
+/* Items List */
+.cart-dropdown-items {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 12px 24px;
+}
+
+/* Custom Scrollbar for mini cart */
+.cart-dropdown-items::-webkit-scrollbar {
+  width: 4px;
+}
+.cart-dropdown-items::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cart-dropdown-items::-webkit-scrollbar-thumb {
+  background: #e5e1da;
+  border-radius: 4px;
+}
+
+.cart-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f6f5f2;
+}
+
+.cart-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-image-wrapper {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fcfbf9;
+  flex-shrink: 0;
+  border: 1px solid #eee;
+}
+
+.cart-item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-qty-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #b8935c;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #fff;
+}
+
+.cart-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-item-vendor {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a09a90;
+  margin: 0 0 2px 0;
+}
+
+.cart-item-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e1b18;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-item-variants {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.cart-item-color {
+  font-size: 0.7rem;
+  color: #8a847c;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cart-item-material {
+  font-size: 0.7rem;
+  color: #8a847c;
+}
+
+.cart-item-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-item-qty-pill {
+  font-size: 0.7rem;
+  color: #8a847c;
+  background: #f6f5f2;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.cart-item-price {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e1b18;
+}
+
+.cart-item-remove {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  cursor: pointer;
+  padding: 6px;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  border-radius: 50%;
+}
+
+.cart-item-remove:hover {
+  color: #ef4444;
+  background-color: #fef2f2;
+}
+
+/* Empty State */
+.cart-dropdown-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.cart-empty-icon {
+  margin-bottom: 16px;
+  color: #cbd5e1;
+}
+
+.cart-empty-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.cart-empty-cta {
+  background: #1e1b18;
+  color: #fff;
+  border-radius: 12px;
+  padding: 10px 24px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.cart-empty-cta:hover {
+  background: #b8935c;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(184, 147, 92, 0.35);
+}
+
+/* Footer Section */
+.cart-dropdown-footer {
+  padding: 20px 24px 24px;
+  border-top: 1px solid #f3f1ed;
+  background: #FAF9F6;
+}
+
+.cart-free-shipping {
+  margin-bottom: 16px;
+}
+
+.cart-free-shipping-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #b8935c;
+  margin-bottom: 6px;
+}
+
+.cart-free-shipping-bar {
+  height: 4px;
+  background: #e5e1da;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cart-free-shipping-bar-fill {
+  display: block;
+  height: 100%;
+  background: #b8935c;
+  width: 75%; /* Arbitrary representative progress value */
+  border-radius: 10px;
+}
+
+.cart-subtotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.cart-subtotal-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8a847c;
+}
+
+.cart-subtotal-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e1b18;
+}
+
+.cart-checkout-btn {
+  background: #1e1b18;
+  color: #fff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.cart-checkout-btn:hover {
+  background: #b8935c;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(184, 147, 92, 0.3);
+}
+
+.cart-bottom-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-bottom-link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1e1b18;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.cart-bottom-link:hover {
+  color: #b8935c;
+}
+
+.cart-continue-link {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #8a847c;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.cart-continue-link:hover {
+  color: #1e1b18;
+}
+
+
+/* ==========================================================================
+   4b. Mobile Bottom Sheet Overlay
+   ========================================================================== */
+
+/* Full screen overlay backdrop behind mobile sheets */
+.dropdown-mobile-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 99998;
+  animation: backdropFadeIn 0.3s ease-out;
+}
+
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 991px) {
+  /* Transform desktop floating panels into slide-up bottom sheets on mobile */
+  .dropdown-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: 100% !important;
+    max-width: 100% !important;
+    z-index: 99999;
+    
+    /* Animation state: hidden at bottom */
+    opacity: 1;
+    transform: translateY(100%);
+    visibility: hidden;
+    pointer-events: none;
+    
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .dropdown-panel.open {
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+  
+  .dropdown-panel--language .dropdown-menu-custom {
+    border-radius: 24px 24px 0 0;
+    border: none;
+    padding: 16px 8px;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1) !important;
+    margin: 0;
+  }
+  
+  .dropdown-panel--language .dropdown-item-custom {
+    padding: 12px 20px;
+    font-size: 0.95rem !important;
+    border-radius: 12px;
+  }
+  
+  .cart-dropdown-surface {
+    border-radius: 24px 24px 0 0;
+    border: none;
+    max-height: 80vh;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cart-dropdown-items {
+    max-height: 40vh;
+  }
+
+.auth-guest-actions {
     gap: var(--fm-space-4) !important;
   }
 

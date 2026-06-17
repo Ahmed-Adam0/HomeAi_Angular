@@ -1,0 +1,206 @@
+/* Premium trust section styling */
+.why-choose-section {
+  background-color: #ffffff;
+  padding: 6.5rem 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.why-choose-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Typography */
+.why-choose-title {
+  font-size: 2.75rem;
+  color: var(--fm-color-neutral-900, #1f1c18);
+  margin-bottom: 4rem;
+  letter-spacing: -0.02em;
+  text-align: start;
+}
+
+/* Feature Grid */
+.why-choose-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3.5rem;
+  align-items: start;
+}
+
+/* Feature Card */
+.why-choose-card {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  transition: transform 0.6s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+  will-change: transform;
+}
+
+/* Large Numbers & Lines */
+.why-choose-card-number-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.why-choose-card-number {
+  font-family: var(--fm-font-sans), sans-serif;
+  font-size: 3rem;
+  font-weight: 300;
+  color: var(--fm-color-primary-600);
+  line-height: 1;
+}
+
+.why-choose-card-line {
+  width: 2.2rem;
+  height: 2px;
+  background-color: var(--fm-color-primary-600);
+  margin-top: 0.5rem;
+  border-radius: 1px;
+}
+
+/* Image zoom styling */
+.why-choose-image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.6 / 1; /* Horizontal layout like in design */
+  overflow: hidden;
+  border-radius: var(--fm-radius-md, 12px);
+  margin-bottom: 1.75rem;
+  background-color: var(--fm-color-neutral-50, #faf9f6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.015);
+}
+
+.why-choose-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+/* Card Title & Description */
+.why-choose-card-title {
+  font-family: var(--fm-font-sans), sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--fm-color-neutral-900, #1f1c18);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+  text-align: start;
+}
+
+.why-choose-card-description {
+  font-family: var(--fm-font-sans), sans-serif;
+  font-size: 0.95rem;
+  color: var(--fm-color-neutral-500, #8c8375);
+  line-height: 1.6;
+  margin: 0;
+  text-align: start;
+}
+
+/* Interactions & Hover Effects */
+.why-choose-card:hover {
+  transform: translateY(-8px);
+}
+
+.why-choose-card:hover .why-choose-img {
+  transform: scale(1.06);
+}
+
+/* Scroll Reveal and Stagger System */
+.scroll-reveal-card {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1.2s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
+              transform 1.2s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+  will-change: opacity, transform;
+}
+
+.scroll-reveal-card.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered Delay for Entrance Animations */
+.scroll-reveal-card:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.scroll-reveal-card:nth-child(2) {
+  transition-delay: 0.3s;
+}
+
+.scroll-reveal-card:nth-child(3) {
+  transition-delay: 0.5s;
+}
+
+/* Arabic / RTL Overrides */
+[dir="rtl"] .why-choose-title {
+  font-family: 'Cairo', var(--fm-font-display), serif !important;
+  text-align: right;
+  letter-spacing: normal;
+}
+
+[dir="rtl"] .why-choose-card-number-wrapper {
+  align-items: flex-start;
+}
+
+[dir="rtl"] .why-choose-card-number {
+  font-family: 'Cairo', var(--fm-font-sans), sans-serif !important;
+}
+
+[dir="rtl"] .why-choose-card-title {
+  font-family: 'Cairo', var(--fm-font-sans), sans-serif !important;
+  font-weight: 800;
+  text-align: right;
+}
+
+[dir="rtl"] .why-choose-card-description {
+  font-family: 'Cairo', var(--fm-font-sans), sans-serif !important;
+  text-align: right;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 991px) {
+  .why-choose-section {
+    padding: 5rem 0;
+  }
+  .why-choose-grid {
+    gap: 2rem;
+  }
+  .why-choose-title {
+    font-size: 2.25rem;
+    margin-bottom: 3rem;
+  }
+  .why-choose-card-number {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .why-choose-section {
+    padding: 4rem 0;
+  }
+  .why-choose-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .why-choose-title {
+    font-size: 1.85rem;
+    margin-bottom: 2.5rem;
+  }
+  .why-choose-card {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  /* Remove translate staggering on mobile for cleaner simultaneous scroll appearance */
+  .scroll-reveal-card:nth-child(1),
+  .scroll-reveal-card:nth-child(2),
+  .scroll-reveal-card:nth-child(3) {
+    transition-delay: 0.1s;
+  }
+}

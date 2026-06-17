@@ -1,0 +1,144 @@
+<section class="room-showcase-section">
+  <div class="container-fluid px-lg-5">
+    
+    <!-- Section Header -->
+    <div class="section-header text-center mb-5">
+      <span class="subtitle-gold">{{ 'EXPLORE_IN_3D_SUBTITLE' | translate }}</span>
+      <h2 class="section-title-display">{{ 'EXPLORE_IN_3D_TITLE' | translate }}</h2>
+      <p class="section-desc-light">
+        {{ 'EXPLORE_IN_3D_DESC' | translate }}
+      </p>
+    </div>
+
+    <!-- Showcase Container -->
+    <div class="showcase-card shadow-premium" (click)="closeCard()">
+      <div class="room-image-wrapper">
+        
+        <!-- Large Room Background Image -->
+        <img src="assets/images/beige_interior.png" [alt]="isArabic() ? 'غرفة معيشة فاخرة بالذكاء الاصطناعي' : 'Luxury AI Living Room'" class="room-image" />
+        
+        <!-- Overlay Darkener for hotspots to pop out nicely -->
+        <div class="image-overlay"></div>
+
+        <!-- Hotspots -->
+        <div *ngFor="let hotspot of hotspots" 
+             class="hotspot-point" 
+             [style.top.%]="hotspot.top" 
+             [style.left.%]="hotspot.left"
+             [class.active]="selectedHotspot() === hotspot"
+             (click)="selectHotspot(hotspot, $event)">
+          
+          <div class="hotspot-pulse"></div>
+          <div class="hotspot-dot"></div>
+
+          <!-- Hover Tooltip -->
+          <div class="hotspot-tooltip">
+            <span class="tooltip-name">{{ hotspot.product | localized: 'name' }}</span>
+            <span class="tooltip-price">{{ hotspot.product.price | currencyFormat }}</span>
+          </div>
+        </div>
+
+        <!-- Floating Product Preview Card (Desktop) -->
+        <div *ngIf="selectedHotspot() && !isMobile()" 
+             class="floating-product-card reveal-card"
+             [style.top.%]="cardPosition().top"
+             [style.left.%]="cardPosition().left"
+             [class.position-left]="!cardPosition().isRight"
+             (click)="$event.stopPropagation()">
+          
+          <!-- Close Button -->
+          <button class="close-card-btn" (click)="closeCard()" [aria-label]="isArabic() ? 'إغلاق' : 'Close'">
+            <i class="pi pi-times"></i>
+          </button>
+
+          <!-- Favorite/Like Button -->
+          <button class="favorite-card-btn" 
+                  [class.active]="isFavorited(selectedHotspot()!.product.id)"
+                  [disabled]="isTogglingFav()"
+                  (click)="toggleFavorite(selectedHotspot()!.product, $event)">
+            <i class="pi" [class.pi-heart-fill]="isFavorited(selectedHotspot()!.product.id)" [class.pi-heart]="!isFavorited(selectedHotspot()!.product.id)"></i>
+          </button>
+
+          <!-- 3D Interactive Viewer -->
+          <div class="card-viewer-container">
+            <app-three-d-viewer 
+              [productType]="selectedHotspot()!.type"
+              [glbUrl]="selectedHotspot()!.glbUrl">
+            </app-three-d-viewer>
+          </div>
+
+          <!-- Product Details -->
+          <div class="card-details-panel">
+            <span class="product-vendor">{{ selectedHotspot()!.product | localized: 'workshopName' }}</span>
+            <h4 class="product-name">{{ selectedHotspot()!.product | localized: 'name' }}</h4>
+            
+            <div class="card-actions-row">
+              <span class="product-price">{{ selectedHotspot()!.product.price | currencyFormat }}</span>
+              
+              <button class="btn btn-gold-action" 
+                      [disabled]="cartService.isProductAdding(selectedHotspot()!.product.id)"
+                      (click)="addToCart(selectedHotspot()!.product, $event)">
+                <span *ngIf="cartService.isProductAdding(selectedHotspot()!.product.id)" class="spinner-border spinner-border-sm me-1"></span>
+                <i *ngIf="!cartService.isProductAdding(selectedHotspot()!.product.id)" class="pi pi-shopping-cart me-1"></i>
+                {{ 'ADD_TO_CART' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Mobile Product Preview Card (Drawer at Bottom of Section) -->
+      <div *ngIf="selectedHotspot() && isMobile()" 
+           class="mobile-product-drawer"
+           (click)="$event.stopPropagation()">
+        
+        <!-- Drawer Header -->
+        <div class="drawer-header">
+          <span class="product-vendor">{{ selectedHotspot()!.product | localized: 'workshopName' }}</span>
+          <button class="close-drawer-btn" (click)="closeCard()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+
+        <div class="drawer-body">
+          <!-- 3D Viewer inside mobile drawer -->
+          <div class="drawer-viewer-wrapper">
+            <app-three-d-viewer 
+              [productType]="selectedHotspot()!.type"
+              [glbUrl]="selectedHotspot()!.glbUrl">
+            </app-three-d-viewer>
+          </div>
+
+          <!-- Metadata -->
+          <div class="drawer-meta">
+            <h4 class="product-name">{{ selectedHotspot()!.product | localized: 'name' }}</h4>
+            <span class="product-price">{{ selectedHotspot()!.product.price | currencyFormat }}</span>
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="drawer-actions">
+          <button class="btn btn-outline-fav" 
+                  [class.active]="isFavorited(selectedHotspot()!.product.id)"
+                  [disabled]="isTogglingFav()"
+                  (click)="toggleFavorite(selectedHotspot()!.product, $event)">
+            <i class="pi" [class.pi-heart-fill]="isFavorited(selectedHotspot()!.product.id)" [class.pi-heart]="!isFavorited(selectedHotspot()!.product.id)"></i>
+            {{ isArabic() ? 'المفضلة' : 'Favorite' }}
+          </button>
+          
+          <button class="btn btn-gold-action flex-grow-1" 
+                  [disabled]="cartService.isProductAdding(selectedHotspot()!.product.id)"
+                  (click)="addToCart(selectedHotspot()!.product, $event)">
+            <span *ngIf="cartService.isProductAdding(selectedHotspot()!.product.id)" class="spinner-border spinner-border-sm me-1"></span>
+            <i *ngIf="!cartService.isProductAdding(selectedHotspot()!.product.id)" class="pi pi-shopping-cart me-1"></i>
+            {{ 'ADD_TO_CART' | translate }}
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>

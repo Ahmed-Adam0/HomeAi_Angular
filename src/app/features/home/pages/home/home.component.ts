@@ -7,6 +7,8 @@ import { CategoryStripComponent } from '../../components/category-strip/category
 import { FeaturedProductsComponent } from '../../../products/components/featured-products/featured-products.component';
 import { AiHowItWorksComponent } from '../../components/ai-how-it-works/ai-how-it-works.component';
 import { TestimonialsStatsComponent } from '../../components/testimonials-stats/testimonials-stats.component';
+import { AiRoomShowcaseComponent } from '../../components/ai-room-showcase/ai-room-showcase.component';
+import { WhyChooseUsComponent } from '../../components/why-choose-us/why-choose-us.component';
 
 @Component({
   selector: 'app-home',
@@ -17,8 +19,10 @@ import { TestimonialsStatsComponent } from '../../components/testimonials-stats/
     LatestCollectionsComponent,
     CategoryStripComponent,
     AiHowItWorksComponent,
+    AiRoomShowcaseComponent,
     FeaturedProductsComponent,
-    TestimonialsStatsComponent
+    TestimonialsStatsComponent,
+    WhyChooseUsComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
@@ -34,7 +38,7 @@ export class Home implements AfterViewInit {
       // preventing a race condition where elements are observed at (0, 0) height and trigger instantly.
       setTimeout(() => {
         const sections = this.el.nativeElement.querySelectorAll(
-          'app-interior-categories-showcase, app-latest-collections, app-category-strip, app-ai-how-it-works, app-featured-products, app-testimonials-stats'
+          'app-interior-categories-showcase, app-latest-collections, app-category-strip, app-ai-how-it-works, app-ai-room-showcase, app-featured-products, app-testimonials-stats, app-why-choose-us'
         );
 
         const observerOptions = {
@@ -61,4 +65,5 @@ export class Home implements AfterViewInit {
     }
   }
 }
+
 

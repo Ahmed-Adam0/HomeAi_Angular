@@ -27,13 +27,14 @@ import * as Constants from '../../../core/constants/navbar.constants';
 import { LOCAL_STORAGE_KEYS, NAV_ROUTES } from '../../../core/constants';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { CartService } from '../../../features/cart/services/cart.service';
+import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
 import { NotificationBellComponent } from '../../../features/notifications/components/notification-bell/notification-bell.component';
 import { IFavoriteItem } from '../../../features/favorites/interfaces/ifavorite-item';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TranslatePipe, LocalizedPipe, NotificationBellComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslatePipe, LocalizedPipe, CurrencyFormatPipe, NotificationBellComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
@@ -58,9 +59,16 @@ export class Navbar implements OnInit {
   readonly isMobileMenuOpen = signal<boolean>(false);
   readonly isLanguageDropdownOpen = signal<boolean>(false);
   readonly isProfileDropdownOpen = signal<boolean>(false);
+  readonly isCartDropdownOpen = signal<boolean>(false);
   readonly isScrolled = signal<boolean>(false);
   readonly isHeaderHidden = signal<boolean>(false);
   readonly favoritesCount = signal<number>(0);
+
+  private cartDropdownTimeout: ReturnType<typeof setTimeout> | null = null;
+  private languageDropdownTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  readonly cartItems = computed(() => this.cartService.items());
+  readonly cartSubtotal = computed(() => this.cartService.subtotal());
 
   private lastScrollY = 0;
   private readonly SCROLL_THRESHOLD = 50;
@@ -193,9 +201,32 @@ export class Navbar implements OnInit {
   }
 
   toggleLanguageDropdown(event: Event): void {
+    event.preventDefault();
     event.stopPropagation();
-    this.isLanguageDropdownOpen.update((prev) => !prev);
-    this.isProfileDropdownOpen.set(false);
+    const currentState = this.isLanguageDropdownOpen();
+    this.closeAllFloatingDropdowns();
+    this.isLanguageDropdownOpen.set(!currentState);
+  }
+
+  openLanguageDropdown(): void {
+    if (this.languageDropdownTimeout) {
+      clearTimeout(this.languageDropdownTimeout);
+      this.languageDropdownTimeout = null;
+    }
+    this.isLanguageDropdownOpen.set(true);
+  }
+
+  closeLanguageDropdownWithDelay(): void {
+    this.languageDropdownTimeout = setTimeout(() => {
+      this.isLanguageDropdownOpen.set(false);
+    }, 250);
+  }
+
+  cancelLanguageDropdownClose(): void {
+    if (this.languageDropdownTimeout) {
+      clearTimeout(this.languageDropdownTimeout);
+      this.languageDropdownTimeout = null;
+    }
   }
 
   toggleProfileDropdown(event: Event): void {
@@ -226,9 +257,57 @@ export class Navbar implements OnInit {
     void this.router.navigate([NAV_ROUTES.LOGIN]);
   }
 
+  openCartDropdown(): void {
+    if (this.cartDropdownTimeout) {
+      clearTimeout(this.cartDropdownTimeout);
+      this.cartDropdownTimeout = null;
+    }
+    this.isCartDropdownOpen.set(true);
+  }
+
+  closeCartDropdownWithDelay(): void {
+    this.cartDropdownTimeout = setTimeout(() => {
+      this.isCartDropdownOpen.set(false);
+    }, 250);
+  }
+
+  cancelCartDropdownClose(): void {
+    if (this.cartDropdownTimeout) {
+      clearTimeout(this.cartDropdownTimeout);
+      this.cartDropdownTimeout = null;
+    }
+  }
+
+  toggleCartDropdown(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const currentState = this.isCartDropdownOpen();
+    this.closeAllFloatingDropdowns();
+    this.isCartDropdownOpen.set(!currentState);
+  }
+
+  removeCartItem(itemId: string, event: Event): void {
+    event.stopPropagation();
+    this.cartService.removeFromCart(itemId);
+  }
+
+  onCartImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img) img.src = 'assets/images/image-placeholder.svg';
+  }
+
   closeAllFloatingDropdowns(): void {
+    if (this.cartDropdownTimeout) {
+      clearTimeout(this.cartDropdownTimeout);
+      this.cartDropdownTimeout = null;
+    }
+    if (this.languageDropdownTimeout) {
+      clearTimeout(this.languageDropdownTimeout);
+      this.languageDropdownTimeout = null;
+    }
     this.isLanguageDropdownOpen.set(false);
     this.isProfileDropdownOpen.set(false);
+    this.isCartDropdownOpen.set(false);
   }
 
   onAvatarError(): void {
