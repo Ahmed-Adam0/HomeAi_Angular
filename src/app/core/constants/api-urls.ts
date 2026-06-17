@@ -30,7 +30,7 @@ export const API_URLS = {
     GET: 'Cart',
     CLEAR: 'Cart',
     ADD_ITEM: 'Cart/items',
-    UPDATE_ITEM: (id: string | number) => `Cart/items/${id}`,
+    UPDATE_ITEM: 'Cart/items',
     REMOVE_ITEM: (id: string | number) => `Cart/items/${id}`,
   },
   ORDERS: {

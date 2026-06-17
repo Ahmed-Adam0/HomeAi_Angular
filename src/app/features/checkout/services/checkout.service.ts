@@ -44,7 +44,12 @@ export class CheckoutService {
   private profileService = inject(ProfileService);
 
   submitCheckout(payload: ICheckoutPayload): Observable<ICheckoutResult> {
-    return this.ordersApi.createOrder(payload).pipe(
+    const apiPayload = {
+      address: payload.address,
+      phoneNumber: payload.phoneNumber,
+      notes: payload.notes
+    };
+    return this.ordersApi.createOrder(apiPayload).pipe(
       switchMap((order) =>
         this.saveAddressToProfile(payload).pipe(
           map((saved) => ({

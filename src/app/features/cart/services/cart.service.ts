@@ -306,13 +306,21 @@ export class CartService {
       const finalPrice = livePrice ?? cachedPrice ?? price;
 
       // Map selectedAttributes from backend into options array
-      const backendAttributes: any[] = Array.isArray(item.selectedAttributes) ? item.selectedAttributes : [];
-      const mappedOptions = backendAttributes.map((attr: any) => ({
-        name: attr.attributeNameEn || attr.attributeName || '',
-        nameEn: attr.attributeNameEn || attr.attributeName || '',
-        nameAr: attr.attributeNameAr || attr.attributeName || '',
-        priceDelta: 0,
-      }));
+      const backendAttributes: any[] = Array.isArray(item.selectedAttributes) ? item.selectedAttributes : (Array.isArray(item.attributes) ? item.attributes : []);
+      const mappedOptions = backendAttributes.map((attr: any) => {
+        const nEn = attr.attributeNameEn || attr.nameEn || attr.attributeName || '';
+        const nAr = attr.attributeNameAr || attr.nameAr || attr.attributeName || '';
+        const vEn = attr.attributeValueEn || attr.valueEn || '';
+        const vAr = attr.attributeValueAr || attr.valueAr || '';
+        return {
+          name: vEn ? `${nEn}: ${vEn}` : nEn,
+          nameEn: nEn,
+          nameAr: nAr,
+          valueEn: vEn,
+          valueAr: vAr,
+          priceDelta: 0,
+        };
+      });
       const optionsToUse = mappedOptions.length ? mappedOptions : (item.options || []);
 
       return {
@@ -411,16 +419,28 @@ export class CartService {
 
           const quantityToAdd = Math.round(Number(quantity));
           
+          const finalOptionIds = [...selectedOptionIds];
           let optionPrice = 0;
-          const optionsData: { name: string; priceDelta: number }[] = [];
+          const optionsData: { name: string; nameEn?: string; nameAr?: string; valueEn?: string; valueAr?: string; priceDelta: number }[] = [];
           if (product.materials) {
             for (const mat of product.materials) {
-              const selectedId = selectedOptionIds.find(id => mat.options.some(o => o.id === id));
+              let selectedId = finalOptionIds.find(id => mat.options.some(o => o.id === id));
+              if (!selectedId && mat.options && mat.options.length > 0) {
+                selectedId = mat.options[0].id;
+                finalOptionIds.push(selectedId);
+              }
               if (selectedId) {
                 const opt = mat.options.find(o => o.id === selectedId);
                 if (opt) {
                   optionPrice += opt.priceDelta;
-                  optionsData.push({ name: opt.name, priceDelta: opt.priceDelta });
+                  optionsData.push({
+                    name: `${mat.name}: ${opt.name}`,
+                    nameEn: mat.name,
+                    nameAr: mat.name,
+                    valueEn: opt.name,
+                    valueAr: opt.name,
+                    priceDelta: opt.priceDelta
+                  });
                 }
               }
             }
@@ -461,7 +481,7 @@ export class CartService {
               price: productPrice,
               quantity: quantityToAdd,
               subtotal: Number((productPrice * quantityToAdd).toFixed(2)),
-              selectedOptionIds,
+              selectedOptionIds: finalOptionIds,
               options: optionsData
             };
 
@@ -489,7 +509,7 @@ export class CartService {
             const quantityToSync = matched?.quantity ?? newQty;
             const observable = cartItemIdVal
               ? this.cartApi.updateItem(Number(cartItemIdVal), quantityToSync)
-              : this.cartApi.addItem(Number(itemId), quantityToAdd, selectedOptionIds);
+              : this.cartApi.addItem(Number(itemId), quantityToAdd, finalOptionIds);
 
             const p = observable.toPromise()
               .then((response) => {
