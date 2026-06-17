@@ -18,6 +18,7 @@ export interface IProduct {
   isActive?: boolean;
   status?: string;
   images?: IProductImage[];
+  discountPercentage?: number;
 }
 
 export interface IProductImage {

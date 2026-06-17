@@ -13,11 +13,6 @@
 /* Card Container with soft gradient & borders */
 .latest-collections-container {
   background-color: #ffffff;
-  background-image: 
-    radial-gradient(circle at 0% 0%, rgba(244, 242, 238, 0.6) 0%, transparent 40%),
-    radial-gradient(circle at 100% 100%, rgba(184, 147, 92, 0.04) 0%, transparent 50%);
-  border-radius: var(--fm-radius-2xl, 32px);
-  border: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08));
   box-shadow: var(--fm-shadow-sm, 0 2px 8px rgba(29, 27, 24, 0.015));
   padding: 48px;
 }
@@ -98,7 +93,7 @@
 
 /* Card Body & Elevations */
 .product-item-card {
-  transition: 
+  transition:
     transform 0.4s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
     box-shadow 0.4s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
     background-color 0.4s ease;
@@ -110,7 +105,7 @@
 }
 
 .product-card-wrapper:hover .product-item-card {
-  transform: translateY(-6px);
+  /* transform: translateY(-6px); */
   box-shadow: 0 16px 36px rgba(184, 147, 92, 0.06), 0 2px 8px rgba(29, 27, 24, 0.015);
 }
 
@@ -147,7 +142,7 @@
 .hover-actions-stack {
   opacity: 0;
   transform: translateY(-6px);
-  transition: 
+  transition:
     opacity 0.35s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
     transform 0.35s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
 }

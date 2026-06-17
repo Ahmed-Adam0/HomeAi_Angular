@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../../products/services/product.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { FavoritesService } from '../../../favorites/services/favorites.service';
+import { QuickViewService } from '../../../products/services/quick-view.service';
 import { IProduct } from '../../../products/interfaces/iproduct';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -26,6 +27,7 @@ export class LatestCollectionsComponent implements OnInit, AfterViewInit, OnDest
   private productService = inject(ProductService);
   protected cartService = inject(CartService);
   protected favoritesService = inject(FavoritesService);
+  private quickViewService = inject(QuickViewService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
 
@@ -212,6 +214,13 @@ export class LatestCollectionsComponent implements OnInit, AfterViewInit, OnDest
    */
   retryFetch(): void {
     this.fetchLatestProducts();
+  }
+
+  /**
+   * Opens the quick view modal for a product.
+   */
+  openQuickView(product: ILatestCollectionProduct): void {
+    this.quickViewService.open(product);
   }
 
   /**

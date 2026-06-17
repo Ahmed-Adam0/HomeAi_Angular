@@ -16,6 +16,7 @@ import { DialogService } from '../../services/dialog.service';
 import { localized } from '../../utils/localized';
 import { LocalizedPipe } from '../../pipes/localized.pipe';
 import { LazyImageDirective } from '../../directives/lazy-image.directive';
+import { QuickViewService } from '../../../features/products/services/quick-view.service';
 
 @Component({
   selector: 'app-product-card',
@@ -38,6 +39,7 @@ export class ProductCard implements OnInit {
   private reviewsService = inject(ReviewsService);
   private uiState = inject(UiState);
   private dialogService = inject(DialogService);
+  private quickViewService = inject(QuickViewService);
   private platformId = inject(PLATFORM_ID);
 
   readonly isFavorite = computed(() => this.favoritesService.isFavorited(this.product.id));
@@ -114,6 +116,12 @@ export class ProductCard implements OnInit {
       return;
     }
     this.cartService.addToCart(this.product);
+  }
+
+  openQuickView(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.quickViewService.open(this.product);
   }
 
   private refreshLocalStorageCache(): void {

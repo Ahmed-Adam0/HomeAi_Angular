@@ -1,0 +1,109 @@
+@if (isOpen() && product()) {
+  <div class="qv-overlay" (click)="onBackdropClick($event)">
+    <div class="qv-modal">
+      <button type="button" class="qv-close" (click)="close()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <div class="qv-content">
+        <div class="qv-gallery">
+          <div class="qv-main-image-wrapper">
+            <img
+              [src]="activeImage()"
+              [alt]="product()! | localized:'name'"
+              class="qv-main-image"
+              (mousemove)="onMouseMove($event)"
+              (error)="handleImageError($event)"
+            />
+            @if (hasDiscount()) {
+              <span class="qv-discount-badge">-{{ product()!.discountPercentage }}%</span>
+            }
+          </div>
+
+          @if (productImages().length > 1) {
+            <div class="qv-thumbnails">
+              @for (img of productImages(); track img) {
+                <div
+                  class="qv-thumb"
+                  [class.active]="activeImage() === img"
+                  (click)="setActiveImage(img)"
+                >
+                  <img [src]="img" [alt]="product()! | localized:'name'" (error)="handleImageError($event)" />
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="qv-details">
+          <span class="qv-brand">{{ product()! | localized:'workshopName' }}</span>
+
+          <h2 class="qv-title">{{ product()! | localized:'name' }}</h2>
+
+          <div class="qv-rating">
+            <div class="qv-stars">
+              @for (star of [1,2,3,4,5]; track star) {
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                  [class.star-filled]="star <= (product()!.averageRating || 0)"
+                  [class.star-empty]="star > (product()!.averageRating || 0)">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              }
+            </div>
+            @if (product()!.totalReviews && product()!.totalReviews! > 0) {
+              <span class="qv-review-count">({{ product()!.totalReviews }} {{ 'REVIEWS' | translate }})</span>
+            }
+          </div>
+
+          <div class="qv-pricing">
+            <span class="qv-current-price">{{ product()!.price | currencyFormat }}</span>
+            @if (hasDiscount() && originalPrice()) {
+              <span class="qv-old-price">{{ originalPrice()! | currencyFormat }}</span>
+            }
+          </div>
+
+          @if (product()!.descriptionEn || product()!.descriptionAr) {
+            <p class="qv-description">{{ product()! | localized:'description' }}</p>
+          }
+
+          <div class="qv-actions">
+            <div class="qv-quantity">
+              <button type="button" class="qv-qty-btn" (click)="decrementQuantity()" [disabled]="itemQuantity() <= 1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </button>
+              <span class="qv-qty-value">{{ itemQuantity() }}</span>
+              <button type="button" class="qv-qty-btn" (click)="incrementQuantity()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              class="qv-add-to-cart"
+              [disabled]="cartService.isProductAdding(product()!.id)"
+              (click)="addToCart()"
+            >
+              @if (cartService.isProductAdding(product()!.id)) {
+                <span class="qv-spinner"></span>
+                {{ 'ADDING' | translate }}
+              } @else {
+                {{ 'ADD_TO_CART' | translate }}
+              }
+            </button>
+
+            <button
+              type="button"
+              class="qv-fav-btn"
+              [class.is-fav]="isFavorite()"
+              (click)="toggleFavorite($event)"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" [attr.fill]="isFavorite() ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

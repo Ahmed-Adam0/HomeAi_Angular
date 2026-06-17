@@ -271,10 +271,15 @@ export function normalizeProduct(prod: any): any {
     ? true
     : (prod.isActive === true || prod.isActive === 1 || prod.isActive === 'true');
 
+  const discountPercentage = prod.discountPercentage !== undefined && prod.discountPercentage !== null
+    ? Number(prod.discountPercentage)
+    : undefined;
+
   return {
     ...prod,
     mainImageUrl: resolvedUrl,
     images,
-    isActive
+    isActive,
+    discountPercentage
   };
 }

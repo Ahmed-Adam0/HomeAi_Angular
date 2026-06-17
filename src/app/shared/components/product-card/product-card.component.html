@@ -27,9 +27,9 @@
     />
 
     <!-- Quick View Overlay -->
-    <div class="quick-view-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-40 transition-all opacity-0">
+    <div class="quick-view-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-40 transition-all opacity-0" (click)="openQuickView($event)">
       <span class="btn btn-premium btn-sm px-4 py-2 shadow-lg fs-7">
-        {{ (mode === 'customer' ? 'PRODUCT_VIEW_DETAILS' : 'EDIT') | translate }}
+        {{ 'QUICK_VIEW' | translate }}
       </span>
     </div>
   </div>
