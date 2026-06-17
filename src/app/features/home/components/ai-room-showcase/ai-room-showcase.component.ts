@@ -65,6 +65,7 @@ export class AiRoomShowcaseComponent implements OnInit {
       top: 66,
       left: 15,
       type: 'sofa',
+      glbUrl: 'assets/models/furniture.glb',
       defaultProduct: {
         id: 99901,
         nameEn: 'Living Room Lounge Tan',
@@ -87,6 +88,7 @@ export class AiRoomShowcaseComponent implements OnInit {
       top: 71,
       left: 42,
       type: 'table',
+      glbUrl: 'assets/models/furniture.glb',
       defaultProduct: {
         id: 99902,
         nameEn: 'Brass Nesting Coffee Tables',
@@ -109,6 +111,7 @@ export class AiRoomShowcaseComponent implements OnInit {
       top: 81,
       left: 53,
       type: 'chair',
+      glbUrl: 'assets/models/furniture.glb',
       defaultProduct: {
         id: 99903,
         nameEn: 'Rounded Luxury Dining Chair',
@@ -131,6 +134,7 @@ export class AiRoomShowcaseComponent implements OnInit {
       top: 60,
       left: 46,
       type: 'chair',
+      glbUrl: 'assets/models/furniture.glb',
       defaultProduct: {
         id: 99904,
         nameEn: 'Modern Armchair Swivel',
@@ -153,6 +157,7 @@ export class AiRoomShowcaseComponent implements OnInit {
       top: 19,
       left: 72,
       type: 'lamp',
+      glbUrl: 'assets/models/furniture.glb',
       defaultProduct: {
         id: 99905,
         nameEn: 'Minimalist Halo Chandelier',

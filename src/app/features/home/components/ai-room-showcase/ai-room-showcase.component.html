@@ -62,6 +62,7 @@
           <!-- 3D Interactive Viewer -->
           <div class="card-viewer-container">
             <app-three-d-viewer 
+              #desktopViewer
               [productType]="selectedHotspot()!.type"
               [glbUrl]="selectedHotspot()!.glbUrl">
             </app-three-d-viewer>
@@ -71,6 +72,12 @@
           <div class="card-details-panel">
             <span class="product-vendor">{{ selectedHotspot()!.product | localized: 'workshopName' }}</span>
             <h4 class="product-name">{{ selectedHotspot()!.product | localized: 'name' }}</h4>
+            
+            <!-- Try in your room AR button -->
+            <button class="btn btn-try-ar mt-3" (click)="desktopViewer.triggerAR()">
+              <i class="pi pi-camera"></i>
+              <span>{{ isArabic() ? 'جرب في غرفتك' : 'Try in your room' }}</span>
+            </button>
             
             <div class="card-actions-row">
               <span class="product-price">{{ selectedHotspot()!.product.price | currencyFormat }}</span>
@@ -105,6 +112,7 @@
           <!-- 3D Viewer inside mobile drawer -->
           <div class="drawer-viewer-wrapper">
             <app-three-d-viewer 
+              #mobileViewer
               [productType]="selectedHotspot()!.type"
               [glbUrl]="selectedHotspot()!.glbUrl">
             </app-three-d-viewer>
@@ -115,6 +123,12 @@
             <h4 class="product-name">{{ selectedHotspot()!.product | localized: 'name' }}</h4>
             <span class="product-price">{{ selectedHotspot()!.product.price | currencyFormat }}</span>
           </div>
+
+          <!-- Try in your room AR button -->
+          <button class="btn btn-try-ar w-100 mt-2" (click)="mobileViewer.triggerAR()">
+            <i class="pi pi-camera"></i>
+            <span>{{ isArabic() ? 'جرب في غرفتك' : 'Try in your room' }}</span>
+          </button>
         </div>
 
         <!-- Action Row -->

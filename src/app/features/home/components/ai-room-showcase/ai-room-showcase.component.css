@@ -374,6 +374,40 @@
   cursor: not-allowed;
 }
 
+/* Try in your Room AR button styling */
+.btn-try-ar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: transparent;
+  border: 1px solid var(--fm-color-primary-500, #b8935c);
+  color: var(--fm-color-primary-500, #b8935c);
+  font-family: var(--fm-font-sans, sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+
+.btn-try-ar:hover {
+  background-color: rgba(184, 147, 92, 0.05);
+  color: var(--fm-color-primary-600, #a37e4c);
+  border-color: var(--fm-color-primary-600, #a37e4c);
+  box-shadow: 0 4px 12px rgba(184, 147, 92, 0.08);
+}
+
+.btn-try-ar:active {
+  transform: scale(0.98);
+}
+
+.btn-try-ar i {
+  font-size: 14px;
+}
+
 /* ==========================================================================
    MOBILE BOTTOM DRAWER STYLING
    ========================================================================== */
