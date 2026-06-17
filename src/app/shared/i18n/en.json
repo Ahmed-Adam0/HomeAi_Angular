@@ -783,6 +783,9 @@
   "RETRY": "Retry",
   "NO_PRODUCTS_FOUND": "No collections available",
   "NO_PRODUCTS_DESC": "We're updating our collection catalogue. Check back soon!",
+  "SUCCESSFULLY_ADDED": "Successfully added to cart",
+  "CHECKOUT": "Checkout",
+  "VIEW_CART": "View Cart",
   "HOME": {
     "HERO": {
       "OUR_OFFER": "Our offer",
