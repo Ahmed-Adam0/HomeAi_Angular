@@ -27,7 +27,7 @@
     <!-- Main Workspace Split -->
     <div class="row g-5">
       <!-- 1. Left Sidebar: Integrated Interactive Filters (col-lg-3) -->
-      <div class="col-lg-3">
+      <div class="col-lg-3 d-none d-lg-block">
         <div class="filter-sidebar">
           <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-light">
             <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2 sidebar-header-title">
@@ -41,158 +41,7 @@
             </button>
           </div>
 
-          <!-- Compact Integrated Search Inside Sidebar -->
-          <div class="sidebar-search mb-4">
-            <div class="search-input-wrapper position-relative">
-              <input 
-                type="text" 
-                class="sidebar-search-input font-xs text-dark shadow-none w-100" 
-                [placeholder]="'NAV_SEARCH_PLACEHOLDER' | translate" 
-                [(ngModel)]="activeFilters.query"
-                (input)="applyFilters()"
-                appAutoDir
-              />
-              <span class="sidebar-search-icon-wrapper position-absolute start-0 top-50 translate-middle-y ms-3">
-                <i class="bi bi-search font-xs"></i>
-              </span>
-              @if (activeFilters.query) {
-                <button 
-                  type="button" 
-                  (click)="activeFilters.query = ''; applyFilters()" 
-                  class="sidebar-search-clear-btn border-0 bg-transparent p-0 position-absolute end-0 top-50 translate-middle-y me-3 text-secondary"
-                  aria-label="Clear search"
-                >
-                  <i class="bi bi-x-lg font-xs"></i>
-                </button>
-              }
-            </div>
-          </div>
-
-          <!-- Space Categories Filter -->
-          <div class="filter-group mb-4">
-            <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider">
-              {{ 'FILTER_SPACE' | translate }}
-            </label>
-            <div class="d-flex flex-column gap-2">
-              <div class="form-check text-start">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="category"
-                  id="cat-all"
-                  value=""
-                  [(ngModel)]="activeFilters.categoryId"
-                  (change)="applyFilters()"
-                />
-                <label class="form-check-label font-xs text-dark" for="cat-all">
-                  {{ 'FILTER_ALL_SPACES' | translate }}
-                </label>
-              </div>
-              <div *ngFor="let cat of categories()" class="form-check text-start">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="category"
-                  [id]="'cat-' + cat.id"
-                  [value]="cat.id.toString()"
-                  [(ngModel)]="activeFilters.categoryId"
-                  (change)="applyFilters()"
-                />
-                <label class="form-check-label font-xs text-dark d-flex justify-content-between w-100" [for]="'cat-' + cat.id">
-                  <span>{{ cat | localized:'name' }}</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- AI Features Checklist -->
-          <div class="filter-group mb-4">
-            <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider">
-              {{ translationService.currentLang() === 'ar' ? 'ميزات الذكاء الاصطناعي' : 'AI Features' }}
-            </label>
-            <div class="form-check text-start d-flex align-items-center gap-2">
-              <input
-                class="form-check-input ai-checkbox"
-                type="checkbox"
-                id="ai-recommended"
-              />
-              <label class="form-check-label font-xs text-dark cursor-pointer d-flex align-items-center gap-1" for="ai-recommended">
-                <i class="bi bi-sparkles text-gold fs-8"></i>
-                <span>{{ translationService.currentLang() === 'ar' ? 'مقترح بالذكاء الاصطناعي فقط' : 'AI Recommended Only' }}</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Price Thresholds Filter -->
-          <div class="filter-group mb-4">
-            <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider">
-              {{ 'FILTER_PRICE' | translate }}
-            </label>
-            <div class="d-flex gap-2">
-              <div class="input-group input-group-sm rounded-3 overflow-hidden border border-light">
-                <span class="input-group-text bg-light text-secondary border-0 font-xs">
-                  {{ 'FILTER_CURRENCY_SYMBOL' | translate }}
-                </span>
-                <input
-                  type="number"
-                  class="form-control border-0 font-xs text-dark"
-                  [placeholder]="'FILTER_MIN' | translate"
-                  [(ngModel)]="activeFilters.minPrice"
-                  (change)="applyFilters()"
-                  appAutoDir
-                />
-              </div>
-              <div class="input-group input-group-sm rounded-3 overflow-hidden border border-light">
-                <span class="input-group-text bg-light text-secondary border-0 font-xs">
-                  {{ 'FILTER_CURRENCY_SYMBOL' | translate }}
-                </span>
-                <input
-                  type="number"
-                  class="form-control border-0 font-xs text-dark"
-                  [placeholder]="'FILTER_MAX' | translate"
-                  [(ngModel)]="activeFilters.maxPrice"
-                  (change)="applyFilters()"
-                  appAutoDir
-                />
-              </div>
-            </div>
-          </div>
-
-
-
-          <!-- Star Ratings Section -->
-          <div class="filter-group mb-4">
-            <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider">
-              {{ translationService.currentLang() === 'ar' ? 'التقييم' : 'Rating' }}
-            </label>
-            <div class="d-flex flex-column gap-2">
-              <div class="form-check text-start d-flex align-items-center" *ngFor="let stars of [5,4,3,2,1]; let rIdx = index">
-                <input
-                  class="form-check-input rating-checkbox cursor-pointer"
-                  type="checkbox"
-                  [id]="'rating-' + rIdx"
-                  [checked]="activeFilters.minRating === stars"
-                  (change)="toggleRatingFilter(stars)"
-                />
-                <label class="form-check-label font-xs text-dark d-flex align-items-center gap-1 cursor-pointer" [for]="'rating-' + rIdx">
-                  <span class="stars-gold d-flex gap-1">
-                    <i *ngFor="let star of [1,2,3,4,5]" 
-                       class="bi fs-8" 
-                       [class.bi-star-fill]="star <= stars"
-                       [class.bi-star]="star > stars"
-                       [class.text-gold]="star <= stars"
-                       [class.text-secondary-color]="star > stars">
-                    </i>
-                  </span>
-                  @if (stars < 5) {
-                    <span class="ms-1 font-xxs opacity-75">
-                      {{ translationService.currentLang() === 'ar' ? 'فما فوق' : '& up' }}
-                    </span>
-                  }
-                </label>
-              </div>
-            </div>
-          </div>
+          <ng-container *ngTemplateOutlet="filtersTemplate; context: { isMobile: false }"></ng-container>
         </div>
       </div>
 
@@ -203,6 +52,15 @@
           <div class="catalog-totals font-xs text-secondary fw-semibold">
             {{ 'CATALOG_SHOWING' | translate }} <span class="text-dark fw-bold">{{ products().length }}</span> {{ 'CATALOG_OF' | translate }} <span class="text-dark fw-bold">{{ totalCount() }}</span> {{ 'CATALOG_DESIGNS' | translate }}
           </div>
+
+          <!-- Mobile Filters Trigger Button -->
+          <button class="btn btn-outline-dark d-lg-none font-xs d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm" (click)="toggleMobileFilters(true)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+            <span>{{ 'FILTER_BUTTON' | translate }}</span>
+          </button>
+
           <div class="sort-wrapper d-flex align-items-center gap-2">
             <span class="font-xs text-secondary fw-semibold text-nowrap">{{ 'CATALOG_SORT_BY' | translate }}</span>
             <select class="sort-select border-0 bg-transparent font-xs text-dark cursor-pointer fw-bold px-1" (change)="onSortChange($event)" [value]="activeFilters.sortBy">
@@ -262,3 +120,301 @@
     </div>
   </div>
 </div>
+
+<!-- Mobile Filter Drawer -->
+<div class="mobile-filter-drawer position-fixed top-0 bottom-0 shadow-lg bg-white z-5 d-flex flex-column"
+     [class.show]="isMobileFiltersOpen"
+     [class.mobile-filter-drawer-rtl]="translationService.currentLang() === 'ar'"
+     [class.mobile-filter-drawer-ltr]="translationService.currentLang() !== 'ar'">
+  <!-- Drawer Header -->
+  <div class="drawer-header d-flex align-items-center justify-content-between p-3 border-bottom border-light">
+    <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2 fs-6">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+      </svg>
+      {{ 'FILTER_TITLE' | translate }}
+    </h5>
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-link text-secondary font-xs text-decoration-none p-0 clear-all-btn" (click)="clearFilters()">
+        {{ 'FILTER_CLEAR_ALL' | translate }}
+      </button>
+      <button class="btn-close-custom border-0 bg-transparent p-0 fs-5 d-flex align-items-center justify-content-center" (click)="toggleMobileFilters(false)" aria-label="Close Filters">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Drawer Body -->
+  <div class="drawer-body flex-grow-1 overflow-y-auto p-4 bg-white">
+    <ng-container *ngTemplateOutlet="filtersTemplate; context: { isMobile: true }"></ng-container>
+  </div>
+  
+  <!-- Drawer Footer (Apply button on mobile) -->
+  <div class="drawer-footer p-3 border-top border-light d-grid bg-white">
+    <button class="btn btn-dark py-2.5 rounded-pill font-xs fw-bold" (click)="toggleMobileFilters(false)">
+      {{ 'FILTER_APPLY' | translate }}
+    </button>
+  </div>
+</div>
+
+<!-- Backdrop -->
+<div class="drawer-backdrop position-fixed top-0 bottom-0 start-0 end-0 z-4"
+     *ngIf="isMobileFiltersOpen" (click)="toggleMobileFilters(false)"></div>
+
+<!-- Reusable Filters Template -->
+<ng-template #filtersTemplate let-isMobile="isMobile">
+  <!-- 1. Search Input -->
+  <div class="filter-group mb-4" [class.accordion-active]="isMobile && isAccordionSectionOpen('search', isMobile)">
+    <div class="filter-header d-flex justify-content-between align-items-center"
+         [class.cursor-pointer]="isMobile"
+         (click)="isMobile && toggleAccordionSection('search')">
+      <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider m-0">
+        {{ 'FILTER_KEYWORDS' | translate }}
+      </label>
+      <i class="bi text-secondary" [class.bi-chevron-down]="isAccordionSectionOpen('search', isMobile)" [class.bi-chevron-right]="!isAccordionSectionOpen('search', isMobile)" *ngIf="isMobile"></i>
+    </div>
+    <div class="filter-body mt-2" *ngIf="isAccordionSectionOpen('search', isMobile)">
+      <div class="search-input-wrapper position-relative">
+        <input
+          type="text"
+          class="sidebar-search-input"
+          [placeholder]="'FILTER_SEARCH_PLACEHOLDER' | translate"
+          [(ngModel)]="activeFilters.query"
+          (input)="applyFilters()"
+          appAutoDir
+        />
+        <div class="sidebar-search-icon-wrapper position-absolute top-50 start-0 translate-middle-y ms-3">
+          <i class="bi bi-search"></i>
+        </div>
+        <button
+          *ngIf="activeFilters.query"
+          class="sidebar-search-clear-btn position-absolute top-50 end-0 translate-middle-y me-3 border-0 bg-transparent p-0"
+          (click)="activeFilters.query = ''; applyFilters()"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Category Filter -->
+  <div class="filter-group mb-4" [class.accordion-active]="isMobile && isAccordionSectionOpen('category', isMobile)">
+    <div class="filter-header d-flex justify-content-between align-items-center"
+         [class.cursor-pointer]="isMobile"
+         (click)="isMobile && toggleAccordionSection('category')">
+      <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider m-0">
+        {{ 'FILTER_CATEGORY' | translate }}
+      </label>
+      <i class="bi text-secondary" [class.bi-chevron-down]="isAccordionSectionOpen('category', isMobile)" [class.bi-chevron-right]="!isAccordionSectionOpen('category', isMobile)" *ngIf="isMobile"></i>
+    </div>
+    <div class="filter-body mt-3" *ngIf="isAccordionSectionOpen('category', isMobile)">
+      <select
+        class="form-select select-custom font-xs text-dark rounded-3"
+        [ngModel]="activeFilters.categoryId"
+        (ngModelChange)="onCategoryChange($event)"
+      >
+        <option value="">{{ 'FILTER_ALL_CATEGORIES' | translate }}</option>
+        <option *ngFor="let cat of categories()" [value]="cat.id.toString()">
+          {{ cat | localized:'name' }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 3. SubCategory Filter -->
+  <div class="filter-group mb-4" [class.accordion-active]="isMobile && isAccordionSectionOpen('subcategory', isMobile)">
+    <div class="filter-header d-flex justify-content-between align-items-center"
+         [class.cursor-pointer]="isMobile"
+         (click)="isMobile && toggleAccordionSection('subcategory')">
+      <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider m-0">
+        {{ 'FILTER_SUBCATEGORY' | translate }}
+      </label>
+      <i class="bi text-secondary" [class.bi-chevron-down]="isAccordionSectionOpen('subcategory', isMobile)" [class.bi-chevron-right]="!isAccordionSectionOpen('subcategory', isMobile)" *ngIf="isMobile"></i>
+    </div>
+    <div class="filter-body mt-3" *ngIf="isAccordionSectionOpen('subcategory', isMobile)">
+      <select
+        class="form-select select-custom font-xs text-dark rounded-3"
+        [disabled]="!activeFilters.categoryId"
+        [ngModel]="activeFilters.subCategoryId"
+        (ngModelChange)="onSubCategoryChange($event)"
+      >
+        <option [ngValue]="null">{{ 'FILTER_ALL_SUBCATEGORIES' | translate }}</option>
+        <option *ngFor="let subcat of subCategories()" [value]="subcat.id.toString()">
+          {{ subcat | localized:'name' }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 4. Vendor Filter -->
+  <div class="filter-group mb-4" [class.accordion-active]="isMobile && isAccordionSectionOpen('vendor', isMobile)">
+    <div class="filter-header d-flex justify-content-between align-items-center"
+         [class.cursor-pointer]="isMobile"
+         (click)="isMobile && toggleAccordionSection('vendor')">
+      <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider m-0">
+        {{ 'FILTER_VENDOR' | translate }}
+      </label>
+      <i class="bi text-secondary" [class.bi-chevron-down]="isAccordionSectionOpen('vendor', isMobile)" [class.bi-chevron-right]="!isAccordionSectionOpen('vendor', isMobile)" *ngIf="isMobile"></i>
+    </div>
+    <div class="filter-body mt-3" *ngIf="isAccordionSectionOpen('vendor', isMobile)">
+      <select
+        class="form-select select-custom font-xs text-dark rounded-3"
+        [ngModel]="activeFilters.vendorId"
+        (ngModelChange)="onVendorChange($event)"
+      >
+        <option [ngValue]="null">{{ 'FILTER_ALL_VENDORS' | translate }}</option>
+        <option *ngFor="let vendor of availableVendors()" [value]="vendor.id.toString()">
+          {{ translationService.currentLang() === 'ar' ? vendor.nameAr : vendor.nameEn }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 5. Materials Filter -->
+  <div class="filter-group mb-4" [class.accordion-active]="isMobile && isAccordionSectionOpen('materials', isMobile)">
+    <div class="filter-header d-flex justify-content-between align-items-center"
+         [class.cursor-pointer]="isMobile"
+         (click)="isMobile && toggleAccordionSection('materials')">
+      <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider m-0">
+        {{ 'FILTER_MATERIALS' | translate }}
+      </label>
+      <i class="bi text-secondary" [class.bi-chevron-down]="isAccordionSectionOpen('materials', isMobile)" [class.bi-chevron-right]="!isAccordionSectionOpen('materials', isMobile)" *ngIf="isMobile"></i>
+    </div>
+    <div class="filter-body mt-3" *ngIf="isAccordionSectionOpen('materials', isMobile)">
+      <div *ngIf="activeFilters.vendorId; else noVendorTemplate">
+        <div *ngFor="let group of availableMaterialGroups()" class="mb-3">
+          <label class="form-label text-secondary font-xs fw-bold mb-1">
+            {{ translationService.currentLang() === 'ar' ? group.nameAr : group.nameEn }}
+          </label>
+          <select
+            class="form-select select-custom font-xs text-dark rounded-3"
+            [ngModel]="getSelectedOptionForGroup(group.id)"
+            (ngModelChange)="onMaterialOptionGroupChange(group.id, $event)"
+          >
+            <option [ngValue]="null">{{ translationService.currentLang() === 'ar' ? 'الكل' : 'All' }}</option>
+            <option *ngFor="let opt of group.options" [ngValue]="opt.id">
+              {{ translationService.currentLang() === 'ar' ? opt.valueAr : opt.valueEn }}
+              <span *ngIf="opt.priceDelta > 0"> (+{{ opt.priceDelta }} {{ 'FILTER_CURRENCY_SYMBOL' | translate }})</span>
+            </option>
+          </select>
+        </div>
+        <div *ngIf="availableMaterialGroups().length === 0" class="text-secondary opacity-75 font-xs py-2">
+          {{ translationService.currentLang() === 'ar' ? 'لا توجد مواد متاحة لهذا البائع.' : 'No materials available for this vendor.' }}
+        </div>
+      </div>
+      <ng-template #noVendorTemplate>
+        <div class="text-secondary opacity-75 font-xs py-2">
+          {{ translationService.currentLang() === 'ar' ? 'اختر البائع لعرض المواد المتاحة.' : 'Select a vendor to view available materials.' }}
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- 6. Price Range Filter -->
+  <div class="filter-group mb-4" [class.accordion-active]="isMobile && isAccordionSectionOpen('price', isMobile)">
+    <div class="filter-header d-flex justify-content-between align-items-center"
+         [class.cursor-pointer]="isMobile"
+         (click)="isMobile && toggleAccordionSection('price')">
+      <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider m-0">
+        {{ 'FILTER_PRICE' | translate }}
+      </label>
+      <i class="bi text-secondary" [class.bi-chevron-down]="isAccordionSectionOpen('price', isMobile)" [class.bi-chevron-right]="!isAccordionSectionOpen('price', isMobile)" *ngIf="isMobile"></i>
+    </div>
+    <div class="filter-body mt-3" *ngIf="isAccordionSectionOpen('price', isMobile)">
+      <div class="d-flex gap-2">
+        <div class="input-group input-group-sm rounded-3 overflow-hidden border border-light">
+          <span class="input-group-text bg-light text-secondary border-0 font-xs">
+            {{ 'FILTER_CURRENCY_SYMBOL' | translate }}
+          </span>
+          <input
+            type="number"
+            class="form-control border-0 font-xs text-dark"
+            [placeholder]="'FILTER_MIN' | translate"
+            [(ngModel)]="activeFilters.minPrice"
+            (change)="applyFilters()"
+            appAutoDir
+          />
+        </div>
+        <div class="input-group input-group-sm rounded-3 overflow-hidden border border-light">
+          <span class="input-group-text bg-light text-secondary border-0 font-xs">
+            {{ 'FILTER_CURRENCY_SYMBOL' | translate }}
+          </span>
+          <input
+            type="number"
+            class="form-control border-0 font-xs text-dark"
+            [placeholder]="'FILTER_MAX' | translate"
+            [(ngModel)]="activeFilters.maxPrice"
+            (change)="applyFilters()"
+            appAutoDir
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Rating Filter -->
+  <div class="filter-group mb-4" [class.accordion-active]="isMobile && isAccordionSectionOpen('rating', isMobile)">
+    <div class="filter-header d-flex justify-content-between align-items-center"
+         [class.cursor-pointer]="isMobile"
+         (click)="isMobile && toggleAccordionSection('rating')">
+      <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider m-0">
+        {{ translationService.currentLang() === 'ar' ? 'التقييم' : 'Rating' }}
+      </label>
+      <i class="bi text-secondary" [class.bi-chevron-down]="isAccordionSectionOpen('rating', isMobile)" [class.bi-chevron-right]="!isAccordionSectionOpen('rating', isMobile)" *ngIf="isMobile"></i>
+    </div>
+    <div class="filter-body mt-3" *ngIf="isAccordionSectionOpen('rating', isMobile)">
+      <div class="d-flex flex-column gap-2">
+        <div class="form-check text-start d-flex align-items-center" *ngFor="let stars of [5,4,3,2,1]; let rIdx = index">
+          <input
+            class="form-check-input rating-checkbox cursor-pointer"
+            type="checkbox"
+            [id]="'rating-' + rIdx"
+            [checked]="activeFilters.minRating === stars"
+            (change)="toggleRatingFilter(stars)"
+          />
+          <label class="form-check-label font-xs text-dark d-flex align-items-center gap-1 cursor-pointer" [for]="'rating-' + rIdx">
+            <span class="stars-gold d-flex gap-1">
+              <i *ngFor="let star of [1,2,3,4,5]" 
+                 class="bi fs-8" 
+                 [class.bi-star-fill]="star <= stars"
+                 [class.bi-star]="star > stars"
+                 [class.text-gold]="star <= stars"
+                 [class.text-secondary-color]="star > stars">
+              </i>
+            </span>
+            <span *ngIf="stars < 5" class="ms-1 font-xxs opacity-75">
+              {{ translationService.currentLang() === 'ar' ? 'فما فوق' : '& up' }}
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. AI Features Filter -->
+  <div class="filter-group mb-4" [class.accordion-active]="isMobile && isAccordionSectionOpen('ai', isMobile)">
+    <div class="filter-header d-flex justify-content-between align-items-center"
+         [class.cursor-pointer]="isMobile"
+         (click)="isMobile && toggleAccordionSection('ai')">
+      <label class="form-label text-dark fs-7 mb-2 fw-bold tracking-wider m-0">
+        {{ 'FILTER_AI_FEATURES' | translate }}
+      </label>
+      <i class="bi text-secondary" [class.bi-chevron-down]="isAccordionSectionOpen('ai', isMobile)" [class.bi-chevron-right]="!isAccordionSectionOpen('ai', isMobile)" *ngIf="isMobile"></i>
+    </div>
+    <div class="filter-body mt-3" *ngIf="isAccordionSectionOpen('ai', isMobile)">
+      <div class="form-check text-start d-flex align-items-center gap-2">
+        <input
+          class="form-check-input ai-checkbox"
+          type="checkbox"
+          id="ai-recommended"
+          [(ngModel)]="activeFilters.isFeatured"
+          (change)="applyFilters()"
+        />
+        <label class="form-check-label font-xs text-dark cursor-pointer d-flex align-items-center gap-1" for="ai-recommended">
+          <i class="bi bi-sparkles text-gold fs-8"></i>
+          <span>{{ 'FILTER_AI_RECOMMENDED' | translate }}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</ng-template>

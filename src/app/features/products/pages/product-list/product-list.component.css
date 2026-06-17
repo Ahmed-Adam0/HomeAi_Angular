@@ -852,3 +852,122 @@
   right: auto !important;
   left: 0 !important;
 }
+
+/* ==========================================================================
+   Mobile Filter Drawer Styles
+   ========================================================================== */
+.mobile-filter-drawer {
+  width: 340px;
+  max-width: 85vw;
+  z-index: 1060 !important;
+  background-color: #ffffff !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.mobile-filter-drawer-ltr {
+  left: 0;
+  transform: translateX(-100%);
+}
+
+.mobile-filter-drawer-ltr.show {
+  transform: translateX(0);
+}
+
+.mobile-filter-drawer-rtl {
+  right: 0;
+  transform: translateX(100%);
+}
+
+.mobile-filter-drawer-rtl.show {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid rgba(184, 147, 92, 0.08) !important;
+}
+
+.drawer-body {
+  background-color: #ffffff !important;
+  overflow-y: auto !important;
+}
+
+.drawer-footer {
+  background-color: #ffffff !important;
+  border-top: 1px solid rgba(184, 147, 92, 0.08) !important;
+}
+
+.drawer-backdrop {
+  background-color: rgba(17, 17, 17, 0.4) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  z-index: 1050 !important;
+  animation: fadeIn 0.3s ease;
+}
+
+.btn-close-custom {
+  color: #8c857b;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-close-custom:hover {
+  color: #111111 !important;
+  transform: rotate(90deg);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* ==========================================================================
+   Mobile Accordion Component Polish
+   ========================================================================== */
+.mobile-filter-drawer .filter-group {
+  transition: border-color 0.35s ease, background-color 0.35s ease;
+}
+
+.mobile-filter-drawer .filter-group.accordion-active {
+  border-bottom-color: rgba(184, 147, 92, 0.3) !important;
+}
+
+.filter-header {
+  user-select: none;
+}
+
+.filter-header label {
+  cursor: inherit !important;
+}
+
+.filter-header i {
+  font-size: 0.85rem;
+  transition: transform 0.3s ease;
+}
+
+.material-group-wrapper:last-child {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Custom Select Dropdown Styling overrides */
+.select-custom {
+  background-color: #FAF7F2 !important;
+  border: 1px solid rgba(184, 147, 92, 0.15) !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.select-custom:focus {
+  border-color: #b8935c !important;
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.1) !important;
+  background-color: #ffffff !important;
+}
+
+[dir="rtl"] .select-custom {
+  background-position: left 0.75rem center !important;
+  padding-left: 2.25rem !important;
+  padding-right: 0.75rem !important;
+}
+

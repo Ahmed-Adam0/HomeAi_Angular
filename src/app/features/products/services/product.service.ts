@@ -26,6 +26,8 @@ export class ProductService {
     if (filter) {
       if (filter.query) params = params.set('query', filter.query);
       if (filter.categoryId) params = params.set('categoryId', filter.categoryId.toString());
+      if (filter.subCategoryId) params = params.set('subCategoryId', filter.subCategoryId.toString());
+      if (filter.vendorId) params = params.set('workshopId', filter.vendorId.toString());
       if (filter.minPrice) params = params.set('minPrice', filter.minPrice.toString());
       if (filter.maxPrice) params = params.set('maxPrice', filter.maxPrice.toString());
       if (filter.isFeatured !== undefined) params = params.set('isFeatured', filter.isFeatured.toString());
