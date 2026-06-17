@@ -143,10 +143,19 @@
   "FILTER_SEARCH_PLACEHOLDER": "ابحث...",
   "FILTER_SPACE": "المساحة المعمارية",
   "FILTER_ALL_SPACES": "جميع المساحات",
+  "FILTER_CATEGORY": "القسم",
+  "FILTER_ALL_CATEGORIES": "كل الأقسام",
+  "FILTER_SUBCATEGORY": "القسم الفرعي",
+  "FILTER_ALL_SUBCATEGORIES": "كل الأقسام الفرعية",
+  "FILTER_VENDOR": "البائع",
+  "FILTER_ALL_VENDORS": "كل البائعين",
+  "FILTER_MATERIALS": "المواد",
   "FILTER_PRICE": "نطاق السعر",
   "FILTER_MIN": "الأدنى",
   "FILTER_MAX": "الأقصى",
   "FILTER_CURRENCY_SYMBOL": "ج.م",
+  "FILTER_APPLY": "تطبيق الفلاتر",
+  "FILTER_BUTTON": "الفلاتر",
   "CATALOG_SHOWING": "عرض",
   "CATALOG_OF": "من",
   "CATALOG_DESIGNS": "تصاميم",
@@ -455,7 +464,6 @@
   "VENDOR.WORKSHOP.ERROR.PHONE_REQUIRED": "رقم الهاتف مطلوب",
   "VENDOR.WORKSHOP.ERROR.ADDRESS_REQUIRED": "العنوان مطلوب",
   "VENDOR.WORKSHOP.ERROR.DESCRIPTION_REQUIRED": "الوصف مطلوب",
-
   "vendor.profile.title": "ملف الورشة",
   "vendor.profile.subtitle": "إدارة معلومات ورشتك وبيانات الاتصال",
   "vendor.profile.header": "شعار الورشة",
@@ -513,13 +521,11 @@
   "VALIDATION.REQUIRED": "هذا الحقل مطلوب",
   "VALIDATION.INVALID_EMAIL": "يرجى إدخال بريد إلكتروني صالح",
   "VALIDATION.INVALID_PHONE": "يرجى إدخال رقم هاتف صالح",
-
   "ABOUT.HERO.BADGE": "✦ بوابة فورني مايند الذكي",
   "ABOUT.HERO.TITLE": "حيث يلتقي الذكاء بالتصميم الداخلي",
   "ABOUT.HERO.SUBTITLE": "نعيد تعريف تجربة شراء الأثاث من خلال المزج بين الذكاء الاصطناعي المتطور والحرفية الفاخرة. اكتشف طريقة أذكى لتصميم مساحتك.",
   "ABOUT.HERO.CTA_PRIMARY": "استكشف المجموعة",
   "ABOUT.HERO.CTA_SECONDARY": "تواصل معنا",
-
   "ABOUT.SECTION_BADGE": "✦ قصتنا",
   "ABOUT.STORY.TITLE": "نصنع مستقبل التصميم الداخلي",
   "ABOUT.STORY.DESCRIPTION": "وُلدت فورني مايند الذكي من رؤية بسيطة: جعل الأثاث الفاخر في متناول الجميع، ذكيًا، وشخصيًا للغاية. نحن نمزج بين التصميم الفراغي المدعوم بالذكاء الاصطناعي والحرفية المنتقاة لنغير كيفية تجربتك لمنزلك.",
@@ -529,7 +535,6 @@
   "ABOUT.MISSION.CONTENT": "إضفاء الطابع الديمقراطي على التصميم الداخلي الفاخر من خلال توظيف الذكاء الاصطناعي لتحليل أبعاد الغرفة والإضاءة والميزات المعمارية — ثم تنظيم مجموعات أثاث تتناغم مع مساحتك. نحن نؤمن أن每个人 يستحق منزلًا يشعر وكأنه مصمم خصيصًا له.",
   "ABOUT.VISION.LABEL": "رؤيتنا",
   "ABOUT.VISION.CONTENT": "عالم تتعايش فيه التكنولوجيا والتصميم في انسجام تام. نتصور نظامًا بيئيًا تصبح فيه مساحة معيشتك لوحة فنية حية — تتعلم وتتكيف وتتطور باستمرار مع أسلوب حياتك من خلال قوة الذكاء الاصطناعي الفراغي.",
-
   "ABOUT.VALUES.BADGE": "✦ ما نمثله",
   "ABOUT.VALUES.TITLE": "قيمنا الأساسية",
   "ABOUT.VALUES.INNOVATION.TITLE": "الابتكار أولاً",
@@ -544,14 +549,12 @@
   "ABOUT.VALUES.SMART_RECOMMENDATIONS.DESCRIPTION": "يتعلم ذكاؤنا الاصطناعي تفضيلاتك بمرور الوقت، ويقدم اقتراحات دقيقة بشكل متزايد تتناسب مع ذوقك وميزانيتك وقيود مساحتك.",
   "ABOUT.VALUES.MODERN_MARKETPLACE.TITLE": "سوق عصري",
   "ABOUT.VALUES.MODERN_MARKETPLACE.DESCRIPTION": "سوق منسق يربطك ببائعين وحرفيين ومصممين متميزين — جميعهم تم التحقق منهم من حيث الجودة والأصالة والحرفية.",
-
   "ABOUT.STATS.BADGE": "✦ أثرنا",
   "ABOUT.STATS.TITLE": "فورني مايند بالأرقام",
   "ABOUT.STATS.CUSTOMERS": "عميل سعيد",
   "ABOUT.STATS.PRODUCTS": "منتج مختار",
   "ABOUT.STATS.VENDORS": "بائع متميز",
   "ABOUT.STATS.ORDERS": "طلب تم توصيله",
-
   "ABOUT.PRIVACY.BADGE": "✦ خصوصيتك تهمنا",
   "ABOUT.PRIVACY.TITLE": "سياسة الخصوصية",
   "ABOUT.PRIVACY.DESCRIPTION": "نحن ملتزمون بحماية معلوماتك الشخصية والشفافية بشأن كيفية جمع واستخدام وحماية بياناتك.",
@@ -567,7 +570,6 @@
   "ABOUT.PRIVACY.SECURITY.DESCRIPTION": "ننفذ إجراءات أمان على مستوى الصناعة بما في ذلك تشفير SSL/TLS لجميع عمليات نقل البيانات، ومعالجة دفع متوافقة مع PCI-DSS، ومراجعات أمنية منتظمة، وضوابط وصول صارمة. يتم استضافة بنيتنا التحتية على خوادم سحابية آمنة ومتوافقة مع SOC 2 مع مراقبة على مدار الساعة.",
   "ABOUT.PRIVACY.USER_RIGHTS.TITLE": "حقوق المستخدم",
   "ABOUT.PRIVACY.USER_RIGHTS.DESCRIPTION": "لديك الحق في الوصول إلى بياناتك الشخصية أو تصحيحها أو حذفها في أي وقت. يمكنك تنزيل بياناتك، وتقييد المعالجة، والاعتراض على استخدامات معينة، وطلب قابلية النقل. لممارسة أي من هذه الحقوق، قم بزيارة إعدادات حسابك أو اتصل بمسؤول حماية البيانات لدينا على privacy@furnimind.ai.",
-
   "ABOUT.TERMS.BADGE": "✦ السياسات والإرشادات",
   "ABOUT.TERMS.TITLE": "الشروط والأحكام",
   "ABOUT.TERMS.DESCRIPTION": "يرجى قراءة هذه الشروط بعناية قبل استخدام منصة فورني مايند الذكي. من خلال الوصول إلى خدماتنا، فإنك توافق على الالتزام بهذه الشروط.",
@@ -583,19 +585,16 @@
   "ABOUT.TERMS.SECURITY.DESCRIPTION": "أنت مسؤول عن حماية كلمة المرور وأي بيانات اعتماد مصادقة أخرى تستخدم للوصول إلى حسابك. أنت توافق على إبلاغنا فورًا بأي استخدام غير مصرح به لحسابك. نحن غير مسؤولين عن أي خسارة أو ضرر ناتج عن فشلك في حماية بيانات اعتماد حسابك.",
   "ABOUT.TERMS.LEGAL.TITLE": "معلومات قانونية",
   "ABOUT.TERMS.LEGAL.DESCRIPTION": "تخضع هذه الشروط للقوانين وتُفسر وفقًا لقوانين جمهورية مصر العربية. يتم حل أي نزاعات ناشئة عن هذه الشروط من خلال التحكيم في القاهرة، مصر. تحتفظ فورني مايند الذكي بالحق في تحديث هذه الشروط في أي وقت، على أن تصبح التغييرات سارية المفعول عند النشر على المنصة. الاستمرار في الاستخدام بعد التغييرات يشكل قبولاً للشروط الجديدة.",
-
   "ABOUT.CTA.BADGE": "✦ تواصل معنا",
   "ABOUT.CTA.TITLE": "هل أنت مستعد لتحويل مساحتك؟",
   "ABOUT.CTA.SUBTITLE": "فريقنا هنا لمساعدتك في كل خطوة على الطريق. سواء كنت بحاجة إلى استشارة تصميمية، أو مساعدة في الطلب، أو تريد فقط إلقاء التحية — يسعدنا التواصل معك.",
   "ABOUT.CTA.BUTTON": "تواصل مع فريقنا",
-
   "CONTACT.HERO.BADGE": "✦ تواصل معنا",
   "CONTACT.HERO.TITLE": "يسعدنا التواصل معك",
   "CONTACT.HERO.SUBTITLE": "سواء كان لديك سؤال عن التصميم، أو تحتاج مساعدة في الطلب، أو تريد أن تصبح بائعًا، أو تريد فقط إلقاء التحية — فريقنا جاهز للمساعدة.",
   "CONTACT.HERO.STAT_AVAIL": "التوفر",
   "CONTACT.HERO.STAT_RESPONSE": "متوسط الرد",
   "CONTACT.HERO.STAT_SATISFACTION": "رضا العملاء",
-
   "CONTACT.INFO.PHONE.TITLE": "الهاتف",
   "CONTACT.INFO.PHONE.DESCRIPTION": "01214649915 — تحدث مباشرة مع فريق الدعم لدينا خلال ساعات العمل للحصول على مساعدة فورية.",
   "CONTACT.INFO.EMAIL.TITLE": "البريد الإلكتروني",
@@ -605,7 +604,6 @@
   "CONTACT.INFO.HOURS.TITLE": "ساعات العمل",
   "CONTACT.INFO.HOURS.DESCRIPTION": "السبت — الخميس: 9:00 صباحًا — 9:00 مساءً (GMT+2). الجمعة: 10:00 صباحًا — 6:00 مساءً.",
   "CONTACT.INFO.ACTION": "تواصل معنا",
-
   "CONTACT.FORM.BADGE": "✦ أرسل رسالة",
   "CONTACT.FORM.TITLE": "أرسل لنا رسالة",
   "CONTACT.FORM.DESCRIPTION": "املأ النموذج أدناه وسيتواصل معك فريقنا في أقرب وقت ممكن.",
@@ -619,7 +617,6 @@
   "CONTACT.FORM.SUCCESS_TITLE": "تم إرسال الرسالة بنجاح!",
   "CONTACT.FORM.SUCCESS_TEXT": "شكرًا لتواصلك معنا. سيقوم فريقنا بمراجعة استفسارك والرد عليك خلال 24 ساعة.",
   "CONTACT.FORM.ERROR_TEXT": "حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى أو الاتصال بنا مباشرة عبر الهاتف.",
-
   "CONTACT.VALIDATION.NAME_REQUIRED": "الاسم الكامل مطلوب.",
   "CONTACT.VALIDATION.NAME_MIN": "يجب أن يتكون الاسم من حرفين على الأقل.",
   "CONTACT.VALIDATION.EMAIL_REQUIRED": "البريد الإلكتروني مطلوب.",
@@ -630,7 +627,6 @@
   "CONTACT.VALIDATION.SUBJECT_MIN": "يجب أن يتكون الموضوع من 5 أحرف على الأقل.",
   "CONTACT.VALIDATION.MESSAGE_REQUIRED": "الرسالة مطلوبة.",
   "CONTACT.VALIDATION.MESSAGE_MIN": "يجب أن تتكون الرسالة من 10 أحرف على الأقل.",
-
   "CONTACT.SUPPORT.BADGE": "✦ كيف يمكننا المساعدة؟",
   "CONTACT.SUPPORT.TITLE": "خيارات الدعم",
   "CONTACT.SUPPORT.DESCRIPTION": "اختر القناة المناسبة لاستفسارك وسنقوم بتوصيلك بالفريق المناسب.",
@@ -646,7 +642,6 @@
   "CONTACT.SUPPORT.VENDOR.TITLE": "دعم البائعين",
   "CONTACT.SUPPORT.VENDOR.DESC": "تسجيل البائعين، إدارة الورشة، والمساعدة في تحليلات السوق.",
   "CONTACT.SUPPORT.VENDOR.CTA": "بوابة البائع",
-
   "CONTACT.FAQ.BADGE": "✦ إجابات سريعة",
   "CONTACT.FAQ.TITLE": "الأسئلة الشائعة",
   "CONTACT.FAQ.DESCRIPTION": "اعثر على إجابات فورية لأكثر الأسئلة شيوعًا التي يطرحها عملاؤنا.",
@@ -658,13 +653,11 @@
   "CONTACT.FAQ.A3": "نعم، يمكن للبائعين التواصل مباشرة عبر قناة دعم البائعين. استخدم قسم بوابة البائع أعلاه أو أرسل بريدًا إلكترونيًا إلى vendor@furnimind.ai للتسجيل وإدارة الورشة والمساعدة في التحليلات.",
   "CONTACT.FAQ.Q4": "أين يمكنني الإبلاغ عن المشكلات التقنية؟",
   "CONTACT.FAQ.A4": "يجب الإبلاغ عن المشكلات التقنية لفريق الدعم الفني لدينا عن طريق اختيار خيار الدعم الفني أعلاه أو إرسال بريد إلكتروني إلى tech@furnimind.ai. يُرجى تضمين وصف تفصيلي للمشكلة ولقطات الشاشة إن أمكن والخطوات اللازمة لإعادة إنتاجها.",
-
   "CONTACT.CTA.BADGE": "✦ هل تحتاج إلى مساعدة فورية؟",
   "CONTACT.CTA.TITLE": "نحن هنا لمساعدتك",
   "CONTACT.CTA.SUBTITLE": "فريق الدعم المخصص لدينا جاهز للإجابة على أسئلتك ومساعدتك في إيجاد الحل الأمثل.",
   "CONTACT.CTA.BUTTON_SUPPORT": "اتصل بالدعم",
   "CONTACT.CTA.BUTTON_MARKETPLACE": "استكشف المتجر",
-
   "VENDOR.REVENUE_DASHBOARD.TITLE": "تحليلات الإيرادات",
   "VENDOR.REVENUE_DASHBOARD.DESCRIPTION": "نظرة فورية على الإيرادات مع تفصيل يومي وأسبوعي وشهري",
   "VENDOR.REVENUE_DASHBOARD.LIVE_DASHBOARD": "لوحة حية",
@@ -702,7 +695,6 @@
   "VENDOR.REVENUE_DASHBOARD.CHART_MONTHLY_REVENUE": "الإيرادات الشهرية",
   "VENDOR.REVENUE_DASHBOARD.CHART_MONTHLY_REVENUE_DESC": "الإيرادات حسب الشهر",
   "VENDOR.REVENUE_DASHBOARD.CHART_MONTHLY_REVENUE_EMPTY": "لا توجد بيانات إيرادات شهرية للفترة المحددة",
-
   "VENDOR.ORDERS_ANALYTICS.TITLE": "تحليلات الطلبات",
   "VENDOR.ORDERS_ANALYTICS.DESCRIPTION": "أداء الطلبات الفوري ومقاييس الإنجاز",
   "VENDOR.ORDERS_ANALYTICS.LIVE_DASHBOARD": "لوحة حية",
@@ -794,6 +786,7 @@
         "BUTTON": "تسوق المظهر"
       }
     }
-  }
+  },
+  "FILTER_AI_FEATURES": "ميزات الذكاء الاصطناعي",
+  "FILTER_AI_RECOMMENDED": "مقترح بالذكاء الاصطناعي فقط"
 }
-
