@@ -125,10 +125,10 @@
             <div class="cart-dropdown-surface">
               <div class="cart-dropdown-header">
                 <div class="cart-dropdown-heading-group">
-                  <span class="cart-dropdown-kicker">Mini cart</span>
+                  <span class="cart-dropdown-kicker">{{ 'MINI_CART' | translate }}</span>
                   <div class="cart-dropdown-title-row">
                     <span class="cart-dropdown-title">{{ 'CART' | translate }}</span>
-                    <span class="cart-dropdown-count">{{ cartCount() }} items</span>
+                    <span class="cart-dropdown-count">{{ cartCount() }} {{ 'ITEMS' | translate }}</span>
                   </div>
                 </div>
                 <span class="cart-dropdown-accent"></span>
@@ -161,8 +161,8 @@
                     <span class="cart-item-qty-badge">{{ item.quantity }}</span>
                   </div>
                   <div class="cart-item-info">
-                    <p class="cart-item-vendor cart-item-vendor--fallback">Curated premium piece</p>
-                    <p class="cart-item-name">{{ item.productName }}</p>
+                    <p class="cart-item-vendor cart-item-vendor--fallback">{{ 'CURATED_PREMIUM_PIECE' | translate }}</p>
+                    <p class="cart-item-name">{{ (item | localized:'productName') || item.productName }}</p>
                     <div class="cart-item-variants">
                       @if (item.selectedColor) {
                       <span class="cart-item-color">
@@ -188,15 +188,6 @@
               </div>
 
               <div class="cart-dropdown-footer">
-                <div class="cart-free-shipping">
-                  <div class="cart-free-shipping-copy">
-                    <i class="bi bi-truck"></i>
-                    <span>{{ 'FREE_SHIPPING_MSG' | translate }}</span>
-                  </div>
-                  <div class="cart-free-shipping-bar" aria-hidden="true">
-                    <span class="cart-free-shipping-bar-fill"></span>
-                  </div>
-                </div>
                 <div class="cart-subtotal">
                   <span class="cart-subtotal-label">{{ 'SUBTOTAL' | translate }} ({{ cartCount() }} {{ 'ITEMS' |
                     translate }})</span>

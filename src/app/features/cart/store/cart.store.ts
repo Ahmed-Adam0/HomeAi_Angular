@@ -3,7 +3,7 @@ import { ICartItem } from '../interfaces/icart-item';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
 
 const CART_STORAGE_KEY = LOCAL_STORAGE_KEYS.CART;
-const SHIPPING_FEE = 29;
+const SHIPPING_FEE = 0;
 const TAX_RATE = 0.075;
 
 @Injectable({

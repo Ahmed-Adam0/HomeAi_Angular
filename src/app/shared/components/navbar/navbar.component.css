@@ -99,7 +99,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: var(--fm-z-navbar, 1030);
+  z-index: 1000;
   transform: translateY(0);
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
@@ -234,6 +234,7 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.15);
   top: 2px !important;
   inset-inline-end: 2px !important;
+  z-index: 2;
 }
 
 .animate-pulse {
@@ -639,8 +640,10 @@
 .dropdown-panel {
   position: absolute;
   top: calc(100% + 15px);
-  inset-inline-end: 0; /* Respects logical properties for RTL direction */
-  z-index: 99999;
+  inset-inline-end: 0; /* Aligns to right in LTR, left in RTL */
+  z-index: 3000;
+  direction: inherit;
+  text-align: start;
   
   /* Smooth Transitions closed state */
   opacity: 0;
@@ -670,11 +673,6 @@
   max-width: calc(100vw - 2rem);
 }
 
-/* Localized positioning overrides */
-[dir="rtl"] .dropdown-panel {
-  right: auto;
-  left: 0;
-}
 
 /* ==========================================================================
    4a. Premium Cart Dropdown Content Styling
@@ -1054,7 +1052,7 @@
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  z-index: 99998;
+  z-index: 2999;
   animation: backdropFadeIn 0.3s ease-out;
 }
 
@@ -1073,7 +1071,7 @@
     top: auto;
     width: 100% !important;
     max-width: 100% !important;
-    z-index: 99999;
+    z-index: 3000;
     
     /* Animation state: hidden at bottom */
     opacity: 1;

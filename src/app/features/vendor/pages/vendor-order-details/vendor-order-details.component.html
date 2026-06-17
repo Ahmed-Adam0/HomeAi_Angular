@@ -301,10 +301,7 @@
                       <span class="text-muted small">{{ 'VENDOR.COMMON.SUBTOTAL' | translate }}</span>
                       <span class="fw-semibold text-heading">{{ order()!.subtotal | currencyFormat }}</span>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="text-muted small">{{ 'VENDOR.COMMON.SHIPPING' | translate }}</span>
-                      <span class="fw-semibold text-heading">{{ order()!.shippingCost | currencyFormat }}</span>
-                    </div>
+
                     <div class="d-flex justify-content-between align-items-center">
                       <span class="text-muted small">{{ 'VENDOR.COMMON.TAX' | translate }}</span>
                       <span class="fw-semibold text-heading">{{ order()!.taxAmount | currencyFormat }}</span>

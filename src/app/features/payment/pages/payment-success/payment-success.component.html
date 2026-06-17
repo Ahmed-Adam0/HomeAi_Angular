@@ -4,19 +4,19 @@
     <div class="glow-spot primary-glow"></div>
     <div class="glow-spot secondary-glow"></div>
     <div class="glow-spot tertiary-glow"></div>
-    
+
     <!-- Floating particles -->
     <div class="particle p1"></div>
     <div class="particle p2"></div>
     <div class="particle p3"></div>
-    
+
     <!-- Abstract Furniture Silhouettes -->
     <div class="furniture-silhouette chair-silhouette">
       <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
         <path d="M30 75 L30 45 L70 45 L70 75 M30 55 L70 55 M42 45 L42 25 L58 25 L58 45" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    
+
     <div class="furniture-silhouette lamp-silhouette">
       <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2">
         <path d="M50 80 L50 25 M38 25 L62 25 L54 15 L46 15 Z M35 80 L65 80" stroke-linecap="round" stroke-linejoin="round"/>
@@ -45,7 +45,7 @@
     <section class="order-summary-section" aria-labelledby="summary-heading">
       <div class="summary-card">
         <h2 class="card-title" id="summary-heading">{{ 'PAYMENT_SUCCESS.ORDER_SUMMARY_TITLE' | translate }}</h2>
-        
+
         <div class="summary-grid">
           <div class="summary-item">
             <span class="item-label">{{ 'PAYMENT_SUCCESS.ORDER_NUMBER' | translate }}</span>
@@ -83,7 +83,7 @@
     <!-- Section 3 — Order Journey Timeline -->
     <section class="order-timeline-section" aria-labelledby="timeline-heading">
       <h2 class="timeline-section-title" id="timeline-heading">{{ 'PAYMENT_SUCCESS.TIMELINE.TITLE' | translate }}</h2>
-      
+
       <div class="timeline-container">
         <!-- Background Track Line -->
         <div class="timeline-track">
@@ -91,12 +91,12 @@
         </div>
 
         <div class="timeline-steps">
-          <div class="timeline-step" 
+          <div class="timeline-step"
                *ngFor="let step of timelineSteps(); let i = index"
                [class.completed]="step.isComplete"
                [class.active]="step.isActive"
                [attr.aria-current]="step.isActive ? 'step' : null">
-            
+
             <div class="step-marker-container">
               <div class="step-marker">
                 <span class="marker-dot" *ngIf="!step.isComplete"></span>
@@ -105,7 +105,7 @@
                 </svg>
               </div>
             </div>
-            
+
             <div class="step-content">
               <span class="step-number" aria-hidden="true">0{{ i + 1 }}</span>
               <h3 class="step-label">{{ step.labelKey | translate }}</h3>

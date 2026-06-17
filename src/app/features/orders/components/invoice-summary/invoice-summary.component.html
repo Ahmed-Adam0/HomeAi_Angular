@@ -11,12 +11,7 @@
     <span class="invoice-label text-secondary fw-semibold">{{ 'ORDER_DETAILS_SUBTOTAL' | translate }}</span>
     <span class="invoice-value text-dark fw-bold">{{ subtotal() | currencyFormat }}</span>
   </div>
-  
-  <!-- Shipping -->
-  <div class="invoice-row d-flex justify-content-between align-items-center py-2.5">
-    <span class="invoice-label text-muted small">{{ 'ORDER_DETAILS_SHIPPING_COST' | translate }}</span>
-    <span class="invoice-value text-secondary">{{ shippingCost() | currencyFormat }}</span>
-  </div>
+
   
   <!-- Tax -->
   <div class="invoice-row d-flex justify-content-between align-items-center py-2.5">
