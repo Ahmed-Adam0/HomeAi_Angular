@@ -9,6 +9,7 @@ import {
   IRegisterRequest,
   IForgotPasswordRequest,
   IVerifyOtpRequest,
+  IConfirmEmailOtpRequest,
   IResetPasswordRequest
 } from '../interfaces/iauth-request';
 import { IAuthResponse } from '../interfaces/iauth-response';
@@ -136,6 +137,10 @@ export class AuthService {
 
   verifyOtp(data: IVerifyOtpRequest) {
     return this.http.post(`${this.baseUrl}${API_URLS.AUTH.VERIFY_OTP}`, data);
+  }
+
+  confirmEmailOtp(data: IConfirmEmailOtpRequest) {
+    return this.http.post(`${this.baseUrl}${API_URLS.AUTH.CONFIRM_EMAIL}`, data);
   }
 
   resetPassword(data: IResetPasswordRequest) {

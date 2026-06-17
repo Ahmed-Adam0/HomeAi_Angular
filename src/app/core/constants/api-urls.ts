@@ -16,6 +16,7 @@ export const API_URLS = {
     FORGOT_PASSWORD: 'auth/forgot-password',
     VERIFY_OTP: 'auth/verify-otp',
     RESET_PASSWORD: 'auth/reset-password',
+    CONFIRM_EMAIL: 'auth/confirm-email-otp',
   },
   PRODUCTS: {
     LIST: 'Products',

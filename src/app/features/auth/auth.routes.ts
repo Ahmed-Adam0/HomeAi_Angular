@@ -31,4 +31,10 @@ export const authRoutes: Routes = [
     loadComponent: () =>
       import('./pages/reset-password/reset-password.component').then((m) => m.ResetPassword),
   },
+  {
+    path: APP_ROUTES.CONFIRM_EMAIL_OTP,
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./pages/confirm-email-otp/confirm-email-otp.component').then((m) => m.ConfirmEmailOtp),
+  },
 ];
