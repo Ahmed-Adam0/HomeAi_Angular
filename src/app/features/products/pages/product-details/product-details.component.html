@@ -1,534 +1,347 @@
-<div class="product-details-page py-5">
-  <div class="container py-4">
-    <!-- Breadcrumb Header -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb mb-2 font-xs">
-            <li class="breadcrumb-item">
-              <a routerLink="/" class="text-secondary text-decoration-none">
-                {{ 'CATALOG_BREADCRUMB_HOME' | translate }}
+<div class="product-page-luxury">
+  <div class="container-luxury">
+
+    <!-- Loading State -->
+    <ng-container *ngIf="isLoading()">
+      <div class="loading-grid-luxury">
+        <div class="gallery-skeleton-luxury">
+          <app-skeleton-loader type="product-details-gallery" [count]="1"></app-skeleton-loader>
+        </div>
+        <div class="info-skeleton-luxury">
+          <app-skeleton-loader type="product-details-info" [count]="1"></app-skeleton-loader>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Error State -->
+    <ng-container *ngIf="!isLoading() && error()">
+      <div class="state-card-luxury error-card-luxury">
+        <div class="error-icon-luxury">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 8v4M12 16h.01" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="error-msg-luxury">{{ error() }}</p>
+        <button class="retry-btn-luxury" (click)="loadProduct(currentProductId())">
+          {{ translationService.currentLang() === 'ar' ? 'إعادة المحاولة' : 'Try Again' }}
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Not Found State -->
+    <ng-container *ngIf="!isLoading() && notFound()">
+      <div class="state-card-luxury notfound-card-luxury">
+        <h4 class="notfound-title-luxury">{{ translationService.currentLang() === 'ar' ? 'المنتج غير موجود' : 'Product Not Found' }}</h4>
+        <p class="notfound-desc-luxury">{{ translationService.currentLang() === 'ar' ? 'المنتج الذي تبحث عنه غير متوفر حالياً.' : 'The product you are looking for is currently not available.' }}</p>
+        <a routerLink="/products" class="back-store-btn-luxury">{{ translationService.currentLang() === 'ar' ? 'العودة إلى المعرض' : 'Back to Gallery' }}</a>
+      </div>
+    </ng-container>
+
+    <!-- Content State -->
+    <ng-container *ngIf="!isLoading() && product() && !error() && !notFound()">
+
+      <!-- Luxury Breadcrumb -->
+      <nav class="breadcrumb-luxury" aria-label="breadcrumb">
+        <ol class="breadcrumb-list-luxury">
+          <li class="breadcrumb-item-luxury">
+            <a routerLink="/" class="crumb-link-luxury">{{ 'CATALOG_BREADCRUMB_HOME' | translate }}</a>
+          </li>
+          <li class="breadcrumb-separator-luxury">/</li>
+          <li class="breadcrumb-item-luxury">
+            <a routerLink="/products" class="crumb-link-luxury">{{ 'CATALOG_BREADCRUMB_CATALOG' | translate }}</a>
+          </li>
+          <ng-container *ngIf="product()?.categoryNameEn">
+            <li class="breadcrumb-separator-luxury">/</li>
+            <li class="breadcrumb-item-luxury">
+              <a [routerLink]="['/products']" [queryParams]="{categoryId: product()?.categoryId}" class="crumb-link-luxury">
+                {{ product() | localized:'categoryName' }}
               </a>
             </li>
-            <li class="breadcrumb-item">
-              <a routerLink="/products" class="text-secondary text-decoration-none">
-                {{ 'CATALOG_BREADCRUMB_CATALOG' | translate }}
-              </a>
+          </ng-container>
+          <ng-container *ngIf="product()?.subCategoryNameEn">
+            <li class="breadcrumb-separator-luxury">/</li>
+            <li class="breadcrumb-item-luxury">
+              <span class="crumb-current-luxury">{{ product() | localized:'subCategoryName' }}</span>
             </li>
-            <li class="breadcrumb-item active text-dark fw-bold" aria-current="page" *ngIf="product()">
-              {{ product() | localized:'name' }}
-            </li>
-          </ol>
-        </nav>
-        <a routerLink="/products" class="btn-back d-inline-flex align-items-center gap-2 text-dark fw-bold text-decoration-none font-xs transition-all mb-3">
-          <span class="back-arrow-icon">←</span>
-          {{ translationService.currentLang() === 'ar' ? 'الرجوع إلى الكتالوج' : 'Back to Catalog' }}
-        </a>
-      </div>
-    </div>
+          </ng-container>
+        </ol>
+      </nav>
 
-    <!-- 1. Skeleton Loaders while APIs load -->
-    <div *ngIf="isLoading()" class="row g-5">
-      <div class="col-lg-6">
-        <app-skeleton-loader type="product-details-gallery" [count]="1"></app-skeleton-loader>
-      </div>
-      <div class="col-lg-6">
-        <app-skeleton-loader type="product-details-info" [count]="1"></app-skeleton-loader>
-      </div>
-    </div>
+      <!-- Main Layout: 2 Columns showroom layout -->
+      <div class="product-showroom-grid">
 
-    <!-- 2. Main Premium Workspace Grid -->
-    <div *ngIf="!isLoading() && product()" class="row g-5 text-start main-product-grid">
-      <!-- Left Column: Gallery & Images Preview -->
-      <div class="col-lg-6">
-        <div class="gallery-wrapper">
-          <div class="active-image-container rounded-4 overflow-hidden shadow-md bg-light border border-light position-relative mb-3">
-            <!-- Main image -->
-            <img
-              [appLazyImage]="activeImage()"
-              [alt]="product() | localized:'name'"
-              class="active-img w-100 h-100 object-fit-cover transition-all"
-            />
+        <!-- LEFT COLUMN: Image Gallery with cursor-tracking zoom magnifier -->
+        <div class="gallery-column-luxury">
+          <div class="gallery-wrapper-luxury">
+            <div class="main-display-box-luxury" 
+                 *ngIf="selectedImage(); else noImageFallback"
+                 (mousemove)="onMouseMove($event)"
+                 (mouseleave)="onMouseLeave()">
+              
+              <div class="zoom-image-container-luxury">
+                <img [src]="selectedImage()" 
+                     [alt]="product() | localized:'name'" 
+                     class="gallery-main-img-luxury" 
+                     [class.transitioning]="imageTransitioning()"
+                     [ngStyle]="zoomStyle()" />
+              </div>
 
-            <!-- Glass Overlay Badges -->
-            <div class="absolute-badges-container position-absolute top-0 start-0 m-3 d-flex flex-column gap-2 z-2">
-              <span class="badge ai-recommended-badge d-flex align-items-center gap-1">
-                <i class="bi bi-sparkles text-gold"></i>
-                {{ translationService.currentLang() === 'ar' ? 'مقترح بالذكاء الاصطناعي' : 'AI Recommended' }}
-              </span>
-              <span class="badge discount-badge">
-                {{ translationService.currentLang() === 'ar' ? 'خصم ' + getDiscountPercentage() + '٪' : getDiscountPercentage() + '% OFF' }}
-              </span>
-            </div>
-
-            <!-- Absolute Float Action CTAs -->
-            <div class="absolute-actions-container position-absolute top-0 end-0 m-3 d-flex flex-column gap-2 z-2">
-              <button 
-                class="favorite-btn btn btn-light rounded-circle shadow-sm border-0 d-flex align-items-center justify-content-center transition-all"
-                [class.is-fav]="isFavorite()"
-                [disabled]="isTogglingFavorite()"
-                (click)="toggleFavorite($event)"
-                [aria-label]="isFavorite() ? 'Remove from wishlist' : 'Add to wishlist'"
-              >
-                @if (isTogglingFavorite()) {
-                  <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
-                } @else {
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                }
+              <!-- Action Buttons Overlay -->
+              <button class="favorite-toggle-luxury" 
+                      [class.favorited]="isFavorite()" 
+                      [disabled]="isTogglingFavorite()" 
+                      (click)="toggleFavorite($event)" 
+                      [attr.aria-label]="isFavorite() ? 'Remove from favorites' : 'Add to favorites'">
+                <svg *ngIf="!isTogglingFavorite() && !isFavorite()" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                <svg *ngIf="!isTogglingFavorite() && isFavorite()" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.25"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                <span class="loader-spinner-luxury" *ngIf="isTogglingFavorite()"></span>
               </button>
-            
-            </div>
-          </div>
 
-          <!-- Thumbnails gallery (Only show if there are multiple images) -->
-          <div *ngIf="productImages().length > 1" class="thumbnails-gallery d-flex gap-2">
-            <div 
-              *ngFor="let img of productImages()" 
-              class="thumbnail-container rounded-3 overflow-hidden border cursor-pointer"
-              [class.active-thumb]="activeImage() === img"
-              (click)="setActiveImage(img)"
-            >
-              <img [appLazyImage]="img" class="thumbnail-img w-100 h-100 object-fit-cover" [alt]="product() | localized:'name'" />
+              <span class="sale-badge-luxury" *ngIf="hasDiscount()">-{{ product()?.discountPercentage }}%</span>
+            </div>
+
+            <ng-template #noImageFallback>
+              <div class="main-display-box-luxury fallback-display-luxury">
+                <span>{{ translationService.currentLang() === 'ar' ? 'لا توجد صور متوفرة' : 'No images available' }}</span>
+              </div>
+            </ng-template>
+
+            <!-- Thumbnails Horizontal Rail -->
+            <div class="thumbnails-list-luxury" *ngIf="productImages().length > 1">
+              <button class="thumb-card-luxury" 
+                      *ngFor="let img of productImages()" 
+                      [class.selected]="selectedImage() === img" 
+                      (click)="setActiveImage(img)">
+                <img [src]="img" alt="" />
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Right Column: Product Premium details -->
-      <div class="col-lg-6 d-flex flex-column justify-content-between details-col">
-        <div>
-          <!-- Category and Brand info -->
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="text-uppercase fw-extrabold text-secondary letter-spacing-wide font-xs text-brand-meta">
-              {{ product() | localized:'workshopName' }}
-            </span>
-            <span class="badge bg-light text-dark font-xs px-3 py-1 rounded-pill border border-light">
+        <!-- RIGHT COLUMN: Elegant details card & configuration -->
+        <div class="details-column-luxury">
+          
+          <!-- Editorial Product Heading -->
+          <div class="editorial-header">
+            <span class="category-meta-tag" *ngIf="product()?.categoryNameEn">
               {{ product() | localized:'categoryName' }}
             </span>
+            <h1 class="product-title-luxury">{{ product() | localized:'name' }}</h1>
           </div>
 
-          <!-- Product Title -->
-          <h2 class="display-6 fw-extrabold text-dark tracking-tight mb-2 product-main-title">
-            {{ product() | localized:'name' }}
-          </h2>
+          <!-- Large Premium Pricing Typography -->
+          <div class="price-section-luxury">
+            <div class="price-row-luxury">
+              <span class="price-label-luxury">{{ translationService.currentLang() === 'ar' ? 'سعر الوحدة:' : 'Unit Price' }}</span>
+              <div class="price-container-luxury">
+                <span class="current-price-luxury">{{ finalPrice() | currencyFormat }}</span>
+                <span class="original-price-luxury" *ngIf="hasDiscount()">
+                  {{ (product()?.basePrice ?? product()?.price ?? 0) | currencyFormat }}
+                </span>
+              </div>
+            </div>
 
-          <!-- Rating review summary -->
-          <div class="d-flex align-items-center gap-2 mb-4 ratings-summary-row cursor-pointer" (click)="setActiveTab('reviews')">
-            <span class="stars-gold d-flex gap-1">
-              <i *ngFor="let star of [1,2,3,4,5]" 
-                 class="bi fs-8" 
-                 [class.bi-star-fill]="star <= Math.round(averageRating())"
-                 [class.bi-star]="star > Math.round(averageRating())"
-                 class="text-gold"></i>
-            </span>
-            <span class="font-xs text-dark fw-bold">{{ averageRating() }}</span>
-            <span class="font-xs text-secondary-color">
-              ({{ reviewsCount() }} {{ translationService.currentLang() === 'ar' ? 'مراجعات معمارية' : 'reviews' }})
-            </span>
-          </div>
+            <div class="price-row-luxury total-price-row-luxury">
+              <span class="price-label-luxury">{{ translationService.currentLang() === 'ar' ? 'الإجمالي:' : 'Total Price' }}</span>
+              <span class="total-price-value-luxury" [class.pulse-animation]="priceAnimating()">{{ totalPrice() | currencyFormat }}</span>
+            </div>
 
-          <!-- Dynamic Pricing Box -->
-          <div class="price-box p-3 rounded-3 bg-light border border-light mb-4 text-start">
-            <div class="d-flex align-items-baseline gap-3 flex-wrap">
-              <span class="current-price-detail fw-black display-6 text-dark">
-                {{ dynamicPrice() | currencyFormat }}
-              </span>
-              <span class="old-price-detail text-decoration-line-through font-sm text-secondary">
-                {{ getOldPrice(dynamicPrice()) | currencyFormat }}
-              </span>
-              <span class="discount-pill-text font-xxs px-2 py-1 rounded bg-danger bg-opacity-10 text-danger fw-bold">
-                {{ translationService.currentLang() === 'ar' ? 'وفر ' + getDiscountPercentage() + '٪' : 'SAVE ' + getDiscountPercentage() + '%' }}
-              </span>
+            <div class="discount-badge-luxury" *ngIf="hasDiscount()">
+              {{ translationService.currentLang() === 'ar' ? 'وفر ' : 'Save ' }}{{ product()?.discountPercentage }}%
             </div>
           </div>
 
-          <!-- Customizable Options Section -->
-          <div *ngIf="product()?.materials?.length" class="options-selection-section mb-4 text-start">
-            <div *ngFor="let material of product()?.materials" class="mb-3">
-              <h6 class="fw-bold text-dark mb-2">{{ (material | localized:'name') || material.name }}</h6>
-              <div class="d-flex flex-wrap gap-2">
-                <button
-                  *ngFor="let option of material.options"
-                  type="button"
-                  class="btn btn-sm rounded-pill px-3 py-1.5 border transition-all"
-                  [class.btn-dark]="selectedOptions()[material.materialId] === option.id"
-                  [class.btn-outline-dark]="selectedOptions()[material.materialId] !== option.id"
-                  (click)="selectOption(material.materialId, option.id)"
-                >
-                  {{ (option | localized:'value') || option.name }}
-                  <span class="ms-1 text-muted" *ngIf="option.priceDelta > 0">
-                    (+{{ option.priceDelta | currencyFormat }})
+          <!-- Description Preview -->
+          <p class="description-preview-luxury">
+            {{ descriptionText() | slice:0:180 }}{{ descriptionText().length > 180 ? '...' : '' }}
+          </p>
+
+          <!-- DYNAMIC CUSTOMIZATION AREA (Options Selector) -->
+          <div class="configurator-container-luxury" *ngIf="configGroups().length > 0">
+            <h3 class="configurator-title-luxury">
+              {{ translationService.currentLang() === 'ar' ? 'قم بتخصيص خامات وتفاصيل منتجك' : 'Customize Your Product' }}
+            </h3>
+
+            <div class="configurator-group-luxury" *ngFor="let group of configGroups(); trackBy: trackById">
+              <div class="configurator-group-meta">
+                <span class="configurator-group-label">{{ group | localized:'name' }}</span>
+                <span class="configurator-selected-value" *ngIf="selectedOptions()[group.id] as selectedId">
+                  {{ getSelectedOptionValue(group, selectedId) }}
+                </span>
+              </div>
+
+              <div class="configurator-options-grid">
+                <button class="configurator-option-btn" 
+                        *ngFor="let opt of group.options" 
+                        [class.active-option]="selectedOptions()[group.id] === opt.id" 
+                        (click)="selectOption(group.id, opt.id)">
+                  <div class="option-visual-content">
+                    <!-- Visual swatch color wrapper -->
+                    <span class="option-color-swatch" 
+                          *ngIf="getOptionSwatchColor(opt | localized:'value') as swatchColor" 
+                          [style.background]="swatchColor">
+                    </span>
+                    <span class="option-name-label">{{ opt | localized:'value' }}</span>
+                  </div>
+                  <span class="option-price-delta" *ngIf="opt.priceDelta > 0">
+                    +{{ opt.priceDelta | currencyFormat }}
                   </span>
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- Subtitle Short Description -->
-          <p class="product-description text-secondary fs-6 mb-4 lh-lg">
-            {{ product() | localized:'description' }}
-          </p>
-
-          <!-- Integrated Spatial AI Widget Card -->
-          <div class="ai-widget-card p-4 rounded-4 mb-4 border shadow-sm">
-            <div class="d-flex gap-3 text-start">
-              <div class="widget-icon bg-info bg-opacity-20 rounded-circle p-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="text-info">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div>
-                <h6 class="fw-extrabold text-info-glow mb-1">
-                  {{ translationService.currentLang() === 'ar' ? 'توصيات الذكاء الاصطناعي للمساحات' : 'AI Spatial Recommendation' }}
-                </h6>
-                <p class="font-xs text-secondary-color text-opacity-90 mb-3 lh-sm">
-                  {{ translationService.currentLang() === 'ar' ? 'تتناسب هذه القطعة بشكل مثالي مع طراز غرفتك وأبعادها بناءً على المخططات المحفوظة.' : 'This piece perfectly matches your room profile style preferences and fits ideally in your saved layout space coordinates.' }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dynamic Action Cart Tray -->
-        <div class="add-to-cart-tray pt-4 border-top border-light mt-2">
-          <div class="d-flex flex-wrap align-items-center gap-3">
-            <!-- Quantity Controller -->
-            <div class="quantity-controller d-flex align-items-center rounded-pill border border-dark p-1">
-              <button class="btn btn-link text-dark p-0 px-3 border-0 font-xs focus-none" (click)="decrementQuantity()">−</button>
-              <span class="fw-bold text-dark px-2 font-xs">{{ itemQuantity() }}</span>
-              <button class="btn btn-link text-dark p-0 px-3 border-0 font-xs focus-none" (click)="incrementQuantity()">+</button>
+          <!-- PURCHASE AREA: Quantity & Add to Cart -->
+          <div class="purchase-area-luxury">
+            <div class="quantity-picker-luxury">
+              <button class="qty-btn" (click)="decrementQuantity()" [disabled]="quantity() <= 1" aria-label="Decrease quantity">−</button>
+              <span class="qty-number">{{ quantity() }}</span>
+              <button class="qty-btn" (click)="incrementQuantity()" aria-label="Increase quantity">+</button>
             </div>
 
-            <!-- Action add to cart button -->
-            <button
-              class="btn btn-premium flex-grow-1 py-3 px-4 d-flex align-items-center justify-content-center gap-2 shadow"
-              [disabled]="cartService.isProductAdding(product()!.id)"
-              (click)="addToCart()"
-            >
-              @if (cartService.isProductAdding(product()!.id)) {
-                <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
-              } @else {
-                {{ translationService.currentLang() === 'ar' ? 'إضافة إلى عربة التسوق' : 'Add to Cart' }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              }
+            <button class="add-to-cart-btn-luxury" 
+                    [disabled]="cartService.isProductAdding(product()!.id)" 
+                    (click)="addToCart()">
+              <span class="loader-spinner-luxury white-spinner" *ngIf="cartService.isProductAdding(product()!.id)"></span>
+              <span *ngIf="!cartService.isProductAdding(product()!.id)" class="btn-text-content">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="btn-cart-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                {{ translationService.currentLang() === 'ar' ? 'أضف إلى السلة' : 'Add to Cart' }}
+              </span>
             </button>
+          </div>
 
-            <!-- Secondary visualize button -->
-            <a 
-              routerLink="/ai-chat"
-              [queryParams]="{ productId: product()?.id }"
-              class="btn btn-outline-premium py-3 px-4 d-flex align-items-center justify-content-center gap-2 text-decoration-none"
-            >
-              {{ translationService.currentLang() === 'ar' ? 'معاينة في غرفتي' : 'View in My Room' }}
-              <i class="bi bi-sparkles"></i>
-            </a>
+          <!-- SKU / Meta Tags -->
+          <div class="metadata-chips-luxury" *ngIf="product()?.sku || (product()?.tags?.length ?? 0) > 0">
+            <div class="metadata-chip sku-chip-luxury" *ngIf="product()?.sku">
+              <span class="meta-label">SKU:</span>
+              <span class="meta-value">{{ product()?.sku }}</span>
+            </div>
+            <div class="metadata-chip tag-chip-luxury" *ngFor="let tag of product()?.tags">
+              <span>#{{ tag }}</span>
+            </div>
           </div>
         </div>
 
-
       </div>
-    </div>
 
-    <!-- 3. Dynamic Interactive Tabs Section -->
-    <div *ngIf="!isLoading() && product()" class="tabs-wrapper mt-5 pt-4">
-      <ul class="nav nav-tabs justify-content-center mb-4 border-bottom border-light-beige text-uppercase letter-spacing-wide font-xs fw-bold">
-        <li class="nav-item">
-          <button 
-            class="nav-link bg-transparent border-0 px-4 py-3" 
-            [class.active]="activeTab() === 'description'"
-            (click)="setActiveTab('description')"
-          >
-            {{ translationService.currentLang() === 'ar' ? 'الوصف' : 'Description' }}
-          </button>
-        </li>
-        <li class="nav-item">
-          <button 
-            class="nav-link bg-transparent border-0 px-4 py-3" 
-            [class.active]="activeTab() === 'specifications'"
-            (click)="setActiveTab('specifications')"
-          >
-            {{ translationService.currentLang() === 'ar' ? 'المواصفات' : 'Specifications' }}
-          </button>
-        </li>
-        <li class="nav-item">
-          <button 
-            class="nav-link bg-transparent border-0 px-4 py-3" 
-            [class.active]="activeTab() === 'reviews'"
-            (click)="setActiveTab('reviews')"
-          >
-            {{ translationService.currentLang() === 'ar' ? 'المراجعات' : 'Reviews' }}
-            <span class="badge-count ms-1">({{ reviewsCount() }})</span>
-          </button>
-        </li>
-      </ul>
+      <!-- PRODUCT DETAILED SPECIFICATIONS & MATERIALS -->
+      <div class="details-divider-luxury"></div>
 
-      <!-- Tabs content panel -->
-      <div class="tab-content text-start p-3">
-        <!-- DESCRIPTION TAB -->
-        <div *ngIf="activeTab() === 'description'" class="tab-pane-fade">
-          <h4 class="fw-bold text-dark fs-5 mb-3">{{ translationService.currentLang() === 'ar' ? 'عن القطعة الفنية' : 'About the Artwork Piece' }}</h4>
-          <p class="text-secondary fs-6 lh-lg mb-4">
-            {{ product() | localized:'description' }}
-          </p>
-          <div class="key-features-list">
-            <h5 class="fw-extrabold text-dark fs-6 mb-3 text-uppercase tracking-wider">
-              {{ translationService.currentLang() === 'ar' ? 'المميزات الرئيسية' : 'Key Features' }}
-            </h5>
-            <ul class="list-unstyled d-flex flex-column gap-2 text-secondary font-xs">
-              <li class="d-flex align-items-center gap-2">
-                <i class="bi bi-check2 text-gold fs-5"></i>
-                {{ translationService.currentLang() === 'ar' ? 'تصميم مخصص تم مسحه ضوئياً بإحداثيات حية.' : 'Precision crafted editorial layouts scanned in real-time coordinates.' }}
-              </li>
-              <li class="d-flex align-items-center gap-2">
-                <i class="bi bi-check2 text-gold fs-5"></i>
-                {{ translationService.currentLang() === 'ar' ? 'مصنع يدوياً من خامات فاخرة عالية التحمل.' : 'Handmade using highly premium, sustainable solid-base components.' }}
-              </li>
-              <li class="d-flex align-items-center gap-2">
-                <i class="bi bi-check2 text-gold fs-5"></i>
-                {{ translationService.currentLang() === 'ar' ? 'توصيات ذكية متوائمة مع المساحات المعمارية للغرفة.' : 'Fully optimized for spatial room layout compatibility.' }}
-              </li>
-            </ul>
+      <div class="showroom-details-grid">
+        
+        <!-- Column 1: Editorial Description -->
+        <div class="editorial-details-column">
+          <h2 class="editorial-section-title">{{ translationService.currentLang() === 'ar' ? 'قصة التصميم والتفاصيل' : 'Design Story & Details' }}</h2>
+          <div class="editorial-body-text">
+            <p>{{ descriptionText() }}</p>
           </div>
         </div>
 
-        <!-- SPECIFICATIONS TAB -->
-        <div *ngIf="activeTab() === 'specifications'" class="tab-pane-fade">
-          @if (specifications().length > 0) {
-            <div class="table-responsive rounded-3 overflow-hidden border border-light-beige shadow-sm">
-              <table class="table table-striped table-hover mb-0 text-start align-middle">
-                <tbody>
-                  <tr *ngFor="let spec of specifications()">
-                    <td class="fw-bold text-dark font-xs w-25 bg-light-ivory py-3 px-4">
-                      {{ spec | localized:'label' }}
-                    </td>
-                    <td class="text-secondary font-xs py-3 px-4">
-                      {{ spec | localized:'value' }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          } @else {
-            <div class="alert alert-light border text-center p-4 rounded-4">
-              {{ translationService.currentLang() === 'ar' ? 'لا توجد مواصفات فنية متوفرة لهذه القطعة حالياً.' : 'No technical specifications available for this piece at the moment.' }}
-            </div>
-          }
-        </div>
+        <!-- Column 2: Tech Specs & Options Details -->
+        <div class="editorial-specs-column">
+          
+          <!-- Static Technical Specifications -->
+          <div class="specs-box-luxury" *ngIf="product()?.attributes?.length">
+            <h3 class="specs-title-luxury">{{ translationService.currentLang() === 'ar' ? 'المواصفات الفنية' : 'Technical Specifications' }}</h3>
+            <table class="specs-table-luxury">
+              <tbody>
+                <tr *ngFor="let attr of product()?.attributes">
+                  <td class="specs-label-cell">{{ attr | localized:'name' }}</td>
+                  <td class="specs-value-cell">
+                    <span *ngFor="let val of attr.values; let last = last">
+                      {{ val | localized:'value' }}{{ !last ? ', ' : '' }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-        <!-- REVIEWS TAB -->
-        <div *ngIf="activeTab() === 'reviews'" class="tab-pane-fade">
-          <div class="row g-5">
-            <!-- Left: Ratings Stats summaries -->
-            <div class="col-md-5 col-lg-4">
-              <div class="rating-summary-card p-4 rounded-4 bg-light border border-light-beige text-center mb-4">
-                <h5 class="fw-bold text-secondary font-xs text-uppercase mb-2">
-                  {{ translationService.currentLang() === 'ar' ? 'تقييمات المشترين' : 'Customer Rating' }}
-                </h5>
-                <div class="display-3 fw-black text-dark product-rating-score mb-1">{{ averageRating() }}</div>
-                <div class="d-flex justify-content-center gap-1 mb-2">
-                  <i *ngFor="let star of [1,2,3,4,5]" 
-                     class="bi fs-7" 
-                     [class.bi-star-fill]="star <= Math.round(averageRating())"
-                     [class.bi-star]="star > Math.round(averageRating())"
-                     class="text-gold"></i>
+          <!-- Materials & Options Summary -->
+          <div class="specs-box-luxury" *ngIf="product()?.materialGroups?.length">
+            <h3 class="specs-title-luxury">{{ translationService.currentLang() === 'ar' ? 'خيارات ومكونات الصنع' : 'Craftsmanship & Materials' }}</h3>
+            <div class="materials-groups-stack-luxury">
+              <div class="material-group-block-luxury" *ngFor="let mg of product()?.materialGroups">
+                <h4 class="material-group-title-luxury">{{ mg | localized:'name' }}</h4>
+                <div class="material-options-tags-row">
+                  <span class="material-option-tag-luxury" *ngFor="let opt of mg.options">
+                    {{ opt | localized:'value' }}
+                    <span class="material-delta-price" *ngIf="opt.priceDelta > 0">
+                      (+{{ opt.priceDelta | currencyFormat }})
+                    </span>
+                  </span>
                 </div>
-                <div class="font-xs text-secondary">
-                  {{ translationService.currentLang() === 'ar' ? 'بناءً على' : 'Based on' }} {{ reviewsCount() }} {{ translationService.currentLang() === 'ar' ? 'مراجعات معمارية' : 'reviews' }}
-                </div>
-              </div>
-
-              <!-- Rating breakdown bars -->
-              <div class="rating-breakdown-bars d-flex flex-column gap-2 mb-4">
-                <div *ngFor="let item of ratingsBreakdown()" class="d-flex align-items-center gap-2 font-xxs text-secondary">
-                  <span class="w-10 text-nowrap text-end">{{ item.stars }} ★</span>
-                  <div class="progress flex-grow-1" style="height: 6px; background-color: #f1f5f9;">
-                    <div class="progress-bar bg-gold" role="progressbar" [style.width.%]="item.percentage" [aria-valuenow]="item.percentage" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <span class="w-15 text-start">{{ item.percentage }}%</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right: Dynamic Reviews lists and Submission form -->
-            <div class="col-md-7 col-lg-8">
-              <!-- Review Submission Panel -->
-              <div class="add-review-section p-4 rounded-4 border border-light-beige mb-5 shadow-sm">
-                <h5 class="fw-extrabold text-dark fs-6 mb-4 text-uppercase tracking-wider">
-                  {{ translationService.currentLang() === 'ar' ? 'أضف مراجعتك' : 'Write a Review' }}
-                </h5>
-
-                @if (authService.isLoggedIn()) {
-                  @if (hasUserReviewed()) {
-                    <!-- Premium Already Reviewed Confirmation Card -->
-                    <div class="review-submitted-card d-flex flex-column align-items-center text-center p-4 rounded-4">
-                      <div class="submitted-icon-wrap mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-gold">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
-                        </svg>
-                      </div>
-                      <p class="fw-bold text-dark font-xs mb-1">
-                        {{ translationService.currentLang() === 'ar' ? 'تم إرسال مراجعتك بنجاح.' : 'Your review has been submitted successfully.' }}
-                      </p>
-                      <p class="font-xxs text-secondary opacity-75 mb-0">
-                        {{ translationService.currentLang() === 'ar' ? 'شكراً لمشاركتك تجربتك مع هذه القطعة الفاخرة.' : 'Thank you for sharing your feedback on this premium piece.' }}
-                      </p>
-                    </div>
-                  } @else {
-                    <form (submit)="submitReview($event)" class="d-flex flex-column gap-3">
-                      <div *ngIf="newReviewSuccess" class="alert alert-success border-0 rounded-3 p-3 font-xs">
-                        {{ translationService.currentLang() === 'ar' ? 'تمت إضافة مراجعتك بنجاح! شكراً جزيلاً.' : 'Review posted successfully! Thank you for sharing your experience.' }}
-                      </div>
-
-                      <div *ngIf="newReviewError" class="review-error-card p-3 rounded-3 font-xs">
-                        <div class="d-flex align-items-start gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="flex-shrink-0 mt-1 text-danger-soft">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0zm-9 3.75h.008v.008H12v-.008z" />
-                          </svg>
-                          <span class="text-danger-soft">{{ newReviewError }}</span>
-                        </div>
-                      </div>
-
-                      <!-- Stars rating input picker -->
-                      <div class="star-rating-picker d-flex align-items-center gap-2">
-                        <span class="font-xs text-secondary fw-semibold">
-                          {{ translationService.currentLang() === 'ar' ? 'تقييمك بالنجوم:' : 'Your Rating:' }}
-                        </span>
-                        <div class="d-flex gap-1 fs-5 cursor-pointer">
-                          <i *ngFor="let star of [1,2,3,4,5]"
-                             class="bi"
-                             [class.bi-star-fill]="star <= newReviewRating"
-                             [class.bi-star]="star > newReviewRating"
-                             [class.text-gold]="star <= newReviewRating"
-                             [class.text-secondary-color]="star > newReviewRating"
-                             (click)="setRating(star)"
-                          ></i>
-                        </div>
-                      </div>
-
-                      <!-- Comment textarea -->
-                      <div class="comment-input-group">
-                        <label for="reviewComment" class="form-label font-xs text-secondary fw-semibold mb-1">
-                          {{ translationService.currentLang() === 'ar' ? 'تعليقك:' : 'Your Comment:' }}
-                        </label>
-                        <textarea
-                          id="reviewComment"
-                          rows="4"
-                          class="form-control rounded-3 font-xs shadow-none border-light-beige"
-                          [placeholder]="translationService.currentLang() === 'ar' ? 'اكتب بالتفصيل عن جودة الخامات والتنسيق مع الغرفة...' : 'Detail your thoughts on fabric quality, spatial matching, and dimensions...'"
-                          [(ngModel)]="newReviewComment"
-                          name="comment"
-                          required
-                          appAutoDir
-                        ></textarea>
-                      </div>
-
-                      <button
-                        type="submit"
-                        class="btn btn-premium btn-sm rounded-pill py-2 px-4 font-xs align-self-start shadow d-flex align-items-center gap-2"
-                        [disabled]="isSubmittingReview()"
-                      >
-                        @if (isSubmittingReview()) {
-                          <span class="spinner-border spinner-border-sm text-white" role="status"></span>
-                        }
-                        {{ translationService.currentLang() === 'ar' ? 'إرسال المراجعة' : 'Submit Review' }}
-                      </button>
-                    </form>
-                  }
-                } @else {
-                  <div class="unauthenticated-review-prompt text-center p-4 bg-light rounded-3 border border-light-beige">
-                    <div class="fs-4 mb-2 opacity-40">✦</div>
-                    <p class="font-xs text-secondary mb-3">
-                      {{ translationService.currentLang() === 'ar' ? 'الرجاء تسجيل الدخول لمشاركة مراجعتك وتقييم جودة هذه القطعة.' : 'Please sign in to write a review and evaluate this premium piece.' }}
-                    </p>
-                    <a
-                      [routerLink]="['/login']"
-                      [queryParams]="{ returnUrl: router.url }"
-                      class="btn btn-outline-premium btn-sm rounded-pill font-xs px-4"
-                    >
-                      {{ translationService.currentLang() === 'ar' ? 'تسجيل الدخول' : 'Sign In to Review' }}
-                    </a>
-                  </div>
-                }
-              </div>
-
-              <!-- Reviews List -->
-              <h5 class="fw-extrabold text-dark fs-6 mb-3 text-uppercase tracking-wider border-bottom border-light pb-2">
-                {{ translationService.currentLang() === 'ar' ? 'المراجعات' : 'Customer Reviews' }}
-              </h5>
-
-              <div class="reviews-wrapper d-flex flex-column gap-3">
-                @if (reviews().length > 0) {
-                  <div *ngFor="let rev of reviews()" class="review-item card border-0 bg-light p-4 rounded-4 shadow-sm">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                      <div class="d-flex align-items-center gap-2">
-                        <div class="review-user-avatar d-flex align-items-center justify-content-center rounded-circle bg-gold text-white font-xs fw-bold" style="width: 32px; height: 32px;">
-                          {{ rev.userName ? rev.userName[0].toUpperCase() : 'C' }}
-                        </div>
-                        <div>
-                          <h6 class="fw-bold text-dark mb-0 font-xs">{{ rev.userName }}</h6>
-                          <span class="review-date font-xxs text-muted">{{ rev.createdAt | date:'mediumDate' }}</span>
-                        </div>
-                      </div>
-
-                      <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 rounded-pill px-3 py-1 font-xs" *ngIf="rev.verifiedPurchase">
-                        {{ translationService.currentLang() === 'ar' ? 'مشتري معتمد' : 'Verified Purchase' }}
-                      </span>
-                    </div>
-
-                    <div class="rating-stars-row d-flex gap-1 mb-2">
-                      <i *ngFor="let star of [1,2,3,4,5]"
-                         class="bi fs-9"
-                         [class.bi-star-fill]="star <= rev.rating"
-                         [class.bi-star]="star > rev.rating"
-                         class="text-gold"></i>
-                    </div>
-
-                    <p class="font-xs text-secondary lh-lg mb-0">{{ rev.comment }}</p>
-
-                    <!-- Dynamic Workshop Reply -->
-                    <div *ngIf="rev.replyText || rev.vendorReply" class="vendor-reply-box rounded-3 p-3 mt-3">
-                      <span class="badge bg-gold-soft text-gold font-xxs mb-1.5 d-inline-block">
-                        {{ translationService.currentLang() === 'ar' ? 'رد الورشة' : 'Workshop Reply' }}
-                      </span>
-                      <p class="font-xs text-secondary mb-0 lh-lg">{{ rev.replyText || rev.vendorReply }}</p>
-                    </div>
-                  </div>
-                } @else {
-                  <div class="empty-reviews-state text-center p-5 rounded-4 bg-light border border-light-beige shadow-sm">
-                    <div class="empty-icon fs-3 mb-2">🛋️</div>
-                    <h6 class="fw-bold text-dark font-xs mb-1">
-                      {{ translationService.currentLang() === 'ar' ? 'لا توجد مراجعات حتى الآن' : 'No Reviews Yet' }}
-                    </h6>
-                    <p class="font-xs text-secondary opacity-75 mb-0">
-                      {{ translationService.currentLang() === 'ar' ? 'كن أول من يشارك تجربته ومراجعته المعمارية لهذه القطعة الفاخرة!' : 'Be the first to share your experience and write a premium review for this piece!' }}
-                    </p>
-                  </div>
-                }
               </div>
             </div>
           </div>
+
+          <!-- Luxury Workshop card -->
+          <div class="artisan-workshop-card" *ngIf="product()?.workshopNameEn || product()?.workshopNameAr">
+            <div class="artisan-card-layout">
+              <div class="artisan-logo-wrapper" *ngIf="product()?.workshopLogoUrl">
+                <img [src]="product()?.workshopLogoUrl" [alt]="product() | localized:'workshopName'" />
+              </div>
+              <div class="artisan-logo-wrapper logo-fallback-luxury" *ngIf="!product()?.workshopLogoUrl">
+                {{ (product() | localized:'workshopName').charAt(0) }}
+              </div>
+              <div class="artisan-text-layout">
+                <div class="artisan-label-row">
+                  <span class="artisan-subtitle">{{ translationService.currentLang() === 'ar' ? 'ورشة عمل فنية' : 'Artisan Workshop' }}</span>
+                  <span class="artisan-verified" *ngIf="product()?.workshopIsVerified">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="verified-icon"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    {{ translationService.currentLang() === 'ar' ? 'موثق' : 'Verified' }}
+                  </span>
+                </div>
+                <span class="artisan-name">{{ product() | localized:'workshopName' }}</span>
+              </div>
+              <div class="artisan-rating-box" *ngIf="product()?.workshopRating">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="star-icon"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span>{{ product()?.workshopRating?.toFixed(1) }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- REVIEWS SECTION -->
+      <div class="reviews-section-luxury">
+        <h2 class="reviews-title-luxury">{{ translationService.currentLang() === 'ar' ? 'تقييمات وآراء العملاء' : 'Customer Reviews' }}</h2>
+        <app-product-reviews [productId]="product()!.id"></app-product-reviews>
+      </div>
+
+      <!-- RELATED PRODUCTS SECTION -->
+      <div class="related-showroom-section" *ngIf="relatedProducts().length > 0">
+        <div class="related-showroom-header">
+          <h2 class="related-title-luxury">{{ translationService.currentLang() === 'ar' ? 'قد يعجبك أيضاً' : 'You May Also Like' }}</h2>
+        </div>
+        
+        <div class="related-slider-luxury">
+          <!-- Navigation Arrows -->
+          <button class="carousel-nav-btn prev-btn" (click)="scrollCarousel('left')" [attr.aria-label]="'Previous items'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <div class="slider-viewport-luxury" #carouselViewport>
+            <div class="slider-track-luxury">
+              <div class="slider-item-luxury" *ngFor="let prod of relatedProducts(); trackBy: trackById">
+                <app-product-card [product]="prod"></app-product-card>
+              </div>
+            </div>
+          </div>
+
+          <button class="carousel-nav-btn next-btn" (click)="scrollCarousel('right')" [attr.aria-label]="'Next items'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </div>
-    </div>
 
-    <!-- 4. Related Products / Marketplace Recommendations (You May Also Like) -->
-    <div *ngIf="!isLoading() && product() && relatedProducts().length > 0" class="related-products-section mt-5 pt-5">
-      <h3 class="fw-extrabold text-dark text-start mb-4 pb-2 border-bottom border-light PlayfairRelatedTitle">
-        {{ translationService.currentLang() === 'ar' ? 'قد يعجبك أيضاً' : 'You May Also Like' }}
-      </h3>
-
-      <div class="row g-4">
-        <div 
-          *ngFor="let prod of relatedProducts()" 
-          class="col-sm-6 col-md-4 col-lg-3"
-        >
-          <app-product-card [product]="prod"></app-product-card>
-        </div>
-      </div>
-    </div>
+    </ng-container>
   </div>
 </div>

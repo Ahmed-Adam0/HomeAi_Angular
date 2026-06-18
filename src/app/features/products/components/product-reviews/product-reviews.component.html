@@ -1,0 +1,202 @@
+<div class="reviews-container-luxury">
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-state-luxury">
+    <div class="skeleton-title-luxury"></div>
+    <div class="skeleton-review-card-luxury" *ngFor="let i of [1, 2]"></div>
+  </div>
+
+  <!-- Content State -->
+  <div *ngIf="!isLoading()" class="reviews-content-grid-luxury">
+    
+    <!-- LEFT SIDE: Statistics Summary & Write Review Form -->
+    <div class="reviews-control-panel-luxury">
+      <!-- Header Summary -->
+      <div class="reviews-stats-summary-card">
+        <h3 class="reviews-sidebar-title">
+          {{ translationService.currentLang() === 'ar' ? 'ملخص التقييمات' : 'Reviews Summary' }}
+        </h3>
+        
+        <div class="summary-stats-luxury">
+          <div class="avg-rating-circle">
+            <span class="avg-score-luxury">{{ averageRating() > 0 ? averageRating().toFixed(1) : '−.−' }}</span>
+            <span class="out-of-five">/ 5</span>
+          </div>
+          
+          <div class="stats-info-block">
+            <div class="stars-outer-luxury">
+              <div class="stars-inner-luxury" [style.width.%]="(averageRating() / 5) * 100"></div>
+            </div>
+            <span class="total-text-luxury">
+              {{ totalReviews() }} {{ translationService.currentLang() === 'ar' ? 'تقييم من عملائنا' : 'customer reviews' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Star Breakdown Progress Bars -->
+        <div class="star-breakdown-luxury" *ngIf="totalReviews() > 0">
+          <div class="breakdown-row" *ngFor="let starNum of [5, 4, 3, 2, 1]">
+            <span class="breakdown-label">{{ starNum }} ★</span>
+            <div class="breakdown-bar-outer">
+              <div class="breakdown-bar-inner" [style.width.%]="(starBreakdown()[starNum] / totalReviews()) * 100"></div>
+            </div>
+            <span class="breakdown-count">{{ starBreakdown()[starNum] }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Write a Review Form -->
+      <div class="review-submission-card">
+        <h3 class="reviews-sidebar-title">
+          {{ translationService.currentLang() === 'ar' ? 'أضف تقييمك' : 'Write a Review' }}
+        </h3>
+
+        <!-- Form visible if user is authenticated -->
+        <form *ngIf="isAuthenticated()" (submit)="submitReview($event)" class="review-form-luxury">
+          <!-- Star Rating Input Selection -->
+          <div class="form-group-luxury">
+            <label class="form-label-luxury">
+              {{ translationService.currentLang() === 'ar' ? 'تقييمك للمنتج:' : 'Your Rating:' }}
+            </label>
+            <div class="star-rating-input-row">
+              <button type="button" 
+                      *ngFor="let star of [1, 2, 3, 4, 5]" 
+                      (click)="setFormRating(star)" 
+                      (mouseenter)="hoverRating.set(star)" 
+                      (mouseleave)="hoverRating.set(0)" 
+                      class="star-input-btn"
+                      [attr.aria-label]="'Rate ' + star + ' stars'">
+                <svg [class.filled]="star <= (hoverRating() || formRating())" 
+                     width="24" 
+                     height="24" 
+                     viewBox="0 0 24 24" 
+                     fill="none" 
+                     stroke="currentColor" 
+                     stroke-width="1.5">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </button>
+              <span class="rating-label-helper" *ngIf="(hoverRating() || formRating()) > 0">
+                {{ hoverRating() || formRating() }} / 5 ({{ getRatingLabel(hoverRating() || formRating()) }})
+              </span>
+            </div>
+          </div>
+
+          <!-- Review Comment Input -->
+          <div class="form-group-luxury">
+            <label for="reviewComment" class="form-label-luxury">
+              {{ translationService.currentLang() === 'ar' ? 'رأيك بالتفصيل:' : 'Your Review:' }}
+            </label>
+            <textarea id="reviewComment"
+                      [ngModel]="formComment()"
+                      (ngModelChange)="formComment.set($event)"
+                      name="comment"
+                      rows="4" 
+                      class="form-textarea-luxury" 
+                      [placeholder]="translationService.currentLang() === 'ar' ? 'شاركنا تفاصيل تجربتك مع هذا المنتج...' : 'Share your detailed experience with this piece...'"
+                      required></textarea>
+          </div>
+
+          <!-- Submission Feedback messages -->
+          <div *ngIf="submitError()" class="form-error-message">
+            {{ submitError() }}
+          </div>
+
+          <button type="submit" 
+                  [disabled]="isSubmitting() || !formComment().trim()" 
+                  class="submit-review-btn-luxury">
+            <span class="loader-spinner-luxury white-spinner" *ngIf="isSubmitting()"></span>
+            <span *ngIf="!isSubmitting()">
+              {{ translationService.currentLang() === 'ar' ? 'إرسال التقييم' : 'Submit Review' }}
+            </span>
+          </button>
+        </form>
+
+        <!-- Prompt to login if user is guest -->
+        <div *ngIf="!isAuthenticated()" class="guest-login-prompt">
+          <p class="prompt-text">
+            {{ translationService.currentLang() === 'ar' 
+              ? 'يجب عليك تسجيل الدخول أولاً لتتمكن من تقييم هذا المنتج.' 
+              : 'You must be logged in to write a review for this product.' }}
+          </p>
+          <a routerLink="/auth/login" class="prompt-login-btn">
+            {{ translationService.currentLang() === 'ar' ? 'تسجيل الدخول' : 'Sign In' }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE: Reviews list or Empty State -->
+    <div class="reviews-list-panel-luxury">
+      <h3 class="reviews-panel-title">
+        {{ translationService.currentLang() === 'ar' ? 'آراء العملاء' : 'Customer Feedback' }}
+        <span class="reviews-count-badge" *ngIf="reviews().length > 0">{{ reviews().length }}</span>
+      </h3>
+
+      <!-- Empty State: Premium placeholder -->
+      <div *ngIf="reviews().length === 0" class="empty-reviews-luxury">
+        <div class="empty-rating-placeholder">
+          <span class="large-rating-placeholder-num">−.−</span>
+          <div class="stars-placeholder-row">
+            <svg class="placeholder-star-icon" *ngFor="let star of [1,2,3,4,5]" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <span class="placeholder-rating-label">
+            {{ translationService.currentLang() === 'ar' ? 'لا توجد تقييمات بعد' : 'No reviews yet' }}
+          </span>
+        </div>
+        <p class="empty-reviews-desc">
+          {{ translationService.currentLang() === 'ar' 
+            ? 'لم يتم تقييم هذا المنتج الفريد بعد. كن أول من يشارك تجربته لجميع المشترين.' 
+            : 'This unique piece of furniture has not been rated yet. Be the first to share your experience with other buyers.' }}
+        </p>
+      </div>
+
+      <!-- Reviews Cards List -->
+      <div *ngIf="reviews().length > 0" class="reviews-list-luxury">
+        <div *ngFor="let review of reviews()" class="review-card-luxury">
+          
+          <div class="review-card-header-luxury">
+            <!-- User Avatar or Initials -->
+            <div class="reviewer-avatar-box">
+              <img *ngIf="getAvatarUrl(review.userAvatarUrl)" [src]="getAvatarUrl(review.userAvatarUrl)" [alt]="review.userName || 'User'" class="reviewer-img" />
+              <div *ngIf="!getAvatarUrl(review.userAvatarUrl)" class="reviewer-initials">
+                {{ getUserInitials(review.userName || 'Guest') }}
+              </div>
+            </div>
+
+            <!-- Reviewer Metadata Info -->
+            <div class="reviewer-info-meta">
+              <div class="reviewer-name-row">
+                <span class="reviewer-name-luxury">{{ review.userName || 'Guest' }}</span>
+                <span class="verified-purchase-badge" *ngIf="review.verifiedPurchase">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                  {{ translationService.currentLang() === 'ar' ? 'شراء مؤكد' : 'Verified Purchase' }}
+                </span>
+              </div>
+              
+              <div class="reviewer-stars-date-row">
+                <!-- Stars display -->
+                <div class="stars-outer-luxury">
+                  <div class="stars-inner-luxury" [style.width.%]="(review.rating / 5) * 100"></div>
+                </div>
+                <span class="review-date-luxury">{{ review.createdAt | date:'mediumDate' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review Comment Text -->
+          <p class="review-comment-luxury">{{ review.comment }}</p>
+
+          <!-- Optional Vendor reply -->
+          <div class="vendor-reply-box-luxury" *ngIf="review.vendorReply || review.replyText">
+            <div class="vendor-reply-header">
+              <span class="vendor-reply-badge">{{ translationService.currentLang() === 'ar' ? 'رد الورشة' : 'Workshop Reply' }}</span>
+            </div>
+            <p class="vendor-reply-text">{{ review.vendorReply || review.replyText }}</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

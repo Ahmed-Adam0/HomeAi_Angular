@@ -8,20 +8,43 @@ export interface IProduct {
   categoryId: number;
   categoryNameAr: string;
   categoryNameEn: string;
+  subCategoryId?: number;
+  subCategoryNameAr?: string;
+  subCategoryNameEn?: string;
+  productTypeId?: number;
+  productTypeNameAr?: string;
+  productTypeNameEn?: string;
   workshopId: number;
   workshopNameAr: string;
   workshopNameEn: string;
+  workshopLogoUrl?: string;
+  workshopRating?: number;
+  workshopIsVerified?: boolean;
   createdAt: string;
   mainImageUrl: string;
+  sku?: string;
+  tags?: string[];
   averageRating?: number;
   totalReviews?: number;
   isActive?: boolean;
   status?: string;
   discountPercentage?: number;
   basePrice?: number;
-  productTypeId?: number;
-  subCategoryId?: number;
+  imageUrl?: string;
   materials?: {
+    materialId: number;
+    name: string;
+    nameAr?: string;
+    nameEn?: string;
+    options: {
+      id: number;
+      name: string;
+      valueAr?: string;
+      valueEn?: string;
+      priceDelta: number;
+    }[];
+  }[];
+  materialGroups?: {
     materialId: number;
     name: string;
     nameAr?: string;
@@ -36,6 +59,18 @@ export interface IProduct {
   }[];
   images?: IProductImage[];
   vendorMaterialOptionIds?: number[];
+  attributes?: {
+    id: number;
+    name?: string;
+    nameAr?: string;
+    nameEn?: string;
+    values: {
+      id: number;
+      valueAr?: string;
+      valueEn?: string;
+      priceDelta: number;
+    }[];
+  }[];
 }
 
 export interface IProductImage {
