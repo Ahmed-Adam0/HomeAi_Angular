@@ -1,16 +1,35 @@
-@if (isOpen() && product()) {
-  <div class="qv-overlay" (click)="onBackdropClick($event)">
-    <div class="qv-modal">
+@if (product()) {
+  <div class="qv-overlay" [class.active]="isOpen()" (click)="onBackdropClick($event)">
+    <div class="qv-modal" [dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
       <button type="button" class="qv-close" (click)="close()">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
 
-      <div class="qv-content">
+      <!-- Skeleton Loader -->
+      <div class="qv-content qv-loading-skeleton" *ngIf="isLoadingDetails()">
+        <div class="qv-gallery">
+          <div class="skeleton-image skeleton-pulse"></div>
+          <div class="qv-thumbnails d-flex gap-2">
+            <div class="skeleton-thumb skeleton-pulse" *ngFor="let t of [1,2,3]"></div>
+          </div>
+        </div>
+        <div class="qv-details">
+          <div class="skeleton-text skeleton-brand skeleton-pulse"></div>
+          <div class="skeleton-text skeleton-title skeleton-pulse"></div>
+          <div class="skeleton-text skeleton-rating skeleton-pulse"></div>
+          <div class="skeleton-text skeleton-price skeleton-pulse"></div>
+          <div class="skeleton-text skeleton-desc skeleton-pulse" *ngFor="let l of [1,2,3]"></div>
+          <div class="skeleton-actions skeleton-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Real Content -->
+      <div class="qv-content" *ngIf="!isLoadingDetails() && detailedProduct()">
         <div class="qv-gallery">
           <div class="qv-main-image-wrapper">
             <img
               [src]="activeImage()"
-              [alt]="product()! | localized:'name'"
+              [alt]="detailedProduct()! | localized:'name'"
               class="qv-main-image"
               (mousemove)="onMouseMove($event)"
               (error)="handleImageError($event)"
@@ -28,7 +47,7 @@
                   [class.active]="activeImage() === img"
                   (click)="setActiveImage(img)"
                 >
-                  <img [src]="img" [alt]="product()! | localized:'name'" (error)="handleImageError($event)" />
+                  <img [src]="img" [alt]="detailedProduct()! | localized:'name'" (error)="handleImageError($event)" />
                 </div>
               }
             </div>
@@ -36,35 +55,55 @@
         </div>
 
         <div class="qv-details">
-          <span class="qv-brand">{{ product()! | localized:'workshopName' }}</span>
+          <div class="qv-meta-top">
+            <span class="qv-brand">{{ detailedProduct()! | localized:'workshopName' }}</span>
 
-          <h2 class="qv-title">{{ product()! | localized:'name' }}</h2>
+            <h2 class="qv-title">{{ detailedProduct()! | localized:'name' }}</h2>
 
-          <div class="qv-rating">
-            <div class="qv-stars">
-              @for (star of [1,2,3,4,5]; track star) {
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                  [class.star-filled]="star <= (product()!.averageRating || 0)"
-                  [class.star-empty]="star > (product()!.averageRating || 0)">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
+            <div class="qv-rating">
+              <div class="qv-stars">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                    [class.star-filled]="star <= (detailedProduct()!.averageRating || 0)"
+                    [class.star-empty]="star > (detailedProduct()!.averageRating || 0)">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                }
+              </div>
+              @if (detailedProduct()!.totalReviews && detailedProduct()!.totalReviews! > 0) {
+                <span class="qv-review-count">({{ detailedProduct()!.totalReviews }} {{ 'REVIEWS' | translate }})</span>
               }
             </div>
-            @if (product()!.totalReviews && product()!.totalReviews! > 0) {
-              <span class="qv-review-count">({{ product()!.totalReviews }} {{ 'REVIEWS' | translate }})</span>
-            }
+
+            <div class="qv-pricing">
+              <span class="qv-current-price">{{ detailedProduct()!.price | currencyFormat }}</span>
+              @if (hasDiscount() && originalPrice()) {
+                <span class="qv-old-price">{{ originalPrice()! | currencyFormat }}</span>
+              }
+            </div>
           </div>
 
-          <div class="qv-pricing">
-            <span class="qv-current-price">{{ product()!.price | currencyFormat }}</span>
-            @if (hasDiscount() && originalPrice()) {
-              <span class="qv-old-price">{{ originalPrice()! | currencyFormat }}</span>
+          <!-- Scrollable middle section -->
+          <div class="qv-scrollable-info">
+            @if (detailedProduct()!.descriptionEn || detailedProduct()!.descriptionAr) {
+              <p class="qv-description">{{ detailedProduct()! | localized:'description' }}</p>
+            }
+
+            <!-- Product Materials Dynamic Display -->
+            @if (detailedProduct()!.materials && detailedProduct()!.materials!.length > 0) {
+              <div class="qv-materials-container mt-3">
+                <div *ngFor="let group of detailedProduct()!.materials" class="mb-2">
+                  <span class="qv-material-label">{{ translationService.currentLang() === 'ar' ? group.nameAr : group.nameEn }}:</span>
+                  <div class="d-flex gap-1.5 flex-wrap mt-1">
+                    <span *ngFor="let opt of group.options" class="badge qv-material-option-badge">
+                      {{ translationService.currentLang() === 'ar' ? opt.valueAr : opt.valueEn }}
+                      <span *ngIf="opt.priceDelta > 0" class="text-gold"> (+{{ opt.priceDelta | currencyFormat }})</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
             }
           </div>
-
-          @if (product()!.descriptionEn || product()!.descriptionAr) {
-            <p class="qv-description">{{ product()! | localized:'description' }}</p>
-          }
 
           <div class="qv-actions">
             <div class="qv-quantity">
@@ -80,10 +119,10 @@
             <button
               type="button"
               class="qv-add-to-cart"
-              [disabled]="cartService.isProductAdding(product()!.id)"
+              [disabled]="cartService.isProductAdding(detailedProduct()!.id)"
               (click)="addToCart()"
             >
-              @if (cartService.isProductAdding(product()!.id)) {
+              @if (cartService.isProductAdding(detailedProduct()!.id)) {
                 <span class="qv-spinner"></span>
                 {{ 'ADDING' | translate }}
               } @else {

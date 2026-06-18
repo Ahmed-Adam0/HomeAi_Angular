@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { NgFor } from '@angular/common';
 
 export type SkeletonType = 
   | 'text'
@@ -19,7 +20,7 @@ export type SkeletonType =
 @Component({
   selector: 'app-skeleton-loader',
   standalone: true,
-  imports: [],
+  imports: [NgFor],
   templateUrl: './skeleton-loader.component.html',
   styleUrl: './skeleton-loader.component.css'
 })

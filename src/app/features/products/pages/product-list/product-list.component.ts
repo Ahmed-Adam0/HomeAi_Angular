@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, ElementRef, Renderer2, PLATFORM_ID, AfterViewInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed, ElementRef, Renderer2, PLATFORM_ID, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIf, NgFor, NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,8 +16,8 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
-import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
+import { CustomDropdownComponent } from '../../../../shared/components/custom-dropdown/custom-dropdown.component';
 
 @Component({
   selector: 'app-product-list',
@@ -33,8 +33,8 @@ import { AutoDirectionDirective } from '../../../../shared/directives/auto-direc
     EmptyStateComponent,
     TranslatePipe,
     PaginationComponent,
-    LocalizedPipe,
-    AutoDirectionDirective
+    AutoDirectionDirective,
+    CustomDropdownComponent
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
@@ -50,18 +50,20 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
   private renderer = inject(Renderer2);
   private platformId = inject(PLATFORM_ID);
 
-
   // States
   readonly products = signal<IProduct[]>([]);
   readonly categories = signal<ICategory[]>([]);
   readonly subCategories = signal<any[]>([]);
   readonly availableVendors = signal<{ id: number; nameAr: string; nameEn: string }[]>([]);
-  readonly availableMaterialGroups = signal<any[]>([]);
   readonly isLoading = signal<boolean>(true);
   readonly hasError = signal<boolean>(false);
   readonly totalCount = signal<number>(0);
+  readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.activeFilters.limit)));
   isMobileFiltersOpen = false;
-  activeAccordionSection: string | null = 'category';
+
+  // Premium UI layout states
+  readonly isDesktopSidebarOpen = signal<boolean>(true);
+  readonly viewMode = signal<'large-grid' | 'compact-grid' | 'list'>('large-grid');
 
   // Active filters bound to forms and route parameters
   activeFilters: IProductFilter = {
@@ -69,24 +71,71 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
     categoryId: '',
     subCategoryId: null,
     vendorId: null,
-    materialOptionIds: [],
     minPrice: undefined,
     maxPrice: undefined,
-    minRating: undefined,
-    isFeatured: undefined,
     sortBy: 'newest',
     page: 1,
-    limit: 6
+    limit: 10 // match default backend page size
   };
 
-  // Internal visual limits
-  priceLimitMin = 0;
-  priceLimitMax = 3000;
-
-  private allProductsFromApi: IProduct[] = [];
   private lastApiFiltersStr = '';
   private routeSub!: Subscription;
-  private filterOptionsCache = new Map<string, { vendors: any[], groups: any[] }>();
+  private filterOptionsCache = new Map<string, { vendors: any[] }>();
+
+  // Collapsible Accordion Sections State
+  openSections: Record<string, boolean> = {
+    search: true,
+    category: true,
+    subcategory: true,
+    vendor: true,
+    price: true
+  };
+
+  // Custom Dropdown Options computeds (reactive to language shifts)
+  readonly categoryOptions = computed(() => {
+    const isAr = this.translationService.currentLang() === 'ar';
+    const list = this.categories().map(cat => ({
+      value: cat.id.toString(),
+      label: isAr ? cat.nameAr : cat.nameEn
+    }));
+    return [{ value: '', label: this.translationService.translate('FILTER_ALL_CATEGORIES') }, ...list];
+  });
+
+  readonly subCategoryOptions = computed(() => {
+    const isAr = this.translationService.currentLang() === 'ar';
+    const list = this.subCategories().map(sub => ({
+      value: sub.id.toString(),
+      label: isAr ? sub.nameAr : sub.nameEn
+    }));
+    return [{ value: '', label: this.translationService.translate('FILTER_ALL_SUBCATEGORIES') }, ...list];
+  });
+
+  readonly vendorOptions = computed(() => {
+    const isAr = this.translationService.currentLang() === 'ar';
+    const list = this.availableVendors().map(v => ({
+      value: v.id.toString(),
+      label: isAr ? v.nameAr : v.nameEn
+    }));
+    return [{ value: '', label: this.translationService.translate('FILTER_ALL_VENDORS') }, ...list];
+  });
+
+  readonly sortOptions = computed(() => {
+    return [
+      { value: 'newest', label: this.translationService.translate('CATALOG_SORT_NEWEST') },
+      { value: 'price_asc', label: this.translationService.translate('CATALOG_SORT_PRICE_ASC') },
+      { value: 'price_desc', label: this.translationService.translate('CATALOG_SORT_PRICE_DESC') }
+    ];
+  });
+
+  readonly pageSizeOptions = computed(() => {
+    const showText = this.translationService.translate('TOOLBAR_SHOW');
+    return [
+      { value: 10, label: `${showText} 10` },
+      { value: 20, label: `${showText} 20` },
+      { value: 30, label: `${showText} 30` },
+      { value: 50, label: `${showText} 50` }
+    ];
+  });
 
   ngOnInit(): void {
     // Load categories first for dropdowns/filters
@@ -107,14 +156,12 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
       this.activeFilters.vendorId = params['vendorId'] || null;
       this.activeFilters.page = params['page'] ? parseInt(params['page']) : 1;
       this.activeFilters.sortBy = params['sortBy'] || 'newest';
+      this.activeFilters.limit = params['limit'] ? parseInt(params['limit']) : 10;
 
-      const matIds = params['materialOptionIds'];
-      if (matIds) {
-        this.activeFilters.materialOptionIds = Array.isArray(matIds)
-          ? matIds.map(Number)
-          : matIds.toString().split(',').map(Number).filter((n: number) => !isNaN(n));
-      } else {
-        this.activeFilters.materialOptionIds = [];
+      if (params['viewMode'] === 'large-grid' || params['viewMode'] === 'compact-grid' || params['viewMode'] === 'list') {
+        this.viewMode.set(params['viewMode']);
+      } else if (params['viewMode'] === 'grid') {
+        this.viewMode.set('large-grid');
       }
 
       if (params['minPrice']) this.activeFilters.minPrice = parseFloat(params['minPrice']);
@@ -122,11 +169,6 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
 
       if (params['maxPrice']) this.activeFilters.maxPrice = parseFloat(params['maxPrice']);
       else this.activeFilters.maxPrice = undefined;
-
-      if (params['minRating']) this.activeFilters.minRating = parseInt(params['minRating']);
-      else this.activeFilters.minRating = undefined;
-
-      this.activeFilters.isFeatured = params['isFeatured'] === 'true';
 
       if (this.activeFilters.categoryId) {
         this.categoryService.getSubcategories(Number(this.activeFilters.categoryId)).subscribe({
@@ -149,12 +191,10 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadFilterOptions(categoryId: string | undefined, subCategoryId: string | null | undefined): void {
-    const vendorId = this.activeFilters.vendorId;
-    const cacheKey = `${categoryId || 'null'}_${subCategoryId || 'null'}_${vendorId || 'null'}`;
+    const cacheKey = `${categoryId || 'null'}_${subCategoryId || 'null'}`;
     if (this.filterOptionsCache.has(cacheKey)) {
       const cached = this.filterOptionsCache.get(cacheKey)!;
       this.availableVendors.set(cached.vendors);
-      this.availableMaterialGroups.set(cached.groups);
       return;
     }
 
@@ -180,96 +220,7 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
         });
         const vendors = Array.from(vendorMap.values());
         this.availableVendors.set(vendors);
-
-        // If no vendor is selected, we don't display or load materials
-        if (!vendorId) {
-          this.availableMaterialGroups.set([]);
-          this.filterOptionsCache.set(cacheKey, { vendors, groups: [] });
-          return;
-        }
-
-        // A vendor IS selected, so load products and their materials specifically for this category/subcategory/vendor
-        const vendorFilters: IProductFilter = {
-          categoryId: categoryId || undefined,
-          subCategoryId: subCategoryId || undefined,
-          vendorId: vendorId || undefined,
-          page: 1,
-          limit: 20
-        };
-
-        this.productService.getProducts(vendorFilters).subscribe({
-          next: (vendorData) => {
-            const vendorProducts = vendorData || [];
-            if (vendorProducts.length === 0) {
-              this.availableMaterialGroups.set([]);
-              this.filterOptionsCache.set(cacheKey, { vendors, groups: [] });
-              return;
-            }
-
-            const detailsRequests = vendorProducts.map(p =>
-              this.productService.getProductById(p.id).pipe(
-                catchError(() => of(p))
-              )
-            );
-
-            forkJoin(detailsRequests).subscribe({
-              next: (detailedProducts) => {
-                const groupMap = new Map<number, {
-                  id: number;
-                  nameAr: string;
-                  nameEn: string;
-                  optionsMap: Map<number, { id: number; valueAr: string; valueEn: string; priceDelta: number }>
-                }>();
-
-                detailedProducts.forEach(p => {
-                  if (p.materials && Array.isArray(p.materials)) {
-                    p.materials.forEach((group: any) => {
-                      if (!group.materialId) return;
-
-                      if (!groupMap.has(group.materialId)) {
-                        groupMap.set(group.materialId, {
-                          id: group.materialId,
-                          nameAr: group.nameAr || group.name || '',
-                          nameEn: group.nameEn || group.name || '',
-                          optionsMap: new Map()
-                        });
-                      }
-
-                      const existingGroup = groupMap.get(group.materialId)!;
-                      if (group.options && Array.isArray(group.options)) {
-                        group.options.forEach((opt: any) => {
-                          if (!opt.id) return;
-                          existingGroup.optionsMap.set(opt.id, {
-                            id: opt.id,
-                            valueAr: opt.valueAr || opt.name || '',
-                            valueEn: opt.valueEn || opt.name || '',
-                            priceDelta: opt.priceDelta || 0
-                          });
-                        });
-                      }
-                    });
-                  }
-                });
-
-                const groups = Array.from(groupMap.values()).map(g => ({
-                  id: g.id,
-                  nameAr: g.nameAr,
-                  nameEn: g.nameEn,
-                  options: Array.from(g.optionsMap.values())
-                }));
-
-                this.filterOptionsCache.set(cacheKey, { vendors, groups });
-                this.availableMaterialGroups.set(groups);
-              },
-              error: (err) => {
-                console.error('Failed to load detailed vendor products for materials', err);
-              }
-            });
-          },
-          error: (err) => {
-            console.error('Failed to load broad vendor products for materials', err);
-          }
-        });
+        this.filterOptionsCache.set(cacheKey, { vendors });
       },
       error: (err) => {
         console.error('Failed to load broad filter vendors', err);
@@ -278,172 +229,49 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadCatalog(): void {
-    const apiFiltersJson = JSON.stringify({
-      categoryId: this.activeFilters.categoryId,
-      subCategoryId: this.activeFilters.subCategoryId,
-      vendorId: this.activeFilters.vendorId
-    });
-
-    // If API filters haven't changed, perform instant client-side keyword search and pagination in memory.
-    // This completely prevents unnecessary API requests, removes loading skeleton flickering, and eliminates typing lag.
-    if (this.allProductsFromApi.length > 0 && apiFiltersJson === this.lastApiFiltersStr) {
-      this.applyClientSideFilter();
-      return;
-    }
-
     this.isLoading.set(true);
     this.hasError.set(false);
-    this.lastApiFiltersStr = apiFiltersJson;
     
-    // Always request up to 100 products from API to do premium client-side filtering and pagination slicing.
-    // Only pass backend-supported filters: categoryId, subCategoryId, and vendorId.
     const apiFilters = {
+      query: this.activeFilters.query || undefined,
       categoryId: this.activeFilters.categoryId || undefined,
       subCategoryId: this.activeFilters.subCategoryId || undefined,
       vendorId: this.activeFilters.vendorId || undefined,
-      limit: 100,
-      page: 1
+      minPrice: this.activeFilters.minPrice || undefined,
+      maxPrice: this.activeFilters.maxPrice || undefined,
+      sortBy: this.activeFilters.sortBy || undefined,
+      page: this.activeFilters.page,
+      limit: this.activeFilters.limit
     };
     
-    this.productService.getProducts(apiFilters).subscribe({
-      next: (data) => {
-        const productsList = data || [];
-        if (productsList.length === 0) {
-          this.allProductsFromApi = [];
-          this.applyClientSideFilter();
+    this.productService.getProductsPaginated(apiFilters).subscribe({
+      next: (res) => {
+        this.totalCount.set(res.totalItems);
+        if (res.data.length === 0) {
+          this.products.set([]);
           this.isLoading.set(false);
           return;
         }
 
-        // Fetch details for each product in parallel to populate materials and vendorMaterialOptionIds
-        const detailsRequests = productsList.map(p => 
-          this.productService.getProductById(p.id).pipe(
-            catchError(() => of(p)) // fallback to basic product if details call fails
-          )
-        );
-
-        forkJoin(detailsRequests).subscribe({
-          next: (detailedProducts) => {
-            this.allProductsFromApi = detailedProducts;
-            this.applyClientSideFilter();
+        this.enrichProducts(res.data).subscribe({
+          next: (enriched: IProduct[]) => {
+            this.products.set(enriched);
             this.isLoading.set(false);
           },
-          error: (err) => {
-            console.error('Error fetching product details', err);
-            this.allProductsFromApi = productsList;
-            this.applyClientSideFilter();
+          error: () => {
+            this.products.set(res.data);
             this.isLoading.set(false);
           }
         });
       },
       error: (err) => {
         console.error('Catalog loading failure', err);
-        this.allProductsFromApi = [];
         this.products.set([]);
         this.totalCount.set(0);
         this.hasError.set(true);
         this.isLoading.set(false);
       }
     });
-  }
-
-  private preFilterAndSortProducts(): IProduct[] {
-    let filtered = [...this.allProductsFromApi];
-    
-    if (this.activeFilters.query) {
-      const q = this.activeFilters.query.toLowerCase().trim();
-      filtered = filtered.filter(p => 
-        (p.nameEn && p.nameEn.toLowerCase().includes(q)) ||
-        (p.nameAr && p.nameAr.toLowerCase().includes(q)) ||
-        (p.categoryNameEn && p.categoryNameEn.toLowerCase().includes(q)) ||
-        (p.categoryNameAr && p.categoryNameAr.toLowerCase().includes(q)) ||
-        (p.descriptionEn && p.descriptionEn.toLowerCase().includes(q)) ||
-        (p.descriptionAr && p.descriptionAr.toLowerCase().includes(q)) ||
-        (p.workshopNameEn && p.workshopNameEn.toLowerCase().includes(q)) ||
-        (p.workshopNameAr && p.workshopNameAr.toLowerCase().includes(q))
-      );
-    }
-    
-    if (this.activeFilters.minPrice !== undefined && this.activeFilters.minPrice !== null) {
-      filtered = filtered.filter(p => p.price >= this.activeFilters.minPrice!);
-    }
-    if (this.activeFilters.maxPrice !== undefined && this.activeFilters.maxPrice !== null) {
-      filtered = filtered.filter(p => p.price <= this.activeFilters.maxPrice!);
-    }
-    
-    if (this.activeFilters.categoryId) {
-      filtered = filtered.filter(p => p.categoryId === Number(this.activeFilters.categoryId));
-    }
-
-    if (this.activeFilters.subCategoryId) {
-      filtered = filtered.filter(p => p.subCategoryId === Number(this.activeFilters.subCategoryId));
-    }
-
-    if (this.activeFilters.vendorId) {
-      filtered = filtered.filter(p => p.workshopId === Number(this.activeFilters.vendorId));
-    }
-
-    if (this.activeFilters.materialOptionIds && this.activeFilters.materialOptionIds.length > 0) {
-      let groups = this.availableMaterialGroups();
-      if (groups.length === 0 && this.allProductsFromApi.length > 0) {
-        // extract group list on the fly to avoid race conditions
-        const groupMap = new Map<number, { id: number; options: { id: number }[] }>();
-        this.allProductsFromApi.forEach(p => {
-          if (p.materials && Array.isArray(p.materials)) {
-            p.materials.forEach((g: any) => {
-              if (!g.materialId) return;
-              if (!groupMap.has(g.materialId)) {
-                groupMap.set(g.materialId, { id: g.materialId, options: [] });
-              }
-              const groupObj = groupMap.get(g.materialId)!;
-              if (g.options && Array.isArray(g.options)) {
-                g.options.forEach((opt: any) => {
-                  if (opt.id && !groupObj.options.some((o: any) => o.id === opt.id)) {
-                    groupObj.options.push({ id: opt.id });
-                  }
-                });
-              }
-            });
-          }
-        });
-        groups = Array.from(groupMap.values());
-      }
-
-      const groupsWithSelectedOptions = groups.map(group => {
-        const selectedIdsInGroup = group.options
-          .map((opt: any) => opt.id)
-          .filter((id: number) => this.activeFilters.materialOptionIds!.includes(id));
-        return selectedIdsInGroup;
-      }).filter(selectedIds => selectedIds.length > 0);
-
-      filtered = filtered.filter(p => {
-        if (!p.vendorMaterialOptionIds || p.vendorMaterialOptionIds.length === 0) {
-          return false;
-        }
-        return groupsWithSelectedOptions.every(selectedIds => 
-          selectedIds.some((id: number) => p.vendorMaterialOptionIds!.includes(id))
-        );
-      });
-    }
-
-    if (this.activeFilters.isFeatured) {
-      filtered = filtered.filter(p => (p as any).isFeatured);
-    }
-    
-    if (this.activeFilters.sortBy === 'price_asc') {
-      filtered.sort((a, b) => a.price - b.price);
-    } else if (this.activeFilters.sortBy === 'price_desc') {
-      filtered.sort((a, b) => b.price - a.price);
-    } else {
-      filtered.sort((a, b) => {
-        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        if (dateA !== dateB) return dateB - dateA;
-        return b.id - a.id;
-      });
-    }
-
-    return filtered;
   }
 
   enrichProducts(products: IProduct[]): Observable<IProduct[]> {
@@ -470,61 +298,6 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  private applyClientSideFilter(): void {
-    const preFiltered = this.preFilterAndSortProducts();
-
-    if (this.activeFilters.minRating === undefined || this.activeFilters.minRating === null) {
-      this.totalCount.set(preFiltered.length);
-      
-      const totalPages = Math.ceil(preFiltered.length / this.activeFilters.limit) || 1;
-      if (this.activeFilters.page > totalPages) {
-        this.activeFilters.page = 1;
-      }
-      const startIndex = (this.activeFilters.page - 1) * this.activeFilters.limit;
-      const endIndex = startIndex + this.activeFilters.limit;
-      const paginatedProducts = preFiltered.slice(startIndex, endIndex);
-
-      this.enrichProducts(paginatedProducts).subscribe({
-        next: (enriched: IProduct[]) => {
-          this.products.set(enriched);
-        },
-        error: () => {
-          this.products.set(paginatedProducts);
-        }
-      });
-    } else {
-      this.enrichProducts(preFiltered).subscribe({
-        next: (enriched: IProduct[]) => {
-          const finalFiltered = enriched.filter((p: IProduct) => (p.averageRating ?? 0) >= this.activeFilters.minRating!);
-          this.totalCount.set(finalFiltered.length);
-
-          const totalPages = Math.ceil(finalFiltered.length / this.activeFilters.limit) || 1;
-          if (this.activeFilters.page > totalPages) {
-            this.activeFilters.page = 1;
-          }
-          const startIndex = (this.activeFilters.page - 1) * this.activeFilters.limit;
-          const endIndex = startIndex + this.activeFilters.limit;
-          const paginatedProducts = finalFiltered.slice(startIndex, endIndex);
-
-          this.products.set(paginatedProducts);
-        },
-        error: () => {
-          this.products.set([]);
-          this.totalCount.set(0);
-        }
-      });
-    }
-  }
-
-  calculateVirtualTotal(): void {
-    let baseCount = 8;
-    if (this.activeFilters.categoryId) {
-      const match = this.categories().find(c => c.id === Number(this.activeFilters.categoryId));
-      baseCount = match ? 6 : 2;
-    }
-    this.totalCount.set(baseCount);
-  }
-
   applyFilters(): void {
     this.activeFilters.page = 1;
     this.updateRoute();
@@ -539,23 +312,11 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
       materialOptionIds: [],
       minPrice: undefined,
       maxPrice: undefined,
-      minRating: undefined,
-      isFeatured: undefined,
       sortBy: 'newest',
       page: 1,
-      limit: 6
+      limit: 10
     };
     this.subCategories.set([]);
-    this.updateRoute();
-  }
-
-  toggleRatingFilter(stars: number): void {
-    if (this.activeFilters.minRating === stars) {
-      this.activeFilters.minRating = undefined;
-    } else {
-      this.activeFilters.minRating = stars;
-    }
-    this.activeFilters.page = 1;
     this.updateRoute();
   }
 
@@ -564,9 +325,14 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
     this.updateRoute();
   }
 
-  onSortChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
+  onSortChange(value: string): void {
     this.activeFilters.sortBy = value as any;
+    this.activeFilters.page = 1;
+    this.updateRoute();
+  }
+
+  onPageSizeChange(value: number): void {
+    this.activeFilters.limit = value;
     this.activeFilters.page = 1;
     this.updateRoute();
   }
@@ -575,7 +341,6 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
     this.activeFilters.categoryId = catId;
     this.activeFilters.subCategoryId = null;
     this.activeFilters.vendorId = null;
-    this.activeFilters.materialOptionIds = [];
     this.activeFilters.page = 1;
 
     if (catId) {
@@ -602,7 +367,6 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
   onSubCategoryChange(subCatId: string | null): void {
     this.activeFilters.subCategoryId = subCatId || null;
     this.activeFilters.vendorId = null;
-    this.activeFilters.materialOptionIds = [];
     this.activeFilters.page = 1;
 
     this.loadFilterOptions(this.activeFilters.categoryId, subCatId);
@@ -611,42 +375,9 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
 
   onVendorChange(vendorId: string | null): void {
     this.activeFilters.vendorId = vendorId || null;
-    this.activeFilters.materialOptionIds = [];
     this.activeFilters.page = 1;
 
     this.loadFilterOptions(this.activeFilters.categoryId, this.activeFilters.subCategoryId);
-    this.applyFilters();
-  }
-
-  getSelectedOptionForGroup(groupId: number): number | null {
-    if (!this.activeFilters.materialOptionIds || this.activeFilters.materialOptionIds.length === 0) {
-      return null;
-    }
-    const group = this.availableMaterialGroups().find(g => g.id === groupId);
-    if (!group) return null;
-    const groupOptionIds = group.options.map((opt: any) => opt.id);
-    const selected = this.activeFilters.materialOptionIds.find(id => groupOptionIds.includes(id));
-    return selected !== undefined ? selected : null;
-  }
-
-  onMaterialOptionGroupChange(groupId: number, optionId: number | null): void {
-    if (!this.activeFilters.materialOptionIds) {
-      this.activeFilters.materialOptionIds = [];
-    }
-
-    const group = this.availableMaterialGroups().find(g => g.id === groupId);
-    if (!group) return;
-    const groupOptionIds = group.options.map((opt: any) => opt.id);
-
-    // Filter out any other selections from this group
-    this.activeFilters.materialOptionIds = this.activeFilters.materialOptionIds.filter(
-      id => !groupOptionIds.includes(id)
-    );
-
-    if (optionId !== null && optionId !== undefined) {
-      this.activeFilters.materialOptionIds.push(optionId);
-    }
-
     this.applyFilters();
   }
 
@@ -654,77 +385,16 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
     this.isMobileFiltersOpen = open;
   }
 
+  toggleDesktopSidebar(): void {
+    this.isDesktopSidebarOpen.update(v => !v);
+  }
+
   toggleAccordionSection(section: string): void {
-    if (this.activeAccordionSection === section) {
-      this.activeAccordionSection = null;
-    } else {
-      this.activeAccordionSection = section;
-    }
+    this.openSections[section] = !this.openSections[section];
   }
 
   isAccordionSectionOpen(section: string, isMobile: boolean): boolean {
-    if (!isMobile) {
-      return true;
-    }
-    return this.activeAccordionSection === section;
-  }
-
-  extractFiltersFromProducts(products: IProduct[]): void {
-    const vendorMap = new Map<number, { id: number; nameAr: string; nameEn: string }>();
-    const groupMap = new Map<number, {
-      id: number;
-      nameAr: string;
-      nameEn: string;
-      optionsMap: Map<number, { id: number; valueAr: string; valueEn: string; priceDelta: number }>
-    }>();
-
-    products.forEach(p => {
-      if (p.workshopId) {
-        vendorMap.set(p.workshopId, {
-          id: p.workshopId,
-          nameAr: p.workshopNameAr || `ورشة ${p.workshopId}`,
-          nameEn: p.workshopNameEn || `Workshop ${p.workshopId}`
-        });
-      }
-
-      if (p.materials && Array.isArray(p.materials)) {
-        p.materials.forEach((group: any) => {
-          if (!group.materialId) return;
-
-          if (!groupMap.has(group.materialId)) {
-            groupMap.set(group.materialId, {
-              id: group.materialId,
-              nameAr: group.nameAr || group.name || '',
-              nameEn: group.nameEn || group.name || '',
-              optionsMap: new Map()
-            });
-          }
-
-          const existingGroup = groupMap.get(group.materialId)!;
-          if (group.options && Array.isArray(group.options)) {
-            group.options.forEach((opt: any) => {
-              if (!opt.id) return;
-              existingGroup.optionsMap.set(opt.id, {
-                id: opt.id,
-                valueAr: opt.valueAr || opt.name || '',
-                valueEn: opt.valueEn || opt.name || '',
-                priceDelta: opt.priceDelta || 0
-              });
-            });
-          }
-        });
-      }
-    });
-
-    this.availableVendors.set(Array.from(vendorMap.values()));
-
-    const groups = Array.from(groupMap.values()).map(g => ({
-      id: g.id,
-      nameAr: g.nameAr,
-      nameEn: g.nameEn,
-      options: Array.from(g.optionsMap.values())
-    }));
-    this.availableMaterialGroups.set(groups);
+    return !!this.openSections[section];
   }
 
   private updateRoute(): void {
@@ -733,15 +403,12 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
       categoryId: this.activeFilters.categoryId || null,
       subCategoryId: this.activeFilters.subCategoryId || null,
       vendorId: this.activeFilters.vendorId || null,
-      materialOptionIds: this.activeFilters.materialOptionIds && this.activeFilters.materialOptionIds.length > 0
-        ? this.activeFilters.materialOptionIds.join(',')
-        : null,
       sortBy: this.activeFilters.sortBy || null,
       page: this.activeFilters.page > 1 ? this.activeFilters.page : null,
       minPrice: this.activeFilters.minPrice || null,
       maxPrice: this.activeFilters.maxPrice || null,
-      minRating: this.activeFilters.minRating || null,
-      isFeatured: this.activeFilters.isFeatured ? 'true' : null
+      limit: this.activeFilters.limit !== 10 ? this.activeFilters.limit : null,
+      viewMode: this.viewMode() !== 'large-grid' ? this.viewMode() : null
     };
 
     this.router.navigate([], {
@@ -753,8 +420,6 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Delay observation to ensure browser layout coordinates and heights are fully calculated,
-      // preventing race conditions where observed items trigger immediately on initialization.
       setTimeout(() => {
         const revealItems = this.el.nativeElement.querySelectorAll(
           '.filter-sidebar, .catalog-toolbar, .products-grid-row > div, app-pagination'
@@ -762,7 +427,7 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
 
         const observerOptions = {
           root: null,
-          rootMargin: '0px 0px -20% 0px', // Trigger precisely when approximately 20% of section enters viewport
+          rootMargin: '0px 0px -20% 0px',
           threshold: 0.05
         };
 
@@ -770,7 +435,7 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               this.renderer.addClass(entry.target, 'reveal-visible');
-              observer.unobserve(entry.target); // Trigger exactly once
+              observer.unobserve(entry.target);
             }
           });
         }, observerOptions);

@@ -24,9 +24,13 @@ export interface IProduct {
   materials?: {
     materialId: number;
     name: string;
+    nameAr?: string;
+    nameEn?: string;
     options: {
       id: number;
       name: string;
+      valueAr?: string;
+      valueEn?: string;
       priceDelta: number;
     }[];
   }[];

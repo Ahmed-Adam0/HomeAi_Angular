@@ -1,8 +1,10 @@
-<nav aria-label="Page navigation" class="d-flex justify-content-center my-4">
-  <ul class="pagination pagination-rounded gap-1">
+<nav aria-label="Page navigation" class="d-flex justify-content-center my-5">
+  <ul class="pagination pagination-premium gap-2 align-items-center">
     <li class="page-item" [class.disabled]="currentPage === 1">
-      <button class="page-link" (click)="onPageClick(currentPage - 1)" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
+      <button class="page-link d-flex align-items-center justify-content-center" (click)="onPageClick(currentPage - 1)" aria-label="Previous">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="arrow-icon">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
       </button>
     </li>
     @for (page of pages; track page) {
@@ -11,8 +13,10 @@
       </li>
     }
     <li class="page-item" [class.disabled]="currentPage === totalPages">
-      <button class="page-link" (click)="onPageClick(currentPage + 1)" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
+      <button class="page-link d-flex align-items-center justify-content-center" (click)="onPageClick(currentPage + 1)" aria-label="Next">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="arrow-icon">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
       </button>
     </li>
   </ul>

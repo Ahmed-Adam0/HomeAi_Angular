@@ -5,24 +5,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(18, 16, 14, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   padding: 24px;
-  animation: qvFadeIn 0.25s ease-out;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s var(--fm-ease-smooth), visibility 0.4s var(--fm-ease-smooth) !important;
+}
+
+.qv-overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
 .qv-modal {
-  background: #fff;
-  border-radius: 24px;
+  background: #ffffff;
+  border-radius: 28px;
   max-width: 1000px;
   width: 100%;
   max-height: calc(100vh - 48px);
   overflow-y: auto;
   overflow-x: hidden;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.35);
-  animation: qvScaleUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: var(--fm-shadow-xl) !important;
+  border: 1px solid rgba(184, 147, 92, 0.08);
+  transform: scale(0.96) translateY(12px);
+  opacity: 0;
+  transition: transform 0.45s var(--fm-ease-smooth), opacity 0.45s var(--fm-ease-smooth) !important;
   position: relative;
+}
+
+.qv-overlay.active .qv-modal {
+  transform: scale(1) translateY(0);
+  opacity: 1;
 }
 
 .qv-close {
@@ -50,23 +65,29 @@
 
 .qv-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 46% 54%;
   gap: 0;
+  height: 580px;
 }
 
 .qv-gallery {
-  padding: 32px 24px 32px 32px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
+  justify-content: center;
 }
 
 .qv-main-image-wrapper {
   position: relative;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  background: #f8f9fa;
+  background: var(--fm-color-neutral-50);
   aspect-ratio: 1 / 1;
+  width: 100%;
+  max-height: 380px;
+  box-shadow: var(--fm-shadow-sm);
   cursor: crosshair;
 }
 
@@ -74,52 +95,54 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.05s linear;
+  transition: transform 0.3s var(--fm-ease-smooth) !important;
 }
 
 .qv-main-image-wrapper:hover .qv-main-image {
-  transform: scale(2.5);
+  transform: scale(1.8) rotate(0.001deg) !important;
 }
 
 .qv-discount-badge {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  background: #dc2626;
+  top: 16px;
+  left: 16px;
+  background: var(--fm-color-danger-500);
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 4px 12px;
+  border-radius: var(--fm-radius-pill);
   letter-spacing: 0.02em;
+  box-shadow: var(--fm-shadow-xs);
 }
 
 .qv-thumbnails {
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
+  width: 100%;
 }
 
 .qv-thumb {
-  width: 64px;
-  height: 64px;
-  border-radius: 10px;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
   overflow: hidden;
-  border: 2px solid transparent;
+  border: 1px solid var(--fm-color-neutral-200);
   cursor: pointer;
   flex-shrink: 0;
-  transition: all 0.2s ease;
-  background: #f1f3f5;
+  transition: all 0.3s var(--fm-ease-smooth);
+  background: var(--fm-color-neutral-50);
 }
 
 .qv-thumb:hover {
-  border-color: #b8935c;
+  border-color: var(--fm-color-primary-400);
 }
 
 .qv-thumb.active {
-  border-color: #b8935c;
-  box-shadow: 0 0 0 2px rgba(184, 147, 92, 0.3);
+  border-color: var(--fm-color-primary-500);
+  box-shadow: 0 0 0 3px var(--fm-color-primary-glow);
 }
 
 .qv-thumb img {
@@ -129,10 +152,33 @@
 }
 
 .qv-details {
-  padding: 32px 32px 32px 24px;
+  padding: 32px 32px 32px 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.qv-scrollable-info {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-bottom: 12px;
+}
+
+/* Custom Scrollbar for details */
+.qv-scrollable-info::-webkit-scrollbar {
+  width: 4px;
+}
+
+.qv-scrollable-info::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.qv-scrollable-info::-webkit-scrollbar-thumb {
+  background: var(--fm-color-neutral-200);
+  border-radius: var(--fm-radius-pill);
 }
 
 .qv-brand {
@@ -421,3 +467,113 @@
     transform: translateY(0);
   }
 }
+
+/* Premium Typography Upgrade */
+.qv-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 600 !important;
+}
+
+/* Dynamic Materials / Options Styling */
+.qv-materials-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding-top: 16px;
+}
+
+.qv-material-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--fm-color-primary-700);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.qv-material-option-badge {
+  background-color: #faf9f6 !important;
+  border: 1px solid rgba(184, 147, 92, 0.15) !important;
+  color: #4a4a4a !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  padding: 6px 12px !important;
+  border-radius: 20px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.text-gold {
+  color: #b8935c !important;
+}
+
+/* Loading Skeleton Styles */
+.qv-loading-skeleton {
+  pointer-events: none;
+}
+
+.skeleton-pulse {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeletonLoad 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes skeletonLoad {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+}
+
+.skeleton-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+}
+
+.skeleton-text {
+  height: 12px;
+  margin-bottom: 8px;
+}
+
+.skeleton-brand {
+  width: 30%;
+  height: 10px;
+}
+
+.skeleton-title {
+  width: 70%;
+  height: 24px;
+  margin-bottom: 16px;
+}
+
+.skeleton-rating {
+  width: 45%;
+  height: 14px;
+  margin-bottom: 16px;
+}
+
+.skeleton-price {
+  width: 35%;
+  height: 20px;
+  margin-bottom: 20px;
+}
+
+.skeleton-desc {
+  width: 100%;
+  height: 10px;
+}
+
+.skeleton-actions {
+  width: 100%;
+  height: 44px;
+  margin-top: auto;
+  border-radius: 12px;
+}
+

@@ -8,7 +8,6 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { CartService } from '../../../features/cart/services/cart.service';
 import { FavoritesService } from '../../../features/favorites/services/favorites.service';
 import { AuthService } from '../../../features/auth/services/auth.service';
-import { LoadingSpinner } from '../loading-spinner/loading-spinner.component';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
 import { ReviewsService, IRatingStats } from '../../../features/products/services/reviews.service';
 import { UiState } from '../../../core/state/ui.state';
@@ -23,7 +22,7 @@ import { calculateOldPrice, calculateDiscountPercentage } from '../../utils/pric
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [NgIf, RouterLink, CurrencyFormatPipe, TranslatePipe, LoadingSpinner, LocalizedPipe, LazyImageDirective],
+  imports: [NgIf, RouterLink, CurrencyFormatPipe, TranslatePipe, LocalizedPipe, LazyImageDirective],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css',
 })
@@ -49,11 +48,19 @@ export class ProductCard implements OnInit {
   readonly ratingStats = signal<IRatingStats | null>(null);
 
   getOldPrice(): number {
-    return calculateOldPrice(this.product.price);
+    return calculateOldPrice(this.product.price, this.product);
   }
 
   getDiscountPercentage(): number {
     return calculateDiscountPercentage(this.product);
+  }
+
+  isInStock(): boolean {
+    return true;
+  }
+
+  isHot(): boolean {
+    return this.product.status === 'hot' || (this.ratingStats() !== null && this.ratingStats()!.averageRating >= 4.8);
   }
 
 
@@ -123,6 +130,9 @@ export class ProductCard implements OnInit {
   addToCart(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
+    if (!this.isInStock()) {
+      return;
+    }
     if (this.cartService.isProductAdding(this.product.id)) {
       return;
     }

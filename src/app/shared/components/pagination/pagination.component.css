@@ -1,34 +1,53 @@
-.pagination-rounded .page-link {
-  border-radius: 50% !important;
-  margin: 0 2px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  color: #333;
-  width: 40px;
-  height: 40px;
+.pagination-premium .page-link {
+  border-radius: var(--fm-radius-circle) !important;
+  margin: 0;
+  border: 1px solid var(--fm-color-neutral-200) !important;
+  background-color: #ffffff !important;
+  color: var(--fm-color-neutral-700) !important;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.2s ease-in-out;
+  font-weight: 700;
+  font-family: var(--fm-font-sans);
+  font-size: 0.85rem;
+  transition: all 0.35s var(--fm-ease-smooth) !important;
+  box-shadow: var(--fm-shadow-xs) !important;
 }
 
-.pagination-rounded .page-link:hover {
-  background-color: #333;
-  color: #fff;
-  border-color: #333;
+.pagination-premium .page-link:hover {
+  background-color: var(--fm-color-primary-50) !important;
+  color: var(--fm-color-primary-600) !important;
+  border-color: var(--fm-color-primary-300) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--fm-shadow-sm) !important;
 }
 
-.pagination-rounded .page-item.active .page-link {
-  background-color: #111;
-  border-color: #111;
-  color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+.pagination-premium .page-item.active .page-link {
+  background-color: var(--fm-color-neutral-900) !important;
+  border-color: var(--fm-color-neutral-900) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 16px rgba(31, 28, 24, 0.15) !important;
+  transform: scale(1.05);
 }
 
-.pagination-rounded .page-item.disabled .page-link {
-  color: #ccc;
-  background-color: #fcfcfc;
-  border-color: rgba(0, 0, 0, 0.03);
+.pagination-premium .page-item.disabled .page-link {
+  color: var(--fm-color-neutral-300) !important;
+  background-color: var(--fm-color-neutral-50) !important;
+  border-color: var(--fm-color-neutral-100) !important;
   cursor: not-allowed;
+  box-shadow: none !important;
+  transform: none !important;
+  opacity: 0.6;
+}
+
+.pagination-premium .arrow-icon {
+  stroke: currentColor;
+  transition: transform 0.3s var(--fm-ease-smooth);
+}
+
+/* RTL Arrow Flipping */
+[dir="rtl"] .pagination-premium .arrow-icon {
+  transform: scaleX(-1);
 }
