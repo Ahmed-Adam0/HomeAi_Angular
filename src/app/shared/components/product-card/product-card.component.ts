@@ -17,6 +17,8 @@ import { localized } from '../../utils/localized';
 import { LocalizedPipe } from '../../pipes/localized.pipe';
 import { LazyImageDirective } from '../../directives/lazy-image.directive';
 import { QuickViewService } from '../../../features/products/services/quick-view.service';
+import { calculateOldPrice, calculateDiscountPercentage } from '../../utils/price-utils';
+
 
 @Component({
   selector: 'app-product-card',
@@ -45,6 +47,15 @@ export class ProductCard implements OnInit {
   readonly isFavorite = computed(() => this.favoritesService.isFavorited(this.product.id));
   readonly isTogglingFav = signal<boolean>(false);
   readonly ratingStats = signal<IRatingStats | null>(null);
+
+  getOldPrice(): number {
+    return calculateOldPrice(this.product.price);
+  }
+
+  getDiscountPercentage(): number {
+    return calculateDiscountPercentage(this.product);
+  }
+
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);

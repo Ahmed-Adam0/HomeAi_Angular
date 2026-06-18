@@ -40,15 +40,25 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
   const billingAddress: IShippingAddress = order.billingAddress ?? shippingAddress;
 
   const items = Array.isArray(order.items)
-    ? order.items.map((item) => ({
-        id: item.id,
-        productId: String(item.productId),
-        productName: item.productName,
-        quantity: item.quantity,
-        price: Number(item.unitPrice),
-        subtotal: Number(item.unitPrice) * item.quantity,
-        productImage: item.productImage ?? '',
-      }))
+    ? order.items.map((item) => {
+        const unitPrice = item.finalUnitPrice ?? item.unitPrice ?? 0;
+        const totalItemPrice = item.totalItemPrice ?? (unitPrice * item.quantity);
+        return {
+          id: item.id,
+          productId: String(item.productId),
+          productName: item.productName,
+          quantity: item.quantity,
+          price: Number(unitPrice),
+          subtotal: Number(totalItemPrice),
+          productImage: item.productImage ?? '',
+          snapshotBasePrice: item.snapshotBasePrice,
+          snapshotOptions: item.snapshotOptions,
+          finalUnitPrice: item.finalUnitPrice,
+          totalItemPrice: item.totalItemPrice,
+          // Map localized attributes from API response
+          attributes: item.attributes,
+        };
+      })
     : [];
 
   const paymentStatus = order.paymentStatus ?? (status === 'delivered' ? 'paid' : 'pending');

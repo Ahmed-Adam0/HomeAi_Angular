@@ -26,6 +26,11 @@
       loading="lazy"
     />
 
+    <!-- Discount Badge Overlay -->
+    <span *ngIf="getDiscountPercentage() > 0" class="discount-badge-card badge">
+      -{{ getDiscountPercentage() }}%
+    </span>
+
     <!-- Quick View Overlay -->
     <div class="quick-view-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-black bg-opacity-40 transition-all opacity-0" (click)="openQuickView($event)">
       <span class="btn btn-premium btn-sm px-4 py-2 shadow-lg fs-7">
@@ -82,10 +87,15 @@
 
     <!-- Pricing and Action -->
     <div class="d-flex align-items-center justify-content-between pt-2 border-top border-light mt-auto">
-      <div class="price-layout d-flex flex-column">
-        <span class="current-price fw-extrabold fs-5 text-dark">
-          {{ product.price | currencyFormat }}
-        </span>
+      <div class="price-layout d-flex flex-column price-animate">
+        <div class="d-flex align-items-baseline gap-2 flex-wrap">
+          <span class="current-price fw-extrabold fs-5 text-dark current-price-highlight">
+            {{ product.price | currencyFormat }}
+          </span>
+          <span *ngIf="getDiscountPercentage() > 0" class="old-price text-decoration-line-through font-xxs text-muted">
+            {{ getOldPrice() | currencyFormat }}
+          </span>
+        </div>
       </div>
 
       <!-- Action Button for Customer -->

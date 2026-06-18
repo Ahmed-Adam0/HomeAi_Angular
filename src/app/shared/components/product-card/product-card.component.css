@@ -204,3 +204,47 @@
   border-color: #b8935c !important;
 }
 
+/* Discount Badge Overlay */
+.discount-badge-card {
+  position: absolute !important;
+  top: 1rem;
+  left: 1rem;
+  z-index: 3;
+  background-color: #e11d48 !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 0.68rem !important;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.02em !important;
+  box-shadow: 0 4px 10px rgba(225, 29, 72, 0.25) !important;
+}
+
+[dir="rtl"] .discount-badge-card {
+  left: auto !important;
+  right: 1rem !important;
+}
+
+/* Price Section Smooth Interactions and Highlights */
+.price-layout {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.product-card:hover .price-layout {
+  transform: scale(1.03) !important;
+}
+
+.current-price-highlight {
+  color: #b8935c !important; /* Elegant gold highlight */
+  transition: color 0.3s ease !important;
+}
+
+.product-card:hover .current-price-highlight {
+  color: #111111 !important; /* Transitions to primary black on hover */
+}
+
+.font-xxs {
+  font-size: 0.7rem !important;
+}
+
+

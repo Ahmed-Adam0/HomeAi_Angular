@@ -6,6 +6,8 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
+import { calculateOldPrice, calculateDiscountPercentage } from '../../../../shared/utils/price-utils';
+
 
 @Component({
   selector: 'app-quick-view-modal',
@@ -47,14 +49,20 @@ export class QuickViewModalComponent {
 
   readonly originalPrice = computed(() => {
     const prod = this.product();
-    if (!prod || !prod.discountPercentage || prod.discountPercentage <= 0) return null;
-    return prod.price / (1 - prod.discountPercentage / 100);
+    if (!prod) return null;
+    return calculateOldPrice(prod.price);
   });
 
   readonly hasDiscount = computed(() => {
     const prod = this.product();
-    return !!(prod && prod.discountPercentage && prod.discountPercentage > 0);
+    return !!prod && calculateDiscountPercentage(prod) > 0;
   });
+
+  readonly discountPercentage = computed(() => {
+    const prod = this.product();
+    return prod ? calculateDiscountPercentage(prod) : 0;
+  });
+
 
   constructor() {
     effect(() => {

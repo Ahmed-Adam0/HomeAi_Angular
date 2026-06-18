@@ -114,6 +114,13 @@ export const vendorRoutes: Routes = [
           import('./pages/vendor-reviews/vendor-reviews.component').then(
             (m) => m.VendorReviews,
           ),
+      },
+      {
+        path: APP_ROUTES.VENDOR_MATERIALS, // 'materials'
+        loadComponent: () =>
+          import('./pages/vendor-materials/vendor-materials.component').then(
+            (m) => m.VendorMaterials,
+          ),
       }
     ],
   },

@@ -17,8 +17,21 @@ export interface IProduct {
   totalReviews?: number;
   isActive?: boolean;
   status?: string;
-  images?: IProductImage[];
   discountPercentage?: number;
+  basePrice?: number;
+  productTypeId?: number;
+  subCategoryId?: number;
+  materials?: {
+    materialId: number;
+    name: string;
+    options: {
+      id: number;
+      name: string;
+      priceDelta: number;
+    }[];
+  }[];
+  images?: IProductImage[];
+  vendorMaterialOptionIds?: number[];
 }
 
 export interface IProductImage {

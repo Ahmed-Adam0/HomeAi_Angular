@@ -57,7 +57,7 @@
                 {{ translationService.currentLang() === 'ar' ? 'مقترح بالذكاء الاصطناعي' : 'AI Recommended' }}
               </span>
               <span class="badge discount-badge">
-                {{ translationService.currentLang() === 'ar' ? 'خصم ٢٠٪' : '20% OFF' }}
+                {{ translationService.currentLang() === 'ar' ? 'خصم ' + getDiscountPercentage() + '٪' : getDiscountPercentage() + '% OFF' }}
               </span>
             </div>
 
@@ -133,14 +133,36 @@
           <div class="price-box p-3 rounded-3 bg-light border border-light mb-4 text-start">
             <div class="d-flex align-items-baseline gap-3 flex-wrap">
               <span class="current-price-detail fw-black display-6 text-dark">
-                {{ product()!.price | currencyFormat }}
+                {{ dynamicPrice() | currencyFormat }}
               </span>
               <span class="old-price-detail text-decoration-line-through font-sm text-secondary">
-                {{ (product()!.price * 1.25) | currencyFormat }}
+                {{ getOldPrice(dynamicPrice()) | currencyFormat }}
               </span>
               <span class="discount-pill-text font-xxs px-2 py-1 rounded bg-danger bg-opacity-10 text-danger fw-bold">
-                {{ translationService.currentLang() === 'ar' ? 'وفر ٢٠٪' : 'SAVE 20%' }}
+                {{ translationService.currentLang() === 'ar' ? 'وفر ' + getDiscountPercentage() + '٪' : 'SAVE ' + getDiscountPercentage() + '%' }}
               </span>
+            </div>
+          </div>
+
+          <!-- Customizable Options Section -->
+          <div *ngIf="product()?.materials?.length" class="options-selection-section mb-4 text-start">
+            <div *ngFor="let material of product()?.materials" class="mb-3">
+              <h6 class="fw-bold text-dark mb-2">{{ (material | localized:'name') || material.name }}</h6>
+              <div class="d-flex flex-wrap gap-2">
+                <button
+                  *ngFor="let option of material.options"
+                  type="button"
+                  class="btn btn-sm rounded-pill px-3 py-1.5 border transition-all"
+                  [class.btn-dark]="selectedOptions()[material.materialId] === option.id"
+                  [class.btn-outline-dark]="selectedOptions()[material.materialId] !== option.id"
+                  (click)="selectOption(material.materialId, option.id)"
+                >
+                  {{ (option | localized:'value') || option.name }}
+                  <span class="ms-1 text-muted" *ngIf="option.priceDelta > 0">
+                    (+{{ option.priceDelta | currencyFormat }})
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
 

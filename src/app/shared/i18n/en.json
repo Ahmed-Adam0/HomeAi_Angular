@@ -146,10 +146,19 @@
   "FILTER_SEARCH_PLACEHOLDER": "Search...",
   "FILTER_SPACE": "Architectural Space",
   "FILTER_ALL_SPACES": "All Spaces",
+  "FILTER_CATEGORY": "Category",
+  "FILTER_ALL_CATEGORIES": "All Categories",
+  "FILTER_SUBCATEGORY": "Subcategory",
+  "FILTER_ALL_SUBCATEGORIES": "All Subcategories",
+  "FILTER_VENDOR": "Vendor",
+  "FILTER_ALL_VENDORS": "All Vendors",
+  "FILTER_MATERIALS": "Materials",
   "FILTER_PRICE": "Price Threshold",
   "FILTER_MIN": "Min",
   "FILTER_MAX": "Max",
   "FILTER_CURRENCY_SYMBOL": "EGP ",
+  "FILTER_APPLY": "Apply Filters",
+  "FILTER_BUTTON": "Filters",
   "CATALOG_SHOWING": "Showing",
   "CATALOG_OF": "of",
   "CATALOG_DESIGNS": "designs",
@@ -458,7 +467,6 @@
   "VENDOR.WORKSHOP.ERROR.PHONE_REQUIRED": "Phone number is required",
   "VENDOR.WORKSHOP.ERROR.ADDRESS_REQUIRED": "Address is required",
   "VENDOR.WORKSHOP.ERROR.DESCRIPTION_REQUIRED": "Description is required",
-
   "vendor.profile.title": "Workshop Profile",
   "vendor.profile.subtitle": "Manage your workshop information and contact details",
   "vendor.profile.header": "Workshop logo",
@@ -516,13 +524,11 @@
   "VALIDATION.REQUIRED": "This field is required",
   "VALIDATION.INVALID_EMAIL": "Please enter a valid email address",
   "VALIDATION.INVALID_PHONE": "Please enter a valid phone number",
-
   "ABOUT.HERO.BADGE": "✦ FurniMind AI Portal",
   "ABOUT.HERO.TITLE": "Where Intelligence Meets Interior Design",
   "ABOUT.HERO.SUBTITLE": "We are redefining the furniture shopping experience by blending cutting-edge artificial intelligence with premium craftsmanship. Discover a smarter way to design your space.",
   "ABOUT.HERO.CTA_PRIMARY": "Explore Collection",
   "ABOUT.HERO.CTA_SECONDARY": "Get in Touch",
-
   "ABOUT.SECTION_BADGE": "✦ Our Story",
   "ABOUT.STORY.TITLE": "Crafting the Future of Interior Living",
   "ABOUT.STORY.DESCRIPTION": "FurniMind AI was born from a simple vision: to make premium furniture accessible, intelligent, and deeply personal. We combine AI-driven spatial design with handpicked craftsmanship to transform how you experience your home.",
@@ -532,7 +538,6 @@
   "ABOUT.MISSION.CONTENT": "To democratize premium interior design by leveraging AI to analyze room dimensions, lighting, and architectural features — then curate furniture collections that harmonize with your space. We believe everyone deserves a home that feels tailor-made.",
   "ABOUT.VISION.LABEL": "Our Vision",
   "ABOUT.VISION.CONTENT": "A world where technology and design exist in perfect harmony. We envision an ecosystem where your living space becomes a living canvas — continuously learning, adapting, and evolving with your lifestyle through the power of spatial artificial intelligence.",
-
   "ABOUT.VALUES.BADGE": "✦ What We Stand For",
   "ABOUT.VALUES.TITLE": "Our Core Values",
   "ABOUT.VALUES.INNOVATION.TITLE": "Innovation First",
@@ -547,14 +552,12 @@
   "ABOUT.VALUES.SMART_RECOMMENDATIONS.DESCRIPTION": "Our AI learns your preferences over time, delivering increasingly accurate suggestions that match your aesthetic, budget, and spatial constraints.",
   "ABOUT.VALUES.MODERN_MARKETPLACE.TITLE": "Modern Marketplace",
   "ABOUT.VALUES.MODERN_MARKETPLACE.DESCRIPTION": "A curated marketplace connecting you with premium vendors, artisans, and designers — all verified for quality, authenticity, and craftsmanship.",
-
   "ABOUT.STATS.BADGE": "✦ Our Impact",
   "ABOUT.STATS.TITLE": "FurniMind by the Numbers",
   "ABOUT.STATS.CUSTOMERS": "Happy Customers",
   "ABOUT.STATS.PRODUCTS": "Curated Products",
   "ABOUT.STATS.VENDORS": "Premium Vendors",
   "ABOUT.STATS.ORDERS": "Orders Delivered",
-
   "ABOUT.PRIVACY.BADGE": "✦ Your Privacy Matters",
   "ABOUT.PRIVACY.TITLE": "Privacy Policy",
   "ABOUT.PRIVACY.DESCRIPTION": "We are committed to protecting your personal information and being transparent about how we collect, use, and safeguard your data.",
@@ -570,7 +573,6 @@
   "ABOUT.PRIVACY.SECURITY.DESCRIPTION": "We implement industry-standard security measures including SSL/TLS encryption for all data transmissions, PCI-DSS compliant payment processing, regular security audits, and strict access controls. Our infrastructure is hosted on secure, SOC 2 compliant cloud servers with 24/7 monitoring.",
   "ABOUT.PRIVACY.USER_RIGHTS.TITLE": "User Rights",
   "ABOUT.PRIVACY.USER_RIGHTS.DESCRIPTION": "You have the right to access, correct, or delete your personal data at any time. You can download your data, restrict processing, object to certain uses, and request portability. To exercise any of these rights, visit your account settings or contact our Data Protection Officer at privacy@furnimind.ai.",
-
   "ABOUT.TERMS.BADGE": "✦ Policies & Guidelines",
   "ABOUT.TERMS.TITLE": "Terms & Conditions",
   "ABOUT.TERMS.DESCRIPTION": "Please read these terms carefully before using the FurniMind AI platform. By accessing our services, you agree to be bound by these conditions.",
@@ -586,19 +588,16 @@
   "ABOUT.TERMS.SECURITY.DESCRIPTION": "You are responsible for safeguarding the password and any other authentication credentials used to access your account. You agree to notify us immediately of any unauthorized use of your account. We are not liable for any loss or damage arising from your failure to protect your account credentials.",
   "ABOUT.TERMS.LEGAL.TITLE": "Legal Information",
   "ABOUT.TERMS.LEGAL.DESCRIPTION": "These terms are governed by and construed in accordance with the laws of the Arab Republic of Egypt. Any disputes arising from these terms shall be resolved through arbitration in Cairo, Egypt. FurniMind AI reserves the right to update these terms at any time, with changes effective upon posting to the platform. Continued use after changes constitutes acceptance of the new terms.",
-
   "ABOUT.CTA.BADGE": "✦ Get in Touch",
   "ABOUT.CTA.TITLE": "Ready to Transform Your Space?",
   "ABOUT.CTA.SUBTITLE": "Our team is here to help you every step of the way. Whether you need design advice, order assistance, or just want to say hello — we would love to hear from you.",
   "ABOUT.CTA.BUTTON": "Contact Our Team",
-
   "CONTACT.HERO.BADGE": "✦ Get in Touch",
   "CONTACT.HERO.TITLE": "We'd Love to Hear From You",
   "CONTACT.HERO.SUBTITLE": "Whether you have a design question, need order assistance, want to become a vendor, or just want to say hello — our team is ready to help.",
   "CONTACT.HERO.STAT_AVAIL": "Availability",
   "CONTACT.HERO.STAT_RESPONSE": "Avg. Response",
   "CONTACT.HERO.STAT_SATISFACTION": "Satisfaction",
-
   "CONTACT.INFO.PHONE.TITLE": "Phone",
   "CONTACT.INFO.PHONE.DESCRIPTION": "01214649915 — Speak directly with our support team during business hours for immediate assistance.",
   "CONTACT.INFO.EMAIL.TITLE": "Email",
@@ -608,7 +607,6 @@
   "CONTACT.INFO.HOURS.TITLE": "Working Hours",
   "CONTACT.INFO.HOURS.DESCRIPTION": "Saturday — Thursday: 9:00 AM — 9:00 PM (GMT+2). Friday: 10:00 AM — 6:00 PM.",
   "CONTACT.INFO.ACTION": "Reach Out",
-
   "CONTACT.FORM.BADGE": "✦ Send a Message",
   "CONTACT.FORM.TITLE": "Drop Us a Line",
   "CONTACT.FORM.DESCRIPTION": "Fill out the form below and our team will get back to you as soon as possible.",
@@ -622,7 +620,6 @@
   "CONTACT.FORM.SUCCESS_TITLE": "Message Sent Successfully!",
   "CONTACT.FORM.SUCCESS_TEXT": "Thank you for reaching out. Our team will review your inquiry and get back to you within 24 hours.",
   "CONTACT.FORM.ERROR_TEXT": "Something went wrong while sending your message. Please try again or contact us directly via phone.",
-
   "CONTACT.VALIDATION.NAME_REQUIRED": "Full name is required.",
   "CONTACT.VALIDATION.NAME_MIN": "Name must be at least 2 characters.",
   "CONTACT.VALIDATION.EMAIL_REQUIRED": "Email address is required.",
@@ -633,7 +630,6 @@
   "CONTACT.VALIDATION.SUBJECT_MIN": "Subject must be at least 5 characters.",
   "CONTACT.VALIDATION.MESSAGE_REQUIRED": "Message is required.",
   "CONTACT.VALIDATION.MESSAGE_MIN": "Message must be at least 10 characters.",
-
   "CONTACT.SUPPORT.BADGE": "✦ How Can We Help?",
   "CONTACT.SUPPORT.TITLE": "Support Options",
   "CONTACT.SUPPORT.DESCRIPTION": "Choose the right channel for your inquiry and we will connect you with the appropriate team.",
@@ -649,7 +645,6 @@
   "CONTACT.SUPPORT.VENDOR.TITLE": "Vendor Support",
   "CONTACT.SUPPORT.VENDOR.DESC": "Vendor onboarding, workshop management, and marketplace analytics assistance.",
   "CONTACT.SUPPORT.VENDOR.CTA": "Vendor Portal",
-
   "CONTACT.FAQ.BADGE": "✦ Quick Answers",
   "CONTACT.FAQ.TITLE": "Frequently Asked Questions",
   "CONTACT.FAQ.DESCRIPTION": "Find instant answers to the most common questions our customers ask.",
@@ -661,13 +656,11 @@
   "CONTACT.FAQ.A3": "Yes, vendors can reach out directly via the Vendor Support channel. Use the Vendor Portal section above or email vendor@furnimind.ai for onboarding, workshop management, and analytics assistance.",
   "CONTACT.FAQ.Q4": "Where can I report technical issues?",
   "CONTACT.FAQ.A4": "Technical issues should be reported to our Technical Support team by selecting the Technical Support option above or emailing tech@furnimind.ai. Please include a detailed description of the issue, screenshots if applicable, and the steps to reproduce it.",
-
   "CONTACT.CTA.BADGE": "✦ Need Immediate Assistance?",
   "CONTACT.CTA.TITLE": "We're Here to Help You",
   "CONTACT.CTA.SUBTITLE": "Our dedicated support team is ready to answer your questions and help you find the perfect solution.",
   "CONTACT.CTA.BUTTON_SUPPORT": "Contact Support",
   "CONTACT.CTA.BUTTON_MARKETPLACE": "Explore Marketplace",
-
   "VENDOR.REVENUE_DASHBOARD.TITLE": "Revenue Analytics",
   "VENDOR.REVENUE_DASHBOARD.DESCRIPTION": "Real-time revenue overview with daily, weekly, and monthly breakdowns",
   "VENDOR.REVENUE_DASHBOARD.LIVE_DASHBOARD": "Live Dashboard",
@@ -705,7 +698,6 @@
   "VENDOR.REVENUE_DASHBOARD.CHART_MONTHLY_REVENUE": "Monthly Revenue",
   "VENDOR.REVENUE_DASHBOARD.CHART_MONTHLY_REVENUE_DESC": "Revenue by month",
   "VENDOR.REVENUE_DASHBOARD.CHART_MONTHLY_REVENUE_EMPTY": "No monthly revenue chart data available for the selected period",
-
   "VENDOR.ORDERS_ANALYTICS.TITLE": "Orders Analytics",
   "VENDOR.ORDERS_ANALYTICS.DESCRIPTION": "Real-time order performance and completion metrics",
   "VENDOR.ORDERS_ANALYTICS.LIVE_DASHBOARD": "Live Dashboard",
@@ -834,6 +826,9 @@
     "MATERIALS_DESC": "We select durable materials to create unique furniture pieces.",
     "DETAILS_TITLE": "Attention To Details",
     "DETAILS_DESC": "Every detail is carefully finished to deliver a premium experience."
-  }
+  },
+  "FILTER_AI_FEATURES": "AI Features",
+  "FILTER_AI_RECOMMENDED": "AI Recommended Only"
+
 }
 

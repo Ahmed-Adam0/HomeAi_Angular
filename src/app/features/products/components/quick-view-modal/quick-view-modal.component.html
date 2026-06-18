@@ -16,7 +16,7 @@
               (error)="handleImageError($event)"
             />
             @if (hasDiscount()) {
-              <span class="qv-discount-badge">-{{ product()!.discountPercentage }}%</span>
+              <span class="qv-discount-badge">-{{ discountPercentage() }}%</span>
             }
           </div>
 

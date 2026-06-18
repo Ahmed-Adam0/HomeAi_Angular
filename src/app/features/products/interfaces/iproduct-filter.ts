@@ -1,6 +1,9 @@
 export interface IProductFilter {
   query?: string;
   categoryId?: string;
+  subCategoryId?: string | null;
+  vendorId?: string | null;
+  materialOptionIds?: number[];
   minPrice?: number;
   maxPrice?: number;
   materials?: string[];
