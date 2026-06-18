@@ -93,7 +93,7 @@
   "port": 4200,
   "allowedHosts": [
     "localhost",
-    "10.170.240.161"
+    "192.168.1.35"
   ]
 },
   "configurations": {
