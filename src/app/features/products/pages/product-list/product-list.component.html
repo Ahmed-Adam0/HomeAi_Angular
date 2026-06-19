@@ -28,20 +28,12 @@
     <div class="catalog-toolbar flex-wrap gap-3">
       <!-- Left: Products Count and Mobile/Desktop Filter buttons -->
       <div class="toolbar-left d-flex align-items-center gap-3">
-        <!-- Mobile Filters Button -->
-        <button class="btn btn-filter-mobile rounded-pill font-xs d-flex align-items-center gap-2 px-3 py-2 shadow-sm" (click)="toggleMobileFilters(true)">
+        <!-- Filters Button -->
+        <button class="btn btn-filter rounded-pill font-xs d-flex align-items-center gap-2 px-3 py-2 shadow-sm" (click)="toggleFilters(true)">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
           </svg>
           <span>{{ 'FILTER_TITLE' | translate }}</span>
-        </button>
-
-        <!-- Desktop Toggle Filters Button -->
-        <button class="btn btn-filter-desktop rounded-pill font-xs align-items-center gap-2 px-3 py-2 shadow-sm" (click)="toggleDesktopSidebar()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-          </svg>
-          <span>{{ (isDesktopSidebarOpen() ? 'FILTER_HIDE' : 'FILTER_SHOW') | translate }}</span>
         </button>
 
         <div class="catalog-totals font-xs text-secondary fw-semibold">
@@ -107,31 +99,8 @@
     </div>
 
     <!-- Workspace Split -->
-    <div class="catalog-layout" [class.sidebar-collapsed]="!isDesktopSidebarOpen()">
-      <!-- 1. Left Sidebar: Integrated Filters -->
-      <aside class="sidebar-wrapper d-none d-lg-block" [class.collapsed]="!isDesktopSidebarOpen()">
-        <div class="filter-sidebar sticky-sidebar card border-0 shadow-sm p-4 rounded-4">
-          <!-- Header and Reset -->
-          <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-light">
-            <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2 sidebar-header-title">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-              </svg>
-              {{ 'FILTER_TITLE' | translate }}
-            </h5>
-            <button class="btn btn-link text-secondary font-xs text-decoration-none p-0 clear-all-btn" (click)="clearFilters()">
-              {{ 'FILTER_CLEAR_ALL' | translate }}
-            </button>
-          </div>
-
-          <!-- Reusable template inside a scroll container to fit screen height nicely -->
-          <div class="sidebar-scrollable-content">
-            <ng-container *ngTemplateOutlet="filtersTemplate; context: { isMobile: false }"></ng-container>
-          </div>
-        </div>
-      </aside>
-
-      <!-- 2. Right Panel: Product Cards Listing -->
+    <div class="catalog-layout">
+      <!-- Right Panel: Product Cards Listing -->
       <div class="products-wrapper">
         <!-- Shimmering Skeleton Loader on dynamic API load -->
         <div *ngIf="isLoading()" class="products-grid">
@@ -187,11 +156,11 @@
   </div>
 </div>
 
-<!-- Mobile Filter Drawer -->
-<div class="mobile-filter-drawer position-fixed top-0 bottom-0 shadow-lg bg-white d-flex flex-column"
-     [class.show]="isMobileFiltersOpen"
-     [class.mobile-filter-drawer-rtl]="translationService.currentLang() === 'ar'"
-     [class.mobile-filter-drawer-ltr]="translationService.currentLang() !== 'ar'">
+<!-- Filter Drawer -->
+<div class="filter-drawer position-fixed top-0 bottom-0 shadow-lg bg-white d-flex flex-column"
+     [class.show]="isFiltersOpen"
+     [class.filter-drawer-rtl]="translationService.currentLang() === 'ar'"
+     [class.filter-drawer-ltr]="translationService.currentLang() !== 'ar'">
   <!-- Drawer Header -->
   <div class="drawer-header d-flex align-items-center justify-content-between p-3 border-bottom border-light">
     <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2 fs-6">
@@ -204,7 +173,7 @@
       <button class="btn btn-link text-secondary font-xs text-decoration-none p-0 clear-all-btn" (click)="clearFilters()">
         {{ 'FILTER_CLEAR_ALL' | translate }}
       </button>
-      <button class="btn-close-custom border-0 bg-transparent p-0 fs-5 d-flex align-items-center justify-content-center" (click)="toggleMobileFilters(false)" aria-label="Close Filters">
+      <button class="btn-close-custom border-0 bg-transparent p-0 fs-5 d-flex align-items-center justify-content-center" (click)="toggleFilters(false)" aria-label="Close Filters">
         <i class="bi bi-x-lg"></i>
       </button>
     </div>
@@ -215,9 +184,9 @@
     <ng-container *ngTemplateOutlet="filtersTemplate; context: { isMobile: true }"></ng-container>
   </div>
 
-  <!-- Drawer Footer (Apply button on mobile) -->
+  <!-- Drawer Footer -->
   <div class="drawer-footer p-3 border-top border-light d-grid bg-white">
-    <button class="btn btn-dark py-2.5 rounded-pill font-xs fw-bold" (click)="toggleMobileFilters(false)">
+    <button class="btn btn-dark py-2.5 rounded-pill font-xs fw-bold" (click)="toggleFilters(false)">
       {{ 'FILTER_APPLY' | translate }}
     </button>
   </div>
@@ -225,7 +194,7 @@
 
 <!-- Backdrop -->
 <div class="drawer-backdrop position-fixed top-0 bottom-0 start-0 end-0"
-     [class.show]="isMobileFiltersOpen" (click)="toggleMobileFilters(false)"></div>
+     [class.show]="isFiltersOpen" (click)="toggleFilters(false)"></div>
 
 <!-- Reusable Filters Template -->
 <ng-template #filtersTemplate let-isMobile="isMobile">

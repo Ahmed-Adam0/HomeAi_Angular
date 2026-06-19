@@ -153,7 +153,7 @@
 }
 
 /* Premium Toolbar Actions */
-.btn-filter-mobile, .btn-filter-desktop {
+.btn-filter {
   background-color: var(--fm-color-neutral-50) !important;
   border: 1px solid var(--fm-color-neutral-200) !important;
   color: var(--fm-color-neutral-800) !important;
@@ -164,7 +164,7 @@
   transition: all 0.3s var(--fm-ease-smooth) !important;
 }
 
-.btn-filter-mobile:hover, .btn-filter-desktop:hover {
+.btn-filter:hover {
   background-color: #ffffff !important;
   border-color: var(--fm-color-primary-400) !important;
   color: var(--fm-color-primary-600) !important;
@@ -177,77 +177,13 @@
    ========================================================================== */
 
 .catalog-layout {
-  display: flex;
-  gap: 2rem;
   margin-top: 1.5rem;
   width: 100%;
 }
 
-.sidebar-wrapper {
-  width: 280px;
-  flex-shrink: 0;
-  align-self: flex-start; /* Ensures sticky scrolling works by not stretching full height */
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 1;
-}
-
-.sidebar-wrapper.collapsed {
-  width: 0 !important;
-  opacity: 0 !important;
-  margin-right: -2rem !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
-}
-
-[dir="rtl"] .sidebar-wrapper.collapsed {
-  margin-right: 0 !important;
-  margin-left: -2rem !important;
-}
-
 .products-wrapper {
-  flex-grow: 1;
-  min-width: 0;
+  width: 100%;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Sticky Left Sidebar Card */
-.filter-sidebar {
-  background-color: #ffffff !important;
-  border: 1px solid rgba(184, 147, 92, 0.06) !important;
-  border-radius: 24px !important;
-  box-shadow: var(--fm-shadow-md) !important;
-  position: sticky;
-  top: 110px;
-  z-index: 10;
-  max-height: calc(100vh - 160px);
-  display: flex;
-  flex-direction: column;
-  padding: 2rem !important;
-  transition: var(--fm-transition-smooth) !important;
-}
-
-.sidebar-scrollable-content {
-  overflow-y: auto;
-  flex-grow: 1;
-  padding-right: 8px;
-  padding-bottom: 120px !important;
-}
-
-/* Scrollbar — inherits global thumb-only style */
-
-[dir="rtl"] .sidebar-scrollable-content {
-  padding-right: 0;
-  padding-left: 8px;
-  padding-bottom: 120px !important;
-}
-
-.sidebar-header-title {
-  font-family: var(--fm-font-sans) !important;
-  font-size: 0.8rem !important;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 800 !important;
-  color: var(--fm-color-neutral-900) !important;
 }
 
 .clear-all-btn {
@@ -426,43 +362,25 @@
 }
 
 .products-large-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.sidebar-collapsed .products-large-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .products-compact-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.5rem;
-}
-
-.sidebar-collapsed .products-compact-grid {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1.5rem;
 }
 
 @media (max-width: 1399.98px) {
   .products-large-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .sidebar-collapsed .products-large-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .products-compact-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .sidebar-collapsed .products-compact-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 1024.98px) {
   .products-large-grid, .products-compact-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .sidebar-collapsed .products-large-grid, .sidebar-collapsed .products-compact-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -500,10 +418,10 @@
 .reveal-stagger-4 { transition-delay: 0.24s !important; }
 
 /* ==========================================================================
-   5. DIRECTIONALLY RESPONSIVE MOBILE FILTER DRAWER
+   5. DIRECTIONALLY RESPONSIVE FILTER DRAWER
    ========================================================================== */
 
-.mobile-filter-drawer {
+.filter-drawer {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -515,23 +433,23 @@
   box-shadow: var(--fm-shadow-xl) !important;
 }
 
-.mobile-filter-drawer-ltr {
+.filter-drawer-ltr {
   left: 0;
   transform: translateX(-100%);
   border-right: 1px solid var(--fm-border-medium);
 }
 
-.mobile-filter-drawer-ltr.show {
+.filter-drawer-ltr.show {
   transform: translateX(0);
 }
 
-.mobile-filter-drawer-rtl {
+.filter-drawer-rtl {
   right: 0;
   transform: translateX(100%);
   border-left: 1px solid var(--fm-border-medium);
 }
 
-.mobile-filter-drawer-rtl.show {
+.filter-drawer-rtl.show {
   transform: translateX(0);
 }
 
@@ -637,11 +555,7 @@
    7. RESPONSIVE RHYTHMS
    ========================================================================== */
 
-@media (max-width: 991.98px) {
-  .catalog-layout {
-    gap: 0;
-  }
-}
+
 
 @media (max-width: 575.98px) {
   .main-title {

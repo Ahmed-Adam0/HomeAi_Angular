@@ -59,10 +59,9 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
   readonly hasError = signal<boolean>(false);
   readonly totalCount = signal<number>(0);
   readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.activeFilters.limit)));
-  isMobileFiltersOpen = false;
+  isFiltersOpen = false;
 
   // Premium UI layout states
-  readonly isDesktopSidebarOpen = signal<boolean>(true);
   readonly viewMode = signal<'large-grid' | 'compact-grid' | 'list'>('large-grid');
 
   // Active filters bound to forms and route parameters
@@ -381,12 +380,8 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
     this.applyFilters();
   }
 
-  toggleMobileFilters(open: boolean): void {
-    this.isMobileFiltersOpen = open;
-  }
-
-  toggleDesktopSidebar(): void {
-    this.isDesktopSidebarOpen.update(v => !v);
+  toggleFilters(open: boolean): void {
+    this.isFiltersOpen = open;
   }
 
   toggleAccordionSection(section: string): void {
@@ -422,7 +417,7 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
     if (isPlatformBrowser(this.platformId)) {
       setTimeout(() => {
         const revealItems = this.el.nativeElement.querySelectorAll(
-          '.filter-sidebar, .catalog-toolbar, .products-grid-row > div, app-pagination'
+          '.catalog-toolbar, .products-grid-row > div, app-pagination'
         );
 
         const observerOptions = {
