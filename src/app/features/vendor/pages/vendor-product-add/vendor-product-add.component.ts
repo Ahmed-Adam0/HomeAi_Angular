@@ -1,75 +1,426 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { of, Subject } from 'rxjs';
+import { catchError, switchMap, takeUntil, debounceTime } from 'rxjs/operators';
 import { VendorProductService } from '../../services/vendor-product.service';
-import { ProductForm } from '../../components/product-form/product-form.component';
-import { ImageUploader } from '../../components/image-uploader/image-uploader.component';
+import { CategoryService } from '../../../../features/categories/services/category.service';
+import { VendorService } from '../../services/vendor.service';
 import { IProduct } from '../../../products/interfaces/iproduct';
+import { ICategory } from '../../../../features/categories/interfaces/icategory';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
 import { AuthService } from '../../../auth/services/auth.service';
-import { localized } from '../../../../shared/utils/localized';
+import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
+import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
+import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
+
+interface ILocalPreview {
+  file: File;
+  previewUrl: string;
+}
 
 @Component({
   selector: 'app-vendor-product-add',
   standalone: true,
-  imports: [CommonModule, RouterLink, ProductForm, ImageUploader],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    LocalizedPipe,
+    AutoDirectionDirective,
+    CurrencyFormatPipe
+  ],
   templateUrl: './vendor-product-add.component.html',
   styleUrl: './vendor-product-add.component.css'
 })
-export class VendorProductAdd {
+export class VendorProductAdd implements OnInit, OnDestroy {
   private vendorProductService = inject(VendorProductService);
   private authService = inject(AuthService);
+  private categoryService = inject(CategoryService);
+  private vendorService = inject(VendorService);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
   readonly translationService = inject(TranslationService);
   private uiState = inject(UiState);
 
-  readonly submitting = signal<boolean>(false);
-  
-  selectedFiles: File[] = [];
-  primaryIndex = 0;
+  private destroy$ = new Subject<void>();
 
-  onFilesSelected(event: { files: File[]; primaryIndex: number }): void {
-    this.selectedFiles = event.files;
-    this.primaryIndex = event.primaryIndex;
+  readonly submitting = signal<boolean>(false);
+  readonly activeStep = signal<number>(0);
+  readonly autoSaveStatus = signal<'synced' | 'saving'>('synced');
+  
+  // Data lists
+  readonly categories = signal<ICategory[]>([]);
+  readonly subcategories = signal<any[]>([]);
+  readonly productTypes = signal<any[]>([]);
+  readonly availableMaterials = signal<any[]>([]);
+  readonly optionPrices = signal<Record<number, number>>({});
+
+  // Local Previews & Upload state
+  readonly localPreviews = signal<ILocalPreview[]>([]);
+  readonly primaryIndex = signal<number>(0);
+  isDragOver = signal<boolean>(false);
+
+  productForm!: FormGroup;
+
+  ngOnInit(): void {
+    this.initForm();
+    this.loadCategories();
+    this.loadVendorMaterials();
+    this.setupAutoSaveSimulation();
   }
 
-  onFormSubmit(productData: Partial<IProduct>): void {
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    // Revoke object URLs to avoid memory leaks
+    this.localPreviews().forEach(preview => {
+      URL.revokeObjectURL(preview.previewUrl);
+    });
+  }
+
+  private initForm(): void {
+    this.productForm = this.fb.group({
+      nameAr: ['', [Validators.required, Validators.minLength(3)]],
+      nameEn: ['', [Validators.required, Validators.minLength(3)]],
+      descriptionAr: ['', [Validators.required, Validators.minLength(5)]],
+      descriptionEn: ['', [Validators.required, Validators.minLength(5)]],
+      price: ['', [Validators.required, Validators.min(1)]],
+      categoryId: ['', [Validators.required]],
+      subCategoryId: ['', [Validators.required]],
+      productTypeId: ['', [Validators.required]],
+      isActive: [true],
+      vendorMaterialOptionIds: [[]]
+    });
+  }
+
+  private setupAutoSaveSimulation(): void {
+    this.productForm.valueChanges
+      .pipe(
+        debounceTime(800),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        if (this.productForm.dirty) {
+          this.autoSaveStatus.set('saving');
+          setTimeout(() => {
+            this.autoSaveStatus.set('synced');
+          }, 600);
+        }
+      });
+  }
+
+  // Categories & Hierarchies loaders
+  private loadCategories(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (cats) => this.categories.set(cats || []),
+      error: (err) => console.error('Failed to load categories', err)
+    });
+  }
+
+  private loadVendorMaterials(): void {
+    this.vendorService.getVendorMaterials().subscribe({
+      next: (mats) => this.availableMaterials.set(mats || []),
+      error: (err) => console.error('Failed to load vendor materials', err)
+    });
+  }
+
+  onCategoryChange(): void {
+    const categoryId = Number(this.productForm.get('categoryId')?.value);
+    this.subcategories.set([]);
+    this.productTypes.set([]);
+    this.productForm.patchValue({ subCategoryId: '', productTypeId: '' });
+    
+    if (categoryId) {
+      this.categoryService.getSubcategories(categoryId).subscribe({
+        next: (subs) => this.subcategories.set(subs || []),
+        error: (err) => console.error('Failed to load subcategories', err)
+      });
+    }
+  }
+
+  onSubcategoryChange(): void {
+    const subCategoryId = Number(this.productForm.get('subCategoryId')?.value);
+    this.productTypes.set([]);
+    this.productForm.patchValue({ productTypeId: '' });
+    
+    if (subCategoryId) {
+      this.categoryService.getProductTypes(subCategoryId).subscribe({
+        next: (types) => this.productTypes.set(types || []),
+        error: (err) => console.error('Failed to load product types', err)
+      });
+    }
+  }
+
+  // Materials option handling
+  toggleOption(optionId: number, defaultPrice: number = 0): void {
+    const control = this.productForm.get('vendorMaterialOptionIds');
+    if (!control) return;
+    const current = (control.value || []) as number[];
+    if (current.includes(optionId)) {
+      control.setValue(current.filter(id => id !== optionId));
+      this.optionPrices.update(prices => {
+        const updated = { ...prices };
+        delete updated[optionId];
+        return updated;
+      });
+    } else {
+      control.setValue([...current, optionId]);
+      this.optionPrices.update(prices => ({
+        ...prices,
+        [optionId]: prices[optionId] ?? defaultPrice
+      }));
+    }
+    this.productForm.get('vendorMaterialOptionIds')?.markAsDirty();
+  }
+
+  setOptionPrice(optionId: number, price: number): void {
+    this.optionPrices.update(prices => ({
+      ...prices,
+      [optionId]: Math.max(0, Number(price) || 0)
+    }));
+    this.productForm.get('vendorMaterialOptionIds')?.markAsDirty();
+  }
+
+  getOptionPrice(optionId: number): number {
+    return this.optionPrices()[optionId] ?? 0;
+  }
+
+  isOptionSelected(optionId: number): boolean {
+    const current = (this.productForm.get('vendorMaterialOptionIds')?.value || []) as number[];
+    return current.includes(optionId);
+  }
+
+  getSelectedOptionsCount(): number {
+    return (this.productForm.get('vendorMaterialOptionIds')?.value || []).length;
+  }
+
+  // Drag & drop file uploading handlers
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(true);
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(false);
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(false);
+    
+    if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
+      this.processFiles(event.dataTransfer.files);
+    }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.processFiles(input.files);
+      input.value = ''; // reset
+    }
+  }
+
+  private processFiles(files: FileList): void {
+    const newPreviews: ILocalPreview[] = [];
+    const filesArray = Array.from(files);
+
+    filesArray.forEach(file => {
+      // Validate is image
+      if (file.type.startsWith('image/')) {
+        const previewUrl = URL.createObjectURL(file);
+        newPreviews.push({ file, previewUrl });
+      }
+    });
+
+    if (newPreviews.length > 0) {
+      this.localPreviews.update(prev => [...prev, ...newPreviews]);
+      // If primaryIndex was invalid, reset to 0
+      if (this.localPreviews().length > 0 && this.primaryIndex() >= this.localPreviews().length) {
+        this.primaryIndex.set(0);
+      }
+    }
+  }
+
+  removePreview(index: number, event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const previews = this.localPreviews();
+    const removed = previews[index];
+    if (removed) {
+      URL.revokeObjectURL(removed.previewUrl);
+    }
+
+    this.localPreviews.update(prev => {
+      const updated = prev.filter((_, i) => i !== index);
+      
+      let currentPrimary = this.primaryIndex();
+      if (currentPrimary === index) {
+        this.primaryIndex.set(0);
+      } else if (currentPrimary > index) {
+        this.primaryIndex.set(currentPrimary - 1);
+      }
+      return updated;
+    });
+  }
+
+  setPrimaryLocal(index: number, event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.primaryIndex.set(index);
+  }
+
+  // Step Management
+  goToStep(stepIndex: number): void {
+    this.activeStep.set(stepIndex);
+  }
+
+  nextStep(): void {
+    if (this.activeStep() < 5) {
+      this.activeStep.update(s => s + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  prevStep(): void {
+    if (this.activeStep() > 0) {
+      this.activeStep.update(s => s - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  isStepValid(stepIndex: number): boolean {
+    if (stepIndex === 0) {
+      return (
+        (this.productForm.get('nameAr')?.valid ?? false) &&
+        (this.productForm.get('nameEn')?.valid ?? false) &&
+        (this.productForm.get('descriptionAr')?.valid ?? false) &&
+        (this.productForm.get('descriptionEn')?.valid ?? false)
+      );
+    }
+    if (stepIndex === 1) {
+      return (
+        (this.productForm.get('categoryId')?.valid ?? false) &&
+        (this.productForm.get('subCategoryId')?.valid ?? false) &&
+        (this.productForm.get('productTypeId')?.valid ?? false)
+      );
+    }
+    if (stepIndex === 2) {
+      return this.productForm.get('price')?.valid ?? false;
+    }
+    if (stepIndex === 3) {
+      return true; // Materials are optional
+    }
+    if (stepIndex === 4) {
+      return this.localPreviews().length > 0;
+    }
+    if (stepIndex === 5) {
+      return this.productForm.valid && this.localPreviews().length > 0;
+    }
+    return false;
+  }
+
+  isStepVisited(stepIndex: number): boolean {
+    return this.isStepValid(stepIndex);
+  }
+
+  isInvalid(controlName: string): boolean {
+    const control = this.productForm.get(controlName);
+    return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+
+  // Getters for Preview Panel
+  getSelectedCategoryName(): string {
+    const categoryId = Number(this.productForm.get('categoryId')?.value);
+    if (!categoryId) return '';
+    const cat = this.categories().find(c => c.id === categoryId);
+    if (!cat) return '';
+    return this.translationService.currentLang() === 'ar' 
+      ? (cat.nameAr || cat.nameEn || '') 
+      : (cat.nameEn || cat.nameAr || '');
+  }
+
+  getWorkshopName(): string {
+    return this.authService.currentUser()?.name || 
+      (this.translationService.currentLang() === 'ar' ? 'الورشة الخاصة بي' : 'My Workshop');
+  }
+
+  // Form actions
+  onSubmit(): void {
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched();
+      // Go to the first invalid step
+      for (let i = 0; i <= 5; i++) {
+        if (!this.isStepValid(i)) {
+          this.activeStep.set(i);
+          break;
+        }
+      }
+      return;
+    }
+
+    if (this.localPreviews().length === 0) {
+      this.activeStep.set(4); // Images step
+      this.uiState.showAlert(
+        'warning',
+        this.translationService.currentLang() === 'ar'
+          ? 'يرجى إضافة صورة واحدة على الأقل للمنتج'
+          : 'Please add at least one product image'
+      );
+      return;
+    }
+
+    const formValue = this.productForm.value;
     const isAr = this.translationService.currentLang() === 'ar';
     this.submitting.set(true);
     this.uiState.showLoader();
 
-    // Strict Creation Payload matching POST /api/Products
+    // Map option IDs to materialOptions payload structure
+    const materialOptions: any[] = [];
+    const selectedIds = (formValue.vendorMaterialOptionIds || []) as number[];
+    const currentPrices = this.optionPrices();
+    for (const optId of selectedIds) {
+      materialOptions.push({
+        vendorMaterialOptionId: optId,
+        priceOption: currentPrices[optId] ?? 0
+      });
+    }
+
     const productPayload = {
-      name: productData.nameEn || productData.nameAr || '',
-      description: productData.descriptionEn || productData.descriptionAr || '',
-      basePrice: Number(productData.price),
-      productTypeId: Number(productData.productTypeId),
-      categoryId: Number(productData.categoryId),
-      subCategoryId: Number(productData.subCategoryId),
-      nameAr: productData.nameAr || '',
-      nameEn: productData.nameEn || '',
-      descriptionAr: productData.descriptionAr || '',
-      descriptionEn: productData.descriptionEn || '',
-      price: Number(productData.price),
-      isActive: productData.isActive ?? true,
-      materialOptions: (productData as any).materialOptions || []
+      name: formValue.nameEn || formValue.nameAr || '',
+      description: formValue.descriptionEn || formValue.descriptionAr || '',
+      basePrice: Number(formValue.price),
+      productTypeId: Number(formValue.productTypeId),
+      categoryId: Number(formValue.categoryId),
+      subCategoryId: Number(formValue.subCategoryId),
+      nameAr: formValue.nameAr || '',
+      nameEn: formValue.nameEn || '',
+      descriptionAr: formValue.descriptionAr || '',
+      descriptionEn: formValue.descriptionEn || '',
+      price: Number(formValue.price),
+      isActive: formValue.isActive ?? true,
+      materialOptions
     };
 
-    // 1. Create Product first
+    const selectedFilesArray = this.localPreviews().map(p => p.file);
+
     this.vendorProductService.createProduct(productPayload).pipe(
       switchMap((createdProduct) => {
         const productId = createdProduct.id;
         
-        // 2. If there are no images, just return an observable of null and proceed
-        if (this.selectedFiles.length === 0) {
+        if (selectedFilesArray.length === 0) {
           return of({ productId, images: [] });
         }
         
-        // 3. Upload selected images and set primary index directly
-        return this.vendorProductService.uploadImages(productId, this.selectedFiles, this.primaryIndex).pipe(
+        return this.vendorProductService.uploadImages(productId, selectedFilesArray, this.primaryIndex()).pipe(
           switchMap((uploadedImages) => {
             return of({ productId, images: uploadedImages });
           }),
