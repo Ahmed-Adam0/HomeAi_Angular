@@ -26,18 +26,14 @@ export class VendorLayoutComponent {
 
   readonly navRoutes = NAV_ROUTES;
   readonly sidebarOpen = signal(false);
+  /** Desktop sidebar: collapsed by default, toggled via button click */
   readonly sidebarExpanded = signal(false);
   private readonly platformId = inject(PLATFORM_ID);
 
-  onSidebarMouseEnter(): void {
+  /** Toggle desktop sidebar expand/collapse */
+  toggleSidebarExpanded(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.sidebarExpanded.set(true);
-    }
-  }
-
-  onSidebarMouseLeave(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.sidebarExpanded.set(false);
+      this.sidebarExpanded.update(v => !v);
     }
   }
 
@@ -79,3 +75,4 @@ export class VendorLayoutComponent {
     this.router.navigate([this.navRoutes.LOGIN]);
   }
 }
+

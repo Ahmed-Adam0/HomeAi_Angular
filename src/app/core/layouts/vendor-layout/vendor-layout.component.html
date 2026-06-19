@@ -1,6 +1,6 @@
 <div appRtl class="vendor-layout-wrapper" [attr.dir]="direction()" [attr.lang]="currentLang()">
   <!-- Sidebar -->
-  <aside class="vendor-sidebar" [class.open]="sidebarOpen()" [class.expanded]="sidebarExpanded()" (mouseenter)="onSidebarMouseEnter()" (mouseleave)="onSidebarMouseLeave()">
+  <aside class="vendor-sidebar" [class.open]="sidebarOpen()" [class.expanded]="sidebarExpanded()">
     <div class="sidebar-header">
       <div class="logo-container">
         <img src="assets/icons/logo.png" alt="FurniMind" style="height: 32px; width: auto;" />
@@ -63,6 +63,11 @@
         </a>
       </div>
     </nav>
+
+    <!-- Toggle expand/collapse button — desktop only -->
+    <button class="sidebar-toggle-btn d-none d-md-flex" (click)="toggleSidebarExpanded()" aria-label="Toggle sidebar">
+      <i class="bi" [ngClass]="sidebarExpanded() ? 'bi-chevron-left' : 'bi-chevron-right'"></i>
+    </button>
   </aside>
 
   <!-- Sidebar Overlay for mobile -->

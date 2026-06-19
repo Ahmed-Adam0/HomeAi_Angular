@@ -3,8 +3,8 @@
   min-height: 100vh;
   background-color: #f7f5f2;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  --sidebar-width-collapsed: 64px;
-  --sidebar-width-expanded: 280px;
+  --sidebar-width-collapsed: 70px;
+  --sidebar-width-expanded: 260px;
   --sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -15,7 +15,7 @@
 }
 
 /* ═══════════════════════════════════════════════════
-   SIDEBAR — Collapsed Rail by Default
+   SIDEBAR — Collapsed Rail by Default (click toggle)
    ═══════════════════════════════════════════════════ */
 .vendor-sidebar {
   width: var(--sidebar-width-collapsed);
@@ -34,7 +34,7 @@
   white-space: nowrap;
 }
 
-/* Expanded state on hover */
+/* Expanded state — click toggle */
 .vendor-sidebar.expanded {
   width: var(--sidebar-width-expanded);
   box-shadow: 6px 0 24px rgba(0, 0, 0, 0.25);
@@ -129,6 +129,33 @@
   overflow-y: auto;
   overflow-x: hidden;
   transition: padding var(--sidebar-transition);
+  /* Scrollbar: hide track, keep minimal thumb via global styles */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track,
+.sidebar-nav::-webkit-scrollbar-track-piece {
+  background: transparent !important;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.sidebar-nav::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .vendor-sidebar.expanded .sidebar-nav {
@@ -256,6 +283,40 @@
 }
 
 /* ═══════════════════════════════════════════════════
+   SIDEBAR TOGGLE BUTTON — Circular chevron on edge
+   ═══════════════════════════════════════════════════ */
+.sidebar-toggle-btn {
+  position: absolute;
+  bottom: 24px;
+  right: -14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #c5a880;
+  color: #1e1513;
+  border: 2px solid #f7f5f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1041;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 13px;
+  padding: 0;
+}
+
+.sidebar-toggle-btn:hover {
+  background: #d4b88f;
+  transform: scale(1.1);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* ═══════════════════════════════════════════════════
    SIDEBAR OVERLAY — Mobile Only
    ═══════════════════════════════════════════════════ */
 .sidebar-overlay {
@@ -270,7 +331,7 @@
 }
 
 /* ═══════════════════════════════════════════════════
-   MAIN CONTENT AREA
+   MAIN CONTENT AREA — never hidden behind sidebar
    ═══════════════════════════════════════════════════ */
 .vendor-main {
   flex: 1;
@@ -279,6 +340,11 @@
   flex-direction: column;
   min-height: 100vh;
   transition: margin-left var(--sidebar-transition);
+}
+
+/* When sidebar is expanded, push main content over */
+.vendor-main.sidebar-expanded {
+  margin-left: var(--sidebar-width-expanded);
 }
 
 /* ── Top Header ──────────────────────────────────── */
@@ -484,6 +550,11 @@
     margin-left: 0;
   }
 
+  /* Never shift main on mobile when sidebar-expanded class is set */
+  .vendor-main.sidebar-expanded {
+    margin-left: 0;
+  }
+
   .vendor-header {
     padding: 0 16px;
   }
@@ -498,6 +569,11 @@
 
   .header-right {
     gap: var(--fm-space-10);
+  }
+
+  /* Hide toggle button on mobile */
+  .sidebar-toggle-btn {
+    display: none !important;
   }
 }
 
@@ -697,6 +773,24 @@
     transition: margin-right var(--sidebar-transition);
   }
 
+  .vendor-main.sidebar-expanded {
+    margin-right: var(--sidebar-width-expanded);
+  }
+
+  /* Toggle button on left edge in RTL */
+  .sidebar-toggle-btn {
+    right: auto;
+    left: -14px;
+  }
+
+  .sidebar-toggle-btn i.bi-chevron-left {
+    transform: scaleX(-1);
+  }
+
+  .sidebar-toggle-btn i.bi-chevron-right {
+    transform: scaleX(-1);
+  }
+
   .header-left {
     flex-direction: row-reverse;
   }
@@ -739,6 +833,10 @@
       margin-right: 0;
       margin-left: 0;
       transition: margin-right var(--sidebar-transition);
+    }
+
+    .vendor-main.sidebar-expanded {
+      margin-right: 0;
     }
 
     .vendor-header {
