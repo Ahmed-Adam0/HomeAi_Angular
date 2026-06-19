@@ -225,5 +225,13 @@ export class VendorService {
   deleteOption(optionId: string | number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}${API_URLS.VENDOR.DELETE_OPTION(optionId)}`);
   }
+
+  updateMaterial(groupId: string | number, nameAr: string, nameEn: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}${API_URLS.VENDOR.MATERIALS}/Groups/${groupId}`, { nameAr, nameEn });
+  }
+
+  updateOption(optionId: string | number, valueAr: string, valueEn: string, priceDelta: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}${API_URLS.VENDOR.MATERIALS}/Options/${optionId}`, { valueAr, valueEn, priceDelta });
+  }
 }
 

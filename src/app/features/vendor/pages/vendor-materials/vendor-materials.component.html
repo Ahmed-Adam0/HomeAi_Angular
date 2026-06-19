@@ -1,191 +1,605 @@
 <main class="vendor-materials py-5 px-3 px-md-5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
-  <!-- Header -->
-  <header class="vendor-materials__header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5">
-    <div class="vendor-materials__header-content">
-      <p class="vendor-materials__eyebrow text-gold fw-bold mb-1 letter-spacing-wide">
-        {{ translationService.currentLang() === 'ar' ? 'إدارة التخصيص' : 'Customization Management' }}
-      </p>
-      <h1 class="vendor-materials__title fw-extrabold text-dark mb-0">
-        {{ translationService.currentLang() === 'ar' ? 'الخامات والخيارات' : 'Materials & Options' }}
-      </h1>
-      <p class="vendor-materials__description text-muted fs-7 mt-1">
-        {{ translationService.currentLang() === 'ar' ? 'قم بإنشاء وتعديل خيارات التخصيص لمنتجاتك مع تحديد فارق السعر لكل خيار.' : 'Create and manage custom options for your products with distinct price deltas for each selection.' }}
-      </p>
-    </div>
-    <div class="vendor-materials__meta align-self-start align-self-md-center">
-      <span class="vendor-materials__meta-badge bg-gold-soft text-gold px-3 py-1.5 rounded-pill font-xxs fw-bold uppercase">Dynamic Pricing Snapshot</span>
-    </div>
-  </header>
+  
+  <div class="vendor-materials__container mx-auto">
 
-  <!-- Loading State -->
-  <div *ngIf="loading()" class="py-5 text-center">
-    <div class="spinner-border text-gold" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
+    <!-- Premium Page Header -->
+    <header class="vendor-materials__header pb-4 mb-5">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
+        
+        <!-- Title and Description -->
+        <div class="vendor-materials__header-content">
+          <p class="vendor-materials__eyebrow mb-1">
+            {{ translationService.currentLang() === 'ar' ? 'إدارة التخصيص' : 'Customization Management' }}
+          </p>
+          <h1 class="vendor-materials__title mb-0">
+            {{ translationService.currentLang() === 'ar' ? 'الخامات والخيارات' : 'Materials & Options' }}
+          </h1>
+          <p class="vendor-materials__description mt-2 mb-0">
+            {{ translationService.currentLang() === 'ar' ? 'قم بإنشاء وتعديل خيارات التخصيص لمنتجاتك مع تحديد فارق السعر لكل خيار.' : 'Create and manage custom options for your products with distinct price deltas for each selection.' }}
+          </p>
+        </div>
 
-  <div class="vendor-materials__content mt-4" *ngIf="!loading()">
-    <!-- Row: Add Material Group Form -->
-    <div class="card border-0 rounded-4 p-4 mb-5 shadow-xs bg-white">
-      <h3 class="h6 fw-extrabold text-dark mb-3 uppercase letter-spacing-wide">
-        {{ translationService.currentLang() === 'ar' ? 'إضافة مجموعة خامات جديدة' : 'Create New Material Group' }}
-      </h3>
-      <form (submit)="addMaterial($event)" class="row g-3 align-items-end">
-        <div class="col-md-4">
-          <label class="form-label fs-7 fw-semibold text-muted mb-1">{{ translationService.currentLang() === 'ar' ? 'الاسم بالعربية *' : 'Name (Arabic) *' }}</label>
-          <input
-            type="text"
-            [(ngModel)]="newMaterialNameAr"
-            name="newMaterialNameAr"
-            class="form-control rounded-pill px-3 py-2 fs-7 border"
-            [placeholder]="translationService.currentLang() === 'ar' ? 'مثال: نوع الخشب' : 'e.g. Wood Type (Arabic)'"
-            required
-          />
-        </div>
-        <div class="col-md-4">
-          <label class="form-label fs-7 fw-semibold text-muted mb-1">{{ translationService.currentLang() === 'ar' ? 'الاسم بالإنجليزية *' : 'Name (English) *' }}</label>
-          <input
-            type="text"
-            [(ngModel)]="newMaterialNameEn"
-            name="newMaterialNameEn"
-            class="form-control rounded-pill px-3 py-2 fs-7 border"
-            [placeholder]="translationService.currentLang() === 'ar' ? 'مثال: Wood Type' : 'e.g. Wood Type (English)'"
-            required
-          />
-        </div>
-        <div class="col-md-4">
-          <button
-            type="submit"
-            class="btn btn-dark rounded-pill w-100 py-2 fs-7 fw-bold border-0 shadow-sm d-flex align-items-center justify-content-center gap-2"
-            [disabled]="submittingMaterial || !newMaterialNameAr.trim() || !newMaterialNameEn.trim()"
+        <!-- Primary Page Action -->
+        <div class="vendor-materials__header-actions d-flex align-items-center gap-3">
+          <!-- Add Group Trigger Button -->
+          <button 
+            type="button" 
+            class="btn btn-primary-saas px-4 py-2.5 d-flex align-items-center gap-2"
+            (click)="showCreateModal.set(true)"
           >
-            <i class="bi bi-plus-circle-fill"></i>
-            {{ translationService.currentLang() === 'ar' ? 'إضافة المجموعة' : 'Create Group' }}
+            <i class="bi bi-plus-lg fs-6"></i>
+            <span>{{ translationService.currentLang() === 'ar' ? 'مجموعة جديدة' : 'New Group' }}</span>
           </button>
         </div>
-      </form>
+
+      </div>
+    </header>
+
+    <!-- Toolbar / Search and View Controls -->
+    <section class="vendor-materials__toolbar mb-4 p-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <!-- Search Input Box -->
+      <div class="search-input-wrapper position-relative w-100 max-width-md-360">
+        <span class="search-icon position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+          <i class="bi bi-search"></i>
+        </span>
+        <input 
+          type="text" 
+          [ngModel]="searchQuery()" 
+          (ngModelChange)="searchQuery.set($event)"
+          class="form-control toolbar-search-input ps-5 pe-4 py-2"
+          [placeholder]="translationService.currentLang() === 'ar' ? 'ابحث عن خامة أو خيار...' : 'Search material or option...'"
+        />
+        <button 
+          *ngIf="searchQuery()" 
+          type="button" 
+          (click)="clearSearch()"
+          class="btn border-0 position-absolute top-50 end-0 translate-middle-y pe-3 text-muted btn-clear-search"
+        >
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
+      </div>
+
+      <!-- Action Buttons Group -->
+      <div class="d-flex align-items-center gap-2">
+        <!-- Stats Badges -->
+        <div class="d-none d-lg-flex align-items-center gap-2 me-3">
+          <div class="stats-badge d-flex align-items-center gap-2 px-3 py-1.5 rounded-pill">
+            <span class="label text-muted">{{ translationService.currentLang() === 'ar' ? 'المجموعات:' : 'Groups:' }}</span>
+            <span class="value fw-bold text-dark">{{ totalMaterials() }}</span>
+          </div>
+          <div class="stats-badge d-flex align-items-center gap-2 px-3 py-1.5 rounded-pill">
+            <span class="label text-muted">{{ translationService.currentLang() === 'ar' ? 'الخيارات:' : 'Options:' }}</span>
+            <span class="value fw-bold text-dark">{{ totalOptions() }}</span>
+          </div>
+        </div>
+
+        <!-- Expand / Collapse View toggles -->
+        <button 
+          type="button" 
+          class="btn btn-secondary-saas btn-icon-saas"
+          (click)="expandAll()"
+          [title]="translationService.currentLang() === 'ar' ? 'توسيع الكل' : 'Expand All'"
+        >
+          <i class="bi bi-arrows-expand"></i>
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-secondary-saas btn-icon-saas"
+          (click)="collapseAll()"
+          [title]="translationService.currentLang() === 'ar' ? 'طي الكل' : 'Collapse All'"
+        >
+          <i class="bi bi-arrows-collapse"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Loading State Shimmer Skeletons -->
+    <div *ngIf="loading()" class="py-4">
+      <div class="row g-4">
+        <div class="col-12 col-md-6" *ngFor="let item of [1, 2, 3, 4]">
+          <div class="skeleton-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div class="d-flex align-items-center gap-3 w-100">
+                <div class="skeleton-circle shimmer"></div>
+                <div class="w-50">
+                  <div class="skeleton-line shimmer mb-2" style="width: 40%"></div>
+                  <div class="skeleton-line shimmer" style="width: 80%"></div>
+                </div>
+              </div>
+              <div class="skeleton-circle shimmer-small"></div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+              <div class="skeleton-chip shimmer" *ngFor="let chip of [1, 2, 3]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Materials Grid -->
-    <div class="row g-4" *ngIf="materials().length > 0">
-      <div class="col-lg-6" *ngFor="let material of materials()">
-        <div class="card border-0 rounded-4 p-4 shadow-xs bg-white h-100 d-flex flex-column justify-content-between">
-          <div>
-            <!-- Header of Material Card -->
-            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-light">
-              <div class="d-flex align-items-center gap-2">
-                <h4 class="h6 fw-bold text-dark mb-0">{{ material | localized:'name' }}</h4>
+    <!-- Main Content Area -->
+    <div class="vendor-materials__content" *ngIf="!loading()">
+      
+      <!-- Search Summary Badge -->
+      <div class="search-summary-bar d-flex justify-content-between align-items-center mb-4 px-1" *ngIf="searchQuery()">
+        <span class="fs-7 text-muted fw-medium">
+          {{ translationService.currentLang() === 'ar' ? 'نتائج البحث: تم العثور على ' : 'Search results: Found ' }}
+          <span class="text-dark fw-bold">{{ filteredMaterials().length }}</span> 
+          {{ translationService.currentLang() === 'ar' ? 'مجموعات' : 'groups' }}
+        </span>
+        <button type="button" class="btn btn-link p-0 fs-7 text-decoration-none text-brand" (click)="clearSearch()">
+          {{ translationService.currentLang() === 'ar' ? 'إلغاء البحث' : 'Clear search' }}
+        </button>
+      </div>
+
+      <!-- Responsive Grid Layout for Material Groups -->
+      <section class="materials-grid row g-4" *ngIf="filteredMaterials().length > 0">
+        
+        <div 
+          class="col-12 col-md-6"
+          *ngFor="let material of filteredMaterials()"
+        >
+          <!-- Modern Minimal Card -->
+          <div class="card material-item-card h-100" [class.collapsed]="collapsedGroups()[material.id]">
+            
+            <!-- Card Header (Shopify Polaris style) -->
+            <div 
+              class="card-header-premium p-4 d-flex justify-content-between align-items-center cursor-pointer"
+              (click)="toggleGroupCollapse(material.id)"
+            >
+              <div class="d-flex align-items-center gap-3">
+                <div class="banner-icon-avatar d-flex align-items-center justify-content-center">
+                  <i class="bi" [ngClass]="getGroupType(material).icon"></i>
+                </div>
+                <div>
+                  <span class="group-eyebrow text-muted d-block">
+                    {{ getGroupType(material).name }}
+                  </span>
+                  <h4 class="material-card-title h6 fw-semibold text-dark mb-0 mt-0.5">
+                    {{ material | localized:'name' }}
+                  </h4>
+                </div>
+              </div>
+
+              <!-- Header Action Controls -->
+              <div class="d-flex align-items-center gap-2" (click)="$event.stopPropagation()">
+                <!-- Edit group name button -->
                 <button
                   type="button"
-                  class="btn btn-link text-danger p-0 border-0 fs-7 d-flex align-items-center"
+                  class="btn btn-action-saas"
+                  (click)="startEditMaterial(material)"
+                  [title]="translationService.currentLang() === 'ar' ? 'تعديل اسم المجموعة' : 'Edit Group Name'"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+                
+                <!-- Delete group button -->
+                <button
+                  type="button"
+                  class="btn btn-action-saas text-danger hover-danger"
                   (click)="deleteMaterial(material.id)"
                   [title]="translationService.currentLang() === 'ar' ? 'حذف المجموعة' : 'Delete Group'"
                 >
-                  <i class="bi bi-trash3"></i>
+                  <i class="bi bi-trash"></i>
                 </button>
+
+                <!-- Collapse Toggle Icon -->
+                <span class="collapse-toggle-icon text-muted ms-1">
+                  <i class="bi" [ngClass]="collapsedGroups()[material.id] ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
+                </span>
               </div>
-              <span class="badge bg-light text-secondary font-xxs px-2.5 py-1 rounded-pill">
-                {{ material.options?.length || 0 }} {{ translationService.currentLang() === 'ar' ? 'خيارات' : 'options' }}
-              </span>
             </div>
 
-            <!-- Options List -->
-            <div class="options-list mb-4" style="min-height: 100px;">
-              <div *ngIf="!material.options?.length" class="text-muted small py-3 text-center">
-                {{ translationService.currentLang() === 'ar' ? 'لا توجد خيارات مضافة لهذه المجموعة بعد.' : 'No options added to this group yet.' }}
+            <!-- Card Body Content -->
+            <div 
+              class="card-body-premium p-4" 
+              *ngIf="!collapsedGroups()[material.id]"
+            >
+              <!-- Options Section Header -->
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="options-section-label text-muted">
+                  {{ translationService.currentLang() === 'ar' ? 'خيارات التخصيص المتوفرة' : 'Available Options' }}
+                </span>
+                <span class="badge option-count-badge">
+                  {{ material.options?.length || 0 }} {{ translationService.currentLang() === 'ar' ? 'خيارات' : 'options' }}
+                </span>
               </div>
-              <div class="table-responsive" *ngIf="material.options?.length">
-                <table class="table table-hover align-middle mb-0 font-xs">
-                  <thead>
-                    <tr>
-                      <th class="border-0 text-muted" style="font-size: 10px;">{{ translationService.currentLang() === 'ar' ? 'الاسم' : 'Name' }}</th>
-                      <th class="border-0 text-muted" style="font-size: 10px;">{{ translationService.currentLang() === 'ar' ? 'فارق السعر' : 'Price Delta' }}</th>
-                      <th class="border-0 text-muted text-end" style="width: 50px;"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let option of material.options">
-                      <td class="fw-semibold text-dark">{{ option | localized:'value' }}</td>
-                      <td>
-                        <span class="badge" [class.bg-success-soft]="option.priceDelta > 0" [class.text-success]="option.priceDelta > 0" [class.bg-light]="option.priceDelta === 0" [class.text-secondary]="option.priceDelta === 0">
-                          {{ option.priceDelta > 0 ? '+' : '' }}{{ option.priceDelta | currencyFormat }}
-                        </span>
-                      </td>
-                      <td class="text-end">
-                        <button
-                          type="button"
-                          class="btn btn-link text-danger p-0 border-0"
-                          (click)="deleteOption(option.id, material.id)"
-                        >
-                          <i class="bi bi-trash3-fill"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
 
-          <!-- Add Option Form -->
-          <div class="card-footer bg-light rounded-3 p-3 mt-auto border-0">
-            <h5 class="font-xxs uppercase tracking-wider text-secondary fw-bold mb-2">
-              {{ translationService.currentLang() === 'ar' ? 'إضافة اختيار جديد' : 'Add Option' }}
-            </h5>
-            <div class="row g-2">
-              <div class="col-4">
-                <input
-                  type="text"
-                  [(ngModel)]="newOptionValuesAr[material.id]"
-                  class="form-control form-control-sm rounded-pill font-xs"
-                  [placeholder]="translationService.currentLang() === 'ar' ? 'الاسم بالعربية' : 'Arabic (e.g. جوز)'"
-                  required
-                />
+              <!-- Options Tags list -->
+              <div class="options-wrapper">
+                
+                <!-- No options empty state -->
+                <div *ngIf="!material.options?.length" class="empty-options-text py-4 text-center text-muted">
+                  <i class="bi bi-tag-fill opacity-50 display-8 mb-2 d-block"></i>
+                  <span>{{ translationService.currentLang() === 'ar' ? 'لا توجد خيارات مضافة بعد.' : 'No options added yet.' }}</span>
+                </div>
+
+                <!-- Wrapping layout of clean chips -->
+                <div class="d-flex flex-wrap gap-2" *ngIf="material.options?.length">
+                  
+                  <div 
+                    *ngFor="let option of material.options"
+                    class="luxury-option-chip d-flex align-items-center gap-2 px-3 py-2 border rounded position-relative"
+                  >
+                    <!-- Visual swatch preview if color/image URL -->
+                    <div *ngIf="getOptionVisual(option.valueEn) as swatch" class="option-swatch-wrapper">
+                      <div *ngIf="swatch.type === 'color'" class="option-swatch swatch-color" [style.background-color]="swatch.value"></div>
+                      <img *ngIf="swatch.type === 'image'" class="option-swatch swatch-image" [src]="swatch.value" alt="" />
+                    </div>
+
+                    <!-- Names -->
+                    <div class="chip-names-group d-flex align-items-center">
+                      <span class="chip-name fw-medium">{{ parseOptionValue(option.valueEn) }}</span>
+                      <span class="chip-name-ar text-muted ms-1.5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+                        ({{ parseOptionValue(option.valueAr) }})
+                      </span>
+                    </div>
+
+                    <!-- Price delta badge -->
+                    <span class="badge option-delta-badge" [class.positive]="option.priceDelta > 0">
+                      {{ option.priceDelta > 0 ? '+' : '' }}{{ option.priceDelta | currencyFormat }}
+                    </span>
+
+                    <!-- Action Hover Controls (Linear style) -->
+                    <div class="chip-actions-overlay d-flex align-items-center gap-1">
+                      <button 
+                        type="button" 
+                        class="btn chip-action-btn"
+                        (click)="startEditOption(option)" 
+                        [title]="translationService.currentLang() === 'ar' ? 'تعديل الاختيار' : 'Edit Option'"
+                      >
+                        <i class="bi bi-pencil-fill"></i>
+                      </button>
+                      <button 
+                        type="button" 
+                        class="btn chip-action-btn text-danger"
+                        (click)="deleteOption(option.id, material.id)" 
+                        [title]="translationService.currentLang() === 'ar' ? 'حذف الاختيار' : 'Delete Option'"
+                      >
+                        <i class="bi bi-trash-fill"></i>
+                      </button>
+                    </div>
+
+                  </div>
+
+                </div>
+
               </div>
-              <div class="col-4">
-                <input
-                  type="text"
-                  [(ngModel)]="newOptionValuesEn[material.id]"
-                  class="form-control form-control-sm rounded-pill font-xs"
-                  [placeholder]="translationService.currentLang() === 'ar' ? 'الاسم بالإنجليزية' : 'English (e.g. Walnut)'"
-                  required
-                />
-              </div>
-              <div class="col-4">
-                <input
-                  type="number"
-                  [(ngModel)]="newOptionPriceDeltas[material.id]"
-                  class="form-control form-control-sm rounded-pill font-xs"
-                  [placeholder]="translationService.currentLang() === 'ar' ? 'السعر (+)' : 'PriceDelta (+)'"
-                  min="0"
-                />
-              </div>
-              <div class="col-12 mt-2">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-dark rounded-pill w-100 font-xxs py-1.5 fw-semibold border-0 shadow-xs"
-                  (click)="addOption(material.id)"
-                  [disabled]="submittingOptions[material.id] || !newOptionValuesAr[material.id]?.trim() || !newOptionValuesEn[material.id]?.trim()"
+
+              <!-- Add Option Button (Pill at bottom of the card) -->
+              <div class="mt-4 pt-3 border-top d-flex justify-content-end">
+                <button 
+                  type="button" 
+                  class="btn btn-secondary-saas btn-sm px-3 py-1.5 d-flex align-items-center gap-1.5"
+                  (click)="openAddOption(material.id)"
                 >
-                  <i class="bi bi-plus-lg me-1"></i>
-                  {{ translationService.currentLang() === 'ar' ? 'إضافة الاختيار' : 'Save Option' }}
+                  <i class="bi bi-plus-lg"></i>
+                  <span>{{ translationService.currentLang() === 'ar' ? 'إضافة خيار' : 'Add Option' }}</span>
                 </button>
               </div>
+
             </div>
           </div>
         </div>
-      </div>
+
+      </section>
+
+      <!-- Search Empty State (No query match) -->
+      <section *ngIf="filteredMaterials().length === 0 && materials().length > 0" class="empty-state-card border-0 rounded-4 p-5 bg-white text-center">
+        <div class="empty-icon-avatar mx-auto mb-4">
+          <i class="bi bi-search text-muted display-6"></i>
+        </div>
+        <h3 class="h6 fw-semibold text-dark mb-2">
+          {{ translationService.currentLang() === 'ar' ? 'لم يتم العثور على نتائج' : 'No Results Found' }}
+        </h3>
+        <p class="font-xs text-muted mb-4 mx-auto max-width-360">
+          {{ translationService.currentLang() === 'ar' ? 'لم نجد أي خامات أو خيارات تطابق "' + searchQuery() + '". يرجى محاولة مصطلح بحث آخر.' : 'We couldn\'t find any materials or options matching "' + searchQuery() + '". Please try another search term.' }}
+        </p>
+        <button type="button" class="btn btn-secondary-saas px-4 py-2.5 border-0" (click)="clearSearch()">
+          {{ translationService.currentLang() === 'ar' ? 'إعادة تعيين البحث' : 'Clear Search' }}
+        </button>
+      </section>
+
+      <!-- Stack Empty State (No materials exist at all) -->
+      <section *ngIf="materials().length === 0" class="empty-state-card border-0 rounded-4 p-5 bg-white text-center">
+        <div class="empty-icon-avatar mx-auto mb-4">
+          <i class="bi bi-sliders text-muted display-6"></i>
+        </div>
+        <h3 class="h6 fw-semibold text-dark mb-2">
+          {{ translationService.currentLang() === 'ar' ? 'لا توجد مجموعات خامات بعد' : 'No Custom Groups Yet' }}
+        </h3>
+        <p class="font-xs text-muted mb-4 mx-auto max-width-360">
+          {{ translationService.currentLang() === 'ar' ? 'ابدأ بإنشاء أول مجموعة خامات (مثل أنواع الخشب أو ألوان الأقمشة) لتسهيل تخصيص منتجاتك للعملاء.' : 'Start by creating your first material group (like wood finishes or fabric colors) to enable custom variants for customers.' }}
+        </p>
+        <button 
+          type="button" 
+          class="btn btn-primary-saas px-4 py-2.5 border-0"
+          (click)="showCreateModal.set(true)"
+        >
+          <i class="bi bi-plus-lg"></i>
+          {{ translationService.currentLang() === 'ar' ? 'إضافة مجموعة جديدة' : 'Add First Group' }}
+        </button>
+      </section>
+
     </div>
 
-    <!-- Empty State -->
-    <div *ngIf="materials().length === 0" class="p-5 bg-white rounded-4 shadow-xs text-center mt-3">
-      <div class="mx-auto mb-3" style="background: rgba(184, 147, 92, 0.1); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <i class="bi bi-sliders text-gold display-6"></i>
+  </div>
+
+  <!-- Modern Floating Action Button (FAB) for Quick Addition -->
+  <button 
+    type="button" 
+    class="btn-saas-fab"
+    (click)="showCreateModal.set(true)"
+    [title]="translationService.currentLang() === 'ar' ? 'إضافة مجموعة جديدة' : 'Create New Group'"
+  >
+    <i class="bi bi-plus-lg"></i>
+  </button>
+
+  <!-- ==========================================================================
+     GLOBAL MODAL OVERLAYS (Shopify/Linear style)
+     ========================================================================== -->
+
+  <!-- 1. CREATE GROUP MODAL -->
+  <div class="modal-backdrop-luxury animate-fade-in" *ngIf="showCreateModal()" (click)="showCreateModal.set(false)">
+    <div class="modal-card-luxury animate-slide-up" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header-luxury d-flex justify-content-between align-items-center">
+        <h5 class="modal-title-saas mb-0">
+          {{ translationService.currentLang() === 'ar' ? 'إضافة مجموعة خامات جديدة' : 'Create New Material Group' }}
+        </h5>
+        <button type="button" class="btn-close-saas" (click)="showCreateModal.set(false)">
+          <i class="bi bi-x"></i>
+        </button>
       </div>
-      <h3 class="h6 fw-bold text-dark mb-1">{{ translationService.currentLang() === 'ar' ? 'لا توجد خيارات مضافة بعد' : 'No Custom Options Yet' }}</h3>
-      <p class="font-xs text-muted mb-0 mx-auto" style="max-width: 320px;">
-        {{ translationService.currentLang() === 'ar' ? 'ابدأ بإنشاء أول مجموعة خامات (مثل أنواع الخشب أو ألوان الأقمشة) لتسهيل تخصيص منتجاتك للعملاء.' : 'Start by creating your first material group (like wood finishes or fabric colors) to enable custom variants for customers.' }}
-      </p>
+
+      <form (submit)="addMaterial($event)">
+        <div class="modal-body-luxury d-flex flex-column gap-4">
+          <div class="form-group-saas">
+            <label class="form-label-saas" for="modalMatNameAr">{{ translationService.currentLang() === 'ar' ? 'الاسم بالعربية *' : 'Name (Arabic) *' }}</label>
+            <input
+              type="text"
+              [(ngModel)]="newMaterialNameAr"
+              name="newMaterialNameAr"
+              id="modalMatNameAr"
+              class="form-control-saas"
+              [placeholder]="translationService.currentLang() === 'ar' ? 'مثال: نوع الخشب' : 'e.g. Wood Type'"
+              required
+            />
+          </div>
+          
+          <div class="form-group-saas">
+            <label class="form-label-saas" for="modalMatNameEn">{{ translationService.currentLang() === 'ar' ? 'الاسم بالإنجليزية *' : 'Name (English) *' }}</label>
+            <input
+              type="text"
+              [(ngModel)]="newMaterialNameEn"
+              name="newMaterialNameEn"
+              id="modalMatNameEn"
+              class="form-control-saas"
+              [placeholder]="translationService.currentLang() === 'ar' ? 'مثال: Wood Type' : 'e.g. Wood Type'"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer-luxury d-flex gap-2 justify-content-end">
+          <button type="button" class="btn btn-cancel-saas" (click)="showCreateModal.set(false)">
+            {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary-saas d-flex align-items-center gap-1.5"
+            [disabled]="submittingMaterial || !newMaterialNameAr.trim() || !newMaterialNameEn.trim()"
+          >
+            <i class="bi bi-check2"></i>
+            {{ translationService.currentLang() === 'ar' ? 'إنشاء المجموعة' : 'Create Group' }}
+          </button>
+        </div>
+      </form>
+
     </div>
   </div>
+
+  <!-- 2. EDIT GROUP MODAL -->
+  <div class="modal-backdrop-luxury animate-fade-in" *ngIf="editingGroupId() !== null" (click)="cancelEditMaterial()">
+    <div class="modal-card-luxury animate-slide-up" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header-luxury d-flex justify-content-between align-items-center">
+        <h5 class="modal-title-saas mb-0">
+          {{ translationService.currentLang() === 'ar' ? 'تعديل اسم مجموعة الخامات' : 'Edit Material Group Name' }}
+        </h5>
+        <button type="button" class="btn-close-saas" (click)="cancelEditMaterial()">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body-luxury d-flex flex-column gap-4">
+        <div class="form-group-saas">
+          <label class="form-label-saas" for="modalEditMatNameAr">{{ translationService.currentLang() === 'ar' ? 'الاسم بالعربية *' : 'Name (Arabic) *' }}</label>
+          <input
+            type="text"
+            [(ngModel)]="editMaterialNameAr"
+            id="modalEditMatNameAr"
+            class="form-control-saas"
+            required
+          />
+        </div>
+        
+        <div class="form-group-saas">
+          <label class="form-label-saas" for="modalEditMatNameEn">{{ translationService.currentLang() === 'ar' ? 'الاسم بالإنجليزية *' : 'Name (English) *' }}</label>
+          <input
+            type="text"
+            [(ngModel)]="editMaterialNameEn"
+            id="modalEditMatNameEn"
+            class="form-control-saas"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer-luxury d-flex gap-2 justify-content-end">
+        <button type="button" class="btn btn-cancel-saas" (click)="cancelEditMaterial()">
+          {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary-saas d-flex align-items-center gap-1.5"
+          [disabled]="savingMaterialId() !== null || !editMaterialNameAr.trim() || !editMaterialNameEn.trim()"
+          (click)="saveEditMaterial(editingGroupId()!)"
+        >
+          <span *ngIf="savingMaterialId() !== null" class="spinner-border spinner-border-sm me-1" role="status"></span>
+          {{ translationService.currentLang() === 'ar' ? 'حفظ التعديلات' : 'Save Changes' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. EDIT OPTION MODAL -->
+  <div class="modal-backdrop-luxury animate-fade-in" *ngIf="editingOptionId() !== null" (click)="cancelEditOption()">
+    <div class="modal-card-luxury animate-slide-up" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header-luxury d-flex justify-content-between align-items-center">
+        <h5 class="modal-title-saas mb-0">
+          {{ translationService.currentLang() === 'ar' ? 'تعديل بيانات اختيار التخصيص' : 'Edit Custom Option Details' }}
+        </h5>
+        <button type="button" class="btn-close-saas" (click)="cancelEditOption()">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body-luxury d-flex flex-column gap-4">
+        <div class="form-group-saas">
+          <label class="form-label-saas" for="modalEditOptValAr">{{ translationService.currentLang() === 'ar' ? 'الاسم بالعربية *' : 'Name (Arabic) *' }}</label>
+          <input
+            type="text"
+            [(ngModel)]="editOptionValueAr"
+            id="modalEditOptValAr"
+            class="form-control-saas"
+            required
+          />
+        </div>
+        
+        <div class="form-group-saas">
+          <label class="form-label-saas" for="modalEditOptValEn">{{ translationService.currentLang() === 'ar' ? 'الاسم بالإنجليزية *' : 'Name (English) *' }}</label>
+          <input
+            type="text"
+            [(ngModel)]="editOptionValueEn"
+            id="modalEditOptValEn"
+            class="form-control-saas"
+            required
+          />
+        </div>
+
+        <div class="form-group-saas">
+          <label class="form-label-saas" for="modalEditOptPrice">{{ translationService.currentLang() === 'ar' ? 'فارق السعر (+)' : 'Price Delta (+)' }}</label>
+          <input
+            type="number"
+            [(ngModel)]="editOptionPriceDelta"
+            id="modalEditOptPrice"
+            class="form-control-saas"
+            min="0"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer-luxury d-flex gap-2 justify-content-end">
+        <button type="button" class="btn btn-cancel-saas" (click)="cancelEditOption()">
+          {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary-saas d-flex align-items-center gap-1.5"
+          [disabled]="savingOptionId() !== null || !editOptionValueAr.trim() || !editOptionValueEn.trim()"
+          (click)="saveEditOption(editingOptionId()!)"
+        >
+          <span *ngIf="savingOptionId() !== null" class="spinner-border spinner-border-sm me-1" role="status"></span>
+          {{ translationService.currentLang() === 'ar' ? 'حفظ التعديلات' : 'Save Changes' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Custom Delete Confirmation Dialog Component -->
+  <app-confirm-dialog
+    [visible]="showDeleteDialog()"
+    [title]="dialogTitle()"
+    [message]="dialogMessage()"
+    [confirmText]="dialogConfirmText()"
+    [cancelText]="dialogCancelText()"
+    (confirm)="onConfirmDialog()"
+    (cancel)="onCancelDialog()"
+  ></app-confirm-dialog>
+
+  <!-- 4. ADD OPTION MODAL -->
+  <div class="modal-backdrop-luxury animate-fade-in" *ngIf="addingOptionGroupId() !== null" (click)="cancelAddOption()">
+    <div class="modal-card-luxury animate-slide-up" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header-luxury d-flex justify-content-between align-items-center">
+        <h5 class="modal-title-saas mb-0">
+          {{ translationService.currentLang() === 'ar' ? 'إضافة اختيار تخصيص جديد' : 'Add New Custom Option' }}
+        </h5>
+        <button type="button" class="btn-close-saas" (click)="cancelAddOption()">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+
+      <form (submit)="addOption($event)">
+        <div class="modal-body-luxury d-flex flex-column gap-4">
+          <div class="form-group-saas">
+            <label class="form-label-saas" for="modalAddOptValAr">{{ translationService.currentLang() === 'ar' ? 'الاسم بالعربية *' : 'Name (Arabic) *' }}</label>
+            <input
+              type="text"
+              [(ngModel)]="newOptionValueAr"
+              name="newOptionValueAr"
+              id="modalAddOptValAr"
+              class="form-control-saas"
+              [placeholder]="translationService.currentLang() === 'ar' ? 'مثال: بلوط طبيعي' : 'e.g. Natural Oak'"
+              required
+            />
+          </div>
+          
+          <div class="form-group-saas">
+            <label class="form-label-saas" for="modalAddOptValEn">{{ translationService.currentLang() === 'ar' ? 'الاسم بالإنجليزية *' : 'Name (English) *' }}</label>
+            <input
+              type="text"
+              [(ngModel)]="newOptionValueEn"
+              name="newOptionValueEn"
+              id="modalAddOptValEn"
+              class="form-control-saas"
+              [placeholder]="translationService.currentLang() === 'ar' ? 'مثال: Natural Oak' : 'e.g. Natural Oak'"
+              required
+            />
+          </div>
+
+          <div class="form-group-saas">
+            <label class="form-label-saas" for="modalAddOptPrice">{{ translationService.currentLang() === 'ar' ? 'فارق السعر (+)' : 'Price Delta (+)' }}</label>
+            <input
+              type="number"
+              [(ngModel)]="newOptionPriceDelta"
+              name="newOptionPriceDelta"
+              id="modalAddOptPrice"
+              class="form-control-saas"
+              min="0"
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer-luxury d-flex gap-2 justify-content-end">
+          <button type="button" class="btn btn-cancel-saas" (click)="cancelAddOption()">
+            {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary-saas d-flex align-items-center gap-1.5"
+            [disabled]="submittingOption || !newOptionValueAr.trim() || !newOptionValueEn.trim()"
+          >
+            <span *ngIf="submittingOption" class="spinner-border spinner-border-sm me-1" role="status"></span>
+            {{ translationService.currentLang() === 'ar' ? 'إضافة الاختيار' : 'Add Option' }}
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
 </main>

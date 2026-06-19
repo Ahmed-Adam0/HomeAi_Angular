@@ -1,115 +1,690 @@
-/* Vendor Materials Premium Page Styles */
+/* 
+ * Premium SaaS Style Guide: Shopify Polaris / Linear / Notion / Apple
+ * Minimal, clean, spacious, with strong visual hierarchy and high-contrast typography.
+ */
+@import '../../../../../styles/abstracts/variables.css';
 
 .vendor-materials {
-  background-color: #faf9f6;
+  background-color: var(--fm-color-neutral-50);
   min-height: 100vh;
-  font-family: 'Outfit', 'Inter', sans-serif;
+  font-family: var(--fm-font-sans);
+  color: var(--fm-color-neutral-700);
+}
+
+.vendor-materials__container {
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* ==========================================
+   1. PAGE HEADER
+   ========================================== */
+.vendor-materials__header {
+  border-bottom: 1px solid var(--fm-color-neutral-200);
 }
 
 .vendor-materials__eyebrow {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--fm-color-primary-500);
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: #b8935c !important;
+  font-weight: 650;
 }
 
 .vendor-materials__title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 2.25rem;
+  font-size: 2rem;
+  font-weight: 750;
   letter-spacing: -0.02em;
-  color: #1f1c18;
+  color: var(--fm-color-neutral-900);
 }
 
-.vendor-materials__meta-badge {
-  background-color: rgba(184, 147, 92, 0.1) !important;
-  color: #b8935c !important;
-  font-size: 0.65rem;
-  letter-spacing: 0.05em;
-}
-
-/* Card Styling */
-.card {
-  border: 1px solid rgba(0, 0, 0, 0.03) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015) !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03) !important;
-}
-
-.bg-gold-soft {
-  background-color: rgba(184, 147, 92, 0.08) !important;
-}
-
-.text-gold {
-  color: #b8935c !important;
-}
-
-.bg-success-soft {
-  background-color: rgba(40, 167, 69, 0.08) !important;
-  color: #28a745 !important;
-}
-
-/* Form Controls */
-.form-control, .form-select {
-  border: 1px solid rgba(31, 28, 24, 0.12);
-  background-color: #ffffff;
-  color: #1f1c18;
+.vendor-materials__description {
+  color: var(--fm-color-neutral-500);
+  max-width: 700px;
+  line-height: 1.5;
   font-size: 0.85rem;
-  transition: all 0.2s ease;
 }
 
-.form-control:focus, .form-select:focus {
-  border-color: #b8935c;
-  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.15);
+/* ==========================================
+   2. TOOLBAR & CONTROLS
+   ========================================== */
+.vendor-materials__toolbar {
   background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  border-radius: var(--fm-radius-md);
+  box-shadow: var(--fm-shadow-xs);
 }
 
-.btn-dark {
-  background-color: #1f1c18 !important;
+.max-width-md-360 {
+  max-width: 360px;
+}
+
+.toolbar-search-input {
+  background-color: var(--fm-color-neutral-50);
+  border: 1px solid var(--fm-color-neutral-200);
+  color: var(--fm-color-neutral-900);
+  height: 40px;
+  font-size: 0.85rem;
+  border-radius: var(--fm-radius-sm);
+  transition: var(--fm-transition-fast);
+}
+
+.toolbar-search-input:focus {
+  background-color: #ffffff;
+  border-color: var(--fm-color-neutral-400);
+  box-shadow: 0 0 0 3px rgba(31, 28, 24, 0.05);
+}
+
+.search-icon {
+  font-size: 0.88rem;
+  z-index: 5;
+}
+
+[dir="rtl"] .search-icon {
+  left: auto !important;
+  right: 0;
+  padding-right: 1rem;
+}
+
+[dir="rtl"] .toolbar-search-input {
+  padding-left: 1rem !important;
+  padding-right: 2.75rem !important;
+}
+
+.btn-clear-search {
+  font-size: 0.85rem;
+  transition: var(--fm-transition-fast);
+  z-index: 5;
+}
+
+.btn-clear-search:hover {
+  color: var(--fm-color-neutral-800) !important;
+}
+
+[dir="rtl"] .btn-clear-search {
+  right: auto !important;
+  left: 0;
+  padding-left: 1rem;
+}
+
+/* Stats Badges */
+.stats-badge {
+  background-color: var(--fm-color-neutral-50);
+  border: 1px solid var(--fm-color-neutral-200);
+  font-size: 0.78rem;
+}
+
+.stats-badge .label {
+  font-weight: 500;
+}
+
+.stats-badge .value {
+  color: var(--fm-color-neutral-900);
+}
+
+/* ==========================================
+   3. SAAS BUTTON SYSTEM
+   ========================================== */
+/* Primary Shopify/Linear style Button */
+.btn-primary-saas {
+  background-color: var(--fm-color-neutral-900);
+  border: 1px solid var(--fm-color-neutral-900);
   color: #ffffff !important;
-  transition: all 0.25s ease;
+  font-weight: 600;
+  font-size: 0.82rem;
+  border-radius: var(--fm-radius-sm);
+  height: 40px;
+  transition: var(--fm-transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-dark:hover {
-  background-color: #b8935c !important;
-  transform: translateY(-1px);
+.btn-primary-saas:hover:not(:disabled) {
+  background-color: var(--fm-color-neutral-800);
+  border-color: var(--fm-color-neutral-800);
 }
 
-.btn-dark:disabled {
-  background-color: rgba(31, 28, 24, 0.5) !important;
+.btn-primary-saas:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Options List Table */
-.table th {
-  font-weight: 700;
+/* Secondary Button */
+.btn-secondary-saas {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  color: var(--fm-color-neutral-700);
+  font-weight: 600;
+  font-size: 0.82rem;
+  border-radius: var(--fm-radius-sm);
+  height: 40px;
+  transition: var(--fm-transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary-saas:hover {
+  background-color: var(--fm-color-neutral-50);
+  border-color: var(--fm-color-neutral-350);
+  color: var(--fm-color-neutral-900);
+}
+
+.btn-secondary-saas.btn-sm {
+  height: 32px;
+  font-size: 0.75rem;
+  border-radius: var(--fm-radius-sm);
+}
+
+/* Icon Toggles on Toolbar */
+.btn-icon-saas {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
+
+.btn-icon-saas i {
+  font-size: 0.95rem;
+}
+
+/* Cancel Button for Modals */
+.btn-cancel-saas {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  color: var(--fm-color-neutral-600);
+  font-weight: 600;
+  font-size: 0.82rem;
+  border-radius: var(--fm-radius-sm);
+  height: 40px;
+  padding: 0 1.25rem;
+  transition: var(--fm-transition-fast);
+}
+
+.btn-cancel-saas:hover {
+  background-color: var(--fm-color-neutral-50);
+  color: var(--fm-color-neutral-900);
+}
+
+/* ==========================================
+   4. MATERIAL CARDS (GRID)
+   ========================================== */
+.materials-grid {
+  margin-top: 1rem;
+}
+
+.material-item-card {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  border-radius: var(--fm-radius-md);
+  box-shadow: var(--fm-shadow-xs);
+  transition: border-color var(--fm-transition-duration-normal) var(--fm-ease-smooth),
+              box-shadow var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+  overflow: hidden;
+}
+
+.material-item-card:hover {
+  border-color: var(--fm-color-neutral-300);
+  box-shadow: var(--fm-shadow-sm);
+}
+
+/* Card Header */
+.card-header-premium {
+  background-color: #ffffff;
+  user-select: none;
+  transition: background-color var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+}
+
+.card-header-premium:hover {
+  background-color: var(--fm-color-neutral-50);
+}
+
+.banner-icon-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--fm-radius-sm);
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-color-neutral-600);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.group-eyebrow {
+  font-size: 0.65rem;
   letter-spacing: 0.05em;
+  font-weight: 600;
   text-transform: uppercase;
-  padding: 0.75rem 0.5rem;
+  opacity: 0.8;
 }
 
-.table td {
-  padding: 0.75rem 0.5rem;
+.material-card-title {
+  letter-spacing: -0.01em;
 }
 
-.btn-link {
-  color: #dc3545;
-  transition: all 0.2s ease;
+/* Collapsed Header State */
+.material-item-card.collapsed {
+  border-bottom-width: 1px;
 }
 
-.btn-link:hover {
-  color: #bd2130;
-  transform: scale(1.1);
+/* Header Action Controls */
+.btn-action-saas {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--fm-radius-sm);
+  background-color: transparent;
+  border: none;
+  color: var(--fm-color-neutral-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: var(--fm-transition-fast);
+  padding: 0;
 }
 
-/* Animations */
+.btn-action-saas:hover {
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-color-neutral-800);
+}
+
+.btn-action-saas.text-danger:hover {
+  background-color: var(--fm-color-danger-50);
+  color: var(--fm-color-danger-500) !important;
+}
+
+.collapse-toggle-icon {
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card Body Content */
+.card-body-premium {
+  border-top: 1px solid var(--fm-color-neutral-200);
+  background-color: #ffffff;
+}
+
+.options-section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.option-count-badge {
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-color-neutral-600);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.35em 0.8em;
+  border-radius: var(--fm-radius-pill);
+}
+
+.empty-options-text {
+  font-size: 0.8rem;
+  border: 1px dashed var(--fm-color-neutral-200);
+  border-radius: var(--fm-radius-sm);
+  background-color: var(--fm-color-neutral-50);
+}
+
+/* ==========================================
+   5. OPTION CHIPS (Shopify / Linear Style)
+   ========================================== */
+.luxury-option-chip {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200) !important;
+  border-radius: var(--fm-radius-sm) !important;
+  height: 36px;
+  padding-right: 0.85rem !important;
+  padding-left: 0.85rem !important;
+  transition: all var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+}
+
+.luxury-option-chip:hover {
+  background-color: var(--fm-color-neutral-50);
+  border-color: var(--fm-color-neutral-300) !important;
+  padding-right: 3.5rem !important; /* Expand to show action buttons */
+}
+
+/* RTL expansion adjustment */
+[dir="rtl"] .luxury-option-chip:hover {
+  padding-right: 0.85rem !important;
+  padding-left: 3.5rem !important;
+}
+
+.option-swatch-wrapper {
+  margin-right: 4px;
+}
+
+[dir="rtl"] .option-swatch-wrapper {
+  margin-right: 0;
+  margin-left: 4px;
+}
+
+.option-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--fm-color-neutral-200);
+  object-fit: cover;
+  display: block;
+}
+
+.chip-name {
+  color: var(--fm-color-neutral-900);
+  font-size: 0.78rem;
+  font-weight: 550;
+}
+
+.chip-name-ar {
+  font-size: 0.7rem;
+  opacity: 0.75;
+}
+
+.option-delta-badge {
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-color-neutral-600);
+  border-radius: var(--fm-radius-xs) !important;
+  font-weight: 600;
+  font-size: 0.65rem;
+  padding: 0.25em 0.5em;
+  margin-left: 6px;
+}
+
+[dir="rtl"] .option-delta-badge {
+  margin-left: 0;
+  margin-right: 6px;
+}
+
+.option-delta-badge.positive {
+  background-color: var(--fm-color-success-50) !important;
+  color: var(--fm-color-success-600) !important;
+}
+
+/* Hover overlay actions (Linear design) */
+.chip-actions-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -80px; /* Hidden offscreen */
+  width: 65px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #ffffff 40%);
+  padding-right: 0.65rem;
+  justify-content: flex-end;
+  transition: right var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+  z-index: 5;
+}
+
+[dir="rtl"] .chip-actions-overlay {
+  right: auto;
+  left: -80px;
+  background: linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, #ffffff 40%);
+  padding-right: 0;
+  padding-left: 0.65rem;
+}
+
+.luxury-option-chip:hover .chip-actions-overlay {
+  right: 0;
+}
+
+[dir="rtl"] .luxury-option-chip:hover .chip-actions-overlay {
+  left: 0;
+  right: auto;
+}
+
+.chip-action-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--fm-radius-xs);
+  background-color: transparent;
+  border: none;
+  color: var(--fm-color-neutral-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  font-size: 0.72rem;
+  transition: var(--fm-transition-fast);
+}
+
+.chip-action-btn:hover {
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-color-neutral-800);
+}
+
+.chip-action-btn.text-danger:hover {
+  background-color: var(--fm-color-danger-50);
+  color: var(--fm-color-danger-500);
+}
+
+/* ==========================================
+   6. FLOATING ACTION BUTTON (FAB)
+   ========================================== */
+.btn-saas-fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--fm-color-neutral-900);
+  color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-850);
+  box-shadow: var(--fm-shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: var(--fm-z-navbar);
+  transition: var(--fm-transition-smooth);
+}
+
+[dir="rtl"] .btn-saas-fab {
+  right: auto;
+  left: 32px;
+}
+
+.btn-saas-fab:hover {
+  background-color: var(--fm-color-neutral-800);
+  transform: scale(1.05);
+}
+
+.btn-saas-fab:active {
+  transform: scale(0.95);
+}
+
+/* ==========================================
+   7. MODAL STYLING (Apple & Stripe Layouts)
+   ========================================== */
+.modal-backdrop-luxury {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(31, 28, 24, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: var(--fm-z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-card-luxury {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  border-radius: var(--fm-radius-md) !important;
+  box-shadow: var(--fm-shadow-xl) !important;
+  width: 100%;
+  max-width: 460px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header-luxury {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--fm-color-neutral-200);
+  background-color: #ffffff;
+}
+
+.modal-title-saas {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--fm-color-neutral-900);
+}
+
+.btn-close-saas {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--fm-radius-sm);
+  background-color: transparent;
+  border: none;
+  color: var(--fm-color-neutral-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: var(--fm-transition-fast);
+  padding: 0;
+}
+
+.btn-close-saas:hover {
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-color-neutral-800);
+}
+
+.modal-body-luxury {
+  padding: 1.5rem;
+}
+
+.modal-footer-luxury {
+  padding: 1rem 1.5rem;
+  background-color: var(--fm-color-neutral-50);
+  border-top: 1px solid var(--fm-color-neutral-200);
+}
+
+/* SaaS Form elements */
+.form-group-saas {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label-saas {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--fm-color-neutral-800);
+}
+
+.form-control-saas {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  border-radius: var(--fm-radius-sm);
+  color: var(--fm-color-neutral-900);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  transition: var(--fm-transition-fast);
+  outline: none;
+}
+
+.form-control-saas:focus {
+  border-color: var(--fm-color-neutral-400);
+  box-shadow: 0 0 0 3px rgba(31, 28, 24, 0.05);
+}
+
+/* ==========================================
+   8. EMPTY STATES & LOADING SKELETONS
+   ========================================== */
+.empty-state-card {
+  border: 1px dashed var(--fm-color-neutral-300);
+  background-color: #ffffff;
+  border-radius: var(--fm-radius-md);
+  box-shadow: var(--fm-shadow-xs);
+}
+
+.empty-icon-avatar {
+  background-color: var(--fm-color-neutral-100);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fm-color-neutral-500);
+}
+
+/* Skeleton Loading State Styles */
+.skeleton-card {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  border-radius: var(--fm-radius-md);
+  height: 180px;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--fm-color-neutral-100) 25%,
+    var(--fm-color-neutral-200) 50%,
+    var(--fm-color-neutral-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmerPulse 1.5s infinite var(--fm-ease-in-out);
+}
+
+.skeleton-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--fm-radius-sm);
+  flex-shrink: 0;
+}
+
+.skeleton-circle.shimmer-small {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--fm-radius-sm);
+}
+
+.skeleton-line {
+  height: 12px;
+  border-radius: var(--fm-radius-xs);
+}
+
+.skeleton-chip {
+  width: 80px;
+  height: 28px;
+  border-radius: var(--fm-radius-sm);
+}
+
+@keyframes shimmerPulse {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ==========================================
+   9. ANIMATIONS & TRANSITIONS
+   ========================================== */
 @keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -117,6 +692,19 @@
   }
 }
 
-.vendor-materials__content {
-  animation: fadeIn 0.4s ease-out forwards;
+.animate-fade-in {
+  animation: fadeIn 180ms var(--fm-ease-smooth) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 280ms var(--fm-ease-smooth) forwards;
+}
+
+/* Font utilities and adjustments */
+.font-xs {
+  font-size: 0.78rem;
+}
+
+.font-xxs {
+  font-size: 0.68rem;
 }
