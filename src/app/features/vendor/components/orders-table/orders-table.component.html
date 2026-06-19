@@ -51,16 +51,16 @@
                     </div>
                   </td>
                   <td>
-                    <span class="orders-table__customer">{{ order.customerName }}</span>
+                    <span class="orders-table__customer">{{ order.customerName || 'Customer' }}</span>
                   </td>
                   <td>
-                    <span class="orders-table__date">{{ order.placedAt | date: 'mediumDate' }}</span>
+                    <span class="orders-table__date">{{ order.createdAt | date: 'mediumDate' }}</span>
                   </td>
                   <td>
                     <span class="orders-table__amount">{{ order.totalAmount | currencyFormat }}</span>
                   </td>
                   <td>
-                    <app-order-status-badge [status]="order.status" size="sm" />
+                    <app-order-status-badge [status]="getVendorOrderStatus(order.status)" size="sm" />
                   </td>
                   <td class="text-end">
                     <button
@@ -87,20 +87,21 @@
         <div class="order-card" (click)="onViewOrder(order.id)" role="button" tabindex="0" (keydown.enter)="onViewOrder(order.id)">
           <!-- Row 1: Status + Order Number -->
           <div class="order-card__header">
-            <app-order-status-badge [status]="order.status" size="lg" />
+            <app-order-status-badge [status]="getVendorOrderStatus(order.status)" size="lg" />
             <span class="order-card__number">{{ order.orderNumber }}</span>
           </div>
 
           <!-- Row 2: Customer -->
           <div class="order-card__customer-row">
-            <span class="order-card__customer">{{ order.customerName }}</span>
+            <span class="order-card__customer">{{ order.customerName || 'Customer' }}</span>
           </div>
 
           <!-- Row 3: Amount + Meta -->
           <div class="order-card__meta-row">
             <span class="order-card__amount">{{ order.totalAmount | currencyFormat }}</span>
             <span class="order-card__meta-sep" aria-hidden="true">•</span>
-            <span class="order-card__date">{{ order.placedAt | date: 'mediumDate' }}</span>
+            <span class="order-card__date">{{ order.createdAt | date: 'mediumDate' }}</span>
+
             <span class="order-card__meta-sep" aria-hidden="true">•</span>
             <span class="order-card__items">{{ order.itemCount }}</span>
           </div>

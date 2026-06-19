@@ -4,6 +4,11 @@ import { Observable, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { unwrap } from '../../../core/utils/api-utils';
+import { IOrder, OrderStatus } from '../../orders/interfaces/iorder';
+import { mapBackendToOrder } from '../../orders/data-access/orders.mapper';
+import { IVendorOrdersPaginatedResponse } from '../interfaces/ivendor-order';
+
+
 
 export interface IVendorOrderMetric {
   totalOrders: number;
@@ -20,7 +25,7 @@ export class VendorOrdersService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
-  readonly ordersList = signal<any[]>([]);
+  readonly ordersList = signal<IOrder[]>([]);
   readonly dashboardMetrics = signal<IVendorOrderMetric | null>(null);
   readonly activityFeed = signal<any[]>([]);
   readonly revenueAnalytics = signal<any[]>([]);
@@ -53,7 +58,7 @@ export class VendorOrdersService {
    * Fetch filtered and paginated vendor orders list.
    * Target: POST /api/VendorOrders/orders/filter
    */
-  getFilteredOrders(filter: { pageNumber?: number; pageSize?: number; status?: string | null; searchTerm?: string } = {}): Observable<any[]> {
+  getFilteredOrders(filter: { pageNumber?: number; pageSize?: number; status?: string | null; searchTerm?: string } = {}): Observable<IVendorOrdersPaginatedResponse> {
     const payload = {
       pageNumber: filter.pageNumber || 1,
       pageSize: filter.pageSize || 10,
@@ -68,25 +73,21 @@ export class VendorOrdersService {
         const unwrapped = unwrap<any>(res);
         console.log('Vendor Orders Filter API Response:', unwrapped);
         
-        let items: any[] = [];
-        if (Array.isArray(unwrapped)) {
-          items = unwrapped;
-        } else if (unwrapped && Array.isArray(unwrapped.items)) {
-          items = unwrapped.items;
-        } else if (unwrapped && typeof unwrapped === 'object') {
-          for (const key of Object.keys(unwrapped)) {
-            if (Array.isArray(unwrapped[key])) {
-              items = unwrapped[key];
-              break;
-            }
-          }
-        }
+        const rawData = unwrapped?.data || unwrapped?.items || (Array.isArray(unwrapped) ? unwrapped : []);
+        const mappedData = rawData.map((o: any) => mapBackendToOrder(o));
         
-        return items.map(o => this.normalizeVendorOrder(o));
+        return {
+          data: mappedData,
+          totalCount: unwrapped?.totalCount ?? mappedData.length,
+          pageNumber: unwrapped?.pageNumber ?? payload.pageNumber,
+          pageSize: unwrapped?.pageSize ?? payload.pageSize,
+          totalPages: unwrapped?.totalPages ?? 1
+        };
       }),
-      tap(orders => this.ordersList.set(orders))
+      tap(paginated => this.ordersList.set(paginated.data))
     );
   }
+
 
   /**
    * Fetch single order details.
@@ -106,7 +107,8 @@ export class VendorOrdersService {
    * Update order status.
    * Target: PUT /api/VendorOrders/orders/{orderId}/status
    */
-  updateOrderStatus(orderId: string | number, status: string, note?: string): Observable<any> {
+  updateOrderStatus(orderId: string | number, status: OrderStatus, note?: string): Observable<any> {
+
     const payload = { status, note: note || "" };
     console.log(`PUT /api/VendorOrders/orders/${orderId}/status Payload:`, payload);
     

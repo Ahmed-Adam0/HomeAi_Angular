@@ -11,10 +11,11 @@ import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { OrdersTable } from '../../components';
-import { IVendorOrderSummary } from '../../interfaces';
 import { VendorService } from '../../services/vendor.service';
 import { APP_ROUTES } from '../../../../core/constants';
 import { VendorOrderStatus } from '../../models/vendor-order-status.enum';
+import { IOrder } from '../../../orders/interfaces/iorder';
+
 
 interface OrderStatusFilterOption {
   readonly value: string;
@@ -33,7 +34,7 @@ export class VendorOrders implements OnInit {
   private readonly vendorService = inject(VendorService);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly orders = signal<IVendorOrderSummary[]>([]);
+  readonly orders = signal<IOrder[]>([]);
   readonly loading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
@@ -71,7 +72,7 @@ export class VendorOrders implements OnInit {
     return result.filter(
       (order) =>
         order.orderNumber.toLowerCase().includes(term) ||
-        order.customerName.toLowerCase().includes(term)
+        (order.customerName && order.customerName.toLowerCase().includes(term))
     );
   });
 
@@ -113,8 +114,8 @@ export class VendorOrders implements OnInit {
       .getOrders()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (summaries) => {
-          this.orders.set(summaries);
+        next: (response) => {
+          this.orders.set(response.data);
           this.loading.set(false);
         },
         error: (err) => {
@@ -125,3 +126,4 @@ export class VendorOrders implements OnInit {
       });
   }
 }
+

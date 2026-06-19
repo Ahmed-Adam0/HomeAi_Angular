@@ -1,4 +1,5 @@
-import { IBackendOrder, IOrder, OrderStatus, IShippingAddress } from '../interfaces';
+import { IBackendOrder, IOrder, OrderStatus, IShippingAddress, IOrderItem } from '../interfaces';
+
 
 /**
  * Maps a raw backend order (IBackendOrder) to the frontend IOrder model.
@@ -39,17 +40,16 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
 
   const billingAddress: IShippingAddress = order.billingAddress ?? shippingAddress;
 
-  const items = Array.isArray(order.items)
+  const items: IOrderItem[] = Array.isArray(order.items)
     ? order.items.map((item) => {
         const unitPrice = item.finalUnitPrice ?? item.unitPrice ?? 0;
         const totalItemPrice = item.totalItemPrice ?? (unitPrice * item.quantity);
         return {
-          id: item.id,
-          productId: String(item.productId),
+          productId: Number(item.productId),
           productName: item.productName,
           quantity: item.quantity,
-          price: Number(unitPrice),
-          subtotal: Number(totalItemPrice),
+          unitPrice: Number(unitPrice),
+          total: Number(totalItemPrice),
           productImage: item.productImage ?? '',
           snapshotBasePrice: item.snapshotBasePrice,
           snapshotOptions: item.snapshotOptions,
@@ -80,7 +80,7 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
     trackingNumber: order.trackingNumber,
     carrier: order.carrier,
     createdAt: order.createdAt,
-    updatedAt: order.updatedAt ?? order.createdAt,
+    updatedAt: order.updatedAt ?? null,
     estimatedDeliveryDate: order.estimatedDeliveryDate,
     placedAt: order.createdAt,
     estimatedDelivery: order.createdAt,
@@ -88,10 +88,15 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
     total: Number(order.totalPrice),
     address: order.address ?? '',
     phoneNumber: order.phoneNumber ?? '',
-    notes: order.notes ?? null,
-    statusHistory: order.statusHistory ?? [],
+    notes: order.notes ?? '',
+    statusHistory: order.statusHistory ?? null,
+    masterOrderId: order.masterOrderId,
+    customerName: order.customerName ?? '',
+    customerPhone: order.customerPhone ?? '',
+    itemCount: order.itemCount ?? items.length,
   };
 
   console.log('Mapped order VM:', mapped);
   return mapped;
 }
+

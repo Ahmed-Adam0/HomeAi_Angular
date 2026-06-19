@@ -26,6 +26,8 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pip
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { localized } from '../../../../shared/utils/localized';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
+import { IVendorOrdersPaginatedResponse } from '../../interfaces/ivendor-order';
+
 
 @Component({
   selector: 'app-vendor-dashboard',
@@ -511,7 +513,7 @@ export class VendorDashboard implements OnInit {
     const orders$ = this.vendorOrdersService.getFilteredOrders({ pageSize: 100 }).pipe(
       catchError(err => {
         console.error('Failed to load filtered orders:', err);
-        return of([]);
+        return of({ data: [], totalCount: 0, pageNumber: 1, pageSize: 100, totalPages: 1 } as IVendorOrdersPaginatedResponse);
       })
     );
 
@@ -522,14 +524,16 @@ export class VendorDashboard implements OnInit {
       topProduct$,
       orders$
     ]).subscribe({
-      next: (response: [IProduct[], any[], any, IProduct | null, any[]]) => {
+      next: (response: [IProduct[], any[], any, IProduct | null, IVendorOrdersPaginatedResponse]) => {
         console.log('Vendor Dashboard Data Loaded successfully from real sources:', response);
-        const [prods, revs, stats, topProd, orders] = response;
+        const [prods, revs, stats, topProd, ordersResult] = response;
+        const orders = ordersResult.data;
 
         this.topProduct.set(topProd);
 
         // Dynamically compute absolute consistent metrics directly from live orders
         const totalOrders = orders.length;
+
         const completedOrdersCount = orders.filter(o => o.status === 'delivered' || o.status === 'completed').length;
         const pendingOrdersCount = orders.filter(o => o.status === 'pending').length;
         const activeOrdersCount = orders.filter(o => o.status === 'confirmed' || o.status === 'processing' || o.status === 'ready').length;

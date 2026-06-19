@@ -380,6 +380,20 @@
                 </div>
               }
             </div>
+
+            <!-- Latest status transition (Requirement 6) -->
+            @if (order()?.statusHistory; as history) {
+              <div class="mt-4 p-3 bg-neutral-50 rounded border border-neutral-200 small">
+                <div class="fw-bold text-heading mb-1">Latest Status Transition:</div>
+                <div class="text-muted">
+                  Status changed from 
+                  <span class="badge bg-neutral-200 text-neutral-800">{{ history.oldStatus }}</span>
+                  to 
+                  <span class="badge bg-primary text-white">{{ history.newStatus }}</span>
+                  on <span class="fw-semibold">{{ history.createdAt | date: 'medium' }}</span>
+                </div>
+              </div>
+            }
           </div>
         </div>
 
@@ -398,11 +412,11 @@
             <div class="d-flex flex-column gap-3 mt-3">
               <div>
                 <span class="text-muted small d-block mb-1">Full Name</span>
-                <span class="fw-bold text-heading fs-6">{{ order()!.customer.fullName }}</span>
+                <span class="fw-bold text-heading fs-6">{{ order()!.customer.fullName || 'Customer' }}</span>
               </div>
               <div>
                 <span class="text-muted small d-block mb-1">Email Address</span>
-                <span class="fw-semibold text-primary text-break small">{{ order()!.customer.email }}</span>
+                <span class="fw-semibold text-primary text-break small">{{ order()!.customer.email || ('VENDOR.COMMON.NOT_PROVIDED' | translate) }}</span>
               </div>
               <div>
                 <span class="text-muted small d-block mb-1">Phone Number</span>
@@ -416,23 +430,28 @@
               </div>
               <div>
                 <span class="text-muted small d-block mb-1">{{ 'VENDOR.ORDER_DETAILS.DELIVERY_ADDRESS' | translate }}</span>
-                <div class="fw-medium text-heading small lh-base rounded bg-neutral-50 p-2 border border-neutral-200">
-                  {{ order()!.shippingAddress.addressLine1 }}
-                  @if (order()!.shippingAddress.addressLine2) {
-                    <div>{{ order()!.shippingAddress.addressLine2 }}</div>
-                  }
-                  <div>
-                    {{ order()!.shippingAddress.city }}
-                    @if (order()!.shippingAddress.state) {
-                      , {{ order()!.shippingAddress.state }}
+                @if (order()!.shippingAddress.addressLine1 || order()!.shippingAddress.city || order()!.shippingAddress.country) {
+                  <div class="fw-medium text-heading small lh-base rounded bg-neutral-50 p-2 border border-neutral-200">
+                    {{ order()!.shippingAddress.addressLine1 }}
+                    @if (order()!.shippingAddress.addressLine2) {
+                      <div>{{ order()!.shippingAddress.addressLine2 }}</div>
                     }
-                    {{ order()!.shippingAddress.postalCode }}
+                    <div>
+                      {{ order()!.shippingAddress.city }}
+                      @if (order()!.shippingAddress.state) {
+                        , {{ order()!.shippingAddress.state }}
+                      }
+                      {{ order()!.shippingAddress.postalCode }}
+                    </div>
+                    <div class="fw-semibold text-muted mt-1">{{ order()!.shippingAddress.country }}</div>
                   </div>
-                  <div class="fw-semibold text-muted mt-1">{{ order()!.shippingAddress.country }}</div>
-                </div>
+                } @else {
+                  <span class="text-muted italic">{{ 'VENDOR.COMMON.NOT_PROVIDED' | translate }}</span>
+                }
               </div>
             </div>
           </div>
+
 
           <!-- Shipping Info Card -->
           <div class="card-premium p-4 mb-4">

@@ -1,4 +1,7 @@
 import { IVendorOrderDashboardDto } from '../dto/vendor-order-dashboard.dto';
+import { IOrder } from '../../../orders/interfaces/iorder';
+
+
 import { IVendorOrdersFilterResponseDto } from '../dto/vendor-orders-filter-response.dto';
 import { IVendorOrderDetailsDto } from '../dto/vendor-order-details.dto';
 import { IVendorDashboardMetricsDto } from '../dto/vendor-dashboard-metrics.dto';
@@ -29,13 +32,14 @@ export function mapVendorOrderDashboard(
 }
 
 /**
- * Maps a paginated VendorOrdersFilterResponseDto to an array of IVendorOrderSummary.
+ * Maps a paginated VendorOrdersFilterResponseDto to an array of IOrder.
  */
 export function mapVendorOrdersFilterResponse(
   response: IVendorOrdersFilterResponseDto
-): IVendorOrderSummary[] {
-  return (response.data ?? []).map(mapVendorOrderDashboard);
+): IOrder[] {
+  return response.data ?? [];
 }
+
 
 /**
  * Maps a string status to VendorOrderStatus enum.
@@ -88,16 +92,17 @@ export function mapVendorOrderDetails(
       country: '',
     },
     notes: dto.notes ?? undefined,
-    statusHistory: (dto.statusHistory ?? []).map((history) => ({
-      id: history.id?.toString() ?? '',
-      previousStatus: mapStringToStatus(history.oldStatus ?? ''),
-      newStatus: mapStringToStatus(history.newStatus ?? ''),
-      changedAt: history.createdAt ?? '',
-    })),
+    statusHistory: dto.statusHistory ? {
+      id: dto.statusHistory.id,
+      oldStatus: dto.statusHistory.oldStatus,
+      newStatus: dto.statusHistory.newStatus,
+      createdAt: dto.statusHistory.createdAt,
+    } : null,
     placedAt: dto.createdAt ?? '',
     updatedAt: dto.updatedAt || dto.createdAt || '',
   };
 }
+
 
 /**
  * Maps VendorDashboardMetricsDto to IVendorAnalytics model.

@@ -25,5 +25,6 @@ export interface IVendorOrderDetailsDto {
   createdAt: string;
   updatedAt?: string | null;
   items: IVendorOrderItemDto[];
-  statusHistory: IVendorOrderStatusHistoryDto[];
+  statusHistory: IVendorOrderStatusHistoryDto | null;
 }
+

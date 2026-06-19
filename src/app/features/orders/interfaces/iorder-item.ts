@@ -1,23 +1,22 @@
 export interface IOrderItem {
-  id: number;
-  productId: string;
+  productId: number;
   productName: string;
+  unitPrice: number;
+  quantity: number;
+  total: number;
+  productImage?: string;
   productNameEn?: string;
   productNameAr?: string;
-  productImage: string;
-  price: number;
-  quantity: number;
+  image?: string;
+  id?: number;
+
   selectedColor?: string;
   selectedMaterial?: string;
-  subtotal: number;
-  name?: string;
-  total?: number;
-  image?: string;
-  snapshotBasePrice?: number;
   snapshotOptions?: {
     name: string;
     priceDelta: number;
   }[];
+  snapshotBasePrice?: number;
   finalUnitPrice?: number;
   totalItemPrice?: number;
   /** Localized immutable attribute snapshot from order API */
@@ -28,3 +27,4 @@ export interface IOrderItem {
     valueEn: string;
   }[];
 }
+

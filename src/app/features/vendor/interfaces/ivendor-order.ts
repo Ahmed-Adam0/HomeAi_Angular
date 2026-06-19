@@ -1,4 +1,5 @@
 import { VendorOrderStatus } from '../models/vendor-order-status.enum';
+import { IStatusHistory, IOrder } from '../../orders/interfaces/iorder';
 
 export interface IVendorOrderItem {
   id: string;
@@ -27,15 +28,6 @@ export interface IVendorOrderShippingAddress {
   country: string;
 }
 
-export interface IVendorOrderStatusHistoryEntry {
-  id: string;
-  previousStatus: VendorOrderStatus;
-  newStatus: VendorOrderStatus;
-  changedAt: string;
-  changedBy?: string;
-  note?: string;
-}
-
 export interface IVendorOrder {
   id: string;
   orderNumber: string;
@@ -54,11 +46,13 @@ export interface IVendorOrder {
   trackingNumber?: string;
   carrier?: string;
   notes?: string;
-  statusHistory: IVendorOrderStatusHistoryEntry[];
+  statusHistory: IStatusHistory | null;
   placedAt: string;
   updatedAt: string;
   estimatedDeliveryDate?: string;
 }
+
+
 
 export interface IVendorOrderSummary {
   id: string;
@@ -80,3 +74,12 @@ export interface IVendorOrderStatusUpdate {
 export interface StatusUpdateResponse {
   message: string;
 }
+
+export interface IVendorOrdersPaginatedResponse {
+  data: IOrder[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+}
+

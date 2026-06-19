@@ -1,9 +1,11 @@
-import { IVendorOrderDashboardDto } from './vendor-order-dashboard.dto';
+import { IOrder } from '../../../orders/interfaces/iorder';
+
 
 export interface IVendorOrdersFilterResponseDto {
-  data: IVendorOrderDashboardDto[];
+  data: IOrder[];
   totalCount: number;
   pageNumber: number;
   pageSize: number;
   totalPages: number;
 }
+

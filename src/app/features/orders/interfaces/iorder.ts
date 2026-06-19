@@ -1,7 +1,15 @@
 import { IOrderItem } from './iorder-item';
 import { IShippingAddress } from './ishipping-address';
 
-export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'ready' | 'shipped' | 'delivered' | 'cancelled' | 'refunded' | 'completed';
+
+
+export interface IStatusHistory {
+  id: number;
+  oldStatus: string;
+  newStatus: string;
+  createdAt: string;
+}
 
 export interface IOrder {
   id: string;
@@ -20,16 +28,20 @@ export interface IOrder {
   trackingNumber?: string;
   carrier?: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt: string | null;
   estimatedDeliveryDate?: string;
   placedAt?: string;
   estimatedDelivery?: string;
   subtotal?: number;
   total?: number;
-  address?: string;
+  address: string;
   phoneNumber?: string;
-  notes: string | null;
-  statusHistory: IOrderStatusHistory[];
+  notes: string;
+  statusHistory: IStatusHistory | null;
+  masterOrderId?: number;
+  customerName: string;
+  customerPhone: string;
+  itemCount?: number;
 }
 
 /**
@@ -85,11 +97,16 @@ export interface IBackendOrder {
   paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded';
   trackingNumber?: string;
   carrier?: string;
-  updatedAt?: string;
+  updatedAt?: string | null;
   estimatedDeliveryDate?: string;
   address?: string;
   phoneNumber?: string;
   notes?: string | null;
-  statusHistory?: IOrderStatusHistory[];
+  statusHistory?: IStatusHistory | null;
+  masterOrderId?: number;
+  customerName?: string;
+  customerPhone?: string;
+  itemCount?: number;
 }
+
 
