@@ -59,7 +59,21 @@ export const vendorRoutes: Routes = [
             (m) => m.VendorOrderDetails,
           ),
       },
-      // Vendor products routes (list, add, edit managed via inline modal)
+      // Vendor products routes (list, add, edit — full routed pages)
+      {
+        path: APP_ROUTES.VENDOR_PRODUCT_ADD, // 'products/add'
+        loadComponent: () =>
+          import('./pages/vendor-product-add/vendor-product-add.component').then(
+            (m) => m.VendorProductAdd,
+          ),
+      },
+      {
+        path: APP_ROUTES.VENDOR_PRODUCT_EDIT, // 'products/edit/:id'
+        loadComponent: () =>
+          import('./pages/vendor-product-add/vendor-product-add.component').then(
+            (m) => m.VendorProductAdd,
+          ),
+      },
       {
         path: 'products',
         loadComponent: () =>

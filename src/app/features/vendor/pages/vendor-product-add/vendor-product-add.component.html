@@ -1,38 +1,91 @@
 <div class="vendor-add-workspace py-5 px-3 px-md-5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
   
-  <!-- Premium Hero Header -->
-  <div class="studio-hero-header mb-5 d-flex justify-content-between align-items-end">
-    <div>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-2">
-          <li class="breadcrumb-item">
-            <a [routerLink]="['/vendor/dashboard']" class="breadcrumb-link">{{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}</a>
+  <!-- ══════════ Premium Hero Header Card ══════════ -->
+  <div class="studio-hero-card">
+    <!-- Abstract decorative shapes -->
+    <div class="hero-deco hero-deco--ring"></div>
+    <div class="hero-deco hero-deco--dot"></div>
+    <div class="hero-deco hero-deco--line"></div>
+
+    <!-- Top row: breadcrumb + sync badge -->
+    <div class="hero-top-row">
+      <nav aria-label="breadcrumb" class="hero-breadcrumb-nav">
+        <ol class="hero-breadcrumb">
+          <li class="hero-breadcrumb__item">
+            <a [routerLink]="['/vendor/dashboard']" class="hero-breadcrumb__link">
+              <i class="bi bi-grid-1x2-fill"></i>
+              <span>{{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}</span>
+            </a>
           </li>
-          <li class="breadcrumb-item">
-            <a [routerLink]="['/vendor/products']" class="breadcrumb-link">{{ translationService.currentLang() === 'ar' ? 'المنتجات' : 'Products' }}</a>
+          <li class="hero-breadcrumb__sep"><i class="bi bi-chevron-right"></i></li>
+          <li class="hero-breadcrumb__item">
+            <a [routerLink]="['/vendor/products']" class="hero-breadcrumb__link">
+              <span>{{ translationService.currentLang() === 'ar' ? 'المنتجات' : 'Products' }}</span>
+            </a>
           </li>
-          <li class="breadcrumb-item active" aria-current="page">
-            {{ translationService.currentLang() === 'ar' ? 'استوديو التصميم' : 'Design Studio' }}
+          <li class="hero-breadcrumb__sep"><i class="bi bi-chevron-right"></i></li>
+          <li class="hero-breadcrumb__item hero-breadcrumb__item--active">
+            {{ isEditMode()
+              ? (translationService.currentLang() === 'ar' ? 'تعديل المنتج' : 'Edit Product')
+              : (translationService.currentLang() === 'ar' ? 'استوديو التصميم' : 'Design Studio')
+            }}
           </li>
         </ol>
       </nav>
-      <h1 class="page-title mb-0">
-        {{ translationService.currentLang() === 'ar' ? 'استوديو النشر الفاخر' : 'Publishing Studio' }}
-      </h1>
-      <p class="page-subtitle mt-2 mb-0 text-muted">
-        {{ translationService.currentLang() === 'ar' ? 'انشر قطعة أثاث جديدة في سوق المعارض العالمي. صمم المعايير الأساسية، وحدد الأقمشة أو الأخشاب المتوفرة للتخصيص.' : 'Launch a new masterpiece into the global catalog. Outline core dimensions, finishes, and price parameters.' }}
-      </p>
+
+      <!-- Sync status badge -->
+      <div class="hero-sync-badge" [class.hero-sync-badge--saving]="autoSaveStatus() === 'saving'">
+        <span class="hero-sync-badge__dot"></span>
+        <i class="bi" [ngClass]="autoSaveStatus() === 'saving' ? 'bi-arrow-repeat' : 'bi-cloud-check'"></i>
+        <span class="hero-sync-badge__text">
+          {{ autoSaveStatus() === 'saving'
+            ? (translationService.currentLang() === 'ar' ? 'جاري المزامنة...' : 'Syncing...')
+            : (translationService.currentLang() === 'ar' ? 'تم الحفظ' : 'Saved')
+          }}
+        </span>
+      </div>
     </div>
 
-    <!-- Frosted cloud save status tag -->
-    <div class="sync-pill d-none d-md-flex align-items-center gap-2">
-      <span class="sync-dot-core" [class.sync-pulsing]="autoSaveStatus() === 'saving'"></span>
-      <span class="sync-text-core text-muted">
-        {{ autoSaveStatus() === 'saving'
-          ? (translationService.currentLang() === 'ar' ? 'جاري مزامنة المواصفات...' : 'Syncing masterpiece...')
-          : (translationService.currentLang() === 'ar' ? 'تم حفظ التغييرات تلقائياً' : 'All specifications synced')
-        }}
-      </span>
+    <!-- Main hero content -->
+    <div class="hero-main">
+      <div class="hero-text-block">
+        <h1 class="hero-title">
+          {{ isEditMode()
+            ? (translationService.currentLang() === 'ar' ? 'تعديل تفاصيل المنتج' : 'Edit Product Details')
+            : (translationService.currentLang() === 'ar' ? 'استوديو النشر الفاخر' : 'Publishing Studio')
+          }}
+          <span class="hero-title__accent"></span>
+        </h1>
+        <p class="hero-subtitle">
+          {{ isEditMode()
+            ? (translationService.currentLang() === 'ar' ? 'عدّل المواصفات والصور والخامات المتاحة لهذا المنتج. سيتم تحديث البيانات فوراً على المنصة.' : 'Refine specifications, imagery, and available materials for this product. Changes go live instantly.')
+            : (translationService.currentLang() === 'ar' ? 'انشر قطعة أثاث جديدة في سوق المعارض العالمي. صمم المعايير الأساسية، وحدد الأقمشة أو الأخشاب المتوفرة للتخصيص.' : 'Launch a new masterpiece into the global catalog. Outline core dimensions, finishes, and price parameters.')
+          }}
+        </p>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="hero-actions">
+        <a [routerLink]="['/vendor/products']" class="hero-btn hero-btn--back">
+          <i class="bi bi-arrow-left"></i>
+          <span>{{ translationService.currentLang() === 'ar' ? 'العودة' : 'Back' }}</span>
+        </a>
+        <button
+          type="button"
+          (click)="onSubmit()"
+          class="hero-btn hero-btn--publish"
+          [disabled]="submitting() || productForm.invalid || (!isEditMode() && localPreviews().length === 0)"
+        >
+          <span *ngIf="submitting()" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <i *ngIf="!submitting()" class="bi" [ngClass]="isEditMode() ? 'bi-check-lg' : 'bi-send'"></i>
+          <span>
+            {{ isEditMode()
+              ? (translationService.currentLang() === 'ar' ? 'حفظ التعديلات' : 'Save Changes')
+              : (translationService.currentLang() === 'ar' ? 'نشر المنتج' : 'Publish')
+            }}
+          </span>
+        </button>
+      </div>
     </div>
   </div>
 

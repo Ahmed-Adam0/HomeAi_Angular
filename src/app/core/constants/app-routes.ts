@@ -43,6 +43,8 @@ export const APP_ROUTES = {
   VENDOR_DASHBOARD: 'dashboard',
   VENDOR_REVIEWS: 'reviews',
   VENDOR_PRODUCTS: 'products',
+  VENDOR_PRODUCT_ADD: 'products/add',
+  VENDOR_PRODUCT_EDIT: 'products/edit/:id',
   VENDOR_MATERIALS: 'materials',
 
   AI_CHAT: 'ai-chat',
@@ -92,6 +94,8 @@ export const NAV_ROUTES = {
   VENDOR_DASHBOARD: '/vendor/dashboard',
   VENDOR_REVIEWS: '/vendor/reviews',
   VENDOR_PRODUCTS: '/vendor/products',
+  VENDOR_PRODUCT_ADD: '/vendor/products/add',
+  vendorProductEdit: (id: string | number) => `/vendor/products/edit/${id}`,
   VENDOR_MATERIALS: '/vendor/materials',
 
   AI_CHAT: '/ai-chat',

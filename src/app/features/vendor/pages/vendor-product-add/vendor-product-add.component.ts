@@ -1,6 +1,6 @@
 import { Component, inject, signal, OnInit, OnDestroy, computed, Input, Output, EventEmitter, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { of, Subject, forkJoin } from 'rxjs';
 import { catchError, switchMap, takeUntil, debounceTime } from 'rxjs/operators';
@@ -49,6 +49,7 @@ export class VendorProductAdd implements OnInit, OnDestroy {
   private uiState = inject(UiState);
   private dialogService = inject(DialogService);
   private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
 
   private destroy$ = new Subject<void>();
 
@@ -117,9 +118,17 @@ export class VendorProductAdd implements OnInit, OnDestroy {
     this.setupAutoSaveSimulation();
 
     if (isPlatformBrowser(this.platformId)) {
-      const id = this.productIdInput();
-      if (id) {
-        this.loadProduct(id);
+      // Read :id from route params (routed page mode)
+      const routeId = this.route.snapshot.paramMap.get('id');
+      if (routeId) {
+        this.productIdInput.set(routeId);
+        this.loadProduct(routeId);
+      } else {
+        // Fallback: check @Input() productId (legacy modal mode)
+        const id = this.productIdInput();
+        if (id) {
+          this.loadProduct(id);
+        }
       }
     }
   }
@@ -692,7 +701,7 @@ export class VendorProductAdd implements OnInit, OnDestroy {
               : 'Product details saved successfully.'
           );
           this.saved.emit();
-          this.close.emit();
+          this.navigateToProducts();
         },
         error: (err) => {
           console.error('Failed to update product', err);
@@ -783,7 +792,7 @@ export class VendorProductAdd implements OnInit, OnDestroy {
             : 'Product created and images uploaded successfully.'
         );
         this.saved.emit();
-        this.close.emit();
+        this.navigateToProducts();
       },
       error: (err) => {
         this.submitting.set(false);
@@ -797,7 +806,7 @@ export class VendorProductAdd implements OnInit, OnDestroy {
               : 'Product created, but image upload failed. You can retry from the Edit page.'
           );
           this.saved.emit();
-          this.close.emit();
+          this.navigateToProducts();
         } else {
           console.error('Product creation pipeline failed', err);
           this.uiState.showAlert(
@@ -812,6 +821,10 @@ export class VendorProductAdd implements OnInit, OnDestroy {
   }
 
   onCancel(): void {
-    this.close.emit();
+    this.navigateToProducts();
+  }
+
+  private navigateToProducts(): void {
+    this.router.navigate(['/vendor/products']);
   }
 }

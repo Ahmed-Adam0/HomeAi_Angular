@@ -27,16 +27,17 @@ body.modal-open .vendor-content {
 }
 
 /* ============================================
-   GLOBAL SCROLLBAR STYLING — THUMB ONLY
-   Only the draggable thumb is visible.
-   Track, background, arrows, and corner are hidden.
+   GLOBAL SCROLLBAR STYLING — FULLY INVISIBLE
+   Scrolling remains functional on every container.
+   Track, thumb, arrows, and corner are all transparent.
+   No overflow or display changes — layout is unaffected.
    ============================================ */
 
 /* ---------- WebKit (Chrome, Safari, Edge) ---------- */
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 0px;
+  height: 0px;
   background: transparent;
 }
 
@@ -49,17 +50,15 @@ body.modal-open .vendor-content {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(120, 120, 120, 0.45);
-  border-radius: 999px;
-  min-height: 40px;
+  background: transparent !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(120, 120, 120, 0.65);
+  background: transparent !important;
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: rgba(120, 120, 120, 0.8);
+  background: transparent !important;
 }
 
 ::-webkit-scrollbar-button {
@@ -72,11 +71,11 @@ body.modal-open .vendor-content {
   background: transparent !important;
 }
 
-/* ---------- Wildcard — prevents component-scoped overrides ---------- */
+/* ---------- Wildcard — covers all elements globally ---------- */
 
 *::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 0px;
+  height: 0px;
   background: transparent;
 }
 
@@ -89,17 +88,15 @@ body.modal-open .vendor-content {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(120, 120, 120, 0.45);
-  border-radius: 999px;
-  min-height: 40px;
+  background: transparent !important;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(120, 120, 120, 0.65);
+  background: transparent !important;
 }
 
 *::-webkit-scrollbar-thumb:active {
-  background: rgba(120, 120, 120, 0.8);
+  background: transparent !important;
 }
 
 *::-webkit-scrollbar-button {
@@ -114,7 +111,6 @@ body.modal-open .vendor-content {
 
 /* ---------- Firefox ---------- */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(120, 120, 120, 0.45) transparent;
+  scrollbar-width: none;
 }
 

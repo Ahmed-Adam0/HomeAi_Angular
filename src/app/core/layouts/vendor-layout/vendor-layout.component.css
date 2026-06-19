@@ -472,7 +472,33 @@
 .vendor-content {
   padding: 32px;
   flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
   animation: slideContentDown 0.6s ease-out forwards;
+
+  /* Override global scrollbar-kill — invisible but functional */
+  scrollbar-width: thin !important;
+  scrollbar-color: transparent transparent !important;
+}
+.vendor-content::-webkit-scrollbar {
+  width: 6px !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+.vendor-content::-webkit-scrollbar-track,
+.vendor-content::-webkit-scrollbar-track-piece {
+  background: transparent !important;
+}
+.vendor-content::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
+.vendor-content::-webkit-scrollbar-button {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+.vendor-content::-webkit-scrollbar-corner {
+  background: transparent !important;
 }
 
 /* ═══════════════════════════════════════════════════

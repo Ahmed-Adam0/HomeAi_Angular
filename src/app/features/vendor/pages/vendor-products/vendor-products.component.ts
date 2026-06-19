@@ -1,6 +1,6 @@
-import { Component, inject, signal, computed, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { Component, inject, signal, computed, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { RouterLink, Router } from '@angular/router';
 import { VendorProductService } from '../../services/vendor-product.service';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
@@ -12,7 +12,6 @@ import { CustomDropdownComponent } from '../../../../shared/components/custom-dr
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
-import { VendorProductAdd } from '../vendor-product-add/vendor-product-add.component';
 
 @Component({
   selector: 'app-vendor-products',
@@ -23,21 +22,19 @@ import { VendorProductAdd } from '../vendor-product-add/vendor-product-add.compo
     CustomDropdownComponent,
     CurrencyFormatPipe,
     LocalizedPipe,
-    LazyImageDirective,
-    VendorProductAdd
+    LazyImageDirective
   ],
   templateUrl: './vendor-products.component.html',
   styleUrl: './vendor-products.component.css'
 })
-export class VendorProducts implements OnInit, OnDestroy {
+export class VendorProducts implements OnInit {
   private vendorProductService = inject(VendorProductService);
   readonly translationService = inject(TranslationService);
   private uiState = inject(UiState);
   private dialogService = inject(DialogService);
   private platformId = inject(PLATFORM_ID);
   private categoryService = inject(CategoryService);
-  private route = inject(ActivatedRoute);
-  private document = inject(DOCUMENT);
+  private router = inject(Router);
 
   readonly products = this.vendorProductService.products;
   readonly loading = signal<boolean>(true);
@@ -50,9 +47,7 @@ export class VendorProducts implements OnInit, OnDestroy {
   readonly viewMode = signal<'grid' | 'list'>('grid');
   readonly categories = signal<ICategory[]>([]);
 
-  // Add/Edit Modal states
-  readonly showAddEditModal = signal<boolean>(false);
-  readonly editProductId = signal<string | number | null>(null);
+
 
   // Quick View drawer signals
   readonly selectedProductForView = signal<IProduct | null>(null);
@@ -173,15 +168,6 @@ export class VendorProducts implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.loadProducts();
       this.loadCategories();
-
-      // Check query params to open the Add or Edit modal
-      this.route.queryParams.subscribe(params => {
-        if (params['openAddModal'] === 'true') {
-          this.onOpenAddEditModal(null);
-        } else if (params['openEditModal']) {
-          this.onOpenAddEditModal(params['openEditModal']);
-        }
-      });
     }
   }
 
@@ -338,28 +324,6 @@ export class VendorProducts implements OnInit, OnDestroy {
 
   onCloseQuickView(): void {
     this.selectedProductForView.set(null);
-  }
-
-  onOpenAddEditModal(productId: string | number | null): void {
-    this.editProductId.set(productId);
-    this.showAddEditModal.set(true);
-    if (isPlatformBrowser(this.platformId)) {
-      this.document.body.classList.add('modal-open');
-    }
-  }
-
-  onCloseAddEditModal(): void {
-    this.showAddEditModal.set(false);
-    this.editProductId.set(null);
-    if (isPlatformBrowser(this.platformId)) {
-      this.document.body.classList.remove('modal-open');
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.document.body.classList.remove('modal-open');
-    }
   }
 
   onProductSaved(): void {

@@ -24,10 +24,10 @@
     </div>
     
     <div class="header-actions">
-      <button (click)="onOpenAddEditModal(null)" class="btn-primary-custom">
+      <a [routerLink]="['/vendor/products/add']" class="btn-primary-custom">
         <i class="bi bi-plus-lg"></i>
         <span>{{ translationService.currentLang() === 'ar' ? 'إضافة منتج جديد' : 'Add New Product' }}</span>
-      </button>
+      </a>
     </div>
   </header>
 
@@ -183,9 +183,9 @@
                 <button (click)="onOpenQuickView(product, $event)" class="overlay-btn" [title]="translationService.currentLang() === 'ar' ? 'معاينة سريعة' : 'Quick View'">
                   <i class="bi bi-eye"></i>
                 </button>
-                <button (click)="onOpenAddEditModal(product.id); $event.stopPropagation()" class="overlay-btn edit-btn" [title]="translationService.currentLang() === 'ar' ? 'تعديل المنتج' : 'Edit Product'">
+                <a [routerLink]="['/vendor/products/edit', product.id]" (click)="$event.stopPropagation()" class="overlay-btn edit-btn" [title]="translationService.currentLang() === 'ar' ? 'تعديل المنتج' : 'Edit Product'">
                   <i class="bi bi-pencil"></i>
-                </button>
+                </a>
                 <button (click)="onDeleteProduct(product.id); $event.stopPropagation()" class="overlay-btn delete-btn" [title]="translationService.currentLang() === 'ar' ? 'حذف المنتج' : 'Delete Product'">
                   <i class="bi bi-trash"></i>
                 </button>
@@ -307,9 +307,9 @@
                 <button (click)="onOpenQuickView(product, $event)" class="icon-action-btn" [title]="translationService.currentLang() === 'ar' ? 'معاينة سريعة' : 'Quick View'">
                   <i class="bi bi-eye"></i>
                 </button>
-                <button (click)="onOpenAddEditModal(product.id)" class="icon-action-btn edit" [title]="translationService.currentLang() === 'ar' ? 'تعديل' : 'Edit'">
+                <a [routerLink]="['/vendor/products/edit', product.id]" class="icon-action-btn edit" [title]="translationService.currentLang() === 'ar' ? 'تعديل' : 'Edit'">
                   <i class="bi bi-pencil"></i>
-                </button>
+                </a>
                 <button (click)="onDeleteProduct(product.id)" class="icon-action-btn delete" [title]="translationService.currentLang() === 'ar' ? 'حذف المنتج نهائياً' : 'Permanently Delete'">
                   <i class="bi bi-trash"></i>
                 </button>
@@ -352,10 +352,10 @@
         </p>
 
         <div class="empty-state-action-bar">
-          <button (click)="onOpenAddEditModal(null)" class="btn-primary-custom">
+          <a [routerLink]="['/vendor/products/add']" class="btn-primary-custom">
             <i class="bi bi-plus-lg"></i>
             <span>{{ translationService.currentLang() === 'ar' ? 'إضافة منتج جديد' : 'Add New Product' }}</span>
-          </button>
+          </a>
         </div>
       </div>
     </ng-container>
@@ -388,10 +388,10 @@
       </p>
 
       <div class="empty-state-action-bar">
-        <button (click)="onOpenAddEditModal(null)" class="btn-primary-custom">
+        <a [routerLink]="['/vendor/products/add']" class="btn-primary-custom">
           <i class="bi bi-plus-lg"></i>
           <span>{{ translationService.currentLang() === 'ar' ? 'إضافة منتجك الأول' : 'Create Your First Listing' }}</span>
-        </button>
+        </a>
       </div>
     </div>
   </div>
@@ -520,24 +520,13 @@
             <i class="bi bi-trash"></i>
             <span>{{ translationService.currentLang() === 'ar' ? 'حذف' : 'Delete' }}</span>
           </button>
-          <button (click)="onOpenAddEditModal(product.id); onCloseQuickView()" class="btn-primary-custom">
+          <a [routerLink]="['/vendor/products/edit', product.id]" (click)="onCloseQuickView()" class="btn-primary-custom">
             <i class="bi bi-pencil"></i>
             <span>{{ translationService.currentLang() === 'ar' ? 'تعديل المنتج' : 'Edit Product' }}</span>
-          </button>
+          </a>
         </div>
       </footer>
 
     </div>
   </div>
 </div>
-
-  <!-- Fullscreen overlay for Add/Edit Product -->
-  <div class="product-modal-backdrop-overlay" *ngIf="showAddEditModal()">
-    <div class="product-modal-container-sheet">
-      <app-vendor-product-add
-        [productId]="editProductId()"
-        (close)="onCloseAddEditModal()"
-        (saved)="onProductSaved()"
-      ></app-vendor-product-add>
-    </div>
-  </div>
