@@ -1,3 +1,3 @@
 export interface ChatReply {
-  reply: string;
+  Reply: string;
 }
