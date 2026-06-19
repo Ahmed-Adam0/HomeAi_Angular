@@ -99,3 +99,16 @@
 .fs-9 {
   font-size: 0.68rem;
 }
+
+app-custom-dropdown {
+  display: block;
+  width: 100%;
+}
+
+::ng-deep app-custom-dropdown.is-invalid .dropdown-trigger {
+  border-color: #dc3545 !important;
+}
+
+::ng-deep app-custom-dropdown.is-invalid .dropdown-trigger:focus {
+  box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.15) !important;
+}

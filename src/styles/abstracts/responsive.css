@@ -178,14 +178,7 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-.fm-table-responsive::-webkit-scrollbar {
-  height: 4px;
-}
-
-.fm-table-responsive::-webkit-scrollbar-thumb {
-  background: var(--fm-color-neutral-300);
-  border-radius: var(--fm-radius-pill);
-}
+/* Scrollbar — inherits global thumb-only style */
 
 /* ==========================================
    RESPONSIVE MODAL/DRAWER SIZES

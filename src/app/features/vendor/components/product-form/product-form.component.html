@@ -111,21 +111,14 @@
           <label for="categoryId" class="form-label fs-7 fw-bold text-dark">
             {{ translationService.currentLang() === 'ar' ? 'القسم الرئيسي *' : 'Category *' }}
           </label>
-          <select
-            id="categoryId"
-            formControlName="categoryId"
-            class="form-select rounded-pill px-3 py-2 fs-7 cursor-pointer"
+          <app-custom-dropdown
+            [options]="categoryOptions()"
+            [value]="productForm.get('categoryId')?.value"
+            [placeholder]="translationService.currentLang() === 'ar' ? 'اختر القسم الرئيسي' : 'Select category'"
             [class.is-invalid]="isInvalid('categoryId')"
-            (change)="onCategoryChange()"
-          >
-            <option value="" disabled selected>
-              {{ translationService.currentLang() === 'ar' ? 'اختر القسم الرئيسي' : 'Select category' }}
-            </option>
-            <option *ngFor="let cat of categories()" [value]="cat.id">
-              {{ cat | localized:'name' }}
-            </option>
-          </select>
-          <div class="invalid-feedback fs-8 px-2">
+            (valueChange)="onCategorySelected($event)"
+          ></app-custom-dropdown>
+          <div class="invalid-feedback fs-8 px-2" [style.display]="isInvalid('categoryId') ? 'block' : 'none'">
             {{ translationService.currentLang() === 'ar' ? 'يرجى اختيار قسم للمنتج' : 'Please select a category' }}
           </div>
         </div>
@@ -135,21 +128,15 @@
           <label for="subCategoryId" class="form-label fs-7 fw-bold text-dark">
             {{ translationService.currentLang() === 'ar' ? 'القسم الفرعي *' : 'Subcategory *' }}
           </label>
-          <select
-            id="subCategoryId"
-            formControlName="subCategoryId"
-            class="form-select rounded-pill px-3 py-2 fs-7 cursor-pointer"
+          <app-custom-dropdown
+            [options]="subcategoryOptions()"
+            [value]="productForm.get('subCategoryId')?.value"
+            [placeholder]="translationService.currentLang() === 'ar' ? 'اختر القسم الفرعي' : 'Select subcategory'"
+            [disabled]="!productForm.get('categoryId')?.value"
             [class.is-invalid]="isInvalid('subCategoryId')"
-            (change)="onSubcategoryChange()"
-          >
-            <option value="" disabled selected>
-              {{ translationService.currentLang() === 'ar' ? 'اختر القسم الفرعي' : 'Select subcategory' }}
-            </option>
-            <option *ngFor="let sub of subcategories()" [value]="sub.id">
-              {{ sub | localized:'name' }}
-            </option>
-          </select>
-          <div class="invalid-feedback fs-8 px-2">
+            (valueChange)="onSubcategorySelected($event)"
+          ></app-custom-dropdown>
+          <div class="invalid-feedback fs-8 px-2" [style.display]="isInvalid('subCategoryId') ? 'block' : 'none'">
             {{ translationService.currentLang() === 'ar' ? 'يرجى اختيار قسم فرعي' : 'Please select a subcategory' }}
           </div>
         </div>
@@ -159,20 +146,15 @@
           <label for="productTypeId" class="form-label fs-7 fw-bold text-dark">
             {{ translationService.currentLang() === 'ar' ? 'نوع المنتج *' : 'Product Type *' }}
           </label>
-          <select
-            id="productTypeId"
-            formControlName="productTypeId"
-            class="form-select rounded-pill px-3 py-2 fs-7 cursor-pointer"
+          <app-custom-dropdown
+            [options]="productTypeOptions()"
+            [value]="productForm.get('productTypeId')?.value"
+            [placeholder]="translationService.currentLang() === 'ar' ? 'اختر نوع المنتج' : 'Select product type'"
+            [disabled]="!productForm.get('subCategoryId')?.value"
             [class.is-invalid]="isInvalid('productTypeId')"
-          >
-            <option value="" disabled selected>
-              {{ translationService.currentLang() === 'ar' ? 'اختر نوع المنتج' : 'Select product type' }}
-            </option>
-            <option *ngFor="let pt of productTypes()" [value]="pt.id">
-              {{ pt | localized:'name' }}
-            </option>
-          </select>
-          <div class="invalid-feedback fs-8 px-2">
+            (valueChange)="onProductTypeSelected($event)"
+          ></app-custom-dropdown>
+          <div class="invalid-feedback fs-8 px-2" [style.display]="isInvalid('productTypeId') ? 'block' : 'none'">
             {{ translationService.currentLang() === 'ar' ? 'يرجى اختيار نوع للمنتج' : 'Please select a product type' }}
           </div>
         </div>

@@ -167,19 +167,7 @@
   margin-bottom: 12px;
 }
 
-/* Custom Scrollbar for details */
-.qv-scrollable-info::-webkit-scrollbar {
-  width: 4px;
-}
-
-.qv-scrollable-info::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.qv-scrollable-info::-webkit-scrollbar-thumb {
-  background: var(--fm-color-neutral-200);
-  border-radius: var(--fm-radius-pill);
-}
+/* Scrollbar — inherits global thumb-only style */
 
 .qv-brand {
   font-size: 0.7rem;
@@ -386,28 +374,7 @@
   to { transform: rotate(360deg); }
 }
 
-/* Scrollbar styling */
-.qv-modal::-webkit-scrollbar {
-  width: 6px;
-}
-
-.qv-modal::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.qv-modal::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
-}
-
-.qv-thumbnails::-webkit-scrollbar {
-  height: 4px;
-}
-
-.qv-thumbnails::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 2px;
-}
+/* Scrollbar — inherits global thumb-only style */
 
 @media (max-width: 768px) {
   .qv-overlay {

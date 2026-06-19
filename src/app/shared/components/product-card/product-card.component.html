@@ -2,7 +2,7 @@
      [dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
   
   <!-- 1. Top Visual Section -->
-  <div class="image-wrapper overflow-hidden position-relative" [routerLink]="mode === 'customer' ? ['/products', product.id] : ['/vendor/products/edit', product.id]">
+  <div class="image-wrapper overflow-hidden position-relative" [routerLink]="mode === 'customer' ? ['/products', product.id] : ['/vendor/products']" [queryParams]="mode === 'customer' ? null : { openEditModal: product.id }">
     <img
       [appLazyImage]="product.mainImageUrl"
       [alt]="product | localized:'name'"
@@ -62,7 +62,7 @@
       </div>
 
       <!-- Product Name in Serif -->
-      <h5 class="product-title fw-bold text-dark mb-1 transition-all fs-6" [routerLink]="mode === 'customer' ? ['/products', product.id] : ['/vendor/products/edit', product.id]">
+      <h5 class="product-title fw-bold text-dark mb-1 transition-all fs-6" [routerLink]="mode === 'customer' ? ['/products', product.id] : ['/vendor/products']" [queryParams]="mode === 'customer' ? null : { openEditModal: product.id }">
         {{ product | localized:'name' }}
       </h5>
 
@@ -125,7 +125,8 @@
       <!-- Vendor management controls -->
       <div *ngIf="mode === 'vendor'" class="d-flex gap-1.5 align-items-center">
         <a
-          [routerLink]="['/vendor/products/edit', product.id]"
+          [routerLink]="['/vendor/products']"
+          [queryParams]="{ openEditModal: product.id }"
           class="btn btn-outline-dark btn-sm rounded-circle d-flex align-items-center justify-content-center transition-all shadow-sm"
           style="width: 32px; height: 32px; border-color: rgba(31,28,24,0.15)"
           title="Edit Product"

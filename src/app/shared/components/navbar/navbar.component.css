@@ -746,17 +746,7 @@
   padding: 12px 24px;
 }
 
-/* Custom Scrollbar for mini cart */
-.cart-dropdown-items::-webkit-scrollbar {
-  width: 4px;
-}
-.cart-dropdown-items::-webkit-scrollbar-track {
-  background: transparent;
-}
-.cart-dropdown-items::-webkit-scrollbar-thumb {
-  background: #e5e1da;
-  border-radius: 4px;
-}
+/* Scrollbar — inherits global thumb-only style */
 
 .cart-dropdown-item {
   display: flex;

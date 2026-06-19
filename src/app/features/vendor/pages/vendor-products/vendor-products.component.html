@@ -1,104 +1,543 @@
-<div class="vendor-products-container py-5 px-3 px-md-5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
-  <!-- Top Navigation / Header -->
-  <div class="d-flex flex-row justify-content-between align-items-center mb-5 gap-3">
-    <div class="header-breadcrumb-title">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-1 font-xxs">
-          <li class="breadcrumb-item">
-            <a [routerLink]="['/vendor/dashboard']" class="text-gold text-decoration-none fw-semibold">
-              {{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}
-            </a>
-          </li>
-          <li class="breadcrumb-item active text-muted" aria-current="page">
-            {{ translationService.currentLang() === 'ar' ? 'المنتجات' : 'Products' }}
-          </li>
-        </ol>
-      </nav>
-      <h1 class="h3 fw-extrabold text-dark mb-0 letter-spacing-tight">
-        {{ translationService.currentLang() === 'ar' ? 'منتجات الورشة' : 'Workshop Products' }}
-      </h1>
-    </div>
-
-    <!-- Dynamic Total Stats Badge -->
-    <div *ngIf="!loading()" class="products-count-badge bg-gold-soft text-gold px-3.5 py-2 rounded-pill font-xxs fw-bold uppercase d-flex align-items-center gap-1.5 shadow-xs">
-      <i class="bi bi-box-seam-fill"></i>
-      <span>
-        {{ products().length }} {{ translationService.currentLang() === 'ar' ? 'منتجات' : 'Products' }}
-      </span>
-    </div>
+<div class="vendor-products-wrapper" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  <!-- Top Navigation / Breadcrumbs -->
+  <div class="breadcrumb-container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/vendor/dashboard']">
+            <i class="bi bi-grid-1x2-fill me-1"></i>
+            {{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ translationService.currentLang() === 'ar' ? 'المنتجات' : 'Products' }}
+        </li>
+      </ol>
+    </nav>
   </div>
 
-  <!-- Unified Search & Action Toolbar -->
-  <div *ngIf="!loading()" class="row g-3 mb-5 align-items-center justify-content-between">
-    <!-- Search Bar -->
-    <div class="col-md-6 col-lg-5">
-      <div class="position-relative">
-        <i class="bi bi-search search-icon position-absolute top-50 translate-middle-y text-muted" 
-           [style.right]="translationService.currentLang() === 'ar' ? '15px' : 'auto'" 
-           [style.left]="translationService.currentLang() === 'ar' ? 'auto' : '15px'"></i>
+  <!-- Header Actions Area -->
+  <header class="page-header-section">
+    <div class="header-info">
+      <h1>{{ translationService.currentLang() === 'ar' ? 'المنتجات والمعروضات' : 'Products Catalog' }}</h1>
+      <p class="subtitle">{{ translationService.currentLang() === 'ar' ? 'إدارة وتنظيم منتجات ورشتك والتعديل عليها وتحديث حالتها في السوق.' : 'Manage, organize, and update your workshop products on the marketplace.' }}</p>
+    </div>
+    
+    <div class="header-actions">
+      <button (click)="onOpenAddEditModal(null)" class="btn-primary-custom">
+        <i class="bi bi-plus-lg"></i>
+        <span>{{ translationService.currentLang() === 'ar' ? 'إضافة منتج جديد' : 'Add New Product' }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Stats Grid Dashboard Summary -->
+  <section *ngIf="!loading() && products().length > 0" class="stats-overview-grid">
+    <div class="stat-card">
+      <div class="stat-icon total"><i class="bi bi-box-seam"></i></div>
+      <div class="stat-details">
+        <span class="stat-label">{{ translationService.currentLang() === 'ar' ? 'إجمالي المنتجات' : 'Total Products' }}</span>
+        <span class="stat-value">{{ totalCount() }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon active"><i class="bi bi-check-circle"></i></div>
+      <div class="stat-details">
+        <span class="stat-label">{{ translationService.currentLang() === 'ar' ? 'المنتجات النشطة' : 'Active Listings' }}</span>
+        <span class="stat-value text-sage">{{ activeCount() }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon archived"><i class="bi bi-archive"></i></div>
+      <div class="stat-details">
+        <span class="stat-label">{{ translationService.currentLang() === 'ar' ? 'المؤرشفة' : 'Archived' }}</span>
+        <span class="stat-value text-muted">{{ archivedCount() }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Premium Toolbar (Filters, Search, View Toggle) -->
+  <div class="toolbar-section" *ngIf="!loading() && products().length > 0">
+    <div class="toolbar-main">
+      <!-- Search Input -->
+      <div class="search-input-wrapper">
+        <i class="bi bi-search search-icon"></i>
         <input
           type="text"
           [value]="searchQuery()"
           (input)="onSearch($event)"
-          class="form-control rounded-pill py-2.5 search-input font-xs"
-          [style.padding-right]="translationService.currentLang() === 'ar' ? '40px' : '15px'"
-          [style.padding-left]="translationService.currentLang() === 'ar' ? '15px' : '40px'"
-          [placeholder]="translationService.currentLang() === 'ar' ? 'ابحث باسم المنتج أو الوصف...' : 'Search by name or description...'"
+          [placeholder]="translationService.currentLang() === 'ar' ? 'ابحث باسم المنتج...' : 'Search by name...'"
+          class="custom-input"
         />
+        <span class="search-kbd-hint">Ctrl + K</span>
       </div>
-    </div>
 
-    <!-- Action Add Button -->
-    <div class="col-md-6 col-lg-5 d-flex justify-content-md-end">
-      <a [routerLink]="['/vendor/products/add']" 
-         class="btn btn-dark rounded-pill px-4 py-2.5 fs-7 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm border-0 transition-all duration-300 hover-lift w-100 w-md-auto">
-        <i class="bi bi-plus-lg fs-6"></i>
-        {{ translationService.currentLang() === 'ar' ? 'إضافة منتج جديد' : 'Add New Product' }}
-      </a>
-    </div>
-  </div>
-
-  <!-- Loading State -->
-  <div *ngIf="loading()" class="products-grid">
-    @for (s of [1,2,3,4]; track s) {
-      <app-skeleton-loader type="card" [count]="1"></app-skeleton-loader>
-    }
-  </div>
-
-  <!-- Products Grid list -->
-  <ng-container *ngIf="!loading()">
-    <!-- Grid -->
-    <div *ngIf="filteredProducts().length > 0" 
-         class="products-grid" 
-         [class.products-grid--centered]="filteredProducts().length < 3">
-      <app-product-card
-        *ngFor="let product of filteredProducts()"
-        [product]="product"
-        mode="vendor"
-        (delete)="onDeleteProduct($event)"
-        (statusChange)="onStatusChange($event)"
-      ></app-product-card>
-    </div>
-
-    <!-- Empty State -->
-    <div *ngIf="filteredProducts().length === 0" class="row py-5 justify-content-center">
-      <div class="col-md-6 col-lg-5 text-center py-5">
-        <div class="empty-illustrations mb-4">
-          <i class="bi bi-box-seam-fill text-gold display-3"></i>
+      <!-- Filters Group -->
+      <div class="filters-dropdown-group">
+        <!-- Category Filter -->
+        <div class="dropdown-filter-item">
+          <label class="dropdown-label">{{ translationService.currentLang() === 'ar' ? 'الفئة' : 'Category' }}</label>
+          <app-custom-dropdown
+            [options]="categoryOptions()"
+            [value]="selectedCategory()"
+            (valueChange)="onCategoryChange($event)"
+          ></app-custom-dropdown>
         </div>
-        <h2 class="h5 fw-bold text-dark mb-2">
-          {{ translationService.currentLang() === 'ar' ? 'لم يتم العثور على منتجات' : 'No Products Found' }}
-        </h2>
-        <p class="text-muted fs-7 mb-4">
-          {{ translationService.currentLang() === 'ar' ? 'لا توجد منتجات مطابقة لخيارات البحث الحالية.' : 'There are no products matching your search criteria.' }}
-        </p>
-        <a *ngIf="products().length === 0" 
-           [routerLink]="['/vendor/products/add']" 
-           class="btn btn-premium rounded-pill px-4 py-2 fs-7 fw-bold border-0 shadow-sm transition-all duration-300">
-          <i class="bi bi-plus-lg me-1"></i>
-          {{ translationService.currentLang() === 'ar' ? 'أضف منتجك الأول الآن' : 'Add Your First Product Now' }}
-        </a>
+
+        <!-- Status Filter -->
+        <div class="dropdown-filter-item">
+          <label class="dropdown-label">{{ translationService.currentLang() === 'ar' ? 'الحالة' : 'Status' }}</label>
+          <app-custom-dropdown
+            [options]="statusOptions()"
+            [value]="selectedStatus()"
+            (valueChange)="onStatusFilterChange($event)"
+          ></app-custom-dropdown>
+        </div>
+
+        <!-- Sort Filter -->
+        <div class="dropdown-filter-item">
+          <label class="dropdown-label">{{ translationService.currentLang() === 'ar' ? 'الترتيب' : 'Sort By' }}</label>
+          <app-custom-dropdown
+            [options]="sortOptions()"
+            [value]="selectedSort()"
+            (valueChange)="onSortChange($event)"
+          ></app-custom-dropdown>
+        </div>
       </div>
     </div>
-  </ng-container>
+
+    <!-- Layout Toggle Options -->
+    <div class="toolbar-view-toggle">
+      <button 
+        [class.active]="viewMode() === 'grid'" 
+        (click)="toggleViewMode('grid')" 
+        class="toggle-btn" 
+        [title]="translationService.currentLang() === 'ar' ? 'عرض شبكي' : 'Grid View'"
+      >
+        <i class="bi bi-grid-3x3-gap-fill"></i>
+      </button>
+      <button 
+        [class.active]="viewMode() === 'list'" 
+        (click)="toggleViewMode('list')" 
+        class="toggle-btn" 
+        [title]="translationService.currentLang() === 'ar' ? 'عرض قائمة' : 'List View'"
+      >
+        <i class="bi bi-list-task"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Catalog Content -->
+  <div class="catalog-content-area">
+    <!-- Loading State -->
+    <div *ngIf="loading()" class="loading-state-container">
+      <div *ngIf="viewMode() === 'grid'" class="skeleton-grid">
+        <div class="skeleton-card" *ngFor="let s of [1,2,3,4,5,6]">
+          <div class="skeleton-image pulse"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-line-sm pulse"></div>
+            <div class="skeleton-line-lg pulse"></div>
+            <div class="skeleton-line-md pulse"></div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="viewMode() === 'list'" class="skeleton-list">
+        <div class="skeleton-row" *ngFor="let s of [1,2,3,4,5]">
+          <div class="skeleton-thumbnail pulse"></div>
+          <div class="skeleton-row-details">
+            <div class="skeleton-line-md pulse"></div>
+            <div class="skeleton-line-sm pulse"></div>
+          </div>
+          <div class="skeleton-row-price pulse"></div>
+          <div class="skeleton-row-badge pulse"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Products Present -->
+    <ng-container *ngIf="!loading()">
+      <!-- Grid Layout -->
+      <div *ngIf="viewMode() === 'grid' && filteredProducts().length > 0" class="products-grid-layout">
+        <article class="premium-product-card" *ngFor="let product of filteredProducts()" (click)="onOpenQuickView(product, $event)">
+          <!-- Card Image Section -->
+          <div class="card-media-wrapper">
+            <img
+              [appLazyImage]="product.mainImageUrl"
+              [alt]="product | localized:'name'"
+              class="card-img"
+            />
+            
+            <!-- Badges Overlay -->
+            <div class="badges-overlay">
+              <span *ngIf="product.isActive ?? true" class="status-pill active-pill">
+                {{ translationService.currentLang() === 'ar' ? 'نشط' : 'Active' }}
+              </span>
+              <span *ngIf="!(product.isActive ?? true)" class="status-pill archived-pill">
+                {{ translationService.currentLang() === 'ar' ? 'مؤرشف' : 'Archived' }}
+              </span>
+            </div>
+
+            <!-- Quick Action Hover Menu -->
+            <div class="media-hover-overlay">
+              <div class="overlay-action-buttons">
+                <button (click)="onOpenQuickView(product, $event)" class="overlay-btn" [title]="translationService.currentLang() === 'ar' ? 'معاينة سريعة' : 'Quick View'">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button (click)="onOpenAddEditModal(product.id); $event.stopPropagation()" class="overlay-btn edit-btn" [title]="translationService.currentLang() === 'ar' ? 'تعديل المنتج' : 'Edit Product'">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button (click)="onDeleteProduct(product.id); $event.stopPropagation()" class="overlay-btn delete-btn" [title]="translationService.currentLang() === 'ar' ? 'حذف المنتج' : 'Delete Product'">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Content Section -->
+          <div class="card-details-wrapper">
+            <span class="card-category">{{ product | localized:'categoryName' }}</span>
+            <h3 class="card-title">{{ product | localized:'name' }}</h3>
+            
+            <div class="card-meta">
+              <!-- Rating -->
+              <div class="card-rating">
+                <ng-container *ngIf="product.averageRating; else newProduct">
+                  <i class="bi bi-star-fill star-icon"></i>
+                  <span class="rating-value">{{ product.averageRating.toFixed(1) }}</span>
+                  <span class="reviews-count">({{ product.totalReviews || 0 }})</span>
+                </ng-container>
+                <ng-template #newProduct>
+                  <span class="new-label-badge">{{ translationService.currentLang() === 'ar' ? 'جديد' : 'New' }}</span>
+                </ng-template>
+              </div>
+
+              <!-- Price -->
+              <div class="card-price">{{ product.price | currencyFormat }}</div>
+            </div>
+
+            <!-- Card Action Footer -->
+            <div class="card-footer-controls" (click)="$event.stopPropagation()">
+              <div class="status-toggle-control">
+                <span class="toggle-status-label">{{ translationService.currentLang() === 'ar' ? 'حالة العرض:' : 'Visibility:' }}</span>
+                <label class="custom-switch">
+                  <input
+                    type="checkbox"
+                    [checked]="product.isActive ?? true"
+                    (change)="onStatusToggle(product.id, $event)"
+                  />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- List Layout -->
+      <div *ngIf="viewMode() === 'list' && filteredProducts().length > 0" class="products-list-layout">
+        <div class="list-table-header">
+          <div class="col-product">{{ translationService.currentLang() === 'ar' ? 'المنتج' : 'Product' }}</div>
+          <div class="col-category">{{ translationService.currentLang() === 'ar' ? 'الفئة' : 'Category' }}</div>
+          <div class="col-price">{{ translationService.currentLang() === 'ar' ? 'السعر' : 'Price' }}</div>
+          <div class="col-rating">{{ translationService.currentLang() === 'ar' ? 'التقييم' : 'Rating' }}</div>
+          <div class="col-status">{{ translationService.currentLang() === 'ar' ? 'الحالة' : 'Status' }}</div>
+          <div class="col-visibility">{{ translationService.currentLang() === 'ar' ? 'الظهور للعملاء' : 'Market Visibility' }}</div>
+          <div class="col-actions">{{ translationService.currentLang() === 'ar' ? 'إجراءات' : 'Actions' }}</div>
+        </div>
+
+        <div class="list-table-body">
+          <div class="list-row-item" *ngFor="let product of filteredProducts()" (click)="onOpenQuickView(product, $event)">
+            <!-- Thumbnail & Details -->
+            <div class="col-product d-flex align-items-center gap-3">
+              <div class="product-thumbnail">
+                <img [appLazyImage]="product.mainImageUrl" [alt]="product | localized:'name'" />
+              </div>
+              <div class="product-names">
+                <span class="product-main-name">{{ product | localized:'name' }}</span>
+                <span class="product-sku-id">ID: #{{ product.id }}</span>
+              </div>
+            </div>
+
+            <!-- Category -->
+            <div class="col-category font-xs fw-semibold text-secondary">
+              {{ product | localized:'categoryName' }}
+            </div>
+
+            <!-- Price -->
+            <div class="col-price fw-bold text-dark">
+              {{ product.price | currencyFormat }}
+            </div>
+
+            <!-- Rating -->
+            <div class="col-rating">
+              <div class="row-rating-stars" *ngIf="product.averageRating; else noRatingList">
+                <i class="bi bi-star-fill star-icon text-gold"></i>
+                <span class="rating-num">{{ product.averageRating.toFixed(1) }}</span>
+              </div>
+              <ng-template #noRatingList>
+                <span class="new-label-badge font-xxs">NEW</span>
+              </ng-template>
+            </div>
+
+            <!-- Status Badge -->
+            <div class="col-status">
+              <span *ngIf="product.isActive ?? true" class="status-pill active-pill">
+                {{ translationService.currentLang() === 'ar' ? 'نشط' : 'Active' }}
+              </span>
+              <span *ngIf="!(product.isActive ?? true)" class="status-pill archived-pill">
+                {{ translationService.currentLang() === 'ar' ? 'مؤرشف' : 'Archived' }}
+              </span>
+            </div>
+
+            <!-- Visibility Toggle -->
+            <div class="col-visibility" (click)="$event.stopPropagation()">
+              <label class="custom-switch">
+                <input
+                  type="checkbox"
+                  [checked]="product.isActive ?? true"
+                  (change)="onStatusToggle(product.id, $event)"
+                />
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="col-actions" (click)="$event.stopPropagation()">
+              <div class="action-buttons-group">
+                <button (click)="onOpenQuickView(product, $event)" class="icon-action-btn" [title]="translationService.currentLang() === 'ar' ? 'معاينة سريعة' : 'Quick View'">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button (click)="onOpenAddEditModal(product.id)" class="icon-action-btn edit" [title]="translationService.currentLang() === 'ar' ? 'تعديل' : 'Edit'">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button (click)="onDeleteProduct(product.id)" class="icon-action-btn delete" [title]="translationService.currentLang() === 'ar' ? 'حذف المنتج نهائياً' : 'Permanently Delete'">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State (No Products Found matching filters) -->
+      <div *ngIf="filteredProducts().length === 0" class="premium-empty-state-card">
+        <div class="empty-state-visual animate-float">
+          <svg width="220" height="220" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background glow -->
+            <circle cx="120" cy="120" r="100" fill="url(#gold_glow)" opacity="0.15" />
+            <!-- Soft geometric drawer drawing representing custom furniture marketplace -->
+            <rect x="70" y="80" width="100" height="80" rx="12" stroke="#b8935c" stroke-width="3" fill="#ffffff" />
+            <line x1="70" y1="120" x2="170" y2="120" stroke="#b8935c" stroke-width="2" stroke-dasharray="4 4" />
+            <!-- Handles -->
+            <circle cx="120" cy="100" r="4" fill="#1f1c18" />
+            <circle cx="120" cy="140" r="4" fill="#1f1c18" />
+            <!-- Decorative leaves/stars representing luxury aesthetic -->
+            <path d="M60 50L63 56L69 59L63 62L60 68L57 62L51 59L57 56L60 50Z" fill="#b8935c" opacity="0.5" />
+            <path d="M190 170L191.5 173L194.5 174.5L191.5 176L190 179L188.5 176L185.5 174.5L188.5 173L190 170Z" fill="#b8935c" />
+            <defs>
+              <radialGradient id="gold_glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" transform="translate(120 120) rotate(90) scale(100)">
+                <stop offset="0%" stop-color="#b8935c" />
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+        
+        <h2 class="empty-state-title">
+          {{ translationService.currentLang() === 'ar' ? 'لم نجد أي منتجات تطابق البحث' : 'No Matching Products' }}
+        </h2>
+        
+        <p class="empty-state-description">
+          {{ translationService.currentLang() === 'ar' ? 'حاول إزالة بعض المرشحات أو تعديل عبارة البحث للوصول لمنتجاتك.' : 'Try adjusting or resetting your category/status filters or search keywords to find your items.' }}
+        </p>
+
+        <div class="empty-state-action-bar">
+          <button (click)="onOpenAddEditModal(null)" class="btn-primary-custom">
+            <i class="bi bi-plus-lg"></i>
+            <span>{{ translationService.currentLang() === 'ar' ? 'إضافة منتج جديد' : 'Add New Product' }}</span>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Empty State (No Products at all for this Vendor) -->
+    <div *ngIf="!loading() && products().length === 0" class="premium-empty-state-card full-empty">
+      <div class="empty-state-visual animate-float">
+        <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="120" cy="120" r="90" fill="url(#gold_glow_empty)" opacity="0.12" />
+          <!-- High-end luxury armchair line art -->
+          <path d="M70 160V130C70 100 90 80 120 80C150 80 170 100 170 130V160" stroke="#b8935c" stroke-width="3" stroke-linecap="round" />
+          <path d="M60 130H80M160 130H180" stroke="#b8935c" stroke-width="2.5" stroke-linecap="round" />
+          <path d="M80 160H160V180H80V160Z" fill="#1f1c18" stroke="#1f1c18" stroke-width="2" />
+          <path d="M90 180L85 200M150 180L155 200" stroke="#b8935c" stroke-width="3" stroke-linecap="round" />
+          <defs>
+            <radialGradient id="gold_glow_empty" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" transform="translate(120 120) rotate(90) scale(90)">
+              <stop offset="0%" stop-color="#b8935c" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <h2 class="empty-state-title">
+        {{ translationService.currentLang() === 'ar' ? 'ابدأ بعرض منتجاتك المتميزة' : 'Start Showcasing Your Designs' }}
+      </h2>
+
+      <p class="empty-state-description">
+        {{ translationService.currentLang() === 'ar' ? 'لم تقم بإضافة أي منتج لورشتك بعد. أضف أول منتج الآن وابدأ في تلقي الطلبات.' : 'You haven\'t added any products to your showroom yet. Add your first premium design to start selling.' }}
+      </p>
+
+      <div class="empty-state-action-bar">
+        <button (click)="onOpenAddEditModal(null)" class="btn-primary-custom">
+          <i class="bi bi-plus-lg"></i>
+          <span>{{ translationService.currentLang() === 'ar' ? 'إضافة منتجك الأول' : 'Create Your First Listing' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium Side Drawer for Quick View -->
+  <div class="quickview-backdrop" [class.active]="selectedProductForView() !== null" (click)="onCloseQuickView()">
+    <div class="quickview-drawer" [class.open]="selectedProductForView() !== null" (click)="$event.stopPropagation()">
+      
+      <!-- Drawer Header -->
+      <header class="drawer-header">
+        <div class="drawer-header-left">
+          <span class="drawer-badge">{{ translationService.currentLang() === 'ar' ? 'معاينة سريعة' : 'Quick View' }}</span>
+          <span class="drawer-product-id">ID: #{{ selectedProductForView()?.id }}</span>
+        </div>
+        <button type="button" class="drawer-close-btn" (click)="onCloseQuickView()" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Drawer Content -->
+      <div class="drawer-body" *ngIf="selectedProductForView() as product">
+        
+        <!-- Image Section Gallery -->
+        <section class="quickview-gallery">
+          <div class="main-preview-container">
+            <img 
+              *ngIf="productImagesList().length > 0; else noGalleryImg"
+              [src]="productImagesList()[activeImageIndex()]" 
+              [alt]="product | localized:'name'" 
+              class="gallery-main-img" 
+            />
+            <ng-template #noGalleryImg>
+              <div class="gallery-empty-img">
+                <i class="bi bi-image text-muted display-4"></i>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Thumbnails Row -->
+          <div class="gallery-thumbnails" *ngIf="productImagesList().length > 1">
+            <button 
+              *ngFor="let img of productImagesList(); let idx = index" 
+              [class.active]="idx === activeImageIndex()" 
+              (click)="selectImage(idx)"
+              class="thumbnail-btn"
+            >
+              <img [src]="img" alt="Thumbnail" />
+            </button>
+          </div>
+        </section>
+
+        <!-- Details Info Section -->
+        <section class="quickview-info">
+          
+          <div class="info-meta-row">
+            <span class="info-category">{{ product | localized:'categoryName' }}</span>
+            <span class="info-status-pill" [class.active-pill]="product.isActive ?? true" [class.archived-pill]="!(product.isActive ?? true)">
+              {{ translationService.currentLang() === 'ar' ? ((product.isActive ?? true) ? 'نشط' : 'مؤرشف') : ((product.isActive ?? true) ? 'Active' : 'Archived') }}
+            </span>
+          </div>
+
+          <h2 class="info-name">{{ product | localized:'name' }}</h2>
+          
+          <div class="info-price-row">
+            <div class="info-price">{{ product.price | currencyFormat }}</div>
+            <div class="info-rating" *ngIf="product.averageRating">
+              <i class="bi bi-star-fill text-gold animate-pulse"></i>
+              <span class="rating-val">{{ product.averageRating.toFixed(1) }}</span>
+              <span class="rating-count">({{ product.totalReviews || 0 }} {{ translationService.currentLang() === 'ar' ? 'تقييم' : 'reviews' }})</span>
+            </div>
+          </div>
+
+          <div class="info-divider"></div>
+
+          <!-- Description -->
+          <div class="info-section">
+            <h4 class="info-section-title">{{ translationService.currentLang() === 'ar' ? 'الوصف' : 'Description' }}</h4>
+            <p class="info-description">{{ (product | localized:'description') || (translationService.currentLang() === 'ar' ? 'لا يوجد وصف متاح.' : 'No description available.') }}</p>
+          </div>
+
+          <!-- Materials & Options -->
+          <div class="info-section" *ngIf="product.materials && product.materials.length > 0">
+            <h4 class="info-section-title">{{ translationService.currentLang() === 'ar' ? 'الخامات والخيارات المتوفرة' : 'Materials & Configuration' }}</h4>
+            <div class="materials-list">
+              <div class="material-group" *ngFor="let mat of product.materials">
+                <span class="material-group-title">{{ translationService.currentLang() === 'ar' ? (mat.nameAr || mat.name) : (mat.nameEn || mat.name) }}</span>
+                <div class="material-options-pills">
+                  <span class="opt-pill" *ngFor="let opt of mat.options">
+                    {{ translationService.currentLang() === 'ar' ? (opt.valueAr || opt.name) : (opt.valueEn || opt.name) }}
+                    <span class="opt-price-delta" *ngIf="opt.priceDelta !== 0">
+                      (+{{ opt.priceDelta | currencyFormat }})
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Metadata -->
+          <div class="info-section">
+            <div class="metadata-table">
+              <div class="metadata-row" *ngIf="product.createdAt">
+                <span class="meta-label">{{ translationService.currentLang() === 'ar' ? 'تاريخ الإنشاء' : 'Created At' }}</span>
+                <span class="meta-val">{{ product.createdAt | date:'mediumDate' }}</span>
+              </div>
+              <div class="metadata-row" *ngIf="product.workshopNameAr || product.workshopNameEn">
+                <span class="meta-label">{{ translationService.currentLang() === 'ar' ? 'الورشة المصنعة' : 'Workshop' }}</span>
+                <span class="meta-val">{{ product | localized:'workshopName' }}</span>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </div>
+
+      <!-- Drawer Footer Actions -->
+      <footer class="drawer-footer" *ngIf="selectedProductForView() as product">
+        <button (click)="onCloseQuickView()" class="btn-secondary-custom">
+          {{ translationService.currentLang() === 'ar' ? 'إغلاق' : 'Close' }}
+        </button>
+        <div class="footer-primary-actions">
+          <button (click)="onDeleteFromQuickView()" class="btn-danger-custom">
+            <i class="bi bi-trash"></i>
+            <span>{{ translationService.currentLang() === 'ar' ? 'حذف' : 'Delete' }}</span>
+          </button>
+          <button (click)="onOpenAddEditModal(product.id); onCloseQuickView()" class="btn-primary-custom">
+            <i class="bi bi-pencil"></i>
+            <span>{{ translationService.currentLang() === 'ar' ? 'تعديل المنتج' : 'Edit Product' }}</span>
+          </button>
+        </div>
+      </footer>
+
+    </div>
+  </div>
 </div>
+
+  <!-- Fullscreen overlay for Add/Edit Product -->
+  <div class="product-modal-backdrop-overlay" *ngIf="showAddEditModal()">
+    <div class="product-modal-container-sheet">
+      <app-vendor-product-add
+        [productId]="editProductId()"
+        (close)="onCloseAddEditModal()"
+        (saved)="onProductSaved()"
+      ></app-vendor-product-add>
+    </div>
+  </div>

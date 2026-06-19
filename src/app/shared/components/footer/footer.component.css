@@ -393,19 +393,10 @@
     justify-content: space-between;
     flex-wrap: nowrap;
     overflow-x: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--fm-color-neutral-700) transparent;
     padding-bottom: var(--fm-space-8);
   }
 
-  .footer-categories-list::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .footer-categories-list::-webkit-scrollbar-thumb {
-    background: var(--fm-color-neutral-700);
-    border-radius: var(--fm-radius-pill);
-  }
+  /* Scrollbar — inherits global thumb-only style */
 }
 
 @media (max-width: 575px) {

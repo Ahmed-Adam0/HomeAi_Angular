@@ -337,7 +337,7 @@
           <div class="row g-3">
             <!-- Add Product -->
             <div class="col-md-4">
-              <a routerLink="/vendor/products/add" class="quick-action-link d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none transition-all h-100">
+              <a [routerLink]="['/vendor/products']" [queryParams]="{ openAddModal: true }" class="quick-action-link d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none transition-all h-100">
                 <div class="d-flex align-items-center gap-3">
                   <div class="action-icon rounded-circle bg-dark text-white d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; flex-shrink: 0;">
                     <i class="bi bi-plus-lg fs-6"></i>

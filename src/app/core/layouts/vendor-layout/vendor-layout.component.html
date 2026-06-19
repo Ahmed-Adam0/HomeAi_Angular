@@ -1,6 +1,6 @@
 <div appRtl class="vendor-layout-wrapper" [attr.dir]="direction()" [attr.lang]="currentLang()">
   <!-- Sidebar -->
-  <aside class="vendor-sidebar" [class.open]="sidebarOpen()">
+  <aside class="vendor-sidebar" [class.open]="sidebarOpen()" [class.expanded]="sidebarExpanded()" (mouseenter)="onSidebarMouseEnter()" (mouseleave)="onSidebarMouseLeave()">
     <div class="sidebar-header">
       <div class="logo-container">
         <img src="assets/icons/logo.png" alt="FurniMind" style="height: 32px; width: auto;" />
@@ -75,7 +75,7 @@
   <app-toast></app-toast>
 
   <!-- Main Content Area -->
-  <div class="vendor-main">
+  <div class="vendor-main" [class.sidebar-expanded]="sidebarExpanded()">
     <!-- Top Navbar -->
     <header class="vendor-header">
       <div class="header-left">

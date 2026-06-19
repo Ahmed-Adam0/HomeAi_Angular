@@ -13,63 +13,101 @@ body.modal-open {
   height: 100vh !important;
 }
 
+/* Ensure the vendor layout allows modals inside .vendor-content to breakout on top of sidebar/header */
+body.modal-open .vendor-main {
+  position: relative;
+  z-index: 99998 !important; /* Slightly below the backdrop overlay (99999) but above sidebar (1040) */
+}
+
+body.modal-open .vendor-content {
+  animation: none !important;
+  transform: none !important;
+  perspective: none !important;
+  filter: none !important;
+}
+
 /* ============================================
-   GLOBAL SCROLLBAR STYLING
+   GLOBAL SCROLLBAR STYLING — THUMB ONLY
+   Only the draggable thumb is visible.
+   Track, background, and arrow buttons are hidden.
    ============================================ */
 
-/* WebKit (Chrome, Safari, Edge) */
+/* WebKit (Chrome, Safari, Edge) — base selectors */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--fm-color-neutral-300, #d9d3c7);
-  border-radius: var(--fm-radius-sm, 8px);
-  border: 2px solid transparent;
-  background-clip: content-box;
-  transition: background var(--fm-transition-duration-fast, 150ms) var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+  background: rgba(120, 120, 120, 0.5);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--fm-color-primary-500, #b8935c);
-  border: 2px solid transparent;
-  background-clip: content-box;
+  background: rgba(120, 120, 120, 0.7);
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: var(--fm-color-primary-600, #a37e4c);
-  border: 2px solid transparent;
-  background-clip: content-box;
+  background: rgba(120, 120, 120, 0.85);
 }
 
 ::-webkit-scrollbar-corner {
-  background: transparent;
+  background: transparent !important;
+  display: none;
 }
 
-/* Firefox */
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Wildcard — catches every element so component-scoped styles can't override */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.5);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 120, 0.7);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: rgba(120, 120, 120, 0.85);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent !important;
+  display: none;
+}
+
+*::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Firefox & standards */
 * {
-  
   scrollbar-width: thin;
-  scrollbar-color: var(--fm-color-neutral-300, #d9d3c7) var(--fm-color-neutral-100, #f4f2ee);
+  scrollbar-color: rgba(120, 120, 120, 0.5) transparent;
 }
 
-/* RTL: keep scrollbar on the right side (default) */
+/* RTL */
 [dir="rtl"] * {
   scrollbar-width: thin;
-}
-
-/* Mobile: hide scrollbar for cleaner look (scroll still works) */
-@media (max-width: 768px) {
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-  * {
-    scrollbar-width: none;
-  }
+  scrollbar-color: rgba(120, 120, 120, 0.5) transparent;
 }

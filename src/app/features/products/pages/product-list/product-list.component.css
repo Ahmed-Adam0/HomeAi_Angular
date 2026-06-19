@@ -233,18 +233,7 @@
   padding-bottom: 120px !important;
 }
 
-.sidebar-scrollable-content::-webkit-scrollbar {
-  width: 4px;
-}
-
-.sidebar-scrollable-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar-scrollable-content::-webkit-scrollbar-thumb {
-  background: var(--fm-color-neutral-200);
-  border-radius: var(--fm-radius-pill);
-}
+/* Scrollbar — inherits global thumb-only style */
 
 [dir="rtl"] .sidebar-scrollable-content {
   padding-right: 0;

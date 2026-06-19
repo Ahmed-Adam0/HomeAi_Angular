@@ -3,13 +3,23 @@
    Design Inspiration: Apple Minimal, Framer CMS Workspace, Stripe Flow.
    ========================================================================== */
 
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 /* Page Framework */
 .vendor-add-workspace {
   background-color: var(--fm-color-neutral-50);
-  min-height: 100vh;
-  padding-bottom: 140px !important; /* Space for sticky bar */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   font-family: var(--fm-font-sans);
   color: var(--fm-color-neutral-700);
+  overflow: hidden;
 }
 
 /* Breadcrumbs & Header */
@@ -29,15 +39,27 @@
 }
 .page-title {
   font-family: var(--fm-font-display);
-  font-size: 2.5rem;
-  font-weight: 900;
-  letter-spacing: -0.03em;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--fm-color-neutral-900);
 }
 .page-subtitle {
-  font-size: 0.88rem;
-  max-width: 620px;
-  line-height: 1.5;
+  font-size: 0.8rem;
+  max-width: 520px;
+  line-height: 1.4;
+}
+
+.studio-hero-header {
+  flex-shrink: 0;
+  background-color: #ffffff;
+  z-index: 10;
+}
+
+.studio-builder-body-scrollable {
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: var(--fm-color-neutral-50, #FAF8F5);
 }
 
 /* Micro-Sync Pill */
@@ -891,15 +913,11 @@ app-custom-dropdown {
 
 /* 4. FIXED FROSTED GLASS STUDIO PUBLISH BAR */
 .frosted-studio-publish-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(24px) saturate(180%);
+  flex-shrink: 0;
+  background-color: #ffffff;
   border-top: 1px solid var(--fm-color-neutral-200);
   padding: 16px 24px;
-  z-index: var(--fm-z-navbar);
+  z-index: 10;
 }
 .publish-bar-inner {
   max-width: 1320px;
@@ -973,11 +991,10 @@ app-custom-dropdown {
 
 @media (max-width: 575.98px) {
   .vendor-add-workspace {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
+    padding: 0 !important;
   }
   .page-title {
-    font-size: 1.8rem;
+    font-size: 1.25rem;
   }
   .studio-section-row {
     margin-bottom: 40px;
@@ -990,4 +1007,30 @@ app-custom-dropdown {
     padding: 8px 20px;
     font-size: 0.75rem;
   }
+}
+
+/* Custom close button styling on the modal header */
+.btn-close-studio {
+  background: rgba(31, 28, 24, 0.05);
+  border: 1px solid rgba(31, 28, 24, 0.08);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--fm-color-neutral-700, #4a4a4a);
+}
+
+.btn-close-studio:hover {
+  background: rgba(31, 28, 24, 0.1);
+  color: #1f1c18;
+  transform: scale(1.05);
+}
+
+.btn-close-studio i {
+  font-size: 1.15rem;
+  line-height: 1;
 }

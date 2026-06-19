@@ -104,16 +104,7 @@
   font-weight: 700;
 }
 
-.dropdown-portal-options::-webkit-scrollbar {
-  width: 4px;
-}
-.dropdown-portal-options::-webkit-scrollbar-track {
-  background: transparent;
-}
-.dropdown-portal-options::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
-  border-radius: 2px;
-}
+/* Scrollbar — inherits global thumb-only style */
 
 @keyframes portalSlideDown {
   from {

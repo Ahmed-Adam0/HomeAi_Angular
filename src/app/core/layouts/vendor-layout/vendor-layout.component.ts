@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, signal, computed, effect, PLATFORM_ID } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AuthService } from '../../../features/auth/services/auth.service';
@@ -26,6 +26,20 @@ export class VendorLayoutComponent {
 
   readonly navRoutes = NAV_ROUTES;
   readonly sidebarOpen = signal(false);
+  readonly sidebarExpanded = signal(false);
+  private readonly platformId = inject(PLATFORM_ID);
+
+  onSidebarMouseEnter(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.sidebarExpanded.set(true);
+    }
+  }
+
+  onSidebarMouseLeave(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.sidebarExpanded.set(false);
+    }
+  }
 
   readonly avatarError = signal(false);
   private readonly avatarResetEffect = effect(() => {

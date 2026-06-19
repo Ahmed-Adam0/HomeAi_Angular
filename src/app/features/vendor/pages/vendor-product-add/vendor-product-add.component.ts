@@ -1,8 +1,8 @@
-import { Component, inject, signal, OnInit, OnDestroy, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, OnInit, OnDestroy, computed, Input, Output, EventEmitter, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { of, Subject } from 'rxjs';
+import { of, Subject, forkJoin } from 'rxjs';
 import { catchError, switchMap, takeUntil, debounceTime } from 'rxjs/operators';
 import { VendorProductService } from '../../services/vendor-product.service';
 import { CategoryService } from '../../../../features/categories/services/category.service';
@@ -16,6 +16,7 @@ import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { CustomDropdownComponent } from '../../../../shared/components/custom-dropdown/custom-dropdown.component';
+import { DialogService } from '../../../../shared/services/dialog.service';
 
 interface ILocalPreview {
   file: File;
@@ -46,10 +47,28 @@ export class VendorProductAdd implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   readonly translationService = inject(TranslationService);
   private uiState = inject(UiState);
+  private dialogService = inject(DialogService);
+  private platformId = inject(PLATFORM_ID);
 
   private destroy$ = new Subject<void>();
 
+  @Input() set productId(val: string | number | null) {
+    this.productIdInput.set(val);
+    if (val && this.productForm) {
+      this.loadProduct(val);
+    }
+  }
+
+  @Output() close = new EventEmitter<void>();
+  @Output() saved = new EventEmitter<void>();
+
+  readonly productIdInput = signal<string | number | null>(null);
+  readonly isEditMode = computed(() => this.productIdInput() !== null);
+  readonly product = signal<IProduct | null>(null);
+  
+  readonly loading = signal<boolean>(false);
   readonly submitting = signal<boolean>(false);
+  readonly uploading = signal<boolean>(false);
   readonly autoSaveStatus = signal<'synced' | 'saving'>('synced');
   
   // Data lists
@@ -96,6 +115,13 @@ export class VendorProductAdd implements OnInit, OnDestroy {
     this.loadCategories();
     this.loadVendorMaterials();
     this.setupAutoSaveSimulation();
+
+    if (isPlatformBrowser(this.platformId)) {
+      const id = this.productIdInput();
+      if (id) {
+        this.loadProduct(id);
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -136,6 +162,173 @@ export class VendorProductAdd implements OnInit, OnDestroy {
           }, 600);
         }
       });
+  }
+
+  loadProduct(id: string | number): void {
+    this.loading.set(true);
+    this.vendorProductService.getProductById(id).subscribe({
+      next: (prod) => {
+        this.product.set(prod);
+        
+        // Patch main form details
+        this.productForm.patchValue({
+          nameAr: prod.nameAr || '',
+          nameEn: prod.nameEn || '',
+          descriptionAr: prod.descriptionAr || '',
+          descriptionEn: prod.descriptionEn || '',
+          price: prod.price || '',
+          categoryId: prod.categoryId || '',
+          subCategoryId: prod.subCategoryId || '',
+          productTypeId: prod.productTypeId || '',
+          isActive: prod.isActive ?? true,
+          vendorMaterialOptionIds: prod.vendorMaterialOptionIds || []
+        });
+
+        // Map option prices to local record
+        const prices: Record<number, number> = {};
+        if (prod.materials && Array.isArray(prod.materials)) {
+          for (const mat of prod.materials) {
+            if (mat.options) {
+              for (const opt of mat.options) {
+                prices[opt.id] = opt.priceDelta || 0;
+              }
+            }
+          }
+        }
+        this.optionPrices.set(prices);
+
+        // Fetch subcategories
+        if (prod.categoryId) {
+          this.categoryService.getSubcategories(prod.categoryId).subscribe({
+            next: (subs) => {
+              this.subcategories.set(subs || []);
+              this.productForm.patchValue({ subCategoryId: prod.subCategoryId });
+            },
+            error: (err) => console.error('Failed to load subcategories', err)
+          });
+        }
+
+        // Fetch product types
+        if (prod.subCategoryId) {
+          this.categoryService.getProductTypes(prod.subCategoryId).subscribe({
+            next: (types) => {
+              this.productTypes.set(types || []);
+              this.productForm.patchValue({ productTypeId: prod.productTypeId });
+            },
+            error: (err) => console.error('Failed to load product types', err)
+          });
+        }
+
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load product details', err);
+        this.uiState.showAlert(
+          'danger',
+          this.translationService.currentLang() === 'ar'
+            ? 'فشل تحميل بيانات المنتج.'
+            : 'Failed to load product details.'
+        );
+        this.close.emit();
+      }
+    });
+  }
+
+  uploadNewImages(files: File[]): void {
+    const isAr = this.translationService.currentLang() === 'ar';
+    this.uploading.set(true);
+    this.uiState.showLoader();
+
+    const prodId = this.productIdInput();
+    if (!prodId) return;
+
+    this.vendorProductService.uploadImages(prodId, files).subscribe({
+      next: () => {
+        this.uploading.set(false);
+        this.uiState.hideLoader();
+        this.uiState.showAlert(
+          'success',
+          isAr ? 'تم رفع الصور بنجاح.' : 'Images uploaded successfully.'
+        );
+        this.loadProduct(prodId);
+      },
+      error: (err) => {
+        console.error('Failed to upload images', err);
+        this.uiState.showAlert(
+          'danger',
+          isAr ? 'فشل رفع الصور.' : 'Failed to upload images.'
+        );
+        this.uploading.set(false);
+        this.uiState.hideLoader();
+      }
+    });
+  }
+
+  async onDeleteImage(imageId: number, event: MouseEvent): Promise<void> {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const isAr = this.translationService.currentLang() === 'ar';
+    const confirmed = await this.dialogService.openConfirm({
+      title: isAr ? 'حذف الصورة' : 'Delete Image',
+      message: isAr ? 'هل أنت متأكد من رغبتك في حذف هذه الصورة؟' : 'Are you sure you want to delete this image?',
+      confirmText: isAr ? 'حذف' : 'Delete',
+      cancelText: isAr ? 'إلغاء' : 'Cancel',
+    });
+
+    if (!confirmed) return;
+
+    const prodId = this.productIdInput();
+    if (!prodId) return;
+
+    this.uiState.showLoader();
+    this.vendorProductService.deleteImage(prodId, imageId).subscribe({
+      next: () => {
+        this.uiState.hideLoader();
+        this.uiState.showAlert(
+          'success',
+          isAr ? 'تم حذف الصورة بنجاح.' : 'Image deleted successfully.'
+        );
+        this.loadProduct(prodId);
+      },
+      error: (err) => {
+        console.error('Failed to delete image', err);
+        this.uiState.showAlert(
+          'danger',
+          isAr ? 'فشل حذف الصورة.' : 'Failed to delete image.'
+        );
+        this.uiState.hideLoader();
+      }
+    });
+  }
+
+  onSetPrimaryImage(imageId: number, event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const isAr = this.translationService.currentLang() === 'ar';
+    const prodId = this.productIdInput();
+    if (!prodId) return;
+
+    this.uiState.showLoader();
+    this.vendorProductService.setPrimaryImage(prodId, imageId).subscribe({
+      next: () => {
+        this.uiState.hideLoader();
+        this.uiState.showAlert(
+          'success',
+          isAr ? 'تم تعيين الصورة كغلاف رئيسي.' : 'Image set as primary cover successfully.'
+        );
+        this.loadProduct(prodId);
+      },
+      error: (err) => {
+        console.error('Failed to set primary image', err);
+        this.uiState.showAlert(
+          'danger',
+          isAr ? 'فشل تعيين الصورة الرئيسية.' : 'Failed to set primary image.'
+        );
+        this.uiState.hideLoader();
+      }
+    });
   }
 
   // Smooth scroll helper for invalid elements
@@ -293,20 +486,20 @@ export class VendorProductAdd implements OnInit, OnDestroy {
   }
 
   private processFiles(files: FileList): void {
-    const newPreviews: ILocalPreview[] = [];
-    const filesArray = Array.from(files);
-
-    filesArray.forEach(file => {
-      if (file.type.startsWith('image/')) {
-        const previewUrl = URL.createObjectURL(file);
-        newPreviews.push({ file, previewUrl });
-      }
-    });
-
-    if (newPreviews.length > 0) {
-      this.localPreviews.update(prev => [...prev, ...newPreviews]);
-      if (this.localPreviews().length > 0 && this.primaryIndex() >= this.localPreviews().length) {
-        this.primaryIndex.set(0);
+    const filesArray = Array.from(files).filter(f => f.type.startsWith('image/'));
+    if (filesArray.length > 0) {
+      if (this.isEditMode()) {
+        this.uploadNewImages(filesArray);
+      } else {
+        const newPreviews: ILocalPreview[] = [];
+        filesArray.forEach(file => {
+          const previewUrl = URL.createObjectURL(file);
+          newPreviews.push({ file, previewUrl });
+        });
+        this.localPreviews.update(prev => [...prev, ...newPreviews]);
+        if (this.localPreviews().length > 0 && this.primaryIndex() >= this.localPreviews().length) {
+          this.primaryIndex.set(0);
+        }
       }
     }
   }
@@ -363,10 +556,15 @@ export class VendorProductAdd implements OnInit, OnDestroy {
       return true;
     }
     if (sectionId === 'media') {
-      return this.localPreviews().length > 0;
+      return this.isEditMode()
+        ? (this.product()?.images?.length ?? 0) > 0
+        : this.localPreviews().length > 0;
     }
     if (sectionId === 'review') {
-      return this.productForm.valid && this.localPreviews().length > 0;
+      const hasImages = this.isEditMode()
+        ? (this.product()?.images?.length ?? 0) > 0
+        : this.localPreviews().length > 0;
+      return this.productForm.valid && hasImages;
     }
     return false;
   }
@@ -392,7 +590,14 @@ export class VendorProductAdd implements OnInit, OnDestroy {
       (this.translationService.currentLang() === 'ar' ? 'الورشة الخاصة بي' : 'My Workshop');
   }
 
-  // Form actions
+  getProductCoverUrl(): string {
+    const images = this.product()?.images || [];
+    const primary = images.find(img => img.isPrimary);
+    if (primary) return primary.imageUrl;
+    if (images.length > 0) return images[0].imageUrl;
+    return 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80';
+  }
+
   onSubmit(): void {
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
@@ -419,6 +624,88 @@ export class VendorProductAdd implements OnInit, OnDestroy {
           return;
         }
       }
+      return;
+    }
+
+    if (this.isEditMode()) {
+      const prodId = this.productIdInput();
+      if (!prodId) return;
+
+      if ((this.product()?.images?.length ?? 0) === 0) {
+        this.scrollToSection('media');
+        this.uiState.showAlert(
+          'warning',
+          this.translationService.currentLang() === 'ar'
+            ? 'يرجى إضافة صورة واحدة على الأقل للمنتج'
+            : 'Please add at least one product image'
+        );
+        return;
+      }
+
+      const formValue = this.productForm.value;
+      const isAr = this.translationService.currentLang() === 'ar';
+      this.submitting.set(true);
+      this.uiState.showLoader();
+
+      const materialOptions: any[] = [];
+      const selectedIds = (formValue.vendorMaterialOptionIds || []) as number[];
+      const currentPrices = this.optionPrices();
+      for (const optId of selectedIds) {
+        materialOptions.push({
+          vendorMaterialOptionId: optId,
+          priceOption: currentPrices[optId] ?? 0
+        });
+      }
+
+      const productPayload = {
+        name: formValue.nameEn || formValue.nameAr || '',
+        description: formValue.descriptionEn || formValue.descriptionAr || '',
+        basePrice: Number(formValue.price),
+        productTypeId: Number(formValue.productTypeId),
+        categoryId: Number(formValue.categoryId),
+        subCategoryId: Number(formValue.subCategoryId),
+        nameAr: formValue.nameAr || '',
+        nameEn: formValue.nameEn || '',
+        descriptionAr: formValue.descriptionAr || '',
+        descriptionEn: formValue.descriptionEn || '',
+        price: Number(formValue.price),
+        materialOptions
+      };
+
+      const currentActive = this.product()?.isActive ?? true;
+      const newActive = formValue.isActive ?? true;
+      const statusChanged = currentActive !== newActive;
+
+      const updateObs = this.vendorProductService.updateProduct(prodId, productPayload);
+      const statusObs = statusChanged
+        ? this.vendorProductService.updateProductStatus(prodId, newActive)
+        : of(null);
+
+      forkJoin([updateObs, statusObs]).subscribe({
+        next: () => {
+          this.submitting.set(false);
+          this.uiState.hideLoader();
+          this.uiState.showAlert(
+            'success',
+            isAr
+              ? 'تم حفظ تفاصيل المنتج بنجاح.'
+              : 'Product details saved successfully.'
+          );
+          this.saved.emit();
+          this.close.emit();
+        },
+        error: (err) => {
+          console.error('Failed to update product', err);
+          this.uiState.showAlert(
+            'danger',
+            isAr
+              ? 'فشل تحديث بيانات المنتج.'
+              : 'Failed to update product details.'
+          );
+          this.submitting.set(false);
+          this.uiState.hideLoader();
+        }
+      });
       return;
     }
 
@@ -495,7 +782,8 @@ export class VendorProductAdd implements OnInit, OnDestroy {
             ? 'تم إنشاء المنتج ورفع الصور بنجاح.'
             : 'Product created and images uploaded successfully.'
         );
-        void this.router.navigate(['/vendor/products']);
+        this.saved.emit();
+        this.close.emit();
       },
       error: (err) => {
         this.submitting.set(false);
@@ -508,7 +796,8 @@ export class VendorProductAdd implements OnInit, OnDestroy {
               ? 'تم إنشاء المنتج ولكن فشل رفع الصور. يمكنك المحاولة مجدداً من صفحة التعديل.'
               : 'Product created, but image upload failed. You can retry from the Edit page.'
           );
-          void this.router.navigate(['/vendor/products']);
+          this.saved.emit();
+          this.close.emit();
         } else {
           console.error('Product creation pipeline failed', err);
           this.uiState.showAlert(
@@ -523,6 +812,6 @@ export class VendorProductAdd implements OnInit, OnDestroy {
   }
 
   onCancel(): void {
-    void this.router.navigate(['/vendor/products']);
+    this.close.emit();
   }
 }

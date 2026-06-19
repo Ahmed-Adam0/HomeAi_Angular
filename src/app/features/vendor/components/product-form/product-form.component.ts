@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IProduct } from '../../../products/interfaces/iproduct';
@@ -9,11 +9,19 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
+import { CustomDropdownComponent } from '../../../../shared/components/custom-dropdown/custom-dropdown.component';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LocalizedPipe, AutoDirectionDirective, CurrencyFormatPipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    LocalizedPipe,
+    AutoDirectionDirective,
+    CurrencyFormatPipe,
+    CustomDropdownComponent
+  ],
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.css'
 })
@@ -37,6 +45,30 @@ export class ProductForm implements OnInit, OnChanges {
   /** Vendor-entered price per option ID: { optionId -> priceOption } */
   readonly optionPrices = signal<Record<number, number>>({});
   productForm!: FormGroup;
+
+  readonly categoryOptions = computed(() => {
+    const lang = this.translationService.currentLang();
+    return this.categories().map(cat => ({
+      value: cat.id,
+      label: lang === 'ar' ? (cat.nameAr || cat.nameEn || '') : (cat.nameEn || cat.nameAr || '')
+    }));
+  });
+
+  readonly subcategoryOptions = computed(() => {
+    const lang = this.translationService.currentLang();
+    return this.subcategories().map(sub => ({
+      value: sub.id,
+      label: lang === 'ar' ? (sub.nameAr || sub.nameEn || '') : (sub.nameEn || sub.nameAr || '')
+    }));
+  });
+
+  readonly productTypeOptions = computed(() => {
+    const lang = this.translationService.currentLang();
+    return this.productTypes().map(pt => ({
+      value: pt.id,
+      label: lang === 'ar' ? (pt.nameAr || pt.nameEn || '') : (pt.nameEn || pt.nameAr || '')
+    }));
+  });
 
   constructor() {
     this.initForm();
@@ -211,6 +243,26 @@ export class ProductForm implements OnInit, OnChanges {
         error: (err) => console.error('Failed to load product types', err)
       });
     }
+  }
+
+  onCategorySelected(categoryId: any): void {
+    this.productForm.patchValue({ categoryId });
+    this.productForm.get('categoryId')?.markAsDirty();
+    this.productForm.get('categoryId')?.markAsTouched();
+    this.onCategoryChange();
+  }
+
+  onSubcategorySelected(subCategoryId: any): void {
+    this.productForm.patchValue({ subCategoryId });
+    this.productForm.get('subCategoryId')?.markAsDirty();
+    this.productForm.get('subCategoryId')?.markAsTouched();
+    this.onSubcategoryChange();
+  }
+
+  onProductTypeSelected(productTypeId: any): void {
+    this.productForm.patchValue({ productTypeId });
+    this.productForm.get('productTypeId')?.markAsDirty();
+    this.productForm.get('productTypeId')?.markAsTouched();
   }
 
   private resolveHierarchy(productTypeId: number): void {
