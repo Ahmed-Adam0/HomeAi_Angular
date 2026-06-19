@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
+import { CustomDropdownComponent } from '../../../../shared/components/custom-dropdown/custom-dropdown.component';
 
 interface ILocalPreview {
   file: File;
@@ -30,7 +31,8 @@ interface ILocalPreview {
     ReactiveFormsModule,
     LocalizedPipe,
     AutoDirectionDirective,
-    CurrencyFormatPipe
+    CurrencyFormatPipe,
+    CustomDropdownComponent
   ],
   templateUrl: './vendor-product-add.component.html',
   styleUrl: './vendor-product-add.component.css'
@@ -48,7 +50,6 @@ export class VendorProductAdd implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   readonly submitting = signal<boolean>(false);
-  readonly activeStep = signal<number>(0);
   readonly autoSaveStatus = signal<'synced' | 'saving'>('synced');
   
   // Data lists
@@ -64,6 +65,31 @@ export class VendorProductAdd implements OnInit, OnDestroy {
   isDragOver = signal<boolean>(false);
 
   productForm!: FormGroup;
+
+  // Options mapped for the custom dropdown component
+  readonly categoryOptions = computed(() => {
+    const lang = this.translationService.currentLang();
+    return this.categories().map(cat => ({
+      value: cat.id,
+      label: lang === 'ar' ? (cat.nameAr || cat.nameEn || '') : (cat.nameEn || cat.nameAr || '')
+    }));
+  });
+
+  readonly subcategoryOptions = computed(() => {
+    const lang = this.translationService.currentLang();
+    return this.subcategories().map(sub => ({
+      value: sub.id,
+      label: lang === 'ar' ? (sub.nameAr || sub.nameEn || '') : (sub.nameEn || sub.nameAr || '')
+    }));
+  });
+
+  readonly productTypeOptions = computed(() => {
+    const lang = this.translationService.currentLang();
+    return this.productTypes().map(pt => ({
+      value: pt.id,
+      label: lang === 'ar' ? (pt.nameAr || pt.nameEn || '') : (pt.nameEn || pt.nameAr || '')
+    }));
+  });
 
   ngOnInit(): void {
     this.initForm();
@@ -112,6 +138,23 @@ export class VendorProductAdd implements OnInit, OnDestroy {
       });
   }
 
+  // Smooth scroll helper for invalid elements
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(`sec-${sectionId}`);
+    if (element) {
+      const offset = 100; // spacing from top of viewport spacing
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }
+
   // Categories & Hierarchies loaders
   private loadCategories(): void {
     this.categoryService.getCategories().subscribe({
@@ -152,6 +195,27 @@ export class VendorProductAdd implements OnInit, OnDestroy {
         error: (err) => console.error('Failed to load product types', err)
       });
     }
+  }
+
+  // Custom Dropdown Selection handlers
+  onCategorySelected(categoryId: any): void {
+    this.productForm.patchValue({ categoryId });
+    this.productForm.get('categoryId')?.markAsDirty();
+    this.productForm.get('categoryId')?.markAsTouched();
+    this.onCategoryChange();
+  }
+
+  onSubcategorySelected(subCategoryId: any): void {
+    this.productForm.patchValue({ subCategoryId });
+    this.productForm.get('subCategoryId')?.markAsDirty();
+    this.productForm.get('subCategoryId')?.markAsTouched();
+    this.onSubcategoryChange();
+  }
+
+  onProductTypeSelected(productTypeId: any): void {
+    this.productForm.patchValue({ productTypeId });
+    this.productForm.get('productTypeId')?.markAsDirty();
+    this.productForm.get('productTypeId')?.markAsTouched();
   }
 
   // Materials option handling
@@ -233,7 +297,6 @@ export class VendorProductAdd implements OnInit, OnDestroy {
     const filesArray = Array.from(files);
 
     filesArray.forEach(file => {
-      // Validate is image
       if (file.type.startsWith('image/')) {
         const previewUrl = URL.createObjectURL(file);
         newPreviews.push({ file, previewUrl });
@@ -242,7 +305,6 @@ export class VendorProductAdd implements OnInit, OnDestroy {
 
     if (newPreviews.length > 0) {
       this.localPreviews.update(prev => [...prev, ...newPreviews]);
-      // If primaryIndex was invalid, reset to 0
       if (this.localPreviews().length > 0 && this.primaryIndex() >= this.localPreviews().length) {
         this.primaryIndex.set(0);
       }
@@ -278,27 +340,8 @@ export class VendorProductAdd implements OnInit, OnDestroy {
     this.primaryIndex.set(index);
   }
 
-  // Step Management
-  goToStep(stepIndex: number): void {
-    this.activeStep.set(stepIndex);
-  }
-
-  nextStep(): void {
-    if (this.activeStep() < 5) {
-      this.activeStep.update(s => s + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }
-
-  prevStep(): void {
-    if (this.activeStep() > 0) {
-      this.activeStep.update(s => s - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }
-
-  isStepValid(stepIndex: number): boolean {
-    if (stepIndex === 0) {
+  isSectionValid(sectionId: string): boolean {
+    if (sectionId === 'design') {
       return (
         (this.productForm.get('nameAr')?.valid ?? false) &&
         (this.productForm.get('nameEn')?.valid ?? false) &&
@@ -306,30 +349,26 @@ export class VendorProductAdd implements OnInit, OnDestroy {
         (this.productForm.get('descriptionEn')?.valid ?? false)
       );
     }
-    if (stepIndex === 1) {
+    if (sectionId === 'classification') {
       return (
         (this.productForm.get('categoryId')?.valid ?? false) &&
         (this.productForm.get('subCategoryId')?.valid ?? false) &&
         (this.productForm.get('productTypeId')?.valid ?? false)
       );
     }
-    if (stepIndex === 2) {
+    if (sectionId === 'pricing') {
       return this.productForm.get('price')?.valid ?? false;
     }
-    if (stepIndex === 3) {
-      return true; // Materials are optional
+    if (sectionId === 'options') {
+      return true;
     }
-    if (stepIndex === 4) {
+    if (sectionId === 'media') {
       return this.localPreviews().length > 0;
     }
-    if (stepIndex === 5) {
+    if (sectionId === 'review') {
       return this.productForm.valid && this.localPreviews().length > 0;
     }
     return false;
-  }
-
-  isStepVisited(stepIndex: number): boolean {
-    return this.isStepValid(stepIndex);
   }
 
   isInvalid(controlName: string): boolean {
@@ -357,18 +396,34 @@ export class VendorProductAdd implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
-      // Go to the first invalid step
-      for (let i = 0; i <= 5; i++) {
-        if (!this.isStepValid(i)) {
-          this.activeStep.set(i);
-          break;
+      
+      // Auto-scroll to the first invalid field
+      const controls = this.productForm.controls;
+      for (const name in controls) {
+        if (controls[name].invalid) {
+          let sectionId = 'design';
+          if (['categoryId', 'subCategoryId', 'productTypeId'].includes(name)) {
+            sectionId = 'classification';
+          } else if (name === 'price') {
+            sectionId = 'pricing';
+          }
+          
+          this.scrollToSection(sectionId);
+          
+          this.uiState.showAlert(
+            'danger',
+            this.translationService.currentLang() === 'ar'
+              ? 'يرجى مراجعة وتصحيح الحقول المطلوبة باللون الأحمر.'
+              : 'Please review and correct the required fields highlighted in red.'
+          );
+          return;
         }
       }
       return;
     }
 
     if (this.localPreviews().length === 0) {
-      this.activeStep.set(4); // Images step
+      this.scrollToSection('media');
       this.uiState.showAlert(
         'warning',
         this.translationService.currentLang() === 'ar'

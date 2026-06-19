@@ -1,378 +1,335 @@
-<div class="vendor-add-workspace py-4 px-3 px-md-5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+<div class="vendor-add-workspace py-5 px-3 px-md-5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
   
-  <!-- Workspace Header & Horizontal Progress Tracker -->
-  <div class="workspace-header-container mb-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div>
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb mb-1">
-            <li class="breadcrumb-item">
-              <a [routerLink]="['/vendor/dashboard']" class="breadcrumb-link">{{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}</a>
-            </li>
-            <li class="breadcrumb-item">
-              <a [routerLink]="['/vendor/products']" class="breadcrumb-link">{{ translationService.currentLang() === 'ar' ? 'المنتجات' : 'Products' }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">
-              {{ translationService.currentLang() === 'ar' ? 'منشئ المنتجات' : 'Product Builder' }}
-            </li>
-          </ol>
-        </nav>
-        <h1 class="page-title">
-          {{ translationService.currentLang() === 'ar' ? 'إنشاء منتج فاخر' : 'Create Premium Product' }}
-        </h1>
-      </div>
-      
-      <!-- Auto-Save status indicator (SaaS style) -->
-      <div class="autosave-badge d-flex align-items-center gap-2">
-        <span class="pulse-dot" [class.saving]="autoSaveStatus() === 'saving'"></span>
-        <span class="autosave-badge-text">
-          {{ autoSaveStatus() === 'saving' 
-            ? (translationService.currentLang() === 'ar' ? 'جاري حفظ التغييرات...' : 'Saving draft...')
-            : (translationService.currentLang() === 'ar' ? 'تمت المزامنة تلقائياً' : 'All changes synced') 
-          }}
-        </span>
-      </div>
+  <!-- Premium Hero Header -->
+  <div class="studio-hero-header mb-5 d-flex justify-content-between align-items-end">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-2">
+          <li class="breadcrumb-item">
+            <a [routerLink]="['/vendor/dashboard']" class="breadcrumb-link">{{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a [routerLink]="['/vendor/products']" class="breadcrumb-link">{{ translationService.currentLang() === 'ar' ? 'المنتجات' : 'Products' }}</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ translationService.currentLang() === 'ar' ? 'استوديو التصميم' : 'Design Studio' }}
+          </li>
+        </ol>
+      </nav>
+      <h1 class="page-title mb-0">
+        {{ translationService.currentLang() === 'ar' ? 'استوديو النشر الفاخر' : 'Publishing Studio' }}
+      </h1>
+      <p class="page-subtitle mt-2 mb-0 text-muted">
+        {{ translationService.currentLang() === 'ar' ? 'انشر قطعة أثاث جديدة في سوق المعارض العالمي. صمم المعايير الأساسية، وحدد الأقمشة أو الأخشاب المتوفرة للتخصيص.' : 'Launch a new masterpiece into the global catalog. Outline core dimensions, finishes, and price parameters.' }}
+      </p>
     </div>
 
-    <!-- HORIZONTAL MINIMALIST PROGRESS NAVIGATION -->
-    <div class="horizontal-stepper-wrap">
-      <div class="horizontal-stepper">
-        <div class="stepper-track-bg">
-          <div class="stepper-track-fill" [style.width.%]="(activeStep() / 5) * 100"></div>
-        </div>
-        <div class="stepper-steps-container">
-          <!-- Step 0 -->
-          <div class="horizontal-step-item" [class.active]="activeStep() === 0" [class.completed]="isStepValid(0)" (click)="goToStep(0)">
-            <span class="step-bullet"></span>
-            <span class="step-label">{{ translationService.currentLang() === 'ar' ? 'التفاصيل' : 'Details' }}</span>
-          </div>
-          <!-- Step 1 -->
-          <div class="horizontal-step-item" [class.active]="activeStep() === 1" [class.completed]="isStepValid(1)" (click)="goToStep(1)">
-            <span class="step-bullet"></span>
-            <span class="step-label">{{ translationService.currentLang() === 'ar' ? 'التصنيف' : 'Category' }}</span>
-          </div>
-          <!-- Step 2 -->
-          <div class="horizontal-step-item" [class.active]="activeStep() === 2" [class.completed]="isStepValid(2)" (click)="goToStep(2)">
-            <span class="step-bullet"></span>
-            <span class="step-label">{{ translationService.currentLang() === 'ar' ? 'التسعير' : 'Pricing' }}</span>
-          </div>
-          <!-- Step 3 -->
-          <div class="horizontal-step-item" [class.active]="activeStep() === 3" [class.completed]="getSelectedOptionsCount() > 0" (click)="goToStep(3)">
-            <span class="step-bullet"></span>
-            <span class="step-label">{{ translationService.currentLang() === 'ar' ? 'التخصيص' : 'Options' }}</span>
-          </div>
-          <!-- Step 4 -->
-          <div class="horizontal-step-item" [class.active]="activeStep() === 4" [class.completed]="isStepValid(4)" (click)="goToStep(4)">
-            <span class="step-bullet"></span>
-            <span class="step-label">{{ translationService.currentLang() === 'ar' ? 'الصور' : 'Gallery' }}</span>
-          </div>
-          <!-- Step 5 -->
-          <div class="horizontal-step-item" [class.active]="activeStep() === 5" [class.completed]="isStepValid(5)" (click)="goToStep(5)">
-            <span class="step-bullet"></span>
-            <span class="step-label">{{ translationService.currentLang() === 'ar' ? 'النشر' : 'Publish' }}</span>
-          </div>
-        </div>
-      </div>
+    <!-- Frosted cloud save status tag -->
+    <div class="sync-pill d-none d-md-flex align-items-center gap-2">
+      <span class="sync-dot-core" [class.sync-pulsing]="autoSaveStatus() === 'saving'"></span>
+      <span class="sync-text-core text-muted">
+        {{ autoSaveStatus() === 'saving'
+          ? (translationService.currentLang() === 'ar' ? 'جاري مزامنة المواصفات...' : 'Syncing masterpiece...')
+          : (translationService.currentLang() === 'ar' ? 'تم حفظ التغييرات تلقائياً' : 'All specifications synced')
+        }}
+      </span>
     </div>
   </div>
 
-  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="workspace-body mt-2">
-    <div class="row g-4 justify-content-center">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="studio-builder-body mt-4">
+    <div class="row g-5">
       
-      <!-- Left/Main Column: Sleek Card for the Active Form Step (col-lg-8) -->
+      <!-- Left Column: spacious borderless sections (col-lg-8) -->
       <div class="col-12 col-lg-8">
-        <div class="builder-step-card shadow-lg border-0">
+        <div class="studio-content-flow">
           
-          <!-- STEP 0: Basic Info -->
-          <div class="builder-step-pane" *ngIf="activeStep() === 0">
-            <div class="step-pane-header">
-              <h2 class="pane-title">{{ translationService.currentLang() === 'ar' ? 'المعلومات الأساسية للمنتج' : 'Basic Product Information' }}</h2>
-              <p class="pane-subtitle">{{ translationService.currentLang() === 'ar' ? 'أدخل اسم المنتج ووصفه بدقة لتعريف المشترين بتفاصيله وحجمه ومميزاته.' : 'Provide details including name and description in both Arabic and English to showcase your craftsmanship.' }}</p>
+          <!-- SECTION 1: Product Information -->
+          <section id="sec-design" class="studio-section-row">
+            <div class="section-title-wrap">
+              <span class="section-badge-number">I</span>
+              <h2 class="studio-section-heading">
+                {{ translationService.currentLang() === 'ar' ? 'مواصفات التصميم والجمالية' : 'Design & Aesthetics' }}
+              </h2>
             </div>
-            
-            <div class="step-pane-body mt-4">
+            <p class="studio-section-desc text-muted mt-2">
+              {{ translationService.currentLang() === 'ar' ? 'أدخل تفاصيل ومواصفات المنتج الفنية بالعربية والإنجليزية بدقة لضمان فهم العملاء لجودة وخامات القطعة.' : 'Provide comprehensive descriptions and name values in both languages to represent your furniture.' }}
+            </p>
+
+            <div class="studio-section-fields mt-4">
               <div class="row g-4">
                 <!-- Name En -->
                 <div class="col-12 col-md-6">
-                  <div class="modern-floating-field" [class.has-value]="productForm.get('nameEn')?.value" [class.field-invalid]="isInvalid('nameEn')">
+                  <div class="studio-input-wrap" [class.has-value]="productForm.get('nameEn')?.value" [class.field-invalid]="isInvalid('nameEn')">
                     <input
                       type="text"
                       id="nameEn"
                       formControlName="nameEn"
                       placeholder=" "
-                      class="floating-input"
+                      class="studio-input-control"
                       appAutoDir
                     />
-                    <label for="nameEn" class="floating-label">{{ translationService.currentLang() === 'ar' ? 'اسم المنتج (بالإنجليزية) *' : 'Product Name (English) *' }}</label>
-                    <span class="lang-badge">EN</span>
+                    <label for="nameEn" class="studio-label-text">{{ translationService.currentLang() === 'ar' ? 'اسم القطعة (بالإنجليزي) *' : 'Product Name (English) *' }}</label>
+                    <span class="studio-lang-tag">EN</span>
                   </div>
-                  <div class="field-error-text" *ngIf="isInvalid('nameEn')">
+                  <div class="field-error-msg" *ngIf="isInvalid('nameEn')">
                     {{ translationService.currentLang() === 'ar' ? 'الاسم مطلوب (3 أحرف على الأقل)' : 'English name is required (min 3 characters)' }}
                   </div>
                 </div>
 
                 <!-- Name Ar -->
                 <div class="col-12 col-md-6">
-                  <div class="modern-floating-field" [class.has-value]="productForm.get('nameAr')?.value" [class.field-invalid]="isInvalid('nameAr')">
+                  <div class="studio-input-wrap" [class.has-value]="productForm.get('nameAr')?.value" [class.field-invalid]="isInvalid('nameAr')">
                     <input
                       type="text"
                       id="nameAr"
                       formControlName="nameAr"
                       placeholder=" "
-                      class="floating-input"
+                      class="studio-input-control"
                       appAutoDir
                     />
-                    <label for="nameAr" class="floating-label">{{ translationService.currentLang() === 'ar' ? 'اسم المنتج (بالعربية) *' : 'Product Name (Arabic) *' }}</label>
-                    <span class="lang-badge">AR</span>
+                    <label for="nameAr" class="studio-label-text">{{ translationService.currentLang() === 'ar' ? 'اسم القطعة (بالعربي) *' : 'Product Name (Arabic) *' }}</label>
+                    <span class="studio-lang-tag">AR</span>
                   </div>
-                  <div class="field-error-text" *ngIf="isInvalid('nameAr')">
+                  <div class="field-error-msg" *ngIf="isInvalid('nameAr')">
                     {{ translationService.currentLang() === 'ar' ? 'الاسم مطلوب (3 أحرف على الأقل)' : 'Arabic name is required (min 3 characters)' }}
                   </div>
                 </div>
 
                 <!-- Description En -->
                 <div class="col-12">
-                  <div class="modern-floating-field field-textarea-wrap" [class.has-value]="productForm.get('descriptionEn')?.value" [class.field-invalid]="isInvalid('descriptionEn')">
+                  <div class="studio-input-wrap text-area-wrap" [class.has-value]="productForm.get('descriptionEn')?.value" [class.field-invalid]="isInvalid('descriptionEn')">
                     <textarea
                       id="descriptionEn"
                       formControlName="descriptionEn"
                       placeholder=" "
-                      class="floating-textarea"
+                      class="studio-textarea-control"
                       rows="6"
                       appAutoDir
                     ></textarea>
-                    <label for="descriptionEn" class="floating-label">{{ translationService.currentLang() === 'ar' ? 'وصف المنتج التفصيلي (بالإنجليزية) *' : 'Product Description (English) *' }}</label>
-                    <span class="lang-badge textarea-tag">EN</span>
+                    <label for="descriptionEn" class="studio-label-text">{{ translationService.currentLang() === 'ar' ? 'الوصف والتفاصيل الفنية (بالإنجليزي) *' : 'Craftsmanship & Description (English) *' }}</label>
+                    <span class="studio-lang-tag textarea-tag">EN</span>
                   </div>
-                  <div class="field-error-text" *ngIf="isInvalid('descriptionEn')">
+                  <div class="field-error-msg" *ngIf="isInvalid('descriptionEn')">
                     {{ translationService.currentLang() === 'ar' ? 'الوصف مطلوب (5 أحرف على الأقل)' : 'English description is required (min 5 characters)' }}
                   </div>
                 </div>
 
                 <!-- Description Ar -->
                 <div class="col-12">
-                  <div class="modern-floating-field field-textarea-wrap" [class.has-value]="productForm.get('descriptionAr')?.value" [class.field-invalid]="isInvalid('descriptionAr')">
+                  <div class="studio-input-wrap text-area-wrap" [class.has-value]="productForm.get('descriptionAr')?.value" [class.field-invalid]="isInvalid('descriptionAr')">
                     <textarea
                       id="descriptionAr"
                       formControlName="descriptionAr"
                       placeholder=" "
-                      class="floating-textarea"
+                      class="studio-textarea-control"
                       rows="6"
                       appAutoDir
                     ></textarea>
-                    <label for="descriptionAr" class="floating-label">{{ translationService.currentLang() === 'ar' ? 'وصف المنتج التفصيلي (بالعربية) *' : 'Product Description (Arabic) *' }}</label>
-                    <span class="lang-badge textarea-tag">AR</span>
+                    <label for="descriptionAr" class="studio-label-text">{{ translationService.currentLang() === 'ar' ? 'الوصف والتفاصيل الفنية (بالعربي) *' : 'Craftsmanship & Description (Arabic) *' }}</label>
+                    <span class="studio-lang-tag textarea-tag">AR</span>
                   </div>
-                  <div class="field-error-text" *ngIf="isInvalid('descriptionAr')">
+                  <div class="field-error-msg" *ngIf="isInvalid('descriptionAr')">
                     {{ translationService.currentLang() === 'ar' ? 'الوصف مطلوب (5 أحرف على الأقل)' : 'Arabic description is required (min 5 characters)' }}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <!-- STEP 1: Product Classification -->
-          <div class="builder-step-pane" *ngIf="activeStep() === 1">
-            <div class="step-pane-header">
-              <h2 class="pane-title">{{ translationService.currentLang() === 'ar' ? 'تصنيف وترتيب المنتج' : 'Product Classification' }}</h2>
-              <p class="pane-subtitle">{{ translationService.currentLang() === 'ar' ? 'اختر تصنيف المنتج بدقة للتأكد من ظهوره للعملاء عند تصفح الغرف والأقسام المناسبة.' : 'Link the product to the main catalog segments to ensure optimal filtering and discovery.' }}</p>
+          <!-- SECTION 2: Product Classification (using custom dropdown elements) -->
+          <section id="sec-classification" class="studio-section-row">
+            <div class="section-title-wrap">
+              <span class="section-badge-number">II</span>
+              <h2 class="studio-section-heading">
+                {{ translationService.currentLang() === 'ar' ? 'تصنيف القطعة والكتالوج' : 'Catalog Hierarchy' }}
+              </h2>
             </div>
-            
-            <div class="step-pane-body mt-4">
+            <p class="studio-section-desc text-muted mt-2">
+              {{ translationService.currentLang() === 'ar' ? 'اختر تصنيف قطعة الأثاث المناسب في المعرض لضمان وصول العملاء إليها بسهولة أثناء تصفح الغرف.' : 'Categorize your design accurately to enable room-filtering and discovery tags.' }}
+            </p>
+
+            <div class="studio-section-fields mt-4">
               <div class="d-flex flex-column gap-4">
                 <!-- Category Select -->
-                <div class="modern-select-field" [class.field-invalid]="isInvalid('categoryId')">
-                  <label for="categoryId" class="select-field-label">{{ translationService.currentLang() === 'ar' ? 'القسم الرئيسي للمنتج *' : 'Main Category *' }}</label>
-                  <div class="select-chevron-container">
-                    <select
-                      id="categoryId"
-                      formControlName="categoryId"
-                      class="modern-select-input cursor-pointer"
-                      (change)="onCategoryChange()"
-                    >
-                      <option value="" disabled selected>{{ translationService.currentLang() === 'ar' ? 'اختر تصنيف رئيسي...' : 'Select main category...' }}</option>
-                      <option *ngFor="let cat of categories()" [value]="cat.id">
-                        {{ cat | localized:'name' }}
-                      </option>
-                    </select>
-                    <span class="chevron-icon">▾</span>
-                  </div>
-                  <div class="field-error-text" *ngIf="isInvalid('categoryId')">
+                <div class="studio-select-box" [class.field-invalid]="isInvalid('categoryId')">
+                  <label class="studio-select-label">{{ translationService.currentLang() === 'ar' ? 'القسم الرئيسي للمنتج *' : 'Main Category *' }}</label>
+                  <app-custom-dropdown
+                    [options]="categoryOptions()"
+                    [value]="productForm.get('categoryId')?.value"
+                    [placeholder]="translationService.currentLang() === 'ar' ? 'يرجى اختيار قسم...' : 'Select category...'"
+                    (valueChange)="onCategorySelected($event)"
+                  ></app-custom-dropdown>
+                  <div class="field-error-msg" *ngIf="isInvalid('categoryId')">
                     {{ translationService.currentLang() === 'ar' ? 'القسم الرئيسي مطلوب' : 'Main category is required' }}
                   </div>
                 </div>
 
                 <!-- Subcategory Select -->
-                <div class="modern-select-field" [class.field-disabled]="!productForm.get('categoryId')?.value" [class.field-invalid]="isInvalid('subCategoryId')">
-                  <label for="subCategoryId" class="select-field-label">{{ translationService.currentLang() === 'ar' ? 'القسم الفرعي *' : 'Subcategory *' }}</label>
-                  <div class="select-chevron-container">
-                    <select
-                      id="subCategoryId"
-                      formControlName="subCategoryId"
-                      class="modern-select-input cursor-pointer"
-                      [attr.disabled]="!productForm.get('categoryId')?.value ? true : null"
-                      (change)="onSubcategoryChange()"
-                    >
-                      <option value="" disabled selected>{{ translationService.currentLang() === 'ar' ? 'اختر تصنيف فرعي...' : 'Select subcategory...' }}</option>
-                      <option *ngFor="let sub of subcategories()" [value]="sub.id">
-                        {{ sub | localized:'name' }}
-                      </option>
-                    </select>
-                    <span class="chevron-icon">▾</span>
-                  </div>
-                  <div class="field-error-text" *ngIf="isInvalid('subCategoryId')">
+                <div class="studio-select-box" [class.field-invalid]="isInvalid('subCategoryId')">
+                  <label class="studio-select-label">{{ translationService.currentLang() === 'ar' ? 'القسم الفرعي *' : 'Subcategory *' }}</label>
+                  <app-custom-dropdown
+                    [options]="subcategoryOptions()"
+                    [value]="productForm.get('subCategoryId')?.value"
+                    [placeholder]="translationService.currentLang() === 'ar' ? 'يرجى اختيار قسم فرعي...' : 'Select subcategory...'"
+                    [disabled]="!productForm.get('categoryId')?.value"
+                    (valueChange)="onSubcategorySelected($event)"
+                  ></app-custom-dropdown>
+                  <div class="field-error-msg" *ngIf="isInvalid('subCategoryId')">
                     {{ translationService.currentLang() === 'ar' ? 'القسم الفرعي مطلوب' : 'Subcategory is required' }}
                   </div>
                 </div>
 
                 <!-- Product Type Select -->
-                <div class="modern-select-field" [class.field-disabled]="!productForm.get('subCategoryId')?.value" [class.field-invalid]="isInvalid('productTypeId')">
-                  <label for="productTypeId" class="select-field-label">{{ translationService.currentLang() === 'ar' ? 'نوع المنتج *' : 'Product Type *' }}</label>
-                  <div class="select-chevron-container">
-                    <select
-                      id="productTypeId"
-                      formControlName="productTypeId"
-                      class="modern-select-input cursor-pointer"
-                      [attr.disabled]="!productForm.get('subCategoryId')?.value ? true : null"
-                    >
-                      <option value="" disabled selected>{{ translationService.currentLang() === 'ar' ? 'اختر نوع المنتج...' : 'Select product type...' }}</option>
-                      <option *ngFor="let pt of productTypes()" [value]="pt.id">
-                        {{ pt | localized:'name' }}
-                      </option>
-                    </select>
-                    <span class="chevron-icon">▾</span>
-                  </div>
-                  <div class="field-error-text" *ngIf="isInvalid('productTypeId')">
+                <div class="studio-select-box" [class.field-invalid]="isInvalid('productTypeId')">
+                  <label class="studio-select-label">{{ translationService.currentLang() === 'ar' ? 'نوع المنتج *' : 'Product Type *' }}</label>
+                  <app-custom-dropdown
+                    [options]="productTypeOptions()"
+                    [value]="productForm.get('productTypeId')?.value"
+                    [placeholder]="translationService.currentLang() === 'ar' ? 'يرجى اختيار نوع القطعة...' : 'Select product type...'"
+                    [disabled]="!productForm.get('subCategoryId')?.value"
+                    (valueChange)="onProductTypeSelected($event)"
+                  ></app-custom-dropdown>
+                  <div class="field-error-msg" *ngIf="isInvalid('productTypeId')">
                     {{ translationService.currentLang() === 'ar' ? 'نوع المنتج مطلوب' : 'Product type is required' }}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <!-- STEP 2: Pricing & Status -->
-          <div class="builder-step-pane" *ngIf="activeStep() === 2">
-            <div class="step-pane-header">
-              <h2 class="pane-title">{{ translationService.currentLang() === 'ar' ? 'تحديد التسعير ونشر الحالة' : 'Pricing & Availability' }}</h2>
-              <p class="pane-subtitle">{{ translationService.currentLang() === 'ar' ? 'تعيين السعر الأساسي بالجنيه المصري للمنتج ومراجعة تفاصيله.' : 'Configure currency variables and instant catalog activation flags.' }}</p>
+          <!-- SECTION 3: Pricing -->
+          <section id="sec-pricing" class="studio-section-row">
+            <div class="section-title-wrap">
+              <span class="section-badge-number">III</span>
+              <h2 class="studio-section-heading">
+                {{ translationService.currentLang() === 'ar' ? 'التسعير وتقييم القيمة' : 'Pricing & Valuation' }}
+              </h2>
             </div>
-            
-            <div class="step-pane-body mt-4">
+            <p class="studio-section-desc text-muted mt-2">
+              {{ translationService.currentLang() === 'ar' ? 'تحديد السعر الأساسي للبيع بالجنيه المصري ووضع سياسة التنشيط الفوري للقطعة.' : 'Determine the core value. Check platform offsets and immediate listings.' }}
+            </p>
+
+            <div class="studio-section-fields mt-4">
               <div class="row g-4">
-                <!-- Base Price Input -->
+                <!-- Base Price -->
                 <div class="col-12 col-md-6">
-                  <div class="modern-floating-field" [class.has-value]="productForm.get('price')?.value" [class.field-invalid]="isInvalid('price')">
+                  <div class="studio-input-wrap" [class.has-value]="productForm.get('price')?.value" [class.field-invalid]="isInvalid('price')">
                     <input
                       type="number"
                       id="price"
                       formControlName="price"
                       placeholder=" "
-                      class="floating-input price-input"
+                      class="studio-input-control price-control-input"
                     />
-                    <label for="price" class="floating-label">{{ translationService.currentLang() === 'ar' ? 'السعر الأساسي للمنتج *' : 'Base Price *' }}</label>
-                    <span class="price-input-suffix">EGP</span>
+                    <label for="price" class="studio-label-text">{{ translationService.currentLang() === 'ar' ? 'السعر الأساسي للمنتج *' : 'Base Price *' }}</label>
+                    <span class="studio-price-suffix">EGP</span>
                   </div>
-                  <div class="field-error-text" *ngIf="isInvalid('price')">
+                  <div class="field-error-msg" *ngIf="isInvalid('price')">
                     {{ translationService.currentLang() === 'ar' ? 'السعر مطلوب ويجب أن يكون أكبر من 0' : 'Price is required and must be greater than 0' }}
                   </div>
                 </div>
 
-                <!-- Price breakdown preview box -->
+                <!-- Price details card preview -->
                 <div class="col-12 col-md-6">
-                  <div class="price-breakdown-card">
+                  <div class="studio-breakdown-card">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="breakdown-label">{{ translationService.currentLang() === 'ar' ? 'السعر الأساسي' : 'Base Price' }}</span>
-                      <span class="breakdown-value">{{ (productForm.get('price')?.value || 0) | currencyFormat }}</span>
+                      <span class="breakdown-lbl-text text-muted">{{ translationService.currentLang() === 'ar' ? 'سعر التصنيع الأساسي' : 'Base Manufacturing Price' }}</span>
+                      <span class="breakdown-lbl-val">{{ (productForm.get('price')?.value || 0) | currencyFormat }}</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="breakdown-label">{{ translationService.currentLang() === 'ar' ? 'ضريبة القيمة المضافة / رسوم المنصة' : 'VAT / Marketplace Commission' }}</span>
-                      <span class="breakdown-value commission">{{ (translationService.currentLang() === 'ar' ? 'معفى حالياً' : 'Currently exempted') }}</span>
+                      <span class="breakdown-lbl-text text-muted">{{ translationService.currentLang() === 'ar' ? 'رسوم معالجة المنصة' : 'Marketplace Service Fee' }}</span>
+                      <span class="breakdown-lbl-val text-free">{{ (translationService.currentLang() === 'ar' ? 'مجاني حالياً' : 'Exempted (0.00)') }}</span>
                     </div>
-                    <hr class="breakdown-divider" />
+                    <hr class="breakdown-sep-line" />
                     <div class="d-flex justify-content-between align-items-center pt-1">
-                      <span class="breakdown-total-label">{{ translationService.currentLang() === 'ar' ? 'صافي قيمة المنتج في المتجر' : 'Marketplace Listing Price' }}</span>
-                      <span class="breakdown-total-value">{{ (productForm.get('price')?.value || 0) | currencyFormat }}</span>
+                      <span class="breakdown-lbl-total">{{ translationService.currentLang() === 'ar' ? 'السعر الكلي للعميل' : 'Marketplace Listing Price' }}</span>
+                      <span class="breakdown-val-total">{{ (productForm.get('price')?.value || 0) | currencyFormat }}</span>
                     </div>
                   </div>
                 </div>
 
-                <!-- Active Toggle Switch Card -->
+                <!-- Status IOS Toggle -->
                 <div class="col-12 mt-3">
-                  <div class="modern-toggle-box">
-                    <div class="toggle-box-text">
-                      <h4 class="toggle-box-title">{{ translationService.currentLang() === 'ar' ? 'تفعيل فوري للمنتج في المتجر' : 'Publish Immediately' }}</h4>
-                      <p class="toggle-box-desc mb-0">{{ translationService.currentLang() === 'ar' ? 'السماح للعملاء بالعثور على المنتج وإضافته لسلة التسوق فور حفظ التفاصيل.' : 'Enable shoppers to find, view, and order this furniture piece instantly.' }}</p>
+                  <div class="studio-toggle-panel">
+                    <div class="toggle-desc-wrap">
+                      <h4 class="toggle-panel-title">{{ translationService.currentLang() === 'ar' ? 'تفعيل العرض الفوري' : 'Instant Activation' }}</h4>
+                      <p class="toggle-panel-desc text-muted mb-0">{{ translationService.currentLang() === 'ar' ? 'عند التفعيل، سيظهر هذا المنتج للعملاء في نتائج البحث والكتالوج فور الحفظ.' : 'Enable shoppers to find, configure, and purchase this design immediately.' }}</p>
                     </div>
-                    <label class="switch-container">
+                    <label class="studio-ios-switch">
                       <input
                         type="checkbox"
                         id="isActive"
                         formControlName="isActive"
                         role="switch"
-                        class="switch-checkbox"
+                        class="studio-ios-switch-checkbox"
                       />
-                      <span class="switch-slider"></span>
+                      <span class="studio-ios-switch-slider"></span>
                     </label>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <!-- STEP 3: Materials & Options (Apple-like Tile Grid) -->
-          <div class="builder-step-pane" *ngIf="activeStep() === 3">
-            <div class="step-pane-header">
-              <h2 class="pane-title">{{ translationService.currentLang() === 'ar' ? 'خيارات التخصيص والمواد' : 'Customization Options' }}</h2>
-              <p class="pane-subtitle">{{ translationService.currentLang() === 'ar' ? 'تحديد الخيارات والمواد المتوفرة للمنتج (مثل نوع الخشب أو لون القماش) وتعيين فارق السعر لكل خيار.' : 'Select finishes, upholstery fabric, or timber configurations. Assign optional price deltas.' }}</p>
+          <!-- SECTION 4: Materials & Options (Tactile Swatch Tiles) -->
+          <section id="sec-options" class="studio-section-row">
+            <div class="section-title-wrap">
+              <span class="section-badge-number">IV</span>
+              <h2 class="studio-section-heading">
+                {{ translationService.currentLang() === 'ar' ? 'المواد والتشطيبات التخصصية' : 'Materials & Finishes' }}
+              </h2>
             </div>
-            
-            <div class="step-pane-body mt-4">
-              <!-- Empty Materials State -->
-              <div class="minimal-empty-state text-center py-5" *ngIf="availableMaterials().length === 0">
-                <span class="empty-icon-bubble mb-3">🪚</span>
-                <h4 class="empty-state-title">{{ translationService.currentLang() === 'ar' ? 'لا تتوفر خامات مضافة لحسابك' : 'No materials set up' }}</h4>
-                <p class="empty-state-desc mb-4">{{ translationService.currentLang() === 'ar' ? 'أضف مجموعات المواد والخيارات أولاً من صفحة المواد لتتمكن من استخدامها وتخصيصها لمنتجاتك.' : 'Configure options like teak wood or velvet fabrics in the materials panel.' }}</p>
-                <a [routerLink]="['/vendor/materials']" class="btn-builder-secondary text-decoration-none d-inline-block">
-                  {{ translationService.currentLang() === 'ar' ? 'تعديل وإضافة المواد' : 'Configure Materials' }}
+            <p class="studio-section-desc text-muted mt-2">
+              {{ translationService.currentLang() === 'ar' ? 'حدد خامات التصنيع المتاحة للقطعة (أخشاب، دهانات، أقمشة) لتسهيل تخصيصها ووضع فارق تسعير لكل مادة.' : 'Configure custom finishes, timber types, or fabrics. Set option price adjustments.' }}
+            </p>
+
+            <div class="studio-section-fields mt-4">
+              <!-- Empty state -->
+              <div class="studio-empty-state text-center py-5" *ngIf="availableMaterials().length === 0">
+                <span class="studio-empty-icon mb-3">🪚</span>
+                <h4 class="studio-empty-title">{{ translationService.currentLang() === 'ar' ? 'لا تتوفر خامات في الكتالوج' : 'No options configured' }}</h4>
+                <p class="studio-empty-desc text-muted mb-4">{{ translationService.currentLang() === 'ar' ? 'قم بإضافة خيارات المواد والتخصيص أولاً من لوحة تحكم المواد لتظهر هنا.' : 'Sizes, wood stains, and fabrics can be configured in the materials manager.' }}</p>
+                <a [routerLink]="['/vendor/materials']" class="btn-studio-dark text-decoration-none">
+                  {{ translationService.currentLang() === 'ar' ? 'إعداد المواد والتشطيبات' : 'Configure Materials' }}
                 </a>
               </div>
 
-              <!-- Sleek Options Tile Grid -->
-              <div class="material-sections-list" *ngIf="availableMaterials().length > 0">
-                <div class="material-group-section mb-4" *ngFor="let material of availableMaterials()">
-                  <div class="material-section-header mb-3 d-flex justify-content-between align-items-center">
-                    <h4 class="material-section-title">{{ material | localized:'name' }}</h4>
-                    <span class="material-section-count">{{ material.options?.length || 0 }} {{ translationService.currentLang() === 'ar' ? 'خيار متاح' : 'options available' }}</span>
+              <!-- Options Grid swatches -->
+              <div class="studio-materials-group-list" *ngIf="availableMaterials().length > 0">
+                <div class="studio-material-group-box mb-4" *ngFor="let material of availableMaterials()">
+                  <div class="group-box-header mb-3 d-flex justify-content-between align-items-center">
+                    <h4 class="group-box-title">{{ material | localized:'name' }}</h4>
+                    <span class="group-box-badge">{{ material.options?.length || 0 }} {{ translationService.currentLang() === 'ar' ? 'خيارات متاحة' : 'options' }}</span>
                   </div>
                   
-                  <!-- Tile Chips Flexbox Grid -->
-                  <div class="options-tile-grid">
+                  <!-- Tactile swatch grids -->
+                  <div class="swatches-interactive-grid">
                     <div 
                       *ngFor="let option of material.options" 
-                      class="option-interactive-tile"
-                      [class.tile-selected]="isOptionSelected(option.id)"
+                      class="swatch-tile-card"
+                      [class.swatch-selected]="isOptionSelected(option.id)"
                       (click)="toggleOption(option.id, option.priceDelta ?? option.priceOption ?? 0)"
                     >
-                      <div class="tile-header-wrap">
-                        <span class="tile-value-label">{{ option | localized:'value' }}</span>
-                        <span class="tile-checkmark" *ngIf="isOptionSelected(option.id)">✓</span>
+                      <div class="swatch-tile-row d-flex justify-content-between align-items-center">
+                        <span class="swatch-val-name">{{ option | localized:'value' }}</span>
+                        <span class="swatch-checkmark" *ngIf="isOptionSelected(option.id)">✓</span>
                       </div>
                       
-                      <!-- Default price tag when not selected -->
-                      <span class="tile-price-tag" *ngIf="!isOptionSelected(option.id)">
+                      <!-- Default price delta -->
+                      <span class="swatch-default-price" *ngIf="!isOptionSelected(option.id)">
                         +{{ (option.priceDelta ?? option.priceOption ?? 0) | currencyFormat }}
                       </span>
 
-                      <!-- Inline Price Delta Adjustment Field: Only displayed when active -->
-                      <div class="tile-price-editor mt-2" *ngIf="isOptionSelected(option.id)" (click)="$event.stopPropagation()">
-                        <span class="tile-editor-label">{{ translationService.currentLang() === 'ar' ? 'فارق السعر (EGP)' : 'Price Delta (EGP)' }}</span>
-                        <div class="tile-editor-input-group mt-1">
-                          <span class="tile-editor-prefix">+</span>
+                      <!-- Inline price delta adjuster: slide-down panel -->
+                      <div class="swatch-price-override mt-2" *ngIf="isOptionSelected(option.id)" (click)="$event.stopPropagation()">
+                        <span class="override-label text-muted">{{ translationService.currentLang() === 'ar' ? 'تعديل فارق السعر (EGP)' : 'Option Price Delta (EGP)' }}</span>
+                        <div class="override-input-wrap mt-1">
+                          <span class="override-prefix">+ EGP</span>
                           <input
                             type="number"
                             min="0"
                             step="0.01"
-                            class="tile-editor-input"
+                            class="override-input-control"
                             [value]="getOptionPrice(option.id)"
                             (input)="setOptionPrice(option.id, +$any($event.target).value)"
                           />
@@ -383,20 +340,25 @@
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <!-- STEP 4: Product Images -->
-          <div class="builder-step-pane" *ngIf="activeStep() === 4">
-            <div class="step-pane-header">
-              <h2 class="pane-title">{{ translationService.currentLang() === 'ar' ? 'معرض صور المنتج الفاخرة' : 'Product Gallery' }}</h2>
-              <p class="pane-subtitle">{{ translationService.currentLang() === 'ar' ? 'رفع صور عالية الدقة لإبراز تفاصيل المنتج للعملاء. الصورة الأولى المحددة بالنجمة الذهبية ستكون صورة الغلاف.' : 'Upload high-fidelity product images. Select a primary cover to display on search results.' }}</p>
+          <!-- SECTION 5: Media Gallery -->
+          <section id="sec-media" class="studio-section-row">
+            <div class="section-title-wrap">
+              <span class="section-badge-number">V</span>
+              <h2 class="studio-section-heading">
+                {{ translationService.currentLang() === 'ar' ? 'معرض صور قطعة الأثاث' : 'Masterpiece Gallery' }}
+              </h2>
             </div>
-            
-            <div class="step-pane-body mt-4">
-              <!-- Sleek Dashed Dropzone -->
+            <p class="studio-section-desc text-muted mt-2">
+              {{ translationService.currentLang() === 'ar' ? 'ارفع صوراً عالية الجودة والوضوح لإظهار زوايا وتفاصيل القطعة. الصورة المحددة بالنجمة الذهبية ستكون صورة الكتالوج الرئيسية.' : 'Upload high-resolution photography. Click the star on any image to mark as primary.' }}
+            </p>
+
+            <div class="studio-section-fields mt-4">
+              <!-- Dashed upload zone -->
               <div 
-                class="sleek-dropzone-box"
-                [class.dropzone-active]="isDragOver()"
+                class="studio-dropzone-box"
+                [class.dropzone-hovering]="isDragOver()"
                 (dragover)="onDragOver($event)"
                 (dragleave)="onDragLeave($event)"
                 (drop)="onDrop($event)"
@@ -411,47 +373,47 @@
                   (change)="onFileSelected($event)"
                 />
                 
-                <div class="dropzone-inner text-center">
-                  <div class="dropzone-media-icon mb-3">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <div class="dropzone-core-content text-center">
+                  <div class="dropzone-svg-icon mb-3">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                       <circle cx="8.5" cy="8.5" r="1.5"/>
                       <polyline points="21 15 16 10 5 21"/>
                     </svg>
                   </div>
-                  <h4 class="dropzone-main-text">{{ translationService.currentLang() === 'ar' ? 'اسحب الصور وأفلتها هنا' : 'Drag & drop images here' }}</h4>
-                  <p class="dropzone-sub-text mb-3">{{ translationService.currentLang() === 'ar' ? 'أو تصفح الملفات من جهازك (PNG, JPG)' : 'or click to browse files (PNG, JPG)' }}</p>
-                  <button type="button" class="btn-builder-secondary btn-sm">
-                    {{ translationService.currentLang() === 'ar' ? 'اختر الصور' : 'Browse Images' }}
+                  <h4 class="dropzone-title">{{ translationService.currentLang() === 'ar' ? 'اسحب الصور وأفلتها هنا' : 'Drag & drop image files' }}</h4>
+                  <p class="dropzone-subtext text-muted mb-3">{{ translationService.currentLang() === 'ar' ? 'أو انقر لتصفح الملفات من جهازك (PNG, JPG)' : 'or click to browse from device (PNG, JPG)' }}</p>
+                  <button type="button" class="btn-studio-dark btn-sm shadow-xs">
+                    {{ translationService.currentLang() === 'ar' ? 'اختيار الصور' : 'Select Files' }}
                   </button>
                 </div>
               </div>
 
-              <!-- Validation Inline Banner -->
-              <div class="validation-warning-banner mt-3" *ngIf="localPreviews().length === 0">
-                ⚠️ {{ translationService.currentLang() === 'ar' ? 'الرجاء رفع صورة واحدة على الأقل لنشر المنتج.' : 'Please upload at least one product photo.' }}
+              <!-- Media validation status -->
+              <div class="validation-warning-box mt-3" *ngIf="localPreviews().length === 0">
+                ⚠️ {{ translationService.currentLang() === 'ar' ? 'يرجى إضافة صورة واحدة على الأقل لإطلاق المنتج بنجاح.' : 'You must upload at least one image to activate catalog listing.' }}
               </div>
 
               <!-- Previews Grid -->
-              <div class="media-previews-flexbox mt-4" *ngIf="localPreviews().length > 0">
+              <div class="studio-previews-grid mt-4" *ngIf="localPreviews().length > 0">
                 <div 
-                  class="preview-card-item" 
+                  class="preview-card-wrapper" 
                   *ngFor="let item of localPreviews(); let i = index"
-                  [class.preview-is-primary]="primaryIndex() === i"
+                  [class.preview-primary-outline]="primaryIndex() === i"
                 >
-                  <img [src]="item.previewUrl" class="preview-card-img" alt="Gallery thumbnail" />
+                  <img [src]="item.previewUrl" class="preview-img-element" alt="Furniture Image Thumbnail" />
                   
                   <!-- Cover badge indicator -->
-                  <div class="preview-cover-badge" *ngIf="primaryIndex() === i">
-                    {{ translationService.currentLang() === 'ar' ? 'الغلاف الرئيسي ★' : 'Primary Cover ★' }}
+                  <div class="cover-gold-badge" *ngIf="primaryIndex() === i">
+                    {{ translationService.currentLang() === 'ar' ? 'صورة الغلاف ★' : 'Cover Image ★' }}
                   </div>
 
-                  <!-- Hover Actions Panel -->
-                  <div class="preview-actions-overlay">
+                  <!-- Hover overlay controls -->
+                  <div class="preview-hover-overlay">
                     <button 
                       type="button" 
-                      class="overlay-btn star-btn" 
-                      [class.btn-selected]="primaryIndex() === i"
+                      class="overlay-action-btn-circle set-primary-star" 
+                      [class.star-highlighted]="primaryIndex() === i"
                       (click)="setPrimaryLocal(i, $event)"
                       [title]="translationService.currentLang() === 'ar' ? 'تعيين كصورة رئيسية' : 'Set as primary cover'"
                     >
@@ -459,7 +421,7 @@
                     </button>
                     <button 
                       type="button" 
-                      class="overlay-btn close-btn" 
+                      class="overlay-action-btn-circle delete-photo-btn" 
                       (click)="removePreview(i, $event)"
                       [title]="translationService.currentLang() === 'ar' ? 'حذف الصورة' : 'Remove image'"
                     >
@@ -469,72 +431,77 @@
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <!-- STEP 5: Review & Publish -->
-          <div class="builder-step-pane" *ngIf="activeStep() === 5">
-            <div class="step-pane-header">
-              <h2 class="pane-title">{{ translationService.currentLang() === 'ar' ? 'مراجعة ونشر مواصفات المنتج' : 'Review & Publish' }}</h2>
-              <p class="pane-subtitle">{{ translationService.currentLang() === 'ar' ? 'يرجى التأكد من ملء كافة الحقول وتصنيف المنتج بالشكل الصحيح قبل النشر النهائي.' : 'Double-check product parameters and classification details before sending to the catalog.' }}</p>
+          <!-- SECTION 6: Review & Finalize -->
+          <section id="sec-review" class="studio-section-row">
+            <div class="section-title-wrap">
+              <span class="section-badge-number">VI</span>
+              <h2 class="studio-section-heading">
+                {{ translationService.currentLang() === 'ar' ? 'مراجعة ونشر قطعة الأثاث' : 'Studio Review & Publish' }}
+              </h2>
             </div>
-            
-            <div class="step-pane-body mt-4">
-              <!-- Checklist cards -->
-              <div class="checklist-grid mb-4">
-                <h4 class="checklist-grid-title">{{ translationService.currentLang() === 'ar' ? 'جاهزية النشر' : 'Readiness Status' }}</h4>
+            <p class="studio-section-desc text-muted mt-2">
+              {{ translationService.currentLang() === 'ar' ? 'يرجى مراجعة كافة التفاصيل التقنية والفنية المدخلة والتأكد من دقة البيانات والأسعار قبل النشر.' : 'Confirm all listing specifications are accurate. Complete quality check to enable catalog launching.' }}
+            </p>
+
+            <div class="studio-section-fields mt-4">
+              <!-- Checklist summary -->
+              <div class="quality-review-checklist mb-4 shadow-sm">
+                <h4 class="checklist-title-label">{{ translationService.currentLang() === 'ar' ? 'جاهزية النشر ونقاط المراجعة' : 'Readiness Parameters' }}</h4>
                 
-                <div class="checklist-rows-box mt-3">
-                  <div class="checklist-row" [class.chk-valid]="isStepValid(0)">
-                    <span class="chk-icon-indicator">✓</span>
-                    <span class="chk-row-label">{{ translationService.currentLang() === 'ar' ? 'المعلومات الأساسية (الاسم والوصف)' : 'Basic Info (Name, Descriptions)' }}</span>
+                <div class="checklist-rows-layout mt-3">
+                  <div class="checklist-row-item-row" [class.is-valid-step]="isSectionValid('design')">
+                    <span class="row-indicator-bullet">✓</span>
+                    <span class="row-label-text">{{ translationService.currentLang() === 'ar' ? 'معلومات التصميم والجمالية (الاسم والوصف)' : 'Core Design & Aesthetics (Name, Descriptions)' }}</span>
                   </div>
 
-                  <div class="checklist-row" [class.chk-valid]="isStepValid(1)">
-                    <span class="chk-icon-indicator">✓</span>
-                    <span class="chk-row-label">{{ translationService.currentLang() === 'ar' ? 'التصنيف والترتيب' : 'Classification (Category, Types)' }}</span>
+                  <div class="checklist-row-item-row" [class.is-valid-step]="isSectionValid('classification')">
+                    <span class="row-indicator-bullet">✓</span>
+                    <span class="row-label-text">{{ translationService.currentLang() === 'ar' ? 'تصنيف الكتالوج (القسم والنوع)' : 'Product Classification & Type Mapping' }}</span>
                   </div>
 
-                  <div class="checklist-row" [class.chk-valid]="isStepValid(2)">
-                    <span class="chk-icon-indicator">✓</span>
-                    <span class="chk-row-label">{{ translationService.currentLang() === 'ar' ? 'التسعير (سعر صحيح أكبر من 0)' : 'Pricing configuration details' }}</span>
+                  <div class="checklist-row-item-row" [class.is-valid-step]="isSectionValid('pricing')">
+                    <span class="row-indicator-bullet">✓</span>
+                    <span class="row-label-text">{{ translationService.currentLang() === 'ar' ? 'التسعير (تحديد سعر أكبر من 0)' : 'Pricing valuation details completed' }}</span>
                   </div>
 
-                  <div class="checklist-row" [class.chk-valid]="isStepValid(4)">
-                    <span class="chk-icon-indicator">✓</span>
-                    <span class="chk-row-label">{{ translationService.currentLang() === 'ar' ? 'الصور (رفع صورة واحدة على الأقل)' : 'Media Gallery (At least 1 product image)' }}</span>
+                  <div class="checklist-row-item-row" [class.is-valid-step]="isSectionValid('media')">
+                    <span class="row-indicator-bullet">✓</span>
+                    <span class="row-label-text">{{ translationService.currentLang() === 'ar' ? 'معرض الصور (رفع صورة واحدة على الأقل)' : 'Masterpiece Gallery (At least 1 cover photo)' }}</span>
                   </div>
                 </div>
               </div>
 
-              <!-- Full Specifications Table -->
-              <div class="specifications-review-card mt-4">
-                <h4 class="checklist-grid-title">{{ translationService.currentLang() === 'ar' ? 'خلاصة مواصفات المنتج' : 'Specifications Summary' }}</h4>
+              <!-- Technical Specifications Table -->
+              <div class="tech-specs-card mt-4">
+                <h4 class="checklist-title-label">{{ translationService.currentLang() === 'ar' ? 'خلاصة مواصفات القطعة المدخلة' : 'Specifications Summary' }}</h4>
                 
-                <div class="specs-review-table mt-3">
-                  <div class="specs-row">
-                    <span class="specs-lbl">{{ translationService.currentLang() === 'ar' ? 'الاسم (عربي)' : 'Name (Arabic)' }}</span>
-                    <span class="specs-val">{{ productForm.get('nameAr')?.value || '-' }}</span>
+                <div class="tech-specs-table-grid mt-3">
+                  <div class="tech-grid-row">
+                    <span class="grid-row-lbl">{{ translationService.currentLang() === 'ar' ? 'اسم القطعة (عربي)' : 'Arabic Name' }}</span>
+                    <span class="grid-row-val">{{ productForm.get('nameAr')?.value || '-' }}</span>
                   </div>
-                  <div class="specs-row">
-                    <span class="specs-lbl">{{ translationService.currentLang() === 'ar' ? 'الاسم (إنجليزي)' : 'Name (English)' }}</span>
-                    <span class="specs-val">{{ productForm.get('nameEn')?.value || '-' }}</span>
+                  <div class="tech-grid-row">
+                    <span class="grid-row-lbl">{{ translationService.currentLang() === 'ar' ? 'اسم القطعة (إنجليزي)' : 'English Name' }}</span>
+                    <span class="grid-row-val">{{ productForm.get('nameEn')?.value || '-' }}</span>
                   </div>
-                  <div class="specs-row">
-                    <span class="specs-lbl">{{ translationService.currentLang() === 'ar' ? 'القسم والنوع' : 'Category / Type' }}</span>
-                    <span class="specs-val">{{ getSelectedCategoryName() || '-' }}</span>
+                  <div class="tech-grid-row">
+                    <span class="grid-row-lbl">{{ translationService.currentLang() === 'ar' ? 'تصنيف الكتالوج' : 'Category Path' }}</span>
+                    <span class="grid-row-val">{{ getSelectedCategoryName() || '-' }}</span>
                   </div>
-                  <div class="specs-row">
-                    <span class="specs-lbl">{{ translationService.currentLang() === 'ar' ? 'السعر النهائي' : 'Listing Price' }}</span>
-                    <span class="specs-val price-accent">{{ (productForm.get('price')?.value || 0) | currencyFormat }}</span>
+                  <div class="tech-grid-row">
+                    <span class="grid-row-lbl">{{ translationService.currentLang() === 'ar' ? 'السعر النهائي' : 'Listing Listing Price' }}</span>
+                    <span class="grid-row-val text-gold-accent">{{ (productForm.get('price')?.value || 0) | currencyFormat }}</span>
                   </div>
-                  <div class="specs-row">
-                    <span class="specs-lbl">{{ translationService.currentLang() === 'ar' ? 'خيارات التخصيص' : 'Custom Options' }}</span>
-                    <span class="specs-val">{{ getSelectedOptionsCount() }} {{ translationService.currentLang() === 'ar' ? 'خيارات نشطة' : 'options chosen' }}</span>
+                  <div class="tech-grid-row">
+                    <span class="grid-row-lbl">{{ translationService.currentLang() === 'ar' ? 'التشطيبات النشطة' : 'Active Customize Options' }}</span>
+                    <span class="grid-row-val">{{ getSelectedOptionsCount() }} {{ translationService.currentLang() === 'ar' ? 'خيارات مخصصة' : 'options chosen' }}</span>
                   </div>
-                  <div class="specs-row">
-                    <span class="specs-lbl">{{ translationService.currentLang() === 'ar' ? 'الحالة في المتجر' : 'Marketplace Status' }}</span>
-                    <span class="specs-val">
-                      <span class="specs-badge" [class.badge-active]="productForm.get('isActive')?.value">
+                  <div class="tech-grid-row">
+                    <span class="grid-row-lbl">{{ translationService.currentLang() === 'ar' ? 'حالة النشر التلقائي' : 'Instant Publication status' }}</span>
+                    <span class="grid-row-val">
+                      <span class="catalog-badge" [class.badge-active]="productForm.get('isActive')?.value">
                         {{ productForm.get('isActive')?.value 
                           ? (translationService.currentLang() === 'ar' ? 'نشط' : 'Active') 
                           : (translationService.currentLang() === 'ar' ? 'مسودة معطلة' : 'Draft / Hidden') 
@@ -545,76 +512,81 @@
                 </div>
               </div>
 
-              <!-- Final Warning Banner if Form is Invalid -->
-              <div class="form-invalid-alert-banner mt-4" *ngIf="productForm.invalid || localPreviews().length === 0">
-                ⚠️ {{ translationService.currentLang() === 'ar' ? 'الرجاء إكمال كافة الحقول المطلوبة ورفع صورة واحدة على الأقل لتتمكن من النشر.' : 'Please fill all required inputs and upload at least one image to unlock publishing.' }}
+              <!-- Validation Alert Banner -->
+              <div class="final-invalid-alert-box mt-4" *ngIf="productForm.invalid || localPreviews().length === 0">
+                ⚠️ {{ translationService.currentLang() === 'ar' ? 'يرجى مراجعة الخطوات وإكمال الحقول المطلوبة باللون الأحمر لتتمكن من النشر.' : 'Please correct the invalid fields highlighted in red to enable publishing.' }}
               </div>
             </div>
-          </div>
+          </section>
 
         </div>
       </div>
 
-      <!-- Right Column: Sleek Sticky Product Summary Card (col-lg-4) -->
+      <!-- Right Column: Sticky Brochure-style Furniture card (col-lg-4) -->
       <div class="col-12 col-lg-4">
-        <div class="sticky-summary-sidebar">
-          <div class="summary-sidebar-header mb-3">
-            <h3 class="summary-sidebar-title">{{ translationService.currentLang() === 'ar' ? 'ملخص مراجعة المنتج' : 'Product Summary' }}</h3>
-            <p class="summary-sidebar-subtitle mb-0">{{ translationService.currentLang() === 'ar' ? 'معاينة تفاصيل المنتج والخيارات المحددة بشكل مباشر.' : 'Real-time overview of the furniture details.' }}</p>
+        <div class="sticky-studio-brochure">
+          <div class="brochure-sidebar-header mb-3">
+            <h3 class="brochure-sidebar-title">{{ translationService.currentLang() === 'ar' ? 'كتالوج قطعة الأثاث' : 'Studio Brochure' }}</h3>
+            <p class="brochure-sidebar-subtitle mb-0 text-muted">{{ translationService.currentLang() === 'ar' ? 'معاينة حية للمنتج وتأثير التشطيبات المحددة.' : 'Real-time rendering of your masterpiece catalog layout.' }}</p>
           </div>
 
-          <!-- Sleek Summary Showcase Card -->
-          <div class="summary-showcase-card shadow-lg">
-            <div class="showcase-img-wrap">
+          <!-- Brochure card showcase mock -->
+          <div class="brochure-card-showcase shadow-lg">
+            <div class="brochure-img-container">
               <img 
                 *ngIf="localPreviews().length > 0" 
                 [src]="localPreviews()[primaryIndex()]?.previewUrl || localPreviews()[0]?.previewUrl" 
-                class="showcase-img" 
+                class="brochure-img" 
                 alt="Product Preview Thumbnail" 
               />
-              <div *ngIf="localPreviews().length === 0" class="showcase-img-placeholder">
-                <span class="placeholder-icon">🪑</span>
-                <span class="placeholder-text">{{ translationService.currentLang() === 'ar' ? 'بانتظار الصور' : 'Waiting for images' }}</span>
+              <div *ngIf="localPreviews().length === 0" class="brochure-img-placeholder d-flex flex-column align-items-center justify-content-center">
+                <span class="brochure-placeholder-emoji mb-2">🪑</span>
+                <span class="brochure-placeholder-text text-muted">{{ translationService.currentLang() === 'ar' ? 'بانتظار الصور' : 'Awaiting photography' }}</span>
               </div>
-              <div class="showcase-status-badge" *ngIf="productForm.get('isActive')?.value">
-                {{ translationService.currentLang() === 'ar' ? 'نشط' : 'Active' }}
+              <div class="brochure-status-badge" *ngIf="productForm.get('isActive')?.value">
+                {{ translationService.currentLang() === 'ar' ? 'جديد' : 'NEW' }}
               </div>
             </div>
 
-            <div class="showcase-details">
-              <span class="showcase-category">
-                {{ getSelectedCategoryName() || (translationService.currentLang() === 'ar' ? 'القسم غير محدد' : 'No Category Set') }}
-              </span>
+            <div class="brochure-details-body">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="brochure-category-lbl text-uppercase">
+                  {{ getSelectedCategoryName() || (translationService.currentLang() === 'ar' ? 'القسم غير محدد' : 'No Category Set') }}
+                </span>
+                <div class="brochure-rating text-muted fs-9">
+                  ★ 5.0 (0)
+                </div>
+              </div>
               
-              <h4 class="showcase-title text-truncate">
+              <h4 class="brochure-title text-truncate">
                 {{ (translationService.currentLang() === 'ar' 
-                  ? (productForm.get('nameAr')?.value || 'منتج جديد') 
-                  : (productForm.get('nameEn')?.value || 'New Product')) 
+                  ? (productForm.get('nameAr')?.value || 'قطعة أثاث فاخرة') 
+                  : (productForm.get('nameEn')?.value || 'Luxury Design Armchair')) 
                 }}
               </h4>
               
-              <span class="showcase-workshop d-block text-muted mb-3">
+              <span class="brochure-workshop-name d-block text-muted mb-2">
                 {{ getWorkshopName() }}
               </span>
 
-              <div class="showcase-price-row d-flex justify-content-between align-items-center pt-3">
-                <span class="showcase-price-lbl">{{ translationService.currentLang() === 'ar' ? 'السعر الإجمالي' : 'Total Price' }}</span>
-                <span class="showcase-price-val">
+              <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-light-soft">
+                <span class="brochure-price-lbl text-muted fs-9">{{ translationService.currentLang() === 'ar' ? 'السعر المقترح' : 'Listing Price' }}</span>
+                <span class="brochure-price fw-bold">
                   {{ (productForm.get('price')?.value || 0) | currencyFormat }}
                 </span>
               </div>
             </div>
           </div>
 
-          <!-- Dynamic Options Breakdown in Summary Sidebar -->
-          <div class="summary-sidebar-options mt-4" *ngIf="getSelectedOptionsCount() > 0">
-            <h4 class="summary-sidebar-options-title">{{ translationService.currentLang() === 'ar' ? 'الخيارات المحددة' : 'Custom Options Selected' }}</h4>
-            <div class="summary-options-list mt-2">
-              <div class="summary-option-item" *ngFor="let material of availableMaterials()">
+          <!-- Selected Custom Options list breakdown inside sidebar -->
+          <div class="sidebar-options-breakdown-box mt-4" *ngIf="getSelectedOptionsCount() > 0">
+            <h4 class="options-breakdown-title">{{ translationService.currentLang() === 'ar' ? 'التشطيبات المختارة' : 'Selected Finishes' }}</h4>
+            <div class="options-breakdown-list mt-2">
+              <div class="options-breakdown-group" *ngFor="let material of availableMaterials()">
                 <ng-container *ngFor="let opt of material.options">
-                  <div class="option-item-row" *ngIf="isOptionSelected(opt.id)">
-                    <span class="opt-name">{{ opt | localized:'value' }}</span>
-                    <span class="opt-price">+{{ getOptionPrice(opt.id) | currencyFormat }}</span>
+                  <div class="option-breakdown-row d-flex justify-content-between align-items-center" *ngIf="isOptionSelected(opt.id)">
+                    <span class="opt-name-lbl">{{ opt | localized:'value' }}</span>
+                    <span class="opt-delta-val">+{{ getOptionPrice(opt.id) | currencyFormat }}</span>
                   </div>
                 </ng-container>
               </div>
@@ -627,54 +599,36 @@
     </div>
   </form>
 
-  <!-- Sticky Bottom Action Bar -->
-  <div class="sticky-action-bar-container">
-    <div class="action-bar-inner d-flex justify-content-between align-items-center">
+  <!-- Frosted Glass Bottom Publish Bar -->
+  <div class="frosted-studio-publish-bar">
+    <div class="publish-bar-inner d-flex justify-content-between align-items-center">
       
-      <!-- Stepper Back/Next Controls -->
-      <div class="action-bar-navigation d-flex align-items-center gap-3">
-        <button 
-          type="button" 
-          class="btn-bar-nav btn-bar-prev" 
-          [disabled]="activeStep() === 0" 
-          (click)="prevStep()"
-        >
-          ← {{ translationService.currentLang() === 'ar' ? 'السابق' : 'Previous' }}
-        </button>
-        
-        <span class="progress-indicator-text d-none d-sm-inline-block">
-          {{ translationService.currentLang() === 'ar' ? 'خطوة' : 'Step' }} {{ activeStep() + 1 }} {{ translationService.currentLang() === 'ar' ? 'من' : 'of' }} 6
-        </span>
-        
-        <button 
-          type="button" 
-          class="btn-bar-nav btn-bar-next" 
-          *ngIf="activeStep() < 5"
-          (click)="nextStep()"
-        >
-          {{ translationService.currentLang() === 'ar' ? 'التالي' : 'Next' }} →
-        </button>
-      </div>
-
-      <!-- Submit & Cancel Actions -->
-      <div class="action-bar-submits d-flex align-items-center gap-3">
+      <!-- Sync status or cancel -->
+      <div class="publish-bar-meta d-flex align-items-center gap-3">
         <button
           type="button"
           (click)="onCancel()"
-          class="btn-bar-cancel"
+          class="btn-studio-cancel"
           [disabled]="submitting()"
         >
           {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
         </button>
+        
+        <span class="publish-sync-status-indicator d-md-none text-muted">
+          {{ autoSaveStatus() === 'saving' ? '● Saving...' : '● Synced' }}
+        </span>
+      </div>
 
+      <!-- Action Publish buttons -->
+      <div class="publish-bar-actions">
         <button
           type="button"
           (click)="onSubmit()"
-          class="btn-bar-publish"
+          class="btn-studio-publish"
           [disabled]="submitting() || productForm.invalid || localPreviews().length === 0"
         >
           <span *ngIf="submitting()" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          {{ translationService.currentLang() === 'ar' ? 'نشر وإطلاق المنتج' : 'Publish Product' }}
+          {{ translationService.currentLang() === 'ar' ? 'نشر وإطلاق القطعة' : 'Publish Masterpiece' }}
         </button>
       </div>
 
