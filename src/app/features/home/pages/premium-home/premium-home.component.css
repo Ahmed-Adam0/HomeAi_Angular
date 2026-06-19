@@ -986,7 +986,7 @@ img {
   position: relative;
   overflow: hidden;
   aspect-ratio: 1 / 1;
-  background: var(--cream);
+  background: transparent;
 }
 
 .product-card-img {

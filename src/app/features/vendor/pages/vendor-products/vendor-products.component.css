@@ -352,7 +352,7 @@
   position: relative;
   aspect-ratio: 4/3;
   overflow: hidden;
-  background-color: var(--fm-color-neutral-50);
+  background-color: transparent;
 }
 
 .card-img {
