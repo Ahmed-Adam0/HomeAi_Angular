@@ -12,6 +12,7 @@ import { CustomDropdownComponent } from '../../../../shared/components/custom-dr
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-vendor-products',
@@ -22,7 +23,8 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
     CustomDropdownComponent,
     CurrencyFormatPipe,
     LocalizedPipe,
-    LazyImageDirective
+    LazyImageDirective,
+    PaginationComponent
   ],
   templateUrl: './vendor-products.component.html',
   styleUrl: './vendor-products.component.css'
@@ -35,10 +37,11 @@ export class VendorProducts implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private categoryService = inject(CategoryService);
   private router = inject(Router);
+  private searchTimeout: any;
 
   readonly products = this.vendorProductService.products;
   readonly loading = signal<boolean>(true);
-  
+
   // Filter & View State signals
   readonly searchQuery = signal<string>('');
   readonly selectedCategory = signal<string>('all');
@@ -47,22 +50,31 @@ export class VendorProducts implements OnInit {
   readonly viewMode = signal<'grid' | 'list'>('grid');
   readonly categories = signal<ICategory[]>([]);
 
-
-
-  // Quick View drawer signals
+  // Pagination Signals from Service
+  readonly currentPage = this.vendorProductService.pageNumber;
+  readonly totalPages = this.vendorProductService.totalPages;
+  readonly hasNextPage = this.vendorProductService.hasNextPage;
+  readonly hasPreviousPage = this.vendorProductService.hasPreviousPage;  // Quick View drawer signals
   readonly selectedProductForView = signal<IProduct | null>(null);
   readonly activeImageIndex = signal<number>(0);
 
   // Computed totals for stats badges
-  readonly totalCount = computed(() => this.products().length);
-  readonly activeCount = computed(() => this.products().filter(p => p.isActive ?? true).length);
-  readonly archivedCount = computed(() => this.products().filter(p => !(p.isActive ?? true)).length);
+  readonly totalCount = this.vendorProductService.totalCount;
+  readonly filteredCount = this.vendorProductService.filteredCount;
+  readonly activeCount = this.vendorProductService.activeCount;
+  readonly archivedCount = this.vendorProductService.inactiveCount;
+
+  readonly hasActiveFilters = computed(() => {
+    return this.searchQuery().trim() !== '' ||
+      this.selectedCategory() !== 'all' ||
+      this.selectedStatus() !== 'all';
+  });
 
   // Computed list of all unique images for the Quick View gallery
   readonly productImagesList = computed(() => {
     const prod = this.selectedProductForView();
     if (!prod) return [];
-    
+
     const list: string[] = [];
     if (prod.mainImageUrl) {
       list.push(prod.mainImageUrl);
@@ -108,61 +120,7 @@ export class VendorProducts implements OnInit {
   });
 
   // Filtered and Sorted Products list
-  readonly filteredProducts = computed(() => {
-    const query = this.searchQuery().toLowerCase().trim();
-    const catId = this.selectedCategory();
-    const status = this.selectedStatus();
-    const sort = this.selectedSort();
-    const products = this.products();
-
-    let filtered = [...products];
-
-    // 1. Apply search query filter
-    if (query) {
-      filtered = filtered.filter(product => {
-        const nameAr = (product.nameAr || '').toLowerCase();
-        const nameEn = (product.nameEn || '').toLowerCase();
-        const descAr = (product.descriptionAr || '').toLowerCase();
-        const descEn = (product.descriptionEn || '').toLowerCase();
-        return nameAr.includes(query) || nameEn.includes(query) || descAr.includes(query) || descEn.includes(query);
-      });
-    }
-
-    // 2. Apply category filter
-    if (catId && catId !== 'all') {
-      const idNum = parseInt(catId, 10);
-      filtered = filtered.filter(product => product.categoryId === idNum);
-    }
-
-    // 3. Apply status filter
-    if (status && status !== 'all') {
-      const isAct = status === 'active';
-      filtered = filtered.filter(product => {
-        const currentActive = product.isActive ?? true;
-        return currentActive === isAct;
-      });
-    }
-
-    // 4. Apply sort
-    filtered.sort((a, b) => {
-      if (sort === 'price_asc') {
-        return a.price - b.price;
-      } else if (sort === 'price_desc') {
-        return b.price - a.price;
-      } else if (sort === 'rating') {
-        return (b.averageRating ?? 0) - (a.averageRating ?? 0);
-      } else if (sort === 'name_asc') {
-        const nameA = this.translationService.currentLang() === 'ar' ? (a.nameAr || '') : (a.nameEn || '');
-        const nameB = this.translationService.currentLang() === 'ar' ? (b.nameAr || '') : (b.nameEn || '');
-        return nameA.localeCompare(nameB);
-      } else {
-        // newest
-        return b.id - a.id;
-      }
-    });
-
-    return filtered;
-  });
+  readonly filteredProducts = this.products;
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -171,9 +129,30 @@ export class VendorProducts implements OnInit {
     }
   }
 
-  loadProducts(): void {
+  loadProducts(page: number = 1): void {
     this.loading.set(true);
-    this.vendorProductService.getVendorProducts().subscribe({
+
+    const statusVal = this.selectedStatus();
+    let isActive: boolean | undefined = undefined;
+    if (statusVal === 'active') {
+      isActive = true;
+    } else if (statusVal === 'archived') {
+      isActive = false;
+    }
+
+    let sortBy = this.selectedSort();
+    if (sortBy === 'name_asc') {
+      sortBy = 'name_az';
+    }
+
+    const filters = {
+      search: this.searchQuery().trim(),
+      categoryId: this.selectedCategory() === 'all' ? undefined : this.selectedCategory(),
+      isActive: isActive,
+      sortBy: sortBy
+    };
+
+    this.vendorProductService.getVendorProducts(page, 10, filters).subscribe({
       next: (data) => {
         this.products.set(data || []);
         this.loading.set(false);
@@ -200,18 +179,29 @@ export class VendorProducts implements OnInit {
   onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchQuery.set(input.value);
+
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      this.loadProducts(1);
+    }, 400);
   }
 
   onCategoryChange(catId: any): void {
     this.selectedCategory.set(catId);
+    this.loadProducts(1);
   }
 
   onStatusFilterChange(status: any): void {
     this.selectedStatus.set(status);
+    this.loadProducts(1);
   }
 
   onSortChange(sort: any): void {
     this.selectedSort.set(sort);
+    this.loadProducts(1);
   }
 
   toggleViewMode(mode: 'grid' | 'list'): void {
@@ -266,13 +256,13 @@ export class VendorProducts implements OnInit {
     event.stopPropagation();
     const checkbox = event.target as HTMLInputElement;
     const newStatus = checkbox.checked;
-    
+
     const isAr = this.translationService.currentLang() === 'ar';
     if (!newStatus) {
       const confirmed = await this.dialogService.openConfirm({
         title: isAr ? 'أرشفة المنتج' : 'Archive Product',
-        message: isAr 
-          ? 'هل أنت متأكد من رغبتك في أرشفة هذا المنتج؟ سيتم إزالته من المتجر العام وإخفائه عن العملاء.' 
+        message: isAr
+          ? 'هل أنت متأكد من رغبتك في أرشفة هذا المنتج؟ سيتم إزالته من المتجر العام وإخفائه عن العملاء.'
           : 'Are you sure you want to archive this product? It will be removed from the public marketplace and hidden from customers.',
         confirmText: isAr ? 'أرشفة' : 'Archive',
         cancelText: isAr ? 'إلغاء' : 'Cancel',
@@ -285,8 +275,8 @@ export class VendorProducts implements OnInit {
     } else {
       const confirmed = await this.dialogService.openConfirm({
         title: isAr ? 'إعادة تفعيل المنتج' : 'Reactivate Product',
-        message: isAr 
-          ? 'هل ترغب في إعادة تفعيل هذا المنتج وعرضه في المتجر للعملاء؟' 
+        message: isAr
+          ? 'هل ترغب في إعادة تفعيل هذا المنتج وعرضه في المتجر للعملاء؟'
           : 'Do you want to re-activate this product and show it in the marketplace to customers?',
         confirmText: isAr ? 'تفعيل' : 'Activate',
         cancelText: isAr ? 'إلغاء' : 'Cancel',
@@ -297,14 +287,14 @@ export class VendorProducts implements OnInit {
         return;
       }
     }
-    
+
     this.onStatusChange({ id: productId, isActive: newStatus });
   }
 
   onOpenQuickView(product: IProduct, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    
+
     // Set basic info first (so the UI opens instantly)
     this.selectedProductForView.set(product);
     this.activeImageIndex.set(0);
@@ -337,7 +327,7 @@ export class VendorProducts implements OnInit {
   async onDeleteFromQuickView(): Promise<void> {
     const prod = this.selectedProductForView();
     if (!prod) return;
-    
+
     const isAr = this.translationService.currentLang() === 'ar';
     const confirmed = await this.dialogService.openConfirm({
       title: isAr ? 'حذف المنتج' : 'Delete Product',
@@ -362,5 +352,11 @@ export class VendorProducts implements OnInit {
         this.uiState.hideLoader();
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.loadProducts(page);
+    }
   }
 }
