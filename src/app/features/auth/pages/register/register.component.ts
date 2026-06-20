@@ -199,9 +199,10 @@ export class Register implements OnDestroy {
         this.isLoading = false;
         this.successMessage = this.t().successMessage;
         this.translationService.setLanguage(formData.preferredLanguage as 'en' | 'ar');
-        if (this.successTimeout) clearTimeout(this.successTimeout);
         this.successTimeout = setTimeout(() => {
-          this.router.navigate([NAV_ROUTES.LOGIN]);
+          this.router.navigate([NAV_ROUTES.CONFIRM_EMAIL_OTP], {
+            queryParams: { email: formData.email }
+          });
         }, 3000);
       },
       error: (err) => {

@@ -1,0 +1,114 @@
+<div class="auth-wrapper login-mirror" [attr.dir]="direction()" [attr.lang]="currentLang()">
+  <div class="auth-form-side">
+    <div class="auth-form-inner">
+      <div class="brand-logo">
+        <img src="assets/icons/logo.png" alt="FurniMind AI" style="height: 36px; width: auto;" />
+      </div>
+
+      <div class="form-header">
+        <h1>{{ 'CONFIRM_EMAIL_OTP.TITLE' | translate }}</h1>
+        <p>{{ 'CONFIRM_EMAIL_OTP.SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="inline-error" *ngIf="errorMessage" role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="confirmForm" (ngSubmit)="onSubmit()" class="auth-form">
+        <div class="form-group">
+          <label for="email">{{ 'CONFIRM_EMAIL_OTP.EMAIL_LABEL' | translate }}</label>
+          <div class="input-wrapper" [class.has-success]="showSuccess('email')" [class.has-error]="showValidation('email')">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+            </span>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              [placeholder]="'CONFIRM_EMAIL_OTP.EMAIL_PLACEHOLDER' | translate"
+              [class.is-invalid]="showValidation('email')"
+              [class.is-valid]="showSuccess('email')"
+              appAutoDir
+            />
+            <span class="field-status-icon success-icon" *ngIf="showSuccess('email')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
+            <span class="field-status-icon error-icon" *ngIf="showValidation('email')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </span>
+          </div>
+          <div class="error-msg" *ngIf="showValidation('email') && confirmForm.get('email')?.hasError('required')">{{ 'CONFIRM_EMAIL_OTP.EMAIL_REQUIRED' | translate }}</div>
+          <div class="error-msg" *ngIf="showValidation('email') && confirmForm.get('email')?.hasError('email')">{{ 'CONFIRM_EMAIL_OTP.EMAIL_INVALID' | translate }}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="otpCodeEmail">{{ 'CONFIRM_EMAIL_OTP.OTP_LABEL' | translate }}</label>
+          <div class="input-wrapper" [class.has-success]="showSuccess('otpCodeEmail')" [class.has-error]="showValidation('otpCodeEmail')">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="9" y1="3" x2="9" y2="21"/>
+                <line x1="15" y1="3" x2="15" y2="21"/>
+                <line x1="3" y1="9" x2="21" y2="9"/>
+                <line x1="3" y1="15" x2="21" y2="15"/>
+              </svg>
+            </span>
+            <input
+              type="text"
+              id="otpCodeEmail"
+              formControlName="otpCodeEmail"
+              [placeholder]="'CONFIRM_EMAIL_OTP.OTP_PLACEHOLDER' | translate"
+              [class.is-invalid]="showValidation('otpCodeEmail')"
+              [class.is-valid]="showSuccess('otpCodeEmail')"
+              appAutoDir
+            />
+            <span class="field-status-icon success-icon" *ngIf="showSuccess('otpCodeEmail')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
+            <span class="field-status-icon error-icon" *ngIf="showValidation('otpCodeEmail')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </span>
+          </div>
+          <div class="error-msg" *ngIf="showValidation('otpCodeEmail') && confirmForm.get('otpCodeEmail')?.hasError('required')">{{ 'CONFIRM_EMAIL_OTP.OTP_REQUIRED' | translate }}</div>
+          <div class="error-msg" *ngIf="showValidation('otpCodeEmail') && confirmForm.get('otpCodeEmail')?.hasError('pattern')">{{ 'CONFIRM_EMAIL_OTP.OTP_NUMERIC' | translate }}</div>
+          <div class="error-msg" *ngIf="showValidation('otpCodeEmail') && confirmForm.get('otpCodeEmail')?.hasError('minlength')">{{ 'CONFIRM_EMAIL_OTP.OTP_LENGTH' | translate }}</div>
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="confirmForm.invalid || isLoading">
+          <span *ngIf="!isLoading">
+            {{ 'CONFIRM_EMAIL_OTP.SUBMIT_BUTTON' | translate }}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="submit-arrow">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </span>
+          <span *ngIf="isLoading" class="spinner"></span>
+        </button>
+      </form>
+
+      <p class="auth-footer">
+        <a [routerLink]="navRoutes.LOGIN">{{ 'CONFIRM_EMAIL_OTP.BACK_TO_LOGIN' | translate }}</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="auth-visual-side">
+    <div class="visual-content">
+      <h2>{{ 'CONFIRM_EMAIL_OTP.VISUAL_HEADING' | translate }}</h2>
+      <p class="visual-subtitle">{{ 'CONFIRM_EMAIL_OTP.VISUAL_SUBTITLE' | translate }}</p>
+    </div>
+  </div>
+</div>

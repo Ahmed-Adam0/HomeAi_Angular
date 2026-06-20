@@ -21,6 +21,12 @@ export interface IVerifyOtpRequest {
   otpCode: string;
 }
 
+export interface IConfirmEmailOtpRequest {
+  email: string;
+  otpCodeEmail: string;
+  accountType?: 'customer' | 'vendor';
+}
+
 export interface IResetPasswordRequest {
   email: string;
   otpCode: string;

@@ -208,7 +208,9 @@ export class VendorRegister {
         this.successMessage = this.t().successMessage;
         this.translationService.setLanguage(payload.preferredLanguage as 'en' | 'ar');
         setTimeout(() => {
-          this.router.navigate([NAV_ROUTES.VENDOR_LOGIN]);
+          this.router.navigate([NAV_ROUTES.CONFIRM_EMAIL_OTP], {
+            queryParams: { email: payload.email, accountType: 'vendor' }
+          });
         }, 1800);
       },
       error: (err) => {
