@@ -23,12 +23,12 @@ export const APP_ROUTES = {
   FORGOT_PASSWORD: 'forgot-password',
   VERIFY_OTP: 'verify-otp',
   RESET_PASSWORD: 'reset-password',
+  CONFIRM_EMAIL_OTP: 'confirm-email-otp',
 
   FAVORITES: 'favorites',
-
   ORDERS: 'orders',
   ORDER_DETAILS: 'orders/:id',
-
+  
   VENDOR: 'vendor',
   VENDOR_LOGIN: 'login',
   VENDOR_REGISTER: 'register',
@@ -77,6 +77,7 @@ export const NAV_ROUTES = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   VERIFY_OTP: '/auth/verify-otp',
   RESET_PASSWORD: '/auth/reset-password',
+  CONFIRM_EMAIL_OTP: '/auth/confirm-email-otp',
 
   FAVORITES: '/favorites',
 

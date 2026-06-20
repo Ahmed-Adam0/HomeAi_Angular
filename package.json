@@ -34,6 +34,7 @@
     "@angular/router": "^20.3.23",
     "@angular/ssr": "^20.3.23",
     "@google/model-viewer": "^4.3.1",
+
     "@microsoft/signalr": "^10.0.0",
     "@primeuix/themes": "^3.0.0-alpha.11",
     "bootstrap": "^5.3.8",
