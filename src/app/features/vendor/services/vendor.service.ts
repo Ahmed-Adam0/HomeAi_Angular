@@ -6,14 +6,11 @@ import { API_URLS } from '../../../core/constants';
 import { IVendorOrdersFilterRequestDto } from '../data-access/dto/vendor-orders-filter-request.dto';
 import { IVendorOrdersFilterResponseDto } from '../data-access/dto/vendor-orders-filter-response.dto';
 import { IVendorOrderDetailsDto } from '../data-access/dto/vendor-order-details.dto';
-import { IVendorUpdateOrderStatusRequestDto, VendorOrderStatusApi } from '../data-access/dto/vendor-update-order-status-request.dto';
-import { STATUS_API_MAP } from '../data-access/mappers/vendor-order-status.mapper';
 import { IVendorDashboardMetricsDto } from '../data-access/dto/vendor-dashboard-metrics.dto';
 import { IVendorRevenueStatisticsDto } from '../data-access/dto/vendor-revenue-statistics.dto';
 import { IVendorOrderAnalyticsDto } from '../data-access/dto/vendor-order-analytics.dto';
-import { VendorOrderStatus } from '../models/vendor-order-status.enum';
+import { VendorOrderStatus, OrderStatus } from '../models/vendor-order-status.enum';
 import {
-  mapVendorOrdersFilterResponse,
   mapVendorOrderDetails,
   mapVendorDashboardMetricsDtoToViewModel,
   mapVendorOrderAnalytics,
@@ -25,6 +22,8 @@ import { IVendorProfileRequestDto } from '../data-access/dto/vendor-profile-requ
 import { IVendorNotificationsResponseDto } from '../data-access/dto/vendor-notifications-response.dto';
 import { IUnreadCountDto } from '../data-access/dto/unread-count.dto';
 import { mapNotificationsResponse, INotificationsMappedResult } from '../data-access/mappers/vendor-notification.mapper';
+import { mapBackendToOrder } from '../../orders/data-access/orders.mapper';
+import { IOrder } from '../../orders/interfaces/iorder';
 import {
   IVendorAnalytics,
   IVendorDashboardMetrics,
@@ -35,6 +34,7 @@ import {
   IVendorProfileUpdateRequest,
   IVendorRevenue,
   StatusUpdateResponse,
+  IVendorOrdersPaginatedResponse,
 } from '../interfaces';
 
 @Injectable({
@@ -44,20 +44,20 @@ export class VendorService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
-  getOrders(): Observable<IVendorOrderSummary[]> {
-    const request: IVendorOrdersFilterRequestDto = {
-      pageNumber: 1,
-      pageSize: 20,
-      sortDescending: true,
-    };
-
+  getOrders(filter: IVendorOrdersFilterRequestDto = { pageNumber: 1, pageSize: 20, sortDescending: true }): Observable<IVendorOrdersPaginatedResponse> {
     return this.http
       .post<IVendorOrdersFilterResponseDto>(
         `${this.apiUrl}${API_URLS.VENDOR.ORDERS_FILTER}`,
-        request
+        filter
       )
       .pipe(
-        map(mapVendorOrdersFilterResponse)
+        map((res) => ({
+          data: (res.data || []).map((o: any) => mapBackendToOrder(o)),
+          totalCount: res.totalCount ?? 0,
+          pageNumber: res.pageNumber ?? 1,
+          pageSize: res.pageSize ?? 20,
+          totalPages: res.totalPages ?? 1,
+        }))
       );
   }
 
@@ -69,33 +69,13 @@ export class VendorService {
       .pipe(map(mapVendorOrderDetails));
   }
 
-  updateOrderStatus(orderId: number, newStatus: VendorOrderStatus): Observable<StatusUpdateResponse>;
-  updateOrderStatus(payload: IVendorOrderStatusUpdate): Observable<StatusUpdateResponse>;
-  updateOrderStatus(
-    orderIdOrPayload: number | IVendorOrderStatusUpdate,
-    newStatus?: VendorOrderStatus
-  ): Observable<StatusUpdateResponse> {
-    if (typeof orderIdOrPayload === 'number') {
-      const requestBody: IVendorUpdateOrderStatusRequestDto = {
-        newStatus: STATUS_API_MAP[newStatus!] as VendorOrderStatusApi,
-      };
 
-      return this.http
-        .put<StatusUpdateResponse>(
-          `${this.apiUrl}${API_URLS.VENDOR.UPDATE_ORDER_STATUS(orderIdOrPayload)}`,
-          requestBody
-        );
-    }
-
-    const requestBody: IVendorUpdateOrderStatusRequestDto = {
-      newStatus: STATUS_API_MAP[orderIdOrPayload.status] as VendorOrderStatusApi,
-    };
-
-    return this.http
-      .put<StatusUpdateResponse>(
-        `${this.apiUrl}${API_URLS.VENDOR.UPDATE_ORDER_STATUS(orderIdOrPayload.orderId)}`,
-        requestBody
-      );
+  updateOrderStatus(orderId: number, status: OrderStatus): Observable<StatusUpdateResponse> {
+    const requestBody = { newStatus: status };
+    return this.http.put<StatusUpdateResponse>(
+      `${this.apiUrl}${API_URLS.VENDOR.UPDATE_ORDER_STATUS(orderId)}`,
+      requestBody
+    );
   }
 
   getDashboardMetrics(): Observable<IVendorDashboardMetrics> {

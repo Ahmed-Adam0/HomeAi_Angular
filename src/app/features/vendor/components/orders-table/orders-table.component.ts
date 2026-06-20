@@ -2,8 +2,10 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
-import { IVendorOrderSummary } from '../../interfaces';
+import { IOrder } from '../../../orders/interfaces/iorder';
+
 import { OrderStatusBadge } from '../order-status-badge/order-status-badge.component';
+import { VendorOrderStatus } from '../../models/vendor-order-status.enum';
 
 @Component({
   selector: 'app-orders-table',
@@ -14,10 +16,14 @@ import { OrderStatusBadge } from '../order-status-badge/order-status-badge.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrdersTable {
-  readonly orders = input.required<IVendorOrderSummary[]>();
+  readonly orders = input.required<IOrder[]>();
   readonly viewOrder = output<string>();
 
   protected onViewOrder(orderId: string): void {
     this.viewOrder.emit(orderId);
+  }
+
+  protected getVendorOrderStatus(status: string): VendorOrderStatus {
+    return status as VendorOrderStatus;
   }
 }

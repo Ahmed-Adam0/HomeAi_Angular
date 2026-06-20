@@ -7,11 +7,10 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { OrderStatusBadge } from '../../components';
 import { IVendorOrder } from '../../interfaces';
-import { VendorOrderStatus, ALLOWED_TRANSITIONS, isValidTransition } from '../../models/vendor-order-status.enum';
+import { VendorOrderStatus, ALLOWED_TRANSITIONS, isValidTransition, OrderStatus, mapToOrderStatusPayload } from '../../models/vendor-order-status.enum';
 import { VendorService } from '../../services/vendor.service';
 import { UiState } from '../../../../core/state/ui.state';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
-import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { Button } from '../../../../shared/components/button/button.component';
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
@@ -29,7 +28,6 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pip
     TranslatePipe,
     CurrencyFormatPipe,
     ConfirmDialog,
-    PageHeaderComponent,
     Button,
     AlertComponent,
     EmptyStateComponent,
@@ -58,6 +56,51 @@ export class VendorOrderDetails implements OnInit {
   readonly isConfirmDialogVisible = signal(false);
 
   protected readonly skeletonItems = Array(3);
+
+  readonly collapsedVendors = signal<Record<string, boolean>>({});
+
+  readonly activeTab = signal<'overview' | 'products' | 'timeline' | 'customer' | 'payment'>('overview');
+
+  selectTab(tab: 'overview' | 'products' | 'timeline' | 'customer' | 'payment'): void {
+    this.activeTab.set(tab);
+  }
+
+  readonly itemsByVendor = computed(() => {
+    const orderData = this.order();
+    if (!orderData || !orderData.items) return [];
+
+    const groups: Record<string, typeof orderData.items> = {};
+    
+    orderData.items.forEach(item => {
+      const vendor = (item as any).vendorName || 'FurniMind Seller';
+      if (!groups[vendor]) {
+        groups[vendor] = [];
+      }
+      groups[vendor].push(item);
+    });
+
+    return Object.keys(groups).map(vendorName => ({
+      vendorName,
+      items: groups[vendorName]
+    }));
+  });
+
+  readonly totalQuantity = computed(() => {
+    const orderData = this.order();
+    if (!orderData || !orderData.items) return 0;
+    return orderData.items.reduce((sum, item) => sum + item.quantity, 0);
+  });
+
+  toggleVendorCollapse(vendorName: string): void {
+    this.collapsedVendors.update(prev => ({
+      ...prev,
+      [vendorName]: !prev[vendorName]
+    }));
+  }
+
+  isVendorCollapsed(vendorName: string): boolean {
+    return !!this.collapsedVendors()[vendorName];
+  }
 
   readonly breadcrumbs = computed(() => {
     const orderNumber = this.order()?.orderNumber || '';
@@ -106,6 +149,31 @@ export class VendorOrderDetails implements OnInit {
         isCancelled: false,
       };
     });
+  });
+
+  readonly stepperProgressPercent = computed(() => {
+    const steps = this.timelineSteps();
+    const completedCount = steps.filter(s => s.completed).length;
+    const activeCount = steps.filter(s => s.active).length;
+    if (completedCount === steps.length) return 100;
+    
+    const totalIntervals = steps.length - 1;
+    let index = 0;
+    for (let i = 0; i < steps.length; i++) {
+      if (steps[i].active) {
+        index = i;
+        break;
+      }
+    }
+    if (completedCount > 0 && activeCount === 0) {
+      for (let i = steps.length - 1; i >= 0; i--) {
+        if (steps[i].completed) {
+          index = i;
+          break;
+        }
+      }
+    }
+    return (index / totalIntervals) * 100;
   });
 
   printInvoice(): void {
@@ -242,8 +310,10 @@ export class VendorOrderDetails implements OnInit {
     this.statusUpdateError.set(null);
     this.isUpdatingStatus.set(true);
 
+    const statusPayload = mapToOrderStatusPayload(selectedStatus);
+
     this.vendorService
-      .updateOrderStatus(orderId, selectedStatus)
+      .updateOrderStatus(orderId, statusPayload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -253,6 +323,9 @@ export class VendorOrderDetails implements OnInit {
         },
         error: (err: unknown) => {
           console.error('Failed to update vendor order status:', err);
+          if (err instanceof HttpErrorResponse && err.status === 400) {
+            console.error('[VendorOrderDetails] 400 Bad Request error. Sent payload:', { newStatus: statusPayload });
+          }
           let errorMsg = '';
           if (err instanceof HttpErrorResponse) {
             switch (err.status) {

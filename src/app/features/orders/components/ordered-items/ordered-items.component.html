@@ -8,15 +8,16 @@
     @for (item of items(); track item.productId) {
       <div class="details-item-row">
         <div class="details-item-img-wrapper">
-          <img class="details-item-img" [appLazyImage]="item.productImage || item.image || 'assets/images/image-placeholder.svg'" [alt]="item | localized:'productName'" loading="lazy" (error)="$event.target.src = 'assets/images/image-placeholder.svg'" />
+          <img class="details-item-img" [appLazyImage]="item.productImage || 'assets/images/image-placeholder.svg'" [alt]="item | localized:'productName'" loading="lazy" (error)="$event.target.src = 'assets/images/image-placeholder.svg'" />
+
         </div>
         <div class="min-w-0 flex-grow-1">
           <div class="details-item-name">{{ item | localized:'productName' }}</div>
           <div class="text-muted details-item-meta">
             <span>{{ 'ORDER_DETAILS_QTY' | translate }}: {{ item.quantity }}</span>
-            @if (item.price) {
+            @if (item.unitPrice) {
               <span class="mx-2">•</span>
-              <span>{{ item.price | currencyFormat }}</span>
+              <span>{{ item.unitPrice | currencyFormat }}</span>
             }
             @if (item.selectedColor) {
               <span class="mx-2">•</span>
@@ -46,8 +47,9 @@
             }
           </div>
         </div>
-        <div class="details-item-price">{{ (item.total || item.subtotal) | currencyFormat }}</div>
+        <div class="details-item-price">{{ item.total | currencyFormat }}</div>
       </div>
+
     }
   </div>
 } @else {

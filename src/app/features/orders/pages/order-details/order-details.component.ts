@@ -97,18 +97,20 @@ export class OrderDetails {
       items: this.fb.array(
         items.map((item) =>
           this.fb.nonNullable.group({
-            productId: [Number(item.productId) || item.id, Validators.required],
+            productId: [item.productId, Validators.required],
+
             quantity: [item.quantity, [Validators.required, Validators.min(1), Validators.max(99)]],
             productName: [item.productName, Validators.required],
             productNameEn: [item.productNameEn ?? item.productName],
             productNameAr: [item.productNameAr ?? item.productName],
-            price: [item.price, Validators.required],
+            price: [item.unitPrice, Validators.required],
             productImage: [item.productImage ?? ''],
           })
         )
       ),
     });
   }
+
 
   onSaveEdit(): void {
     if (!this.editForm?.valid || !this.order()) return;
