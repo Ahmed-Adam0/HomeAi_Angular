@@ -15,14 +15,83 @@ export class VendorProductService {
 
   // Shared signal of products to facilitate easy list refreshes (Requirement 11)
   readonly products = signal<IProduct[]>([]);
+  readonly totalCount = signal<number>(0);
+  readonly filteredCount = signal<number>(0);
+  readonly activeCount = signal<number>(0);
+  readonly inactiveCount = signal<number>(0);
+
+  // Pagination Signals
+  readonly pageNumber = signal<number>(1);
+  readonly pageSize = signal<number>(10);
+  readonly totalPages = signal<number>(0);
+  readonly hasNextPage = signal<boolean>(false);
+  readonly hasPreviousPage = signal<boolean>(false);
 
   /**
    * Fetch all products owned by the vendor.
    * Targets: GET /api/Products/my-products
    */
-  getVendorProducts(): Observable<IProduct[]> {
-    return this.http.get<any>(`${this.apiUrl}Products/my-products`).pipe(
+  getVendorProducts(
+    page: number = 1,
+    size: number = 10,
+    filters?: {
+      search?: string;
+      categoryId?: string;
+      subCategoryId?: string;
+      productTypeId?: string;
+      isActive?: boolean;
+      sortBy?: string;
+    }
+  ): Observable<IProduct[]> {
+    const params: any = {
+      pageNumber: page.toString(),
+      pageSize: size.toString()
+    };
+
+    if (filters) {
+      if (filters.search !== undefined && filters.search !== '') {
+        params.search = filters.search;
+      }
+      if (filters.categoryId !== undefined && filters.categoryId !== '') {
+        params.categoryId = filters.categoryId;
+      }
+      if (filters.subCategoryId !== undefined && filters.subCategoryId !== '') {
+        params.subCategoryId = filters.subCategoryId;
+      }
+      if (filters.productTypeId !== undefined && filters.productTypeId !== '') {
+        params.productTypeId = filters.productTypeId;
+      }
+      if (filters.isActive !== undefined) {
+        params.isActive = filters.isActive.toString();
+      }
+      if (filters.sortBy !== undefined && filters.sortBy !== '') {
+        params.sortBy = filters.sortBy;
+      }
+    }
+
+    return this.http.get<any>(`${this.apiUrl}Products/my-products`, { params }).pipe(
       map(res => {
+        // The unwrap() utility digs down and returns only the 'items' array.
+        // We need to capture totalCount/activeCount from the level just above it, 
+        // or directly from res if it's not nested.
+        let metaObj = res;
+        if (res && typeof res === 'object') {
+          if (res.data && typeof res.data === 'object') metaObj = res.data;
+          else if (res.result && typeof res.result === 'object') metaObj = res.result;
+        }
+
+        if (metaObj && typeof metaObj === 'object') {
+          if (metaObj.totalCount !== undefined) this.totalCount.set(metaObj.totalCount);
+          if (metaObj.filteredCount !== undefined) this.filteredCount.set(metaObj.filteredCount);
+          if (metaObj.activeCount !== undefined) this.activeCount.set(metaObj.activeCount);
+          if (metaObj.inactiveCount !== undefined) this.inactiveCount.set(metaObj.inactiveCount);
+          if (metaObj.pageNumber !== undefined) this.pageNumber.set(metaObj.pageNumber);
+          if (metaObj.pageSize !== undefined) this.pageSize.set(metaObj.pageSize);
+          if (metaObj.totalPages !== undefined) this.totalPages.set(metaObj.totalPages);
+          if (metaObj.hasNextPage !== undefined) this.hasNextPage.set(metaObj.hasNextPage);
+          if (metaObj.hasPreviousPage !== undefined) this.hasPreviousPage.set(metaObj.hasPreviousPage);
+        }
+
         const unwrapped = unwrap<any>(res);
         let items: any[] = [];
         if (Array.isArray(unwrapped)) {

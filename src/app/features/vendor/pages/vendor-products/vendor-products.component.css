@@ -1460,3 +1460,23 @@
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+.filtered-results-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fm-space-8);
+  background-color: var(--fm-color-primary-50);
+  border: 1px solid var(--fm-color-primary-100);
+  border-radius: var(--fm-radius-md);
+  padding: var(--fm-space-12) var(--fm-space-16);
+  margin-bottom: var(--fm-space-24);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--fm-color-primary-800);
+  animation: fadeInOverlay 0.2s ease-out forwards;
+}
+
+.filtered-results-bar .text-gold {
+  color: var(--fm-color-primary-600);
+  font-weight: 800;
+}
