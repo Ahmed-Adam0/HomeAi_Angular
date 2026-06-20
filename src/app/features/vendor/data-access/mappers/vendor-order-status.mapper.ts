@@ -12,10 +12,11 @@ export const STATUS_API_MAP: Record<VendorOrderStatus, string> = {
 export const STATUS_FRONTEND_MAP: Record<string, VendorOrderStatus> = {
   'Pending': VendorOrderStatus.Pending,
   'Confirmed': VendorOrderStatus.Confirmed,
+  'Processing': VendorOrderStatus.Processing,
   'In Progress': VendorOrderStatus.Processing,
+  'Shipped': VendorOrderStatus.Ready,
   'Ready for Pickup': VendorOrderStatus.Ready,
   'Delivered': VendorOrderStatus.Delivered,
   'Cancelled': VendorOrderStatus.Cancelled,
-  // Add fallback mapping for backwards compatibility if needed
   'Accepted': VendorOrderStatus.Confirmed,
 };

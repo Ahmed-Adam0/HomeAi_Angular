@@ -4,9 +4,10 @@ import { Observable, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { unwrap } from '../../../core/utils/api-utils';
-import { IOrder, OrderStatus } from '../../orders/interfaces/iorder';
+import { IOrder } from '../../orders/interfaces/iorder';
 import { mapBackendToOrder } from '../../orders/data-access/orders.mapper';
 import { IVendorOrdersPaginatedResponse } from '../interfaces/ivendor-order';
+import { OrderStatus } from '../models/vendor-order-status.enum';
 
 
 
@@ -103,21 +104,17 @@ export class VendorOrdersService {
     );
   }
 
-  /**
-   * Update order status.
-   * Target: PUT /api/VendorOrders/orders/{orderId}/status
-   */
-  updateOrderStatus(orderId: string | number, status: OrderStatus, note?: string): Observable<any> {
-
-    const payload = { status, note: note || "" };
+  updateOrderStatus(orderId: string | number, status: OrderStatus): Observable<void> {
+    const payload = { newStatus: status };
     console.log(`PUT /api/VendorOrders/orders/${orderId}/status Payload:`, payload);
     
-    return this.http.put<any>(`${this.apiUrl}VendorOrders/orders/${orderId}/status`, payload).pipe(
+    return this.http.put<void>(`${this.apiUrl}VendorOrders/orders/${orderId}/status`, payload).pipe(
       tap(res => {
         console.log(`PUT /api/VendorOrders/orders/${orderId}/status Response:`, res);
         // Refresh local orders list status
+        const lowercaseStatus = status.toLowerCase() as any;
         this.ordersList.update(list =>
-          list.map(o => o.id === orderId ? { ...o, status } : o)
+          list.map(o => o.id === String(orderId) || o.id === orderId ? { ...o, status: lowercaseStatus } : o)
         );
       })
     );
