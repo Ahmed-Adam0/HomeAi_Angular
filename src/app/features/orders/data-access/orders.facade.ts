@@ -127,8 +127,39 @@ export class OrdersFacade {
             productNameEn: product.nameEn || item.productName,
             productNameAr: product.nameAr || item.productName,
             productImage: product.mainImageUrl || item.productImage,
+            workshopNameEn: product.workshopNameEn,
+            workshopNameAr: product.workshopNameAr,
           };
         });
+      })
+    );
+  }
+
+  private enrichOrder(order: IOrder): Observable<IOrder> {
+    const allItems: IOrderItem[] = [...order.items];
+    if (order.vendorOrders) {
+      order.vendorOrders.forEach((vo) => {
+        allItems.push(...vo.items);
+      });
+    }
+    return this.enrichItems(allItems).pipe(
+      map((enrichedAllItems) => {
+        let index = 0;
+        const enrichedMainItems = enrichedAllItems.slice(0, order.items.length);
+        index += order.items.length;
+
+        const enrichedVendorOrders = order.vendorOrders?.map((vo) => {
+          const voCount = vo.items.length;
+          const enrichedVoItems = enrichedAllItems.slice(index, index + voCount);
+          index += voCount;
+          return { ...vo, items: enrichedVoItems };
+        });
+
+        return {
+          ...order,
+          items: enrichedMainItems,
+          vendorOrders: enrichedVendorOrders,
+        };
       })
     );
   }
@@ -140,11 +171,7 @@ export class OrdersFacade {
     this.api
       .getOrderById(id)
       .pipe(
-        switchMap((order) =>
-          this.enrichItems(order.items).pipe(
-            map((enrichedItems) => ({ ...order, items: enrichedItems }))
-          )
-        ),
+        switchMap((order) => this.enrichOrder(order)),
         catchError(() => {
           this.detailsErrorKey.set('ORDERS_ERROR_LOAD_DETAILS');
           return of(null);
@@ -168,11 +195,7 @@ export class OrdersFacade {
   cancelOrder(id: string): Observable<IOrder> {
     this.isCancelling.set(true);
     return this.api.updateOrderStatus(id, 'Cancelled').pipe(
-      switchMap((updatedOrder) =>
-        this.enrichItems(updatedOrder.items).pipe(
-          map((enrichedItems) => ({ ...updatedOrder, items: enrichedItems }))
-        )
-      ),
+      switchMap((updatedOrder) => this.enrichOrder(updatedOrder)),
       tap((enrichedOrder) => {
         this.selectedOrder.set(enrichedOrder);
         const currentOrders = this.orders();
@@ -192,11 +215,7 @@ export class OrdersFacade {
   updateOrderItems(id: string, items: { productId: number; quantity: number }[]): Observable<IOrder> {
     this.isSaving.set(true);
     return this.api.updateOrderItems(id, items).pipe(
-      switchMap((updatedOrder) =>
-        this.enrichItems(updatedOrder.items).pipe(
-          map((enrichedItems) => ({ ...updatedOrder, items: enrichedItems }))
-        )
-      ),
+      switchMap((updatedOrder) => this.enrichOrder(updatedOrder)),
       tap((enrichedOrder) => {
         this.selectedOrder.set(enrichedOrder);
         const currentOrders = this.orders();
@@ -204,6 +223,32 @@ export class OrdersFacade {
           this.orders.set(
             currentOrders.map((o) => (o.id === id ? enrichedOrder : o))
           );
+        }
+      }),
+      finalize(() => this.isSaving.set(false))
+    );
+  }
+
+  approveDeliveryDate(vendorOrderId: string): Observable<{ message: string }> {
+    this.isSaving.set(true);
+    return this.api.approveDeliveryDate(vendorOrderId).pipe(
+      tap(() => {
+        const selected = this.selectedOrder();
+        if (selected) {
+          this.loadOrderDetails(selected.id);
+        }
+      }),
+      finalize(() => this.isSaving.set(false))
+    );
+  }
+
+  rejectDeliveryDate(vendorOrderId: string): Observable<{ message: string }> {
+    this.isSaving.set(true);
+    return this.api.rejectDeliveryDate(vendorOrderId).pipe(
+      tap(() => {
+        const selected = this.selectedOrder();
+        if (selected) {
+          this.loadOrderDetails(selected.id);
         }
       }),
       finalize(() => this.isSaving.set(false))
@@ -234,8 +279,14 @@ export class OrdersFacade {
     const sequence: TimelineStepVm['key'][] = ['pending', 'processing', 'shipped', 'delivered'];
 
     const normalized: TimelineStepVm['key'] =
-      status === 'pending' || status === 'processing' || status === 'shipped' || status === 'delivered'
-        ? status
+      status === 'pending' || status === 'awaiting_customer_approval' || status === 'confirmed'
+        ? 'pending'
+        : status === 'processing'
+        ? 'processing'
+        : status === 'shipped'
+        ? 'shipped'
+        : status === 'delivered'
+        ? 'delivered'
         : 'pending';
 
     const activeIndex = sequence.indexOf(normalized);
@@ -259,6 +310,10 @@ export class OrdersFacade {
     switch (status) {
       case 'pending':
         return 'warning';
+      case 'awaiting_customer_approval':
+        return 'warning';
+      case 'confirmed':
+        return 'info';
       case 'processing':
         return 'info';
       case 'shipped':

@@ -7,6 +7,8 @@ export interface IOrderItem {
   productImage?: string;
   productNameEn?: string;
   productNameAr?: string;
+  workshopNameEn?: string;
+  workshopNameAr?: string;
   image?: string;
   id?: number;
 

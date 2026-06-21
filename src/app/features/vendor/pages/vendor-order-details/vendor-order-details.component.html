@@ -280,6 +280,19 @@
                   <span class="vod-info-empty">Not provided</span>
                 }
               </div>
+
+              <!-- Proposed Delivery Date -->
+              @if (order()!.estimatedDeliveryDate) {
+                <div class="vod-info-block animate-fade-in">
+                  <div class="vod-info-block-label">Proposed Delivery Date</div>
+                  <div class="vod-info-block-main text-gradient-gold fw-bold">
+                    {{ order()!.estimatedDeliveryDate | date: 'mediumDate' }}
+                  </div>
+                  <div class="vod-info-secondary">
+                    Time: {{ order()!.estimatedDeliveryDate | date: 'shortTime' }}
+                  </div>
+                </div>
+              }
             </div>
           </section>
 
@@ -296,28 +309,59 @@
                 <app-order-status-badge [status]="order()!.status" size="sm"></app-order-status-badge>
               </div>
 
-              @if (canModifyStatus()) {
+              @if (order()!.status === VendorOrderStatus.Pending) {
+                <div class="vod-action-body">
+                  <div class="vod-propose-date-section p-3 bg-light rounded border border-light-medium mb-3">
+                    <label for="proposed-delivery-date" class="form-label text-secondary fw-semibold small mb-2 d-block">
+                      {{ 'VENDOR.ORDER_DETAILS.PROPOSE_DATE_LABEL' | translate }}
+                    </label>
+                    <input
+                      id="proposed-delivery-date"
+                      type="datetime-local"
+                      class="vod-select w-100 mb-3"
+                      [disabled]="isUpdatingStatus() || isProposingDate()"
+                      (change)="onDateChange($event)"
+                    />
+                    <app-button variant="premium" size="lg" class="w-100"
+                      [disabled]="isUpdatingStatus() || isProposingDate() || !proposedDate()"
+                      (clicked)="submitProposedDate()">
+                      ⚡ {{ 'VENDOR.ORDER_DETAILS.PROPOSE_DATE_CTA' | translate }}
+                    </app-button>
+                  </div>
+                </div>
+              } @else if (order()!.status === VendorOrderStatus.AwaitingCustomerApproval) {
+                <div class="vod-action-body">
+                  <div class="vod-awaiting-approval-section p-3 bg-light rounded border text-center" style="border-color: rgba(184, 147, 92, 0.3) !important; background: rgba(184, 147, 92, 0.05);">
+                    <div class="mb-2 text-warning">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                    </div>
+                    <h4 class="fw-bold text-dark fs-6 mb-1">{{ 'VENDOR.ORDER_DETAILS.AWAITING_APPROVAL_TITLE' | translate }}</h4>
+                    <p class="text-muted small mb-3">{{ 'VENDOR.ORDER_DETAILS.AWAITING_APPROVAL_DESC' | translate }}</p>
+                    @if (order()!.estimatedDeliveryDate) {
+                      <div class="p-2 bg-white rounded border text-secondary font-mono small fw-bold">
+                        {{ order()!.estimatedDeliveryDate | date: 'medium' }}
+                      </div>
+                    }
+                  </div>
+                </div>
+              } @else if (canModifyStatus()) {
                 <div class="vod-action-body">
                   <!-- Quick progression primary CTA -->
-                  @if (order()!.status === VendorOrderStatus.Pending) {
+                  @if (order()!.status === VendorOrderStatus.Confirmed) {
                     <app-button variant="premium" size="lg" class="w-100"
                       [disabled]="isUpdatingStatus()"
-                      (clicked)="setQuickStatus(VendorOrderStatus.Confirmed)">
-                      ✓ Confirm Order
-                    </app-button>
-                  } @else if (order()!.status === VendorOrderStatus.Confirmed) {
-                    <app-button variant="premium" size="lg" class="w-100"
-                      [disabled]="isUpdatingStatus()"
-                      (clicked)="setQuickStatus(VendorOrderStatus.Processing)">
+                      (clicked)="setQuickStatus(VendorOrderStatus.InProgress)">
                       ⚡ Start Processing
                     </app-button>
-                  } @else if (order()!.status === VendorOrderStatus.Processing) {
+                  } @else if (order()!.status === VendorOrderStatus.InProgress) {
                     <app-button variant="premium" size="lg" class="w-100"
                       [disabled]="isUpdatingStatus()"
-                      (clicked)="setQuickStatus(VendorOrderStatus.Ready)">
+                      (clicked)="setQuickStatus(VendorOrderStatus.ReadyForPickup)">
                       📦 Mark as Ready
                     </app-button>
-                  } @else if (order()!.status === VendorOrderStatus.Ready) {
+                  } @else if (order()!.status === VendorOrderStatus.ReadyForPickup) {
                     <app-button variant="premium" size="lg" class="w-100"
                       [disabled]="isUpdatingStatus()"
                       (clicked)="setQuickStatus(VendorOrderStatus.Delivered)">

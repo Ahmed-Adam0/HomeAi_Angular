@@ -54,6 +54,8 @@ export class VendorOrderDetails implements OnInit {
   readonly isUpdatingStatus = signal<boolean>(false);
   readonly statusUpdateError = signal<string | null>(null);
   readonly isConfirmDialogVisible = signal(false);
+  readonly isProposingDate = signal<boolean>(false);
+  readonly proposedDate = signal<string>('');
 
   protected readonly skeletonItems = Array(3);
 
@@ -116,10 +118,11 @@ export class VendorOrderDetails implements OnInit {
 
     const steps = [
       { status: VendorOrderStatus.Pending, labelKey: 'VENDOR.STATUS.PENDING', icon: 'clock' },
+      { status: VendorOrderStatus.AwaitingCustomerApproval, labelKey: 'VENDOR.STATUS.AWAITING_CUSTOMER_APPROVAL', icon: 'clock' },
       { status: VendorOrderStatus.Confirmed, labelKey: 'VENDOR.STATUS.CONFIRMED', icon: 'check-circle' },
-      { status: VendorOrderStatus.Processing, labelKey: 'VENDOR.STATUS.PROCESSING', icon: 'play-circle' },
-      { status: VendorOrderStatus.Ready, labelKey: 'VENDOR.STATUS.SHIPPED', icon: 'truck' },
-      { status: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED', icon: 'package' },
+      { status: VendorOrderStatus.InProgress, labelKey: 'VENDOR.STATUS.IN_PROGRESS', icon: 'play-circle' },
+      { status: VendorOrderStatus.ReadyForPickup, labelKey: 'VENDOR.STATUS.READY_FOR_PICKUP', icon: 'package' },
+      { status: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED', icon: 'truck' },
     ];
 
     if (!currentStatus) {
@@ -132,9 +135,10 @@ export class VendorOrderDetails implements OnInit {
 
     const statusOrder = [
       VendorOrderStatus.Pending,
+      VendorOrderStatus.AwaitingCustomerApproval,
       VendorOrderStatus.Confirmed,
-      VendorOrderStatus.Processing,
-      VendorOrderStatus.Ready,
+      VendorOrderStatus.InProgress,
+      VendorOrderStatus.ReadyForPickup,
       VendorOrderStatus.Delivered,
     ];
 
@@ -191,9 +195,10 @@ export class VendorOrderDetails implements OnInit {
 
   private readonly statusOptionList: readonly { value: VendorOrderStatus; labelKey: string }[] = [
     { value: VendorOrderStatus.Pending, labelKey: 'VENDOR.STATUS.PENDING' },
+    { value: VendorOrderStatus.AwaitingCustomerApproval, labelKey: 'VENDOR.STATUS.AWAITING_CUSTOMER_APPROVAL' },
     { value: VendorOrderStatus.Confirmed, labelKey: 'VENDOR.STATUS.CONFIRMED' },
-    { value: VendorOrderStatus.Processing, labelKey: 'VENDOR.STATUS.PROCESSING' },
-    { value: VendorOrderStatus.Ready, labelKey: 'VENDOR.STATUS.SHIPPED' },
+    { value: VendorOrderStatus.InProgress, labelKey: 'VENDOR.STATUS.IN_PROGRESS' },
+    { value: VendorOrderStatus.ReadyForPickup, labelKey: 'VENDOR.STATUS.READY_FOR_PICKUP' },
     { value: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED' },
     { value: VendorOrderStatus.Cancelled, labelKey: 'VENDOR.STATUS.CANCELLED' },
   ];
@@ -212,7 +217,11 @@ export class VendorOrderDetails implements OnInit {
 
   readonly canModifyStatus = computed(() => {
     const currentStatus = this.order()?.status;
-    return currentStatus !== undefined && currentStatus !== null && !this.isTerminalStatus(currentStatus);
+    return currentStatus !== undefined &&
+      currentStatus !== null &&
+      currentStatus !== VendorOrderStatus.Pending &&
+      currentStatus !== VendorOrderStatus.AwaitingCustomerApproval &&
+      !this.isTerminalStatus(currentStatus);
   });
 
   readonly isUpdateButtonDisabled = computed(() => {
@@ -356,6 +365,36 @@ export class VendorOrderDetails implements OnInit {
 
   closeConfirmDialog(): void {
     this.isConfirmDialogVisible.set(false);
+  }
+
+  onDateChange(event: Event): void {
+    const value = (event.target as HTMLInputElement)?.value ?? '';
+    this.proposedDate.set(value);
+  }
+
+  submitProposedDate(): void {
+    const order = this.order();
+    const date = this.proposedDate();
+    if (!order || !date) return;
+
+    this.isProposingDate.set(true);
+    // Convert to ISO String for backend API
+    const isoDate = new Date(date).toISOString();
+
+    this.vendorService.proposeDeliveryDate(order.id, isoDate)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isProposingDate.set(false);
+          this.uiState.showAlert('success', this.translationService.translate('VENDOR.ORDER_DETAILS.PROPOSE_DATE_SUCCESS'));
+          this.loadOrderDetails(order.id);
+        },
+        error: (err) => {
+          console.error('Failed to propose delivery date:', err);
+          this.uiState.showAlert('danger', err.message || this.translationService.translate('VENDOR.ORDER_DETAILS.PROPOSE_DATE_ERROR'));
+          this.isProposingDate.set(false);
+        }
+      });
   }
 
   private isTerminalStatus(status: VendorOrderStatus): boolean {

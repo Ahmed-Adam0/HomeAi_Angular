@@ -32,7 +32,7 @@
         </div>
       } @else {
         <!-- Lock Banner indicating processing state -->
-        @if (!facade.canModifyOrder()) {
+        @if (!facade.canModifyOrder() && order()!.status !== 'awaiting_customer_approval') {
           <div class="lock-banner animate-fade-in mb-4">
             <div class="lock-banner-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -45,6 +45,8 @@
             </div>
           </div>
         }
+
+
 
         <!-- Redesigned Structured Header & Action Toolbar Card -->
         <div class="details-header card-premium mb-4">
@@ -148,9 +150,120 @@
           <!-- Left Column (Ordered items list) - Width 8/12 on desktops -->
           <div class="col-lg-8">
             <div class="d-flex flex-column h-100">
-              <section class="details-card card-premium flex-grow-1">
-                <app-ordered-items [items]="order()!.items" />
-              </section>
+              @if (order()?.vendorOrders; as vOrders) {
+                @if (vOrders.length > 0) {
+                  @for (vo of vOrders; track vo.id) {
+                    <div class="vendor-order-group card-premium mb-4 p-4 border border-light-medium animate-fade-in" style="background: var(--card-bg, #ffffff); border-radius: 16px;">
+                      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 border-bottom pb-3 mb-3">
+                        <div>
+                          <div class="d-flex align-items-center gap-2 mb-1">
+                            <h4 class="fw-bold text-dark fs-5 mb-0">
+                              {{ 'VENDOR_ORDER' | translate }} #{{ vo.id }}
+                            </h4>
+                            <app-status-badge
+                              [label]="'ORDERS_STATUS_' + (vo.status | uppercase) | translate"
+                              [tone]="orderStatusTone(vo.status)"
+                              size="sm"
+                            />
+                          </div>
+                          @if (vo.items[0]?.workshopNameEn) {
+                            <p class="text-muted small mb-0 font-medium">
+                              {{ 'VENDOR' | translate }}: {{ vo.items[0] | localized:'workshopName' }}
+                            </p>
+                          }
+                        </div>
+                        <div class="text-md-end">
+                          <div class="text-secondary small">{{ 'ORDER_DETAILS_TOTAL' | translate }}</div>
+                          <div class="fw-bold text-dark font-sans">{{ vo.totalPrice | currencyFormat }}</div>
+                        </div>
+                      </div>
+
+                      <!-- Estimated Delivery Date Info & Actions for this vendor order -->
+                      <div class="delivery-negotiation-section mb-3">
+                        @if (vo.estimatedDeliveryDate) {
+                          <div class="p-3 rounded-lg bg-light d-flex flex-wrap justify-content-between align-items-center gap-3" style="border-radius: 12px; background: rgba(184, 147, 92, 0.05) !important;">
+                            <div>
+                              <span class="text-secondary small fw-medium d-block">{{ 'ESTIMATED_DELIVERY' | translate }}</span>
+                              <span class="fw-bold text-dark font-sans" style="font-size: 1.05rem; color: #b8935c;">
+                                {{ vo.estimatedDeliveryDate | date: 'medium' }}
+                              </span>
+                            </div>
+                            
+                            @if (vo.canApprove) {
+                              <div class="d-flex gap-2">
+                                <app-button
+                                  variant="danger"
+                                  size="sm"
+                                  [disabled]="facade.isSaving()"
+                                  (clicked)="onRejectDate(vo.id)"
+                                >
+                                  ✕ {{ 'CUSTOMER_ORDER_NEGOTIATION_REJECT' | translate }}
+                                </app-button>
+                                <app-button
+                                  variant="primary"
+                                  size="sm"
+                                  [disabled]="facade.isSaving()"
+                                  (clicked)="onApproveDate(vo.id)"
+                                >
+                                  ✓ {{ 'CUSTOMER_ORDER_NEGOTIATION_APPROVE' | translate }}
+                                </app-button>
+                              </div>
+                            }
+                          </div>
+                        } @else {
+                          <div class="p-3 rounded-lg bg-light text-center text-muted small" style="border-radius: 12px;">
+                            {{ 'AWAITING_DELIVERY_DATE_PROPOSAL' | translate }}
+                          </div>
+                        }
+                      </div>
+
+                      <!-- Items in this Vendor Order -->
+                      <div class="details-items">
+                        @for (item of vo.items; track item.productId) {
+                          <div class="details-item-row py-3 d-flex align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                              <div class="details-item-img-wrapper" style="width: 64px; height: 64px; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: #f8f9fa;">
+                                <img class="w-100 h-100 object-fit-cover" [appLazyImage]="item.productImage || 'assets/images/image-placeholder.svg'" [alt]="item | localized:'productName'" loading="lazy" (error)="$event.target.src = 'assets/images/image-placeholder.svg'" />
+                              </div>
+                              <div class="min-w-0">
+                                <div class="details-item-name fw-bold text-dark small">{{ item | localized:'productName' }}</div>
+                                <div class="text-muted small">
+                                  <span>{{ 'ORDER_DETAILS_QTY' | translate }}: {{ item.quantity }}</span>
+                                  @if (item.unitPrice) {
+                                    <span class="mx-2">•</span>
+                                    <span>{{ item.unitPrice | currencyFormat }}</span>
+                                  }
+                                  @if (item.attributes?.length) {
+                                    <div class="d-flex flex-wrap gap-1 mt-1">
+                                      @for (attr of item.attributes; track attr.nameEn) {
+                                        <span class="badge bg-light text-dark border font-xxs py-1 px-2 rounded-pill">
+                                          <span class="fw-semibold">
+                                            {{ translationService.currentLang() === 'ar' ? attr.nameAr : attr.nameEn }}:
+                                          </span>
+                                          {{ translationService.currentLang() === 'ar' ? attr.valueAr : attr.valueEn }}
+                                        </span>
+                                      }
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                            <div class="fw-bold text-dark font-sans">{{ item.total | currencyFormat }}</div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                } @else {
+                  <section class="details-card card-premium flex-grow-1">
+                    <app-ordered-items [items]="order()!.items" />
+                  </section>
+                }
+              } @else {
+                <section class="details-card card-premium flex-grow-1">
+                  <app-ordered-items [items]="order()!.items" />
+                </section>
+              }
             </div>
           </div>
 
@@ -220,6 +333,28 @@
       variant="danger"
       (confirm)="confirmCancellation()"
       (cancel)="closeConfirmDialog()"
+    />
+
+    <app-confirm-dialog
+      [visible]="isApproveDialogVisible()"
+      [title]="'CUSTOMER_ORDER_APPROVE_CONFIRM_TITLE' | translate"
+      [message]="'CUSTOMER_ORDER_APPROVE_CONFIRM_MSG' | translate"
+      [confirmText]="'CUSTOMER_ORDER_NEGOTIATION_APPROVE' | translate"
+      [cancelText]="'COMMON.CANCEL' | translate"
+      variant="info"
+      (confirm)="confirmApproveDate()"
+      (cancel)="closeApproveDialog()"
+    />
+
+    <app-confirm-dialog
+      [visible]="isRejectDialogVisible()"
+      [title]="'CUSTOMER_ORDER_REJECT_CONFIRM_TITLE' | translate"
+      [message]="'CUSTOMER_ORDER_REJECT_CONFIRM_MSG' | translate"
+      [confirmText]="'CUSTOMER_ORDER_NEGOTIATION_REJECT' | translate"
+      [cancelText]="'COMMON.CANCEL' | translate"
+      variant="danger"
+      (confirm)="confirmRejectDate()"
+      (cancel)="closeRejectDialog()"
     />
 
     <!-- Edit Order Modal — redesigned with product images, localized names, single scroll -->

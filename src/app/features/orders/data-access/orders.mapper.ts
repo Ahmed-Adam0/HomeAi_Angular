@@ -1,4 +1,4 @@
-import { IBackendOrder, IOrder, OrderStatus, IShippingAddress, IOrderItem } from '../interfaces';
+import { IBackendOrder, IOrder, OrderStatus, IShippingAddress, IOrderItem, ICustomerVendorOrder } from '../interfaces';
 
 
 /**
@@ -14,9 +14,13 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
 
   const rawStatus = (order.status ?? '').toLowerCase();
   const status: OrderStatus =
-    rawStatus === 'processing'
+    rawStatus === 'awaitingcustomerapproval' || rawStatus === 'awaiting_customer_approval'
+      ? 'awaiting_customer_approval'
+      : rawStatus === 'confirmed'
+      ? 'confirmed'
+      : rawStatus === 'inprogress' || rawStatus === 'processing' || rawStatus === 'in progress'
       ? 'processing'
-      : rawStatus === 'shipped'
+      : rawStatus === 'readyforpickup' || rawStatus === 'ready' || rawStatus === 'shipped' || rawStatus === 'ready for pickup'
       ? 'shipped'
       : rawStatus === 'delivered'
       ? 'delivered'
@@ -63,6 +67,57 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
 
   const paymentStatus = order.paymentStatus ?? (status === 'delivered' ? 'paid' : 'pending');
 
+  const vendorOrders: ICustomerVendorOrder[] = Array.isArray(order.vendorOrders)
+    ? order.vendorOrders.map((vo) => {
+        const voItems: IOrderItem[] = Array.isArray(vo.items)
+          ? vo.items.map((item) => {
+              const unitPrice = item.finalUnitPrice ?? item.unitPrice ?? 0;
+              const totalItemPrice = item.totalItemPrice ?? (unitPrice * item.quantity);
+              return {
+                productId: Number(item.productId),
+                productName: item.productName,
+                quantity: item.quantity,
+                unitPrice: Number(unitPrice),
+                total: Number(totalItemPrice),
+                productImage: item.productImage ?? '',
+                snapshotBasePrice: item.snapshotBasePrice,
+                snapshotOptions: item.snapshotOptions,
+                finalUnitPrice: item.finalUnitPrice,
+                totalItemPrice: item.totalItemPrice,
+                attributes: item.attributes,
+              };
+            })
+          : [];
+
+        const voRawStatus = (vo.status ?? '').toLowerCase();
+        const voStatus: OrderStatus =
+          voRawStatus === 'awaitingcustomerapproval' || voRawStatus === 'awaiting_customer_approval'
+            ? 'awaiting_customer_approval'
+            : voRawStatus === 'confirmed'
+            ? 'confirmed'
+            : voRawStatus === 'inprogress' || voRawStatus === 'processing' || voRawStatus === 'in progress'
+            ? 'processing'
+            : voRawStatus === 'readyforpickup' || voRawStatus === 'ready' || voRawStatus === 'shipped' || voRawStatus === 'ready for pickup'
+            ? 'shipped'
+            : voRawStatus === 'delivered'
+            ? 'delivered'
+            : voRawStatus === 'cancelled'
+            ? 'cancelled'
+            : voRawStatus === 'refunded'
+            ? 'refunded'
+            : 'pending';
+
+        return {
+          id: String(vo.id),
+          status: voStatus,
+          estimatedDeliveryDate: vo.estimatedDeliveryDate,
+          canApprove: vo.canApprove,
+          totalPrice: Number(vo.totalPrice),
+          items: voItems,
+        };
+      })
+    : [];
+
   const mapped: IOrder = {
     id: String(order.id),
     orderNumber: `ORD-${String(order.id).padStart(6, '0')}`,
@@ -94,6 +149,7 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
     customerName: order.customerName ?? '',
     customerPhone: order.customerPhone ?? '',
     itemCount: order.itemCount ?? items.length,
+    vendorOrders,
   };
 
   console.log('Mapped order VM:', mapped);

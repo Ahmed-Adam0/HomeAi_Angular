@@ -100,6 +100,7 @@ export function mapVendorOrderDetails(
     } : null,
     placedAt: dto.createdAt ?? '',
     updatedAt: dto.updatedAt || dto.createdAt || '',
+    estimatedDeliveryDate: dto.estimatedDeliveryDate ?? undefined,
   };
 }
 
