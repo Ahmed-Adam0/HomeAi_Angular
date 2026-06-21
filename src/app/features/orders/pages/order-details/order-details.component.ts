@@ -66,12 +66,15 @@ export class OrderDetails {
   private fb = inject(FormBuilder);
   readonly facade = inject(OrdersFacade);
   private uiState = inject(UiState);
-  private translationService = inject(TranslationService);
+  readonly translationService = inject(TranslationService);
 
   readonly order = computed(() => this.facade.selectedOrder());
 
   readonly isConfirmDialogVisible = signal(false);
   readonly isEditModalVisible = signal(false);
+  readonly isApproveDialogVisible = signal(false);
+  readonly isRejectDialogVisible = signal(false);
+  readonly selectedVendorOrderId = signal<string | null>(null);
 
   editForm: FormGroup | null = null;
 
@@ -185,6 +188,60 @@ export class OrderDetails {
 
   closeConfirmDialog(): void {
     this.isConfirmDialogVisible.set(false);
+  }
+
+  onApproveDate(vendorOrderId: string): void {
+    this.selectedVendorOrderId.set(vendorOrderId);
+    this.isApproveDialogVisible.set(true);
+  }
+
+  confirmApproveDate(): void {
+    const vendorOrderId = this.selectedVendorOrderId();
+    if (!vendorOrderId) return;
+    this.isApproveDialogVisible.set(false);
+    this.facade.approveDeliveryDate(vendorOrderId).subscribe({
+      next: () => {
+        this.uiState.showAlert('success', this.translationService.translate('CUSTOMER_ORDER_APPROVE_SUCCESS'));
+        this.selectedVendorOrderId.set(null);
+      },
+      error: (err) => {
+        console.error('Failed to approve delivery date:', err);
+        this.uiState.showAlert('danger', err.message || 'An error occurred while approving delivery date.');
+        this.selectedVendorOrderId.set(null);
+      }
+    });
+  }
+
+  closeApproveDialog(): void {
+    this.isApproveDialogVisible.set(false);
+    this.selectedVendorOrderId.set(null);
+  }
+
+  onRejectDate(vendorOrderId: string): void {
+    this.selectedVendorOrderId.set(vendorOrderId);
+    this.isRejectDialogVisible.set(true);
+  }
+
+  confirmRejectDate(): void {
+    const vendorOrderId = this.selectedVendorOrderId();
+    if (!vendorOrderId) return;
+    this.isRejectDialogVisible.set(false);
+    this.facade.rejectDeliveryDate(vendorOrderId).subscribe({
+      next: () => {
+        this.uiState.showAlert('success', this.translationService.translate('CUSTOMER_ORDER_REJECT_SUCCESS'));
+        this.selectedVendorOrderId.set(null);
+      },
+      error: (err) => {
+        console.error('Failed to reject delivery date:', err);
+        this.uiState.showAlert('danger', err.message || 'An error occurred while rejecting delivery date.');
+        this.selectedVendorOrderId.set(null);
+      }
+    });
+  }
+
+  closeRejectDialog(): void {
+    this.isRejectDialogVisible.set(false);
+    this.selectedVendorOrderId.set(null);
   }
 
   orderStatusTone(status: OrderStatus): StatusBadgeTone {

@@ -96,4 +96,18 @@ export class OrdersApiService {
         map(mapBackendToOrder)
       );
   }
+
+  approveDeliveryDate(vendorOrderId: string | number): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(
+      `${this.apiUrl}Order/vendor-orders/${vendorOrderId}/approve`,
+      {}
+    );
+  }
+
+  rejectDeliveryDate(vendorOrderId: string | number): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(
+      `${this.apiUrl}Order/vendor-orders/${vendorOrderId}/reject`,
+      {}
+    );
+  }
 }

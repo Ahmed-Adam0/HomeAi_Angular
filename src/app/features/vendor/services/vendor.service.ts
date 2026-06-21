@@ -78,6 +78,14 @@ export class VendorService {
     );
   }
 
+  proposeDeliveryDate(orderId: number | string, estimatedDeliveryDate: string): Observable<{ message: string }> {
+    const requestBody = { estimatedDeliveryDate };
+    return this.http.put<{ message: string }>(
+      `${this.apiUrl}VendorOrders/orders/${orderId}/propose-date`,
+      requestBody
+    );
+  }
+
   getDashboardMetrics(): Observable<IVendorDashboardMetrics> {
     return this.http
       .get<IVendorDashboardMetricsDto>(

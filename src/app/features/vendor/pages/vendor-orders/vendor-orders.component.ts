@@ -47,9 +47,10 @@ export class VendorOrders implements OnInit {
   readonly statusFilterOptions: readonly OrderStatusFilterOption[] = [
     { value: 'all', labelKey: 'VENDOR.ORDERS.FILTER_ALL_STATUSES' },
     { value: VendorOrderStatus.Pending, labelKey: 'VENDOR.STATUS.PENDING' },
+    { value: VendorOrderStatus.AwaitingCustomerApproval, labelKey: 'VENDOR.STATUS.AWAITING_CUSTOMER_APPROVAL' },
     { value: VendorOrderStatus.Confirmed, labelKey: 'VENDOR.STATUS.CONFIRMED' },
-    { value: VendorOrderStatus.Processing, labelKey: 'VENDOR.STATUS.PROCESSING' },
-    { value: VendorOrderStatus.Ready, labelKey: 'VENDOR.STATUS.SHIPPED' },
+    { value: VendorOrderStatus.InProgress, labelKey: 'VENDOR.STATUS.IN_PROGRESS' },
+    { value: VendorOrderStatus.ReadyForPickup, labelKey: 'VENDOR.STATUS.READY_FOR_PICKUP' },
     { value: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED' },
     { value: VendorOrderStatus.Cancelled, labelKey: 'VENDOR.STATUS.CANCELLED' },
   ];

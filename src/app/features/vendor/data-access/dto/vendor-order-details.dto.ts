@@ -24,6 +24,7 @@ export interface IVendorOrderDetailsDto {
   notes?: string | null;
   createdAt: string;
   updatedAt?: string | null;
+  estimatedDeliveryDate?: string | null;
   items: IVendorOrderItemDto[];
   statusHistory: IVendorOrderStatusHistoryDto | null;
 }
