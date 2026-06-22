@@ -1,3 +1,4 @@
-export interface ChatReply {
-  Reply: string;
+export interface ChatReplyDto {
+  reply: string;
 }
+

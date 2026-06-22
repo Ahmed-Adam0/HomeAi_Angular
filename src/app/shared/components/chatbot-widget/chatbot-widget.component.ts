@@ -14,47 +14,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ChatService } from '../../../features/ai/services/chat.service';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { ChatMessage } from '../../../features/ai/interfaces/chat-message.interface';
-
-/** Type declaration for the Web Speech API (vendor-prefixed in most browsers). */
-interface SpeechRecognitionInstance extends EventTarget {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  start(): void;
-  stop(): void;
-  abort(): void;
-  onresult: ((event: SpeechRecognitionEvent) => void) | null;
-  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
-  onend: (() => void) | null;
-}
-
-interface SpeechRecognitionEvent {
-  readonly results: SpeechRecognitionResultList;
-  readonly resultIndex: number;
-}
-
-interface SpeechRecognitionResultList {
-  readonly length: number;
-  item(index: number): SpeechRecognitionResult;
-  [index: number]: SpeechRecognitionResult;
-}
-
-interface SpeechRecognitionResult {
-  readonly length: number;
-  readonly isFinal: boolean;
-  item(index: number): SpeechRecognitionAlternative;
-  [index: number]: SpeechRecognitionAlternative;
-}
-
-interface SpeechRecognitionAlternative {
-  readonly transcript: string;
-  readonly confidence: number;
-}
-
-interface SpeechRecognitionErrorEvent extends Event {
-  readonly error: string;
-  readonly message: string;
-}
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-chatbot-widget',
@@ -66,6 +26,7 @@ interface SpeechRecognitionErrorEvent extends Event {
 export class ChatbotWidget implements OnDestroy {
   private readonly chatService = inject(ChatService);
   private readonly authService = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
   private readonly platformId = inject(PLATFORM_ID);
 
   @ViewChild('messagesContainer') private readonly messagesContainer!: ElementRef<HTMLElement>;
@@ -78,66 +39,61 @@ export class ChatbotWidget implements OnDestroy {
   readonly messageInput = signal('');
   readonly voiceSupported = signal(false);
 
-  private recognition: SpeechRecognitionInstance | null = null;
+  // New signals for recording and previewing voice messages
+  readonly recordedAudioBlob = signal<Blob | null>(null);
+  readonly recordedAudioUrl = signal<string | null>(null);
+  readonly recordingDuration = signal<number>(0);
+
+  private mediaRecorder: MediaRecorder | null = null;
+  private mediaStream: MediaStream | null = null;
+  private audioChunks: Blob[] = [];
+  private durationIntervalId: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     // Auto-scroll when messages change
     effect(() => {
       this.chatService.messages();
-      afterNextRender(() => this.scrollToBottom());
+      this.triggerScroll();
     });
 
-    // Detect Web Speech API support
+    // Valid injection context usage: registered once during construction phase
+    afterNextRender(() => {
+      this.scrollToBottom();
+    });
+
     if (isPlatformBrowser(this.platformId)) {
-      const windowRef = window as unknown as Record<string, unknown>;
-      this.voiceSupported.set(
-        'SpeechRecognition' in window || 'webkitSpeechRecognition' in window
+      const hasMicSupport = !!(
+        typeof window !== 'undefined' &&
+        navigator.mediaDevices &&
+        navigator.mediaDevices.getUserMedia
       );
-
-      if (this.voiceSupported()) {
-        const SpeechRecognitionCtor = (windowRef['SpeechRecognition'] ?? windowRef['webkitSpeechRecognition']) as
-          | (new () => SpeechRecognitionInstance)
-          | undefined;
-
-        if (SpeechRecognitionCtor) {
-          this.recognition = new SpeechRecognitionCtor();
-          this.recognition.continuous = false;
-          this.recognition.interimResults = false;
-          this.recognition.lang = 'en-US';
-
-          this.recognition.onresult = (event: SpeechRecognitionEvent) => {
-            const transcript = event.results[0]?.[0]?.transcript ?? '';
-            if (transcript) {
-              this.messageInput.set(transcript);
-            }
-          };
-
-          this.recognition.onerror = () => {
-            this.chatService.isRecording.set(false);
-          };
-
-          this.recognition.onend = () => {
-            this.chatService.isRecording.set(false);
-          };
-        }
-      }
+      this.voiceSupported.set(hasMicSupport);
     }
   }
 
   ngOnDestroy(): void {
-    if (this.recognition && this.isRecording()) {
-      this.recognition.abort();
-      this.chatService.isRecording.set(false);
-    }
+    this.clearRecording();
   }
 
   toggleChat(): void {
     this.isOpen.update(v => !v);
     if (this.isOpen()) {
-      afterNextRender(() => {
+      this.triggerScrollAndFocus();
+    }
+  }
+
+  triggerScroll(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => this.scrollToBottom(), 0);
+    }
+  }
+
+  triggerScrollAndFocus(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
         this.scrollToBottom();
         this.messageTextarea?.nativeElement?.focus();
-      });
+      }, 0);
     }
   }
 
@@ -160,17 +116,29 @@ export class ChatbotWidget implements OnDestroy {
 
   sendMessage(): void {
     const text = this.messageInput().trim();
-    if (!text || this.loading()) return;
+    const voiceBlob = this.recordedAudioBlob() || undefined;
+    const localAudioUrl = this.recordedAudioUrl() || undefined;
+
+    if ((!text && !voiceBlob) || this.loading()) return;
 
     this.messageInput.set('');
     this.resetTextareaHeight();
 
     const userId = this.authService.currentUser()?.id ?? 'guest-user';
-    this.chatService.sendChatMessage(userId, text);
+    this.chatService.sendChatMessage(
+      userId,
+      text || undefined,
+      voiceBlob,
+      localAudioUrl
+    );
+
+    // Clear voice signals immediately so UI resets
+    this.recordedAudioBlob.set(null);
+    this.recordedAudioUrl.set(null);
   }
 
   toggleRecording(): void {
-    if (!this.recognition) return;
+    if (!this.voiceSupported()) return;
 
     if (this.isRecording()) {
       this.stopRecording();
@@ -187,22 +155,91 @@ export class ChatbotWidget implements OnDestroy {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  private startRecording(): void {
-    if (!this.recognition) return;
+  formatDuration(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
 
-    try {
-      this.chatService.isRecording.set(true);
-      this.recognition.start();
-    } catch {
-      this.chatService.isRecording.set(false);
+  clearRecording(): void {
+    const url = this.recordedAudioUrl();
+    if (url) {
+      URL.revokeObjectURL(url);
     }
+    this.recordedAudioBlob.set(null);
+    this.recordedAudioUrl.set(null);
+    this.recordingDuration.set(0);
+    this.stopDurationTimer();
+
+    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+      this.mediaRecorder.stop();
+    }
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach(track => track.stop());
+      this.mediaStream = null;
+    }
+    this.chatService.isRecording.set(false);
+  }
+
+  private startRecording(): void {
+    if (!isPlatformBrowser(this.platformId) || !this.voiceSupported()) return;
+
+    this.clearRecording();
+
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(stream => {
+        this.mediaStream = stream;
+        this.mediaRecorder = new MediaRecorder(stream);
+        this.audioChunks = [];
+
+        this.mediaRecorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            this.audioChunks.push(event.data);
+          }
+        };
+
+        this.mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+          this.recordedAudioBlob.set(audioBlob);
+          this.recordedAudioUrl.set(URL.createObjectURL(audioBlob));
+          this.chatService.isRecording.set(false);
+          this.stopDurationTimer();
+
+          if (this.mediaStream) {
+            this.mediaStream.getTracks().forEach(track => track.stop());
+            this.mediaStream = null;
+          }
+        };
+
+        this.mediaRecorder.start();
+        this.chatService.isRecording.set(true);
+        this.startDurationTimer();
+      })
+      .catch(() => {
+        this.notificationService.error('Microphone access denied or not available.');
+        this.chatService.isRecording.set(false);
+      });
   }
 
   private stopRecording(): void {
-    if (!this.recognition) return;
+    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+      this.mediaRecorder.stop();
+    }
+  }
 
-    this.recognition.stop();
-    this.chatService.isRecording.set(false);
+  private startDurationTimer(): void {
+    this.recordingDuration.set(0);
+    this.durationIntervalId = setInterval(() => {
+      this.recordingDuration.update(d => d + 1);
+    }, 1000);
+  }
+
+  private stopDurationTimer(): void {
+    if (this.durationIntervalId) {
+      clearInterval(this.durationIntervalId);
+      this.durationIntervalId = null;
+    }
   }
 
   private scrollToBottom(): void {
@@ -228,3 +265,4 @@ export class ChatbotWidget implements OnDestroy {
     }
   }
 }
+

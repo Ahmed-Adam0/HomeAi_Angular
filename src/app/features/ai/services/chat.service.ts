@@ -40,17 +40,95 @@ export class ChatService {
     );
   }
 
-  sendChatMessage(userId: string, message: string): void {
-    if (!message.trim()) return;
+  sendVoiceMessage(
+    audioFile: Blob,
+    userId: string,
+    conversationId?: string
+  ): Observable<ChatResponse> {
+    const formData = new FormData();
+    formData.append('audioFile', audioFile, 'voice-message.wav');
+    formData.append('userId', userId);
+    if (conversationId) {
+      formData.append('conversationId', conversationId);
+    }
+    return this.http.post<ChatResponse>(
+      `${this.apiUrl}${API_URLS.AI.CHAT}/voice`,
+      formData,
+    );
+  }
 
-    const userMessage: ChatMessage = {
+  sendChatMessage(
+    userId: string,
+    message?: string,
+    voiceBlob?: Blob,
+    localAudioUrl?: string
+  ): void {
+    if (!message?.trim() && !voiceBlob) return;
+
+    this.loading.set(true);
+
+    if (voiceBlob) {
+      const userVoiceMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        content: '',
+        sender: 'user',
+        timestamp: new Date(),
+        audioUrl: localAudioUrl,
+      };
+      this.messages.update(current => [...current, userVoiceMessage]);
+
+      const conversationId = this.conversationId() ?? undefined;
+
+      this.sendVoiceMessage(voiceBlob, userId, conversationId)
+        .pipe(
+          finalize(() => {
+            if (!message?.trim()) {
+              this.loading.set(false);
+            }
+          }),
+          catchError((error: HttpErrorResponse) => {
+            const errorMessage =
+              error.error?.message ??
+              error.error?.Message ??
+              ERROR_MESSAGES[error.status] ??
+              DEFAULT_ERROR;
+
+            this.notificationService.error(errorMessage);
+            return EMPTY;
+          }),
+        )
+        .subscribe(response => {
+          if (response.success && response.data?.reply) {
+            this.messages.update(current => [
+              ...current,
+              {
+                id: crypto.randomUUID(),
+                content: response.data.reply,
+                sender: 'bot',
+                timestamp: new Date(),
+              },
+            ]);
+          } else if (!response.success && response.message) {
+            this.notificationService.error(response.message);
+          }
+
+          if (message?.trim()) {
+            this.sendTextChatMessage(userId, message.trim());
+          }
+        });
+    } else if (message?.trim()) {
+      this.sendTextChatMessage(userId, message.trim());
+    }
+  }
+
+  private sendTextChatMessage(userId: string, message: string): void {
+    const userTextMessage: ChatMessage = {
       id: crypto.randomUUID(),
       content: message,
       sender: 'user',
       timestamp: new Date(),
     };
-
-    this.messages.update(current => [...current, userMessage]);
+    this.messages.update(current => [...current, userTextMessage]);
     this.loading.set(true);
 
     const request: ChatRequest = {
@@ -63,33 +141,29 @@ export class ChatService {
       .pipe(
         finalize(() => this.loading.set(false)),
         catchError((error: HttpErrorResponse) => {
-          const errorMessage = ERROR_MESSAGES[error.status] ?? DEFAULT_ERROR;
+          const errorMessage =
+            error.error?.message ??
+            error.error?.Message ??
+            ERROR_MESSAGES[error.status] ??
+            DEFAULT_ERROR;
 
           this.notificationService.error(errorMessage);
-
-          this.messages.update(current => [
-            ...current,
-            {
-              id: crypto.randomUUID(),
-              content: errorMessage,
-              sender: 'bot',
-              timestamp: new Date(),
-            },
-          ]);
           return EMPTY;
         }),
       )
       .subscribe(response => {
-        if (response.Data?.Reply) {
+        if (response.success && response.data?.reply) {
           this.messages.update(current => [
             ...current,
             {
               id: crypto.randomUUID(),
-              content: response.Data.Reply,
+              content: response.data.reply,
               sender: 'bot',
               timestamp: new Date(),
             },
           ]);
+        } else if (!response.success && response.message) {
+          this.notificationService.error(response.message);
         }
       });
   }
