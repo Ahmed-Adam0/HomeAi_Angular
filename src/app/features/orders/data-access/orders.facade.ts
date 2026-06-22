@@ -279,7 +279,7 @@ export class OrdersFacade {
     const sequence: TimelineStepVm['key'][] = ['pending', 'processing', 'shipped', 'delivered'];
 
     const normalized: TimelineStepVm['key'] =
-      status === 'pending' || status === 'awaiting_customer_approval' || status === 'confirmed'
+      status === 'pending' || status === 'awaiting_customer_approval' || status === 'pending_payment' || status === 'confirmed'
         ? 'pending'
         : status === 'processing'
         ? 'processing'
@@ -311,6 +311,8 @@ export class OrdersFacade {
       case 'pending':
         return 'warning';
       case 'awaiting_customer_approval':
+        return 'warning';
+      case 'pending_payment':
         return 'warning';
       case 'confirmed':
         return 'info';

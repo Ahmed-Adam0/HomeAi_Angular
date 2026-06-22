@@ -1,4 +1,4 @@
-export type VendorOrderStatusApi = 'Pending' | 'AwaitingCustomerApproval' | 'Confirmed' | 'InProgress' | 'ReadyForPickup' | 'Delivered' | 'Cancelled';
+export type VendorOrderStatusApi = 'Pending' | 'AwaitingCustomerApproval' | 'PendingPayment' | 'Confirmed' | 'InProgress' | 'Shipped' | 'Delivered' | 'Cancelled';
 
 export interface IVendorUpdateOrderStatusRequestDto {
   newStatus: VendorOrderStatusApi;

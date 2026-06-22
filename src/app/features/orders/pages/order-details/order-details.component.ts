@@ -21,6 +21,8 @@ import { UiState } from '../../../../core/state/ui.state';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
+import { AuthService } from '../../../auth/services/auth.service';
+import { PaymentService } from '../../../payment/services/payment.service';
 
 
 export interface EditItemForm {
@@ -67,6 +69,8 @@ export class OrderDetails {
   readonly facade = inject(OrdersFacade);
   private uiState = inject(UiState);
   readonly translationService = inject(TranslationService);
+  private authService = inject(AuthService);
+  private paymentService = inject(PaymentService);
 
   readonly order = computed(() => this.facade.selectedOrder());
 
@@ -75,11 +79,60 @@ export class OrderDetails {
   readonly isApproveDialogVisible = signal(false);
   readonly isRejectDialogVisible = signal(false);
   readonly selectedVendorOrderId = signal<string | null>(null);
+  readonly isInitiatingPayment = signal(false);
+
+  readonly hasPendingPaymentOrders = computed(() => {
+    const vOrders = this.order()?.vendorOrders ?? [];
+    return vOrders.some(vo => vo.status === 'pending_payment');
+  });
+
+  readonly pendingPaymentTotal = computed(() => {
+    const vOrders = this.order()?.vendorOrders ?? [];
+    return vOrders
+      .filter(vo => vo.status === 'pending_payment')
+      .reduce((sum, vo) => sum + vo.totalPrice, 0);
+  });
 
   editForm: FormGroup | null = null;
 
   constructor() {
     this.facade.connectDetailsRoute(this.route);
+  }
+
+  onPayApprovedOrders(): void {
+    const orderData = this.order();
+    if (!orderData) return;
+
+    const hasPendingPaymentOrders = this.hasPendingPaymentOrders();
+    if (!hasPendingPaymentOrders) {
+      this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_NO_APPROVED_ORDERS_ERROR'));
+      return;
+    }
+
+    if (!orderData.id) {
+      return;
+    }
+
+    const payload = {
+      masterOrderId: Number(orderData.id)
+    };
+
+    this.isInitiatingPayment.set(true);
+    this.paymentService.initiateMasterOrderPayment(payload).subscribe({
+      next: (res) => {
+        this.isInitiatingPayment.set(false);
+        if (res && res.paymentUrl) {
+          window.location.href = res.paymentUrl;
+        } else {
+          this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
+        }
+      },
+      error: (err) => {
+        this.isInitiatingPayment.set(false);
+        console.error('Failed to initiate master order payment:', err);
+        this.uiState.showAlert('danger', err.error?.message || this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
+      }
+    });
   }
 
   get editItemsArray(): FormArray<FormGroup<EditItemForm>> | null {

@@ -16,6 +16,9 @@ export class ShippingInfoComponent {
   readonly trackingNumber = input<string | null>(null);
   readonly carrier = input<string | null>(null);
   readonly estimatedDeliveryDate = input<string | null>(null);
+  readonly firstName = input<string | null>(null);
+  readonly lastName = input<string | null>(null);
+  readonly email = input<string | null>(null);
 
   private uiState = inject(UiState);
 

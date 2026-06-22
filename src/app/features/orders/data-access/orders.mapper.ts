@@ -16,6 +16,8 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
   const status: OrderStatus =
     rawStatus === 'awaitingcustomerapproval' || rawStatus === 'awaiting_customer_approval'
       ? 'awaiting_customer_approval'
+    : rawStatus === 'pendingpayment' || rawStatus === 'pending_payment'
+      ? 'pending_payment'
       : rawStatus === 'confirmed'
       ? 'confirmed'
       : rawStatus === 'inprogress' || rawStatus === 'processing' || rawStatus === 'in progress'
@@ -93,6 +95,8 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
         const voStatus: OrderStatus =
           voRawStatus === 'awaitingcustomerapproval' || voRawStatus === 'awaiting_customer_approval'
             ? 'awaiting_customer_approval'
+          : voRawStatus === 'pendingpayment' || voRawStatus === 'pending_payment'
+            ? 'pending_payment'
             : voRawStatus === 'confirmed'
             ? 'confirmed'
             : voRawStatus === 'inprogress' || voRawStatus === 'processing' || voRawStatus === 'in progress'
@@ -130,7 +134,7 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
     taxAmount: order.taxAmount ?? 0,
     discountAmount: order.discountAmount ?? 0,
     totalAmount: Number(order.totalPrice),
-    paymentMethod: order.paymentMethod ?? 'Cash on Delivery',
+    paymentMethod: order.paymentMethod ?? 'Paymob',
     paymentStatus,
     trackingNumber: order.trackingNumber,
     carrier: order.carrier,
@@ -148,6 +152,9 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
     masterOrderId: order.masterOrderId,
     customerName: order.customerName ?? '',
     customerPhone: order.customerPhone ?? '',
+    firstName: order.firstName ?? '',
+    lastName: order.lastName ?? '',
+    email: order.email ?? '',
     itemCount: order.itemCount ?? items.length,
     vendorOrders,
   };

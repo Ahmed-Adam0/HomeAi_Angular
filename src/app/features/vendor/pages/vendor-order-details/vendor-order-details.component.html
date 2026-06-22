@@ -286,10 +286,7 @@
                 <div class="vod-info-block animate-fade-in">
                   <div class="vod-info-block-label">Proposed Delivery Date</div>
                   <div class="vod-info-block-main text-gradient-gold fw-bold">
-                    {{ order()!.estimatedDeliveryDate | date: 'mediumDate' }}
-                  </div>
-                  <div class="vod-info-secondary">
-                    Time: {{ order()!.estimatedDeliveryDate | date: 'shortTime' }}
+                    {{ order()!.estimatedDeliveryDate | date: 'dd/MM/yyyy' }}
                   </div>
                 </div>
               }
@@ -317,13 +314,19 @@
                     </label>
                     <input
                       id="proposed-delivery-date"
-                      type="datetime-local"
+                      type="date"
                       class="vod-select w-100 mb-3"
                       [disabled]="isUpdatingStatus() || isProposingDate()"
+                      [attr.min]="getMinDate()"
                       (change)="onDateChange($event)"
                     />
+                    @if (isDateInvalid()) {
+                      <div class="text-danger small mb-3">
+                        {{ 'VENDOR.ORDER_DETAILS.PROPOSE_DATE_VALIDATION_ERROR' | translate }}
+                      </div>
+                    }
                     <app-button variant="premium" size="lg" class="w-100"
-                      [disabled]="isUpdatingStatus() || isProposingDate() || !proposedDate()"
+                      [disabled]="isUpdatingStatus() || isProposingDate() || !proposedDate() || isDateInvalid()"
                       (clicked)="submitProposedDate()">
                       ⚡ {{ 'VENDOR.ORDER_DETAILS.PROPOSE_DATE_CTA' | translate }}
                     </app-button>
@@ -341,7 +344,7 @@
                     <p class="text-muted small mb-3">{{ 'VENDOR.ORDER_DETAILS.AWAITING_APPROVAL_DESC' | translate }}</p>
                     @if (order()!.estimatedDeliveryDate) {
                       <div class="p-2 bg-white rounded border text-secondary font-mono small fw-bold">
-                        {{ order()!.estimatedDeliveryDate | date: 'medium' }}
+                        {{ order()!.estimatedDeliveryDate | date: 'dd/MM/yyyy' }}
                       </div>
                     }
                   </div>
@@ -358,10 +361,10 @@
                   } @else if (order()!.status === VendorOrderStatus.InProgress) {
                     <app-button variant="premium" size="lg" class="w-100"
                       [disabled]="isUpdatingStatus()"
-                      (clicked)="setQuickStatus(VendorOrderStatus.ReadyForPickup)">
-                      📦 Mark as Ready
+                      (clicked)="setQuickStatus(VendorOrderStatus.Shipped)">
+                      📦 Mark as Shipped
                     </app-button>
-                  } @else if (order()!.status === VendorOrderStatus.ReadyForPickup) {
+                  } @else if (order()!.status === VendorOrderStatus.Shipped) {
                     <app-button variant="premium" size="lg" class="w-100"
                       [disabled]="isUpdatingStatus()"
                       (clicked)="setQuickStatus(VendorOrderStatus.Delivered)">
