@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy } from '@angular/core';
+import { Component, computed, inject, OnDestroy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -108,8 +108,14 @@ export class Register implements OnDestroy {
       ]],
       confirmPassword: ['', [Validators.required]],
       phoneNumber: ['', [Validators.required, Validators.pattern(/^01[0125][0-9]{8}$/)]],
-      preferredLanguage: ['ar']
+      preferredLanguage: [this.translationService.currentLang()]
     }, { validators: this.passwordMatchValidator });
+
+    // Keep preferredLanguage in sync with active UI language
+    effect(() => {
+      const activeLang = this.translationService.currentLang();
+      this.registerForm.patchValue({ preferredLanguage: activeLang }, { emitEvent: false });
+    });
 
     ['fullName', 'email', 'password', 'confirmPassword', 'phoneNumber'].forEach(field => {
       this.registerForm.get(field)?.valueChanges.subscribe(() => {

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -148,7 +148,7 @@ export class VendorRegister {
       phoneNumber: ['', [Validators.required, phoneValidator()]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]],
-      preferredLanguage: ['ar', [Validators.required]],
+      preferredLanguage: [this.translationService.currentLang() as string, [Validators.required]],
       workshopNameAr: ['', [Validators.required, Validators.minLength(3)]],
       workshopNameEn: ['', [Validators.required, Validators.minLength(3)]],
       descriptionAr: ['', [Validators.required, Validators.minLength(5)]],
@@ -161,6 +161,19 @@ export class VendorRegister {
         notes: ['']
       })
     }, { validators: passwordMatchValidator('password', 'confirmPassword') });
+
+    // Keep preferredLanguage in sync with active UI language
+    effect(() => {
+      const activeLang = this.translationService.currentLang();
+      this.registerForm.patchValue({ preferredLanguage: activeLang }, { emitEvent: false });
+    });
+
+    // If user manually changes preferredLanguage select dropdown, change the UI language/direction
+    this.registerForm.get('preferredLanguage')?.valueChanges.subscribe((lang) => {
+      if (lang === 'en' || lang === 'ar') {
+        void this.translationService.setLanguage(lang);
+      }
+    });
   }
 
   get addressGroup(): VendorAddressForm {
