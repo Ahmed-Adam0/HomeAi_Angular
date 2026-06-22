@@ -196,8 +196,9 @@
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  justify-content: center;
+  height: 44px;
+  padding: 0 14px;
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   font-size: 14px;
@@ -205,11 +206,24 @@
   border-radius: 8px;
   transition: all 0.2s ease;
   position: relative;
-  justify-content: center;
 }
 
 .vendor-sidebar.expanded .nav-item {
   justify-content: flex-start;
+  width: 100%;
+  gap: 12px;
+}
+
+/* Collapsed state styles — Desktop only */
+@media (min-width: 1024px) {
+  .vendor-sidebar:not(.expanded) .nav-item {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    margin: 0 auto;
+    gap: 0;
+  }
 }
 
 /* Nav item labels: hidden when collapsed */
@@ -228,10 +242,26 @@
 }
 
 .nav-item i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
   font-size: 18px;
   color: rgba(255, 255, 255, 0.4);
   transition: color 0.2s ease;
   flex-shrink: 0;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  vertical-align: 0;
+}
+
+/* Fix baseline shift for all icons in sidebar */
+.vendor-sidebar i::before {
+  vertical-align: 0 !important;
+  line-height: 1 !important;
+  display: block !important;
 }
 
 .nav-item:hover {
@@ -567,6 +597,9 @@
 
   .vendor-sidebar.open .nav-item {
     justify-content: flex-start;
+    width: 100%;
+    padding: 0 16px;
+    gap: 12px;
   }
 
   .vendor-sidebar.open .nav-item span {
@@ -783,11 +816,24 @@
 
   .nav-item {
     flex-direction: row-reverse;
-    padding: 12px 14px;
+    padding: 0 14px;
   }
 
   .vendor-sidebar.expanded .nav-item {
     justify-content: flex-end;
+    gap: 12px;
+  }
+
+  /* Collapsed state styles — Desktop only RTL */
+  @media (min-width: 1024px) {
+    .vendor-sidebar:not(.expanded) .nav-item {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      justify-content: center;
+      margin: 0 auto;
+      gap: 0;
+    }
   }
 
   /* Collapsed hover dot on left side for RTL */
@@ -856,6 +902,13 @@
 
     .vendor-sidebar.open {
       transform: translateX(0);
+    }
+
+    .vendor-sidebar.open .nav-item {
+      justify-content: flex-end;
+      width: 100%;
+      padding: 0 16px;
+      gap: 12px;
     }
 
     .vendor-main {

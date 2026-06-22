@@ -122,7 +122,6 @@
                       appAutoDir
                     />
                     <label for="nameEn" class="studio-label-text">{{ translationService.currentLang() === 'ar' ? 'اسم القطعة (بالإنجليزي) *' : 'Product Name (English) *' }}</label>
-                    <span class="studio-lang-tag">EN</span>
                   </div>
                   <div class="field-error-msg" *ngIf="isInvalid('nameEn')">
                     {{ translationService.currentLang() === 'ar' ? 'الاسم مطلوب (3 أحرف على الأقل)' : 'English name is required (min 3 characters)' }}
@@ -141,7 +140,6 @@
                       appAutoDir
                     />
                     <label for="nameAr" class="studio-label-text">{{ translationService.currentLang() === 'ar' ? 'اسم القطعة (بالعربي) *' : 'Product Name (Arabic) *' }}</label>
-                    <span class="studio-lang-tag">AR</span>
                   </div>
                   <div class="field-error-msg" *ngIf="isInvalid('nameAr')">
                     {{ translationService.currentLang() === 'ar' ? 'الاسم مطلوب (3 أحرف على الأقل)' : 'Arabic name is required (min 3 characters)' }}
@@ -160,7 +158,6 @@
                       appAutoDir
                     ></textarea>
                     <label for="descriptionEn" class="studio-label-text">{{ translationService.currentLang() === 'ar' ? 'الوصف والتفاصيل الفنية (بالإنجليزي) *' : 'Craftsmanship & Description (English) *' }}</label>
-                    <span class="studio-lang-tag textarea-tag">EN</span>
                   </div>
                   <div class="field-error-msg" *ngIf="isInvalid('descriptionEn')">
                     {{ translationService.currentLang() === 'ar' ? 'الوصف مطلوب (5 أحرف على الأقل)' : 'English description is required (min 5 characters)' }}
@@ -179,7 +176,6 @@
                       appAutoDir
                     ></textarea>
                     <label for="descriptionAr" class="studio-label-text">{{ translationService.currentLang() === 'ar' ? 'الوصف والتفاصيل الفنية (بالعربي) *' : 'Craftsmanship & Description (Arabic) *' }}</label>
-                    <span class="studio-lang-tag textarea-tag">AR</span>
                   </div>
                   <div class="field-error-msg" *ngIf="isInvalid('descriptionAr')">
                     {{ translationService.currentLang() === 'ar' ? 'الوصف مطلوب (5 أحرف على الأقل)' : 'Arabic description is required (min 5 characters)' }}
