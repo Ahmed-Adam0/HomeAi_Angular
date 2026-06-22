@@ -15,7 +15,6 @@ export const MAIN_NAV_LINKS: NavLink[] = [
   { labelEn: 'Products', labelAr: 'المنتجات', route: '/products' },
   { labelEn: 'AI Accent', labelAr: 'لمسة الذكاء', route: '/rooms' },
   { labelEn: 'Inspirations', labelAr: 'الأفكار الملهمة', route: '/inspirations' },
-  { labelEn: 'Offers & promotions', labelAr: 'العروض والتنزيلات', route: '/offers' }
 ];
 
 export const CATEGORIES: Category[] = [

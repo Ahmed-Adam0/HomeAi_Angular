@@ -17,11 +17,6 @@
           aria-label="YouTube"><i class="bi bi-youtube"></i></a>
       </div>
 
-      <!-- Contact Info -->
-      <div class="contact-info d-flex align-items-center gap-2">
-        <span class="fs-7 font-secondary font-weight-medium tracking-wide">01214649915</span>
-      </div>
-
       <!-- Utility Links & Dropdowns -->
       <div class="utility-links d-flex align-items-center gap-3">
         <a routerLink="/about" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{
@@ -32,9 +27,8 @@
         <span class="bar-separator">•</span>
 
         <!-- Language Dropdown -->
-        <div class="dropdown-wrapper"
-             (mouseenter)="openLanguageDropdown()"
-             (mouseleave)="closeLanguageDropdownWithDelay()">
+        <div class="dropdown-wrapper" (mouseenter)="openLanguageDropdown()"
+          (mouseleave)="closeLanguageDropdownWithDelay()">
           <button
             class="dropdown-trigger text-white bg-transparent border-0 opacity-75 hover-opacity-100 fs-7 p-0 d-flex align-items-center gap-1"
             (click)="toggleLanguageDropdown($event)">
@@ -42,8 +36,7 @@
             <i class="bi bi-chevron-down fs-8"></i>
           </button>
           <div class="dropdown-panel dropdown-panel--language" [class.open]="isLanguageDropdownOpen()"
-               (mouseenter)="cancelLanguageDropdownClose()"
-               (mouseleave)="closeLanguageDropdownWithDelay()">
+            (mouseenter)="cancelLanguageDropdownClose()" (mouseleave)="closeLanguageDropdownWithDelay()">
             <ul class="dropdown-menu-custom py-1 shadow bg-white rounded list-unstyled m-0">
               @for (lang of languages(); track lang.code) {
               <li>
@@ -120,8 +113,7 @@
           </a>
 
           <div class="dropdown-panel dropdown-panel--cart" [class.open]="isCartDropdownOpen()"
-               (mouseenter)="cancelCartDropdownClose()"
-               (mouseleave)="closeCartDropdownWithDelay()">
+            (mouseenter)="cancelCartDropdownClose()" (mouseleave)="closeCartDropdownWithDelay()">
             <div class="cart-dropdown-surface">
               <div class="cart-dropdown-header">
                 <div class="cart-dropdown-heading-group">
@@ -342,13 +334,6 @@
         <span>{{ 'NAV_INSPIRATIONS' | translate }}</span>
       </a>
 
-      <!-- Offers -->
-      <a routerLink="/offers"
-        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
-        (click)="selectMainLink('Offers & promotions')">
-        <i class="bi bi-percent fs-7"></i>
-        <span>{{ 'NAV_OFFERS' | translate }}</span>
-      </a>
     </div>
 
     <!-- Divider -->

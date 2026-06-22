@@ -186,8 +186,6 @@ export class Navbar implements OnInit {
       this.activeMainLink.set('AI Accent');
     } else if (path.startsWith('/inspirations')) {
       this.activeMainLink.set('Inspirations');
-    } else if (path.startsWith('/offers')) {
-      this.activeMainLink.set('Offers & promotions');
     } else {
       this.activeMainLink.set('');
     }
