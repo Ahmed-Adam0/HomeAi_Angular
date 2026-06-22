@@ -1,5 +1,5 @@
-import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -24,6 +24,7 @@ export class VerifyOtp {
   private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
   private uiState = inject(UiState);
+  private platformId = inject(PLATFORM_ID);
 
   otpForm: FormGroup;
   isLoading = false;
@@ -91,9 +92,11 @@ export class VerifyOtp {
       next: () => {
         this.isLoading = false;
         this.uiState.showAlert('success', this.t().successMessage);
-        this.router.navigate([NAV_ROUTES.RESET_PASSWORD], {
-          queryParams: { email: this.otpForm.value.email }
-        });
+        if (isPlatformBrowser(this.platformId)) {
+          sessionStorage.setItem('passwordResetEmail', this.otpForm.value.email);
+          sessionStorage.setItem('passwordResetOtp', this.otpForm.value.otpCode);
+        }
+        this.router.navigate([NAV_ROUTES.RESET_PASSWORD]);
       },
       error: (err) => {
         this.isLoading = false;
