@@ -41,6 +41,7 @@
   font-weight: 500;
   line-height: 1.45;
   word-break: break-word;
+  white-space: pre-line;
 }
 
 .alert-inline .alert-close {
@@ -127,6 +128,7 @@
   font-weight: 550;
   line-height: 1.45;
   word-break: break-word;
+  white-space: pre-line;
 }
 
 .alert-overlay .alert-close {
