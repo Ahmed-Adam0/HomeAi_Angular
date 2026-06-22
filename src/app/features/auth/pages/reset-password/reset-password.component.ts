@@ -1,5 +1,5 @@
-import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -24,6 +24,10 @@ export class ResetPassword {
   private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
   private uiState = inject(UiState);
+  private platformId = inject(PLATFORM_ID);
+
+  email = '';
+  otp = '';
 
   resetForm: FormGroup;
   isLoading = false;
@@ -37,7 +41,7 @@ export class ResetPassword {
   private readonly translations = {
     ar: {
       pageTitle: 'إعادة تعيين كلمة المرور',
-      pageSubtitle: 'أدخل البريد الإلكتروني والرمز وكلمة مرور جديدة.',
+      pageSubtitle: 'أدخل كلمة مرور جديدة لحسابك.',
       emailLabel: 'البريد الإلكتروني',
       emailPlaceholder: 'أدخل بريدك الإلكتروني',
       emailRequired: 'البريد الإلكتروني مطلوب.',
@@ -58,7 +62,7 @@ export class ResetPassword {
     },
     en: {
       pageTitle: 'Reset Password',
-      pageSubtitle: 'Enter your email, OTP, and a new password.',
+      pageSubtitle: 'Enter a new password for your account.',
       emailLabel: 'Email Address',
       emailPlaceholder: 'Enter your email',
       emailRequired: 'Email is required.',
@@ -80,11 +84,16 @@ export class ResetPassword {
   } as const;
 
   constructor() {
-    const email = this.route.snapshot.queryParamMap.get('email') ?? '';
+    if (isPlatformBrowser(this.platformId)) {
+      this.email = sessionStorage.getItem('passwordResetEmail') ?? '';
+      this.otp = sessionStorage.getItem('passwordResetOtp') ?? '';
+    }
+
+    if (!this.email || !this.otp) {
+      this.router.navigate([NAV_ROUTES.FORGOT_PASSWORD]);
+    }
 
     this.resetForm = this.fb.group({
-      email: [email, [Validators.required, Validators.email]],
-      otpCode: ['', [Validators.required, Validators.minLength(4)]],
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
       confirmNewPassword: ['', [Validators.required]]
     }, {
@@ -101,20 +110,46 @@ export class ResetPassword {
     this.isLoading = true;
     this.errorMessage = '';
 
+    if (isPlatformBrowser(this.platformId)) {
+      const sessionEmail = sessionStorage.getItem('passwordResetEmail');
+      const sessionOtp = sessionStorage.getItem('passwordResetOtp');
+      
+      if (!sessionEmail || !sessionOtp) {
+        this.errorMessage = 'Session expired. Please restart the forgot password flow.';
+        this.isLoading = false;
+        return;
+      }
+      this.email = sessionEmail;
+      this.otp = sessionOtp;
+    }
+
+    const email = this.email;
+    const otpCode = this.otp;
+
     const payload = {
-      email: this.resetForm.get('email')?.value,
-      otpCode: this.resetForm.get('otpCode')?.value,
+      email: email,
+      otpCode: otpCode,
       newPassword: this.resetForm.get('newPassword')?.value,
       confirmNewPassword: this.resetForm.get('confirmNewPassword')?.value
     };
+
+    console.log('Email from session:', email);
+    console.log('OTP from session:', otpCode);
+    console.log('Payload:', payload);
 
     this.authService.resetPassword(payload).subscribe({
       next: () => {
         this.isLoading = false;
         this.uiState.showAlert('success', this.t().successMessage);
+
+        if (isPlatformBrowser(this.platformId)) {
+          sessionStorage.removeItem('passwordResetEmail');
+          sessionStorage.removeItem('passwordResetOtp');
+        }
+
         this.router.navigate([NAV_ROUTES.LOGIN], { replaceUrl: true });
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.isLoading = false;
         this.errorMessage = this.authErrorHandler.handle(err);
       }
