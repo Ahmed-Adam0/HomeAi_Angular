@@ -16,13 +16,13 @@ export interface ICheckoutPayload {
   phoneNumber: string;
   notes: string | null;
   items?: ICheckoutItem[];
-  fullName?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   phone?: string;
   addressLine1?: string;
   addressLine2?: string;
   city?: string;
-  zipCode?: string;
   country?: string;
   paymentProvider?: 'paymob';
   orderNotes?: string;
@@ -45,8 +45,12 @@ export class CheckoutService {
 
   submitCheckout(payload: ICheckoutPayload): Observable<ICheckoutResult> {
     const apiPayload = {
-      address: payload.address,
+      firstName: payload.firstName ?? '',
+      lastName: payload.lastName ?? '',
+      email: payload.email ?? '',
       phoneNumber: payload.phoneNumber,
+      address: payload.address,
+      secondaryAddress: payload.addressLine2 || null,
       notes: payload.notes
     };
     return this.ordersApi.createOrder(apiPayload).pipe(
@@ -68,7 +72,7 @@ export class CheckoutService {
       addressLine1: payload.addressLine1?.trim() || '',
       addressLine2: payload.addressLine2?.trim() || '',
       city: payload.city?.trim() || '',
-      postalCode: payload.zipCode?.trim() || '',
+      postalCode: '',
       country: payload.country?.trim() || '',
     };
 

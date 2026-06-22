@@ -18,19 +18,37 @@
             </div>
 
             <div class="row g-3">
-              <!-- Full Name -->
+              <!-- First Name -->
               <div class="col-md-6">
                 <div class="form-group-custom">
-                  <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_FULL_NAME' | translate }}</label>
-                  <input type="text" formControlName="fullName" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'جون دو' : 'John Doe'" appAutoDir>
-                  @if (checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.errors?.['required']) {
+                  <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_FIRST_NAME' | translate }}</label>
+                  <input type="text" formControlName="firstName" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'جون' : 'John'" appAutoDir>
+                  @if (checkoutForm.get('firstName')?.touched && checkoutForm.get('firstName')?.errors?.['required']) {
                     <div class="text-danger-custom small mt-1">
-                      {{ currentLang() === 'ar' ? 'الاسم الكامل مطلوب.' : 'Full name is required.' }}
+                      {{ currentLang() === 'ar' ? 'الاسم الأول مطلوب.' : 'First name is required.' }}
                     </div>
                   }
-                  @if (checkoutForm.get('fullName')?.touched && checkoutForm.get('fullName')?.errors?.['minlength']) {
+                  @if (checkoutForm.get('firstName')?.touched && checkoutForm.get('firstName')?.errors?.['minlength']) {
                     <div class="text-danger-custom small mt-1">
-                      {{ currentLang() === 'ar' ? 'يجب أن يكون الاسم 3 أحرف على الأقل.' : 'Name must be at least 3 characters.' }}
+                      {{ currentLang() === 'ar' ? 'يجب أن يكون الاسم حرفين على الأقل.' : 'First name must be at least 2 characters.' }}
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Last Name -->
+              <div class="col-md-6">
+                <div class="form-group-custom">
+                  <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_LAST_NAME' | translate }}</label>
+                  <input type="text" formControlName="lastName" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'دو' : 'Doe'" appAutoDir>
+                  @if (checkoutForm.get('lastName')?.touched && checkoutForm.get('lastName')?.errors?.['required']) {
+                    <div class="text-danger-custom small mt-1">
+                      {{ currentLang() === 'ar' ? 'اسم العائلة مطلوب.' : 'Last name is required.' }}
+                    </div>
+                  }
+                  @if (checkoutForm.get('lastName')?.touched && checkoutForm.get('lastName')?.errors?.['minlength']) {
+                    <div class="text-danger-custom small mt-1">
+                      {{ currentLang() === 'ar' ? 'يجب أن يكون اسم العائلة حرفين على الأقل.' : 'Last name must be at least 2 characters.' }}
                     </div>
                   }
                 </div>
@@ -74,24 +92,7 @@
                 </div>
               </div>
 
-              <!-- Zip Code -->
-              <div class="col-md-6">
-                <div class="form-group-custom">
-                  <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ZIP' | translate }}</label>
-                  <input type="text" formControlName="zipCode" class="form-control-custom" placeholder="10001" appAutoDir>
-                  @if (checkoutForm.get('zipCode')?.touched) {
-                    @if (checkoutForm.get('zipCode')?.errors?.['required']) {
-                      <div class="text-danger-custom small mt-1">
-                        {{ currentLang() === 'ar' ? 'الرمز البريدي مطلوب.' : 'Zip code is required.' }}
-                      </div>
-                    } @else if (checkoutForm.get('zipCode')?.invalid) {
-                      <div class="text-danger-custom small mt-1">
-                        {{ currentLang() === 'ar' ? 'يجب أن يتكون الرمز البريدي من 5 أرقام.' : 'Zip code must be 5 digits.' }}
-                      </div>
-                    }
-                  }
-                </div>
-              </div>
+
 
               <!-- Address Line 1 -->
               <div class="col-12">

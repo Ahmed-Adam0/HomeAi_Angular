@@ -8,6 +8,14 @@ import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants/api-urls';
 import { unwrap } from '../../../core/utils/api-utils';
 
+export interface IInitiateMasterOrderPaymentRequest {
+  masterOrderId: number;
+}
+
+export interface IInitiateMasterOrderPaymentResponse {
+  paymentUrl: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -40,6 +48,13 @@ export class PaymentService {
       `${environment.apiUrl}${API_URLS.PAYMENTS.PAYMOB}`,
       payload
     ).pipe(map((res) => unwrap<IPaymobPaymentResponse>(res)));
+  }
+
+  initiateMasterOrderPayment(payload: IInitiateMasterOrderPaymentRequest): Observable<IInitiateMasterOrderPaymentResponse> {
+    return this.http.post<IInitiateMasterOrderPaymentResponse>(
+      `${environment.apiUrl}${API_URLS.PAYMENTS.INITIATE_MASTERORDER}`,
+      payload
+    ).pipe(map((res) => unwrap<IInitiateMasterOrderPaymentResponse>(res)));
   }
 
   processPayment(transactionId: string): Observable<{ success: boolean; message: string }> {

@@ -45,6 +45,7 @@ export const API_URLS = {
     PAYMOB: 'payments/paymob',
     PAYMOB_WEBHOOK: 'payments/paymob/webhook',
     PAYMOB_CALLBACK: 'payments/paymob/callback',
+    INITIATE_MASTERORDER: 'payments/paymob/initiate-masterorder',
   },
   AI: {
     RECOMMEND: 'ai/recommend',

@@ -2,6 +2,7 @@ import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { CheckoutService, ICheckoutPayload, ICheckoutResult } from '../../services/checkout.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
@@ -29,6 +30,7 @@ export class CheckoutFormComponent implements OnInit {
   private cartService = inject(CartService);
   private translationService = inject(TranslationService);
   private uiState = inject(UiState);
+  private router = inject(Router);
 
   readonly currentLang = this.translationService.currentLang;
   readonly cartItems = this.cartService.items;
@@ -62,13 +64,13 @@ export class CheckoutFormComponent implements OnInit {
   });
 
   checkoutForm!: FormGroup<{
-    fullName: FormControl<string>;
+    firstName: FormControl<string>;
+    lastName: FormControl<string>;
     email: FormControl<string>;
     phone: FormControl<string>;
     addressLine1: FormControl<string>;
     addressLine2: FormControl<string>;
     city: FormControl<string>;
-    zipCode: FormControl<string>;
     country: FormControl<string>;
     paymentProvider: FormControl<'paymob'>;
     orderNotes: FormControl<string>;
@@ -77,24 +79,24 @@ export class CheckoutFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkoutForm = this.fb.nonNullable.group({
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, phoneValidator()]],
       addressLine1: ['', [Validators.required]],
       addressLine2: [''],
       city: ['', [Validators.required]],
-      zipCode: ['', [Validators.required, Validators.pattern(/^[0-9]{5}$/)]],
       country: ['US', [Validators.required]],
       paymentProvider: ['paymob' as 'paymob', [Validators.required]],
       orderNotes: ['', [Validators.maxLength(300)]]
     }) as FormGroup<{
-      fullName: FormControl<string>;
+      firstName: FormControl<string>;
+      lastName: FormControl<string>;
       email: FormControl<string>;
       phone: FormControl<string>;
       addressLine1: FormControl<string>;
       addressLine2: FormControl<string>;
       city: FormControl<string>;
-      zipCode: FormControl<string>;
       country: FormControl<string>;
       paymentProvider: FormControl<'paymob'>;
       orderNotes: FormControl<string>;
@@ -154,7 +156,6 @@ export class CheckoutFormComponent implements OnInit {
             formValues.addressLine1,
             formValues.addressLine2,
             formValues.city,
-            formValues.zipCode,
             formValues.country
           ].map((part) => part?.trim()).filter(Boolean);
 
@@ -174,13 +175,18 @@ export class CheckoutFormComponent implements OnInit {
           return this.checkoutService.submitCheckout(orderPayload);
         }),
         tap((res: ICheckoutResult) => {
-          if (res.success && res.paymentUrl) {
+          if (res.success) {
             if (!res.profileAddressSaved) {
               this.uiState.showAlert('warning', this.translationService.translate('CHECKOUT_PROFILE_ADDRESS_WARNING'));
             }
             this.cartService.clearCart();
             localStorage.removeItem(LOCAL_STORAGE_KEYS.CART);
-            window.location.href = res.paymentUrl;
+            if (res.paymentUrl) {
+              window.location.href = res.paymentUrl;
+            } else {
+              this.uiState.showAlert('success', this.translationService.translate('CHECKOUT_SUCCESS_ORDER_PLACED'));
+              this.router.navigate(['/orders', res.orderId]);
+            }
           } else {
             this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_PAYMENT_INIT'));
           }

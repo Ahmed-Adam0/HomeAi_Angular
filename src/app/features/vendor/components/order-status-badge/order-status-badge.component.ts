@@ -7,9 +7,10 @@ type OrderStatusBadgeVariant = 'warning' | 'info' | 'primary' | 'success' | 'dan
 const STATUS_KEYS: Record<VendorOrderStatus, string> = {
   [VendorOrderStatus.Pending]: 'VENDOR.STATUS.PENDING',
   [VendorOrderStatus.AwaitingCustomerApproval]: 'VENDOR.STATUS.AWAITING_CUSTOMER_APPROVAL',
+  [VendorOrderStatus.PendingPayment]: 'VENDOR.STATUS.PENDING_PAYMENT',
   [VendorOrderStatus.Confirmed]: 'VENDOR.STATUS.CONFIRMED',
   [VendorOrderStatus.InProgress]: 'VENDOR.STATUS.IN_PROGRESS',
-  [VendorOrderStatus.ReadyForPickup]: 'VENDOR.STATUS.READY_FOR_PICKUP',
+  [VendorOrderStatus.Shipped]: 'VENDOR.STATUS.SHIPPED',
   [VendorOrderStatus.Delivered]: 'VENDOR.STATUS.DELIVERED',
   [VendorOrderStatus.Cancelled]: 'VENDOR.STATUS.CANCELLED',
 };
@@ -17,9 +18,10 @@ const STATUS_KEYS: Record<VendorOrderStatus, string> = {
 const STATUS_VARIANTS: Record<VendorOrderStatus, OrderStatusBadgeVariant> = {
   [VendorOrderStatus.Pending]: 'warning',
   [VendorOrderStatus.AwaitingCustomerApproval]: 'warning',
+  [VendorOrderStatus.PendingPayment]: 'warning',
   [VendorOrderStatus.Confirmed]: 'info',
   [VendorOrderStatus.InProgress]: 'info',
-  [VendorOrderStatus.ReadyForPickup]: 'primary',
+  [VendorOrderStatus.Shipped]: 'primary',
   [VendorOrderStatus.Delivered]: 'success',
   [VendorOrderStatus.Cancelled]: 'danger',
 };
