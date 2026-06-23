@@ -23,20 +23,10 @@ export class CartStore {
 
   // Derived computed signals
   readonly totalPrice = this.subtotal; // Alias for backward compatibility
-  readonly shippingCost = computed(() => (this.totalItems() > 0 ? SHIPPING_FEE : 0));
-  readonly taxAmount = computed(() => Number((this.subtotal() * TAX_RATE).toFixed(2)));
+  readonly shippingCost = computed(() => 0);
+  readonly taxAmount = computed(() => 0);
   readonly discountAmount = computed(() => 0);
-  readonly grandTotal = computed(
-    () =>
-      Number(
-        (
-          this.subtotal() +
-          this.shippingCost() +
-          this.taxAmount() -
-          this.discountAmount()
-        ).toFixed(2)
-      )
-  );
+  readonly grandTotal = computed(() => Number(this.subtotal().toFixed(2)));
 
   readonly totals = computed(() => ({
     totalQuantity: this.totalQuantity(),

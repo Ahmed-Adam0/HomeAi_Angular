@@ -1,168 +1,201 @@
 <section class="cart-shell" [attr.dir]="direction()" [attr.lang]="translationService.currentLang()">
-  <div class="cart-header">
-    <div>
-      <span class="cart-badge">{{ pageTitle() }}</span>
-      <h1 class="cart-title">{{ pageTitle() }}</h1>
-      <p class="cart-subtitle" *ngIf="hasItems()">{{ labels().totalItems }}</p>
-    </div>
+  <!-- Back to Gallery link -->
+  <div class="cart-header-nav">
+    <a (click)="onContinueShopping()" class="back-link">
+      <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      <span>{{ translationService.currentLang() === 'ar' ? 'العودة للتسوق' : 'Continue Shopping' }}</span>
+    </a>
   </div>
 
+  <!-- Cart Page Main Title -->
+  <header class="cart-page-header">
+    <h1 class="cart-title">{{ pageTitle() }}</h1>
+    <p class="cart-subtitle" *ngIf="hasItems()">
+      {{ itemCount() }} {{ translationService.currentLang() === 'ar' ? 'قطع في سلة مقتنياتك' : 'items currently in your cart' }}
+    </p>
+  </header>
+
   <ng-container *ngIf="hasItems(); else emptyState">
-    <div class="cart-layout">
-      <div class="cart-items-panel">
-        <div class="cart-item-card" [class.is-removing]="cartService.isItemRemoving(item.id)" *ngFor="let item of items()">
-          <div class="item-media">
-            <img [src]="item.images?.length ? item.images?.[0] : 'assets/images/image-placeholder.svg'" [alt]="item.productName" />
-            
+    <div class="cart-container">
+      <!-- Left Column: Cart Items list -->
+      <div class="cart-items-column">
+        <div 
+          class="cart-item-card" 
+          [class.item-removing]="cartService.isItemRemoving(item.id)"
+          *ngFor="let item of items(); let i = index"
+        >
+          <!-- Product Image -->
+          <div class="item-image-wrapper">
+            <img 
+              [src]="item.images?.length ? item.images?.[0] : 'assets/images/image-placeholder.svg'" 
+              [alt]="item.productName"
+              class="item-img"
+            />
           </div>
 
+          <!-- Product Details -->
           <div class="item-details">
             <div class="item-header">
-              <h2>
-                {{ item | localized:'productName' }}
-              </h2>
-              <p *ngIf="item.vendorNameAr || item.vendorNameEn" class="item-vendor text-muted font-xs mb-1">
-                {{ translationService.currentLang() === 'ar' ? item.vendorNameAr : item.vendorNameEn }}
-              </p>
-              <div *ngIf="item.options?.length" class="item-options mt-1 d-flex flex-wrap gap-1">
-                <span *ngFor="let opt of item.options" class="badge bg-light text-dark border font-xxs py-1 px-2 rounded-pill">
-                  {{ translationService.currentLang() === 'ar' ? (opt.nameAr || opt.name) : (opt.nameEn || opt.name) }}
-                  <span class="text-secondary small" *ngIf="opt.priceDelta > 0">
-                    (+{{ opt.priceDelta | currencyFormat }})
-                  </span>
+              <div class="title-section">
+                <span class="vendor-name" *ngIf="item.vendorNameAr || item.vendorNameEn">
+                  {{ translationService.currentLang() === 'ar' ? item.vendorNameAr : item.vendorNameEn }}
                 </span>
+                <h2 class="product-name">
+                  {{ item | localized:'productName' }}
+                </h2>
               </div>
+
+              <!-- Remove Item Button -->
               <button
                 type="button"
-                class="remove-action"
+                class="remove-btn"
                 (click)="removeItem(item.id)"
                 [disabled]="cartService.isItemPending(item.id)"
+                [attr.aria-label]="labels().remove"
               >
-                @if (cartService.isItemRemoving(item.id)) {
-                  <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
-                } @else {
-                  {{ labels().remove }}
-                }
+                <ng-container *ngIf="cartService.isItemRemoving(item.id); else trashIcon">
+                  <span class="spinner-mini"></span>
+                </ng-container>
+                <ng-template #trashIcon>
+                  <svg class="trash-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                </ng-template>
               </button>
             </div>
 
-            <p class="item-price">
-              {{ item.price | currencyFormat }}
-              <span *ngIf="item.isPriceStale" class="badge bg-warning text-dark ms-2 font-xxs" title="Price updated by vendor">
-                {{ translationService.currentLang() === 'ar' ? 'سعر محدّث' : 'Price updated' }}
+            <!-- Options -->
+            <div *ngIf="item.options?.length" class="item-options">
+              <span *ngFor="let opt of item.options" class="option-pill">
+                {{ translationService.currentLang() === 'ar' ? (opt.nameAr || opt.name) : (opt.nameEn || opt.name) }}
+                <span class="opt-price" *ngIf="opt.priceDelta > 0">
+                  (+{{ opt.priceDelta | currencyFormat }})
+                </span>
               </span>
-            </p>
+            </div>
 
-            <div class="item-meta">
-              <div class="quantity-control">
-                <label>{{ labels().quantity }}</label>
-                <div class="quantity-actions" [class.is-updating]="cartService.isItemUpdating(item.id)">
-                  <button
-                    type="button"
-                    class="qty-btn"
-                    (click)="updateQuantity(item.id, item.quantity - 1)"
-                    [disabled]="cartService.isItemPending(item.id)"
-                  >
-                    −
-                  </button>
+            <!-- Bottom Row: Quantity Controls & Price -->
+            <div class="item-footer">
+              <!-- Quantity Selector -->
+              <div class="quantity-controller" [class.updating]="cartService.isItemUpdating(item.id)">
+                <button
+                  type="button"
+                  class="qty-control-btn btn-minus"
+                  (click)="updateQuantity(item.id, item.quantity - 1)"
+                  [disabled]="cartService.isItemPending(item.id)"
+                >
+                  &minus;
+                </button>
 
-                  <span class="quantity-value">
-                    {{ item.quantity }}
-                    @if (cartService.isItemUpdating(item.id)) {
-                      <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
-                    }
-                  </span>
+                <span class="quantity-value">
+                  <span *ngIf="!cartService.isItemUpdating(item.id)">{{ item.quantity }}</span>
+                  <span *ngIf="cartService.isItemUpdating(item.id)" class="spinner-mini-dark"></span>
+                </span>
 
-                  <button
-                    type="button"
-                    class="qty-btn"
-                    (click)="updateQuantity(item.id, item.quantity + 1)"
-                    [disabled]="cartService.isItemPending(item.id)"
-                  >
-                    +
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  class="qty-control-btn btn-plus"
+                  (click)="updateQuantity(item.id, item.quantity + 1)"
+                  [disabled]="cartService.isItemPending(item.id)"
+                >
+                  &plus;
+                </button>
               </div>
 
-              <div class="item-subtotal">
-                <span>{{ labels().itemSubtotal }}</span>
-                <strong>{{ item.subtotal | currencyFormat }}</strong>
+              <!-- Price Box -->
+              <div class="item-pricing">
+                <div class="item-unit-price">
+                  {{ item.price | currencyFormat }}
+                  <span *ngIf="item.isPriceStale" class="stale-badge" [attr.title]="translationService.currentLang() === 'ar' ? 'سعر محدّث' : 'Price updated'">
+                    !
+                  </span>
+                </div>
+                <div class="item-subtotal-price">
+                  <strong class="subtotal-val">{{ item.subtotal | currencyFormat }}</strong>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <aside class="cart-summary-panel">
+      <!-- Right Column: Sticky Summary Panel -->
+      <aside class="cart-summary-column">
         <div class="summary-card">
-          <div class="summary-header">
-            <h3>{{ labels().cartSummary }}</h3>
-            @if (isCartBusy()) {
-              <span class="summary-busy">
-                <app-loading-spinner size="sm" [overlay]="false" message=""></app-loading-spinner>
-              </span>
-            }
-          </div>
+          <h3 class="summary-title">{{ labels().cartSummary }}</h3>
 
           <div class="summary-row">
-            <span>{{ pageTitle() }}</span>
-            <span>{{ itemCount() }}</span>
-          </div>
-
-          <div class="summary-row">
-            <span>{{ labels().itemSubtotal }}</span>
-            <span>{{ summary().subtotal | currencyFormat }}</span>
-          </div>
-
-
-
-          <div class="summary-row">
-            <span>{{ labels().tax }}</span>
-            <span>{{ summary().tax | currencyFormat }}</span>
-          </div>
-
-          <div class="summary-row discount-row" *ngIf="summary().discount > 0">
-            <span>{{ labels().discount }}</span>
-            <span>-{{ summary().discount | currencyFormat }}</span>
+            <span class="summary-label">{{ translationService.currentLang() === 'ar' ? 'إجمالي العناصر' : 'Total Items' }}</span>
+            <span class="summary-value">{{ itemCount() }}</span>
           </div>
 
           <div class="summary-divider"></div>
 
-          <div class="summary-row total-row">
-            <span>{{ labels().orderTotal }}</span>
-            <strong>{{ summary().total | currencyFormat }}</strong>
+          <!-- Total price -->
+          <div class="summary-total-section">
+            <div class="total-label-row">
+              <span class="total-label">{{ labels().orderTotal }}</span>
+              <strong class="total-value">{{ summary().total | currencyFormat }}</strong>
+            </div>
           </div>
 
-          <app-button
-            [label]="checkoutLabel()"
-            variant="premium"
-            size="lg"
-            [disabled]="!hasItems()"
-            (clicked)="goToCheckout()"
-          ></app-button>
+          <!-- Checkout actions -->
+          <div class="summary-actions">
+            <app-button
+              [label]="checkoutLabel()"
+              variant="primary"
+              size="lg"
+              [disabled]="!hasItems() || isCartBusy()"
+              (clicked)="goToCheckout()"
+              class="checkout-button-container"
+            ></app-button>
 
-          <button
-            type="button"
-            class="btn btn-outline-secondary w-100 mt-3"
-            (click)="clearCart()"
-            [disabled]="isCartBusy()"
-          >
-            {{ labels().clearCart }}
-          </button>
+            <button
+              type="button"
+              class="clear-cart-button"
+              (click)="clearCart()"
+              [disabled]="isCartBusy()"
+            >
+              {{ labels().clearCart }}
+            </button>
+          </div>
         </div>
       </aside>
     </div>
   </ng-container>
 
+  <!-- Empty state view -->
   <ng-template #emptyState>
-    <app-empty-state
-      [title]="emptyLabel()"
-      [description]="translationService.currentLang() === 'ar'
-        ? 'ابدأ بإضافة قطع الأثاث المميزة إلى سلتك لتظهر هنا.'
-        : 'Add high-end furniture pieces to your cart and they will appear here.'"
-      icon="🛒"
-      [actionText]="labels().continueShopping"
-      (actionClick)="onContinueShopping()">
-    </app-empty-state>
+    <div class="empty-cart-state">
+      <div class="empty-icon-wrapper">
+        <svg class="empty-cart-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+      </div>
+      <h2 class="empty-title">
+        {{ translationService.currentLang() === 'ar' ? 'سلة التسوق فارغة' : 'Your shopping cart is empty' }}
+      </h2>
+      <p class="empty-desc">
+        {{ translationService.currentLang() === 'ar' 
+          ? 'يبدو أنك لم تقم بإضافة أي عناصر بعد. استكشف مجموعتنا الفاخرة واختر ما يناسبك.' 
+          : 'You haven\'t added any items to your cart yet. Explore our luxury collections to find your perfect pieces.' }}
+      </p>
+      <div class="empty-action">
+        <app-button
+          [label]="labels().continueShopping"
+          variant="primary"
+          size="lg"
+          (clicked)="onContinueShopping()"
+        ></app-button>
+      </div>
+    </div>
   </ng-template>
 </section>

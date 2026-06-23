@@ -6,29 +6,49 @@
   background-color: var(--fm-surface-card);
   border-radius: var(--fm-radius-lg);
   overflow: hidden;
-  box-shadow: var(--fm-shadow-md);
-  transition: var(--fm-transition-card-hover);
-  border: 1px solid var(--fm-border-medium);
+  /* Thin elegant luxury gold border outline */
+  border: 1px solid rgba(184, 147, 92, 0.15);
+  box-shadow: 
+    0 4px 6px rgba(29, 27, 24, 0.01),
+    0 10px 20px rgba(184, 147, 92, 0.02);
+  transition: 
+    transform 0.6s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
+    box-shadow 0.6s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
+    border-color 0.6s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
 .inspiration-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--fm-shadow-hover);
-  border-color: var(--fm-color-primary-300);
+  transform: translateY(-8px);
+  border-color: rgba(184, 147, 92, 0.5);
+  /* Immersive golden soft glow hover depth */
+  box-shadow: 
+    0 20px 38px rgba(184, 147, 92, 0.06),
+    0 8px 16px rgba(29, 27, 24, 0.02),
+    0 1px 2px rgba(184, 147, 92, 0.12);
 }
 
 /* Comparison Container */
 .comparison-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 12;
+  aspect-ratio: 16 / 11;
   overflow: hidden;
   user-select: none;
   cursor: ew-resize;
   background-color: var(--fm-color-neutral-200);
 }
 
-.image-after,
+.image-after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  transition: transform 0.8s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
 .image-before {
   position: absolute;
   top: 0;
@@ -37,47 +57,59 @@
   height: 100%;
   object-fit: cover;
   pointer-events: none;
-  transition: transform 0.5s var(--fm-ease-smooth);
+  /* Smooth transition when releasing or loading, bypassed during active drag */
+  transition: 
+    transform 0.8s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
+    clip-path 0.3s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
+/* Bypasses clip-path transition when actively dragging for zero-latency tracking */
+.dragging .image-before {
+  transition: transform 0.8s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)) !important;
+}
+
+/* Smooth zoom on hover */
 .inspiration-card:hover .image-after,
 .inspiration-card:hover .image-before {
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
-/* Badges styling */
+/* Glassmorphic Badges Styling */
 .badge-tag {
   position: absolute;
   top: var(--fm-space-20);
   z-index: 10;
   padding: 8px 18px;
   font-size: 0.725rem;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.12em;
   border-radius: var(--fm-radius-pill);
-  box-shadow: var(--fm-shadow-sm);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   pointer-events: none;
-  transition: opacity 0.3s var(--fm-ease-smooth);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  transition: opacity 0.3s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
-/* Original room: Light grey glass badge */
+/* Original room: Translucent Frosted Glass Badge */
 .badge-before {
   inset-inline-start: var(--fm-space-20);
-  background-color: rgba(244, 242, 238, 0.95);
-  color: var(--fm-color-neutral-800);
+  background-color: rgba(255, 255, 255, 0.72);
+  color: var(--fm-color-neutral-900);
   border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-/* Implemented room: Gold luxury badge */
+/* Implemented room: Translucent Gold Frosted Glass Badge */
 .badge-after {
   inset-inline-end: var(--fm-space-20);
-  background: linear-gradient(135deg, var(--fm-color-primary-500), var(--fm-color-primary-600));
-  color: var(--fm-text-inverted);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: rgba(184, 147, 92, 0.76);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 12px rgba(184, 147, 92, 0.25);
 }
 
-/* Drag Handle */
+/* Polished Drag Handle */
 .slider-handle {
   position: absolute;
   top: 0;
@@ -91,36 +123,88 @@
   justify-content: center;
   align-items: center;
   cursor: grab;
+  /* Smooth transition when releasing or loading, bypassed during active drag */
+  transition: left 0.3s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
 .slider-handle:active {
   cursor: grabbing;
 }
 
+/* Bypasses slider-handle transition when actively dragging for zero-latency tracking */
+.dragging .slider-handle {
+  transition: none !important;
+}
+
 .handle-line {
   flex: 1;
   width: 2px;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8) 15%, rgba(255, 255, 255, 0.8) 85%, transparent);
+  background: linear-gradient(
+    to bottom, 
+    transparent, 
+    var(--fm-color-primary-400) 15%, 
+    var(--fm-color-primary-400) 85%, 
+    transparent
+  );
 }
 
+/* Polished metallic gold dial handle button */
 .handle-button {
-  width: 44px;
-  height: 44px;
-  background-color: #ffffff;
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(135deg, #ffffff 0%, var(--fm-color-primary-100) 50%, var(--fm-color-primary-200) 100%);
   border: 2px solid var(--fm-color-primary-400);
   border-radius: var(--fm-radius-circle);
-  box-shadow: var(--fm-shadow-floating);
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--fm-color-primary-600);
-  font-size: 0.85rem;
-  transition: transform 0.2s var(--fm-ease-smooth), background-color 0.2s var(--fm-ease-smooth);
+  color: var(--fm-color-primary-700);
+  font-size: 0.9rem;
+  transition: 
+    transform 0.3s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)), 
+    border-color 0.3s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
+    background-color 0.3s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
+    box-shadow 0.3s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+  
+  /* Gentle, premium breathing animation */
+  animation: floatAndPulse 4s ease-in-out infinite;
 }
 
+@keyframes floatAndPulse {
+  0% {
+    transform: scale(1.0);
+    box-shadow: 
+      0 6px 14px rgba(184, 147, 92, 0.22),
+      inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 
+      0 12px 24px rgba(184, 147, 92, 0.32),
+      inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+  100% {
+    transform: scale(1.0);
+    box-shadow: 
+      0 6px 14px rgba(184, 147, 92, 0.22),
+      inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Hover and active states override breathing keyframes */
 .slider-handle:hover .handle-button {
+  animation-play-state: paused;
   transform: scale(1.1);
-  background-color: var(--fm-color-primary-50);
+  border-color: var(--fm-color-primary-500);
+  box-shadow: 0 10px 22px rgba(184, 147, 92, 0.4);
+}
+
+.dragging .handle-button {
+  animation: none !important;
+  transform: scale(1.15) !important;
+  background: linear-gradient(135deg, var(--fm-color-primary-50) 0%, var(--fm-color-primary-200) 100%) !important;
+  border-color: var(--fm-color-primary-500) !important;
+  box-shadow: 0 14px 28px rgba(184, 147, 92, 0.45) !important;
 }
 
 .handle-button i {
@@ -142,8 +226,9 @@
     inset-inline-end: var(--fm-space-12);
   }
   .handle-button {
-    width: 34px;
-    height: 34px;
-    font-size: 0.75rem;
+    width: 36px;
+    height: 36px;
+    font-size: 0.8rem;
+    animation: none; /* Disable keyframes on mobile screen sizes to maximize performance */
   }
 }

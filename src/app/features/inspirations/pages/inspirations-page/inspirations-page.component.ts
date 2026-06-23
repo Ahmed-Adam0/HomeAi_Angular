@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, Renderer2, inject, signal, computed, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { InspirationsService } from '../../services/inspirations.service';
 import { InspirationCardComponent } from '../../components/inspiration-card/inspiration-card.component';
@@ -13,11 +13,10 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   templateUrl: './inspirations-page.component.html',
   styleUrl: './inspirations-page.component.css'
 })
-export class InspirationsPageComponent implements AfterViewInit {
+export class InspirationsPageComponent {
   private readonly inspirationsService = inject(InspirationsService);
   readonly translationService = inject(TranslationService);
   private readonly el = inject(ElementRef);
-  private readonly renderer = inject(Renderer2);
   private readonly platformId = inject(PLATFORM_ID);
 
   // Gallery items list
@@ -25,7 +24,7 @@ export class InspirationsPageComponent implements AfterViewInit {
 
   // Pagination states
   readonly currentPage = signal<number>(1);
-  readonly pageSize = 4; // 4 items per page (2 rows of 2 cards)
+  readonly pageSize = 4; // 4 items per page
 
   constructor() {
     this.allInspirations.set(this.inspirationsService.getInspirations());
@@ -61,48 +60,9 @@ export class InspirationsPageComponent implements AfterViewInit {
       }
     }
 
+    // Delay page state change slightly to allow smooth scroll to finish
     setTimeout(() => {
       this.currentPage.set(page);
-      this.triggerScrollRevealRefresh();
-    }, 100);
-  }
-
-  ngAfterViewInit(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    // Trigger hero animations
-    setTimeout(() => {
-      const heroContent = this.el.nativeElement.querySelector('.hero-content');
-      if (heroContent) {
-        this.renderer.addClass(heroContent, 'hero-visible');
-      }
-      this.initScrollReveal();
-    }, 100);
-  }
-
-  private initScrollReveal(): void {
-    const items = this.el.nativeElement.querySelectorAll('.scroll-reveal');
-    if (items.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            this.renderer.addClass(entry.target, 'reveal-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
-    );
-
-    items.forEach((item: HTMLElement) => observer.observe(item));
-  }
-
-  private triggerScrollRevealRefresh(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    setTimeout(() => {
-      this.initScrollReveal();
     }, 150);
   }
 }

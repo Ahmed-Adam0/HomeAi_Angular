@@ -56,7 +56,7 @@ export class Cart {
           shipping: 'الشحن',
           tax: 'الضريبة',
           discount: 'الخصم',
-          orderTotal: 'إجمالي الطلب',
+          orderTotal: 'إجمالي السعر',
           clearCart: 'مسح السلة',
           totalItems: `${this.itemCount()} عناصر في السلة`,
         }
@@ -69,7 +69,7 @@ export class Cart {
           shipping: 'Shipping',
           tax: 'Tax',
           discount: 'Discount',
-          orderTotal: 'Order Total',
+          orderTotal: 'Total Price',
           clearCart: 'Clear Cart',
           totalItems: `${this.itemCount()} items in cart`,
         };
