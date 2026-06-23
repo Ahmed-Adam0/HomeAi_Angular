@@ -16,9 +16,9 @@
         <div class="inline-success">{{ successMessage }}</div>
       }
 
-      @if (errorMessage) {
+      <!-- @if (errorMessage) {
         <div class="inline-error">{{ errorMessage }}</div>
-      }
+      } -->
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
 

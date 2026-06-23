@@ -204,9 +204,35 @@ export class AuthErrorHandler {
     return null;
   }
 
-  private localizeMessage(message: string): string | null {
+  localizeMessage(message: string): string | null {
     if (!message || typeof message !== 'string') return null;
     const lower = message.toLowerCase().trim();
+
+    // 1. Detect and distinguish status types first
+    if (lower.includes('pending')) {
+      return this.msg(
+        'حسابك في انتظار موافقة الإدارة. يرجى الانتظار حتى يتم مراجعة طلبك',
+        'Your account is pending admin approval. Please wait until your request is reviewed.'
+      );
+    }
+    if (lower.includes('suspended') || lower.includes('rejected') || lower.includes('removed') || lower.includes('inactive') || lower.includes('deactivated')) {
+      return this.msg(
+        'تم طردك من قبل الإدارة. يرجى التواصل مع الدعم الفني',
+        'You have been removed by the admin. Please contact support.'
+      );
+    }
+    if (lower.includes('email format') || lower.includes('invalid email format') || lower.includes('email is invalid') || lower.includes('email address is invalid')) {
+      return this.msg(
+        'يرجى إدخال بريد إلكتروني صحيح',
+        'Please enter a valid email address'
+      );
+    }
+    if (lower.includes('invalid credentials') || lower.includes('wrong password') || lower.includes('incorrect password') || lower.includes('incorrect email') || lower.includes('user not found') || lower.includes('login failed')) {
+      return this.msg(
+        'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+        'Email or password is incorrect'
+      );
+    }
 
     // Try exact match
     const exact = this.messagePatternMap.get(lower);
@@ -236,8 +262,8 @@ export class AuthErrorHandler {
 
   private getUnifiedLoginError(): string {
     return this.msg(
-      'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
-      'Incorrect email or password.'
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة',
+      'Email or password is incorrect'
     );
   }
 
@@ -251,23 +277,40 @@ export class AuthErrorHandler {
   }
 
   private readonly messagePatternMap = new Map<string, { ar: string; en: string }>([
+    // Email / Password / Format (Unified per user request: "Email or password is incorrect" / "البريد الإلكتروني أو كلمة المرور غير صحيحة")
+    ['incorrect email or password', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['wrong password', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['incorrect password', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['invalid credentials', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['invalid login attempt', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['login failed', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['incorrect email', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['user not found', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['no user found', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['could not be found', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['invalid email', { ar: 'يرجى إدخال بريد إلكتروني صحيح', en: 'Please enter a valid email address' }],
+    ['email format', { ar: 'يرجى إدخال بريد إلكتروني صحيح', en: 'Please enter a valid email address' }],
+
+    // Suspended / Admin Removed
+    ['removed by the admin', { ar: 'تم طردك من قبل الإدارة. يرجى التواصل مع الدعم الفني', en: 'You have been removed by the admin. Please contact support.' }],
+    ['deactivated or suspended', { ar: 'تم طردك من قبل الإدارة. يرجى التواصل مع الدعم الفني', en: 'You have been removed by the admin. Please contact support.' }],
+    ['account is inactive', { ar: 'تم طردك من قبل الإدارة. يرجى التواصل مع الدعم الفني', en: 'You have been removed by the admin. Please contact support.' }],
+    ['suspended', { ar: 'تم طردك من قبل الإدارة. يرجى التواصل مع الدعم الفني', en: 'You have been removed by the admin. Please contact support.' }],
+    ['rejected', { ar: 'تم طردك من قبل الإدارة. يرجى التواصل مع الدعم الفني', en: 'You have been removed by the admin. Please contact support.' }],
+
+    // Pending Approval
+    ['pending admin approval', { ar: 'حسابك في انتظار موافقة الإدارة. يرجى الانتظار حتى يتم مراجعة طلبك', en: 'Your account is pending admin approval. Please wait until your request is reviewed.' }],
+    ['pending approval', { ar: 'حسابك في انتظار موافقة الإدارة. يرجى الانتظار حتى يتم مراجعة طلبك', en: 'Your account is pending admin approval. Please wait until your request is reviewed.' }],
+
+    // Others
     ['email already exists', { ar: 'البريد الإلكتروني مستخدم بالفعل.', en: 'An account with this email already exists.' }],
     ['email already in use', { ar: 'البريد الإلكتروني مستخدم بالفعل.', en: 'An account with this email already exists.' }],
     ['is already taken', { ar: 'البريد الإلكتروني مستخدم بالفعل.', en: 'An account with this email already exists.' }],
     ['already registered', { ar: 'البريد الإلكتروني مستخدم بالفعل.', en: 'An account with this email already exists.' }],
-    ['user not found', { ar: 'لا يوجد حساب بهذا البريد الإلكتروني.', en: 'No account found with this email.' }],
-    ['no user found', { ar: 'لا يوجد حساب بهذا البريد الإلكتروني.', en: 'No account found with this email.' }],
-    ['could not be found', { ar: 'لا يوجد حساب بهذا البريد الإلكتروني.', en: 'No account found with this email.' }],
     ['invalid phone', { ar: 'رقم الهاتف غير صالح.', en: 'The phone number is invalid.' }],
     ['passwords do not match', { ar: 'كلمتا المرور غير متطابقتين.', en: 'Passwords do not match.' }],
     ['password is too weak', { ar: 'كلمة المرور ضعيفة جداً.', en: 'Password is too weak.' }],
     ['weak password', { ar: 'كلمة المرور ضعيفة جداً.', en: 'Password is too weak.' }],
-    ['wrong password', { ar: 'كلمة المرور غير صحيحة.', en: 'Wrong password.' }],
-    ['incorrect password', { ar: 'كلمة المرور غير صحيحة.', en: 'Incorrect password.' }],
-    ['invalid credentials', { ar: 'بيانات الدخول غير صحيحة.', en: 'Invalid credentials.' }],
-    ['invalid login attempt', { ar: 'بيانات الدخول غير صحيحة.', en: 'Invalid credentials.' }],
-    ['login failed', { ar: 'بيانات الدخول غير صحيحة.', en: 'Invalid credentials.' }],
-    ['incorrect email', { ar: 'بيانات الدخول غير صحيحة.', en: 'Invalid credentials.' }],
     ['account locked', { ar: 'تم قفل الحساب مؤقتاً.', en: 'Account is locked.' }],
     ['account exists', { ar: 'الحساب موجود بالفعل.', en: 'An account already exists.' }],
     ['otp expired', { ar: 'انتهت صلاحية رمز التحقق.', en: 'OTP has expired.' }],
@@ -277,13 +320,16 @@ export class AuthErrorHandler {
     ['too many attempts', { ar: 'محاولات كثيرة جداً.', en: 'Too many attempts.' }],
     ['rate limit', { ar: 'محاولات كثيرة جداً.', en: 'Too many requests.' }],
     ['email not confirmed', { ar: 'البريد الإلكتروني غير مؤكد.', en: 'Email not confirmed.' }],
-    ['invalid email', { ar: 'صيغة البريد الإلكتروني غير صحيحة.', en: 'Invalid email format.' }],
     ['one or more validation errors', { ar: 'يرجى مراجعة الحقول التي تحمل أخطاء.', en: 'Please check the fields with errors below.' }],
   ]);
 
   private readonly codeMap = new Map<string, { ar: string; en: string }>([
-    ['INVALID_CREDENTIALS', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.', en: 'Incorrect email or password.' }],
-    ['USER_NOT_FOUND', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.', en: 'Incorrect email or password.' }],
+    ['INVALID_CREDENTIALS', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['USER_NOT_FOUND', { ar: 'البريد الإلكتروني أو كلمة المرور غير صحيحة', en: 'Email or password is incorrect' }],
+    ['INVALID_EMAIL', { ar: 'يرجى إدخال بريد إلكتروني صحيح', en: 'Please enter a valid email address' }],
+    ['PENDING_APPROVAL', { ar: 'حسابك في انتظار موافقة الإدارة. يرجى الانتظار حتى يتم مراجعة طلبك', en: 'Your account is pending admin approval. Please wait until your request is reviewed.' }],
+    ['ACCOUNT_PENDING_APPROVAL', { ar: 'حسابك في انتظار موافقة الإدارة. يرجى الانتظار حتى يتم مراجعة طلبك', en: 'Your account is pending admin approval. Please wait until your request is reviewed.' }],
+    
     ['ACCOUNT_LOCKED', { ar: 'تم قفل الحساب مؤقتاً. تواصل مع الدعم.', en: 'Your account is temporarily locked. Please contact support.' }],
     ['EMAIL_EXISTS', { ar: 'البريد الإلكتروني مستخدم بالفعل. حاول بريداً آخر.', en: 'This email is already in use. Please use a different email.' }],
     ['INVALID_PHONE', { ar: 'رقم الهاتف غير صالح. تأكد من كتابة رقم صحيح.', en: 'The phone number is invalid. Please provide a valid number.' }],
@@ -297,14 +343,13 @@ export class AuthErrorHandler {
     ['WEAK_PASSWORD', { ar: 'كلمة المرور ضعيفة جداً. استخدم كلمة أقوى.', en: 'Password is too weak. Please use a stronger password.' }],
     ['EMAIL_NOT_CONFIRMED', { ar: 'البريد الإلكتروني غير مؤكد. يرجى تأكيد بريدك الإلكتروني أولاً.', en: 'Email not confirmed. Please confirm your email first.' }],
     ['RATE_LIMITED', { ar: 'محاولات كثيرة جداً. حاول لاحقاً.', en: 'Too many attempts. Please try again later.' }],
-    ['INVALID_EMAIL', { ar: 'صيغة البريد الإلكتروني غير صحيحة.', en: 'Invalid email format.' }],
     ['GOOGLE_AUTH_FAILED', { ar: 'فشل تسجيل الدخول عبر Google. حاول مجدداً.', en: 'Google sign-in failed. Please try again.' }],
   ]);
 
   private readonly statusMap = new Map<number, { ar: string; en: string }>([
     [400, { ar: 'طلب غير صحيح. تحقق من البيانات.', en: 'Invalid request. Please check your input.' }],
     [401, { ar: 'انتهت صلاحية الجلسة. سجّل الدخول مجدداً.', en: 'Session expired. Please log in again.' }],
-    [403, { ar: 'ليس لديك صلاحية للقيام بهذا الإجراء.', en: 'You do not have permission to perform this action.' }],
+    [403, { ar: 'تم طردك من قبل الإدارة. يرجى التواصل مع الدعم الفني', en: 'You have been removed by the admin. Please contact support.' }],
     [404, { ar: 'المورد المطلوب غير موجود.', en: 'The requested resource was not found.' }],
     [422, { ar: 'البيانات المدخلة غير صحيحة. راجع الحقول.', en: 'The submitted data is invalid. Please review the fields.' }],
     [429, { ar: 'محاولات كثيرة جداً. حاول لاحقاً.', en: 'Too many requests. Please try again later.' }],

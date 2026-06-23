@@ -11,7 +11,7 @@
         <p>{{ t().pageSubtitle }}</p>
       </div>
 
-      <div class="inline-error" *ngIf="displayedError()">{{ displayedError() }}</div>
+      <!-- <div class="inline-error" *ngIf="displayedError()">{{ displayedError() }}</div> -->
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
 
