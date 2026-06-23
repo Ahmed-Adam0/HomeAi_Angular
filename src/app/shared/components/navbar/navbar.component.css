@@ -222,19 +222,25 @@
 }
 
 .badge-custom {
-  font-size: 0.65rem;
-  width: 16px;
+  position: absolute;
+  top: 3px !important;
+  inset-inline-end: 3px !important;
+  min-width: 16px;
   height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--color-gold) !important;
-  color: var(--color-white);
+  color: var(--color-white) !important;
+  font-size: 9px;
   font-weight: 700;
-  padding: 0;
+  line-height: 1;
+  border-radius: var(--fm-radius-pill);
+  padding: 0 3px;
   border: 1.5px solid var(--color-white);
-  border-radius: var(--fm-radius-circle);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-  top: 2px !important;
-  inset-inline-end: 2px !important;
+  box-shadow: 0 2px 4px rgba(29, 27, 24, 0.08);
   z-index: 2;
+  pointer-events: none;
 }
 
 .animate-pulse {
@@ -621,9 +627,12 @@
   }
 
   .badge-custom {
-    width: 14px;
+    min-width: 14px;
     height: 14px;
-    font-size: 0.55rem;
+    font-size: 8px;
+    top: 2px !important;
+    inset-inline-end: 2px !important;
+    padding: 0 2px;
   }
 }
 

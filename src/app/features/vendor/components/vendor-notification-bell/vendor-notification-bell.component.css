@@ -41,21 +41,24 @@
 
 .notification-badge {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  min-width: 18px;
-  height: 18px;
+  top: 3px;
+  inset-inline-end: 3px;
+  min-width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #c84b31, #e86a3e);
-  color: #fff;
-  font-size: 10px;
+  background: var(--fm-color-warning-500);
+  color: #ffffff;
+  font-size: 9px;
   font-weight: 700;
   line-height: 1;
-  border-radius: 999px;
-  padding: 0 4px;
-  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--fm-radius-pill);
+  padding: 0 3px;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(29, 27, 24, 0.08);
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* Backdrop (mobile only) */
