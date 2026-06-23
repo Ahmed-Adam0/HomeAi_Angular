@@ -290,6 +290,16 @@
                   </div>
                 </div>
               }
+
+              <!-- Customer Notes -->
+              @if (order()!.notes) {
+                <div class="vod-info-block vod-info-block--full-width">
+                  <div class="vod-info-block-label">Customer Notes</div>
+                  <div class="vod-info-block-main text-secondary fw-normal fs-6" style="white-space: pre-wrap; font-size: 0.9375rem; line-height: 1.5;">
+                    "{{ order()!.notes }}"
+                  </div>
+                </div>
+              }
             </div>
           </section>
 
