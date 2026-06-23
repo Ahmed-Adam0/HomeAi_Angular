@@ -1,7 +1,7 @@
 import { IOrderItem } from './iorder-item';
 import { IShippingAddress } from './ishipping-address';
 
-export type OrderStatus = 'pending' | 'awaiting_customer_approval' | 'confirmed' | 'processing' | 'ready' | 'shipped' | 'delivered' | 'cancelled' | 'refunded' | 'completed';
+export type OrderStatus = 'pending' | 'awaiting_customer_approval' | 'pending_payment' | 'confirmed' | 'processing' | 'ready' | 'shipped' | 'delivered' | 'cancelled' | 'refunded' | 'completed';
 
 
 export interface IStatusHistory {
@@ -41,6 +41,9 @@ export interface IOrder {
   masterOrderId?: number;
   customerName: string;
   customerPhone: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   itemCount?: number;
   vendorOrders?: ICustomerVendorOrder[];
 }
@@ -107,6 +110,9 @@ export interface IBackendOrder {
   masterOrderId?: number;
   customerName?: string;
   customerPhone?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
   itemCount?: number;
   vendorOrders?: IBackendVendorOrder[];
 }

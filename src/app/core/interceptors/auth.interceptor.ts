@@ -38,19 +38,33 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     console.log(`[authInterceptor] Appending Authorization header to request: [${req.method}] ${req.url}`);
   }
 
-  // Return the request and capture any 401 Unauthorized errors globally
+  // Return the request and capture any 401 Unauthorized or 403 Forbidden errors globally
   return next(clonedReq).pipe(
     catchError((error) => {
-      if (isPlatformBrowser(platformId) && error instanceof HttpErrorResponse && error.status === 401) {
-        const wasAuthenticated = authService.isLoggedIn();
+      if (isPlatformBrowser(platformId) && error instanceof HttpErrorResponse) {
+        if (error.status === 401) {
+          const wasAuthenticated = authService.isLoggedIn();
 
-        console.warn(`[authInterceptor] Intercepted 401 Unauthorized for [${req.method}] ${req.url}.`);
-        authService.logout();
+          console.warn(`[authInterceptor] Intercepted 401 Unauthorized for [${req.method}] ${req.url}.`);
+          authService.logout();
 
-        if (wasAuthenticated) {
-          const targetRoute = router.url.startsWith('/vendor') ? NAV_ROUTES.VENDOR_LOGIN : NAV_ROUTES.LOGIN;
-          console.warn(`[authInterceptor] Redirecting to ${targetRoute} after session expiry.`);
-          void router.navigate([targetRoute], { queryParams: { returnUrl: router.url } });
+          if (wasAuthenticated) {
+            const targetRoute = router.url.startsWith('/vendor') ? NAV_ROUTES.VENDOR_LOGIN : NAV_ROUTES.LOGIN;
+            console.warn(`[authInterceptor] Redirecting to ${targetRoute} after session expiry.`);
+            void router.navigate([targetRoute], { queryParams: { returnUrl: router.url } });
+          }
+        } else if (error.status === 403) {
+          const wasAuthenticated = authService.isLoggedIn();
+          const isVendorUser = authService.isVendor() || router.url.startsWith('/vendor');
+
+          console.warn(`[authInterceptor] Intercepted 403 Forbidden for [${req.method}] ${req.url}.`);
+          authService.logout();
+
+          if (wasAuthenticated) {
+            const targetRoute = isVendorUser ? NAV_ROUTES.VENDOR_LOGIN : NAV_ROUTES.LOGIN;
+            console.warn(`[authInterceptor] Redirecting to ${targetRoute} due to vendor account deactivation.`);
+            void router.navigate([targetRoute]);
+          }
         }
       }
       return throwError(() => error);

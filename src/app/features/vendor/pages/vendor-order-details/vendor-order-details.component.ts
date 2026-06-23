@@ -56,6 +56,7 @@ export class VendorOrderDetails implements OnInit {
   readonly isConfirmDialogVisible = signal(false);
   readonly isProposingDate = signal<boolean>(false);
   readonly proposedDate = signal<string>('');
+  readonly isDateInvalid = signal<boolean>(false);
 
   protected readonly skeletonItems = Array(3);
 
@@ -119,9 +120,10 @@ export class VendorOrderDetails implements OnInit {
     const steps = [
       { status: VendorOrderStatus.Pending, labelKey: 'VENDOR.STATUS.PENDING', icon: 'clock' },
       { status: VendorOrderStatus.AwaitingCustomerApproval, labelKey: 'VENDOR.STATUS.AWAITING_CUSTOMER_APPROVAL', icon: 'clock' },
+      { status: VendorOrderStatus.PendingPayment, labelKey: 'VENDOR.STATUS.PENDING_PAYMENT', icon: 'clock' },
       { status: VendorOrderStatus.Confirmed, labelKey: 'VENDOR.STATUS.CONFIRMED', icon: 'check-circle' },
       { status: VendorOrderStatus.InProgress, labelKey: 'VENDOR.STATUS.IN_PROGRESS', icon: 'play-circle' },
-      { status: VendorOrderStatus.ReadyForPickup, labelKey: 'VENDOR.STATUS.READY_FOR_PICKUP', icon: 'package' },
+      { status: VendorOrderStatus.Shipped, labelKey: 'VENDOR.STATUS.SHIPPED', icon: 'package' },
       { status: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED', icon: 'truck' },
     ];
 
@@ -136,9 +138,10 @@ export class VendorOrderDetails implements OnInit {
     const statusOrder = [
       VendorOrderStatus.Pending,
       VendorOrderStatus.AwaitingCustomerApproval,
+      VendorOrderStatus.PendingPayment,
       VendorOrderStatus.Confirmed,
       VendorOrderStatus.InProgress,
-      VendorOrderStatus.ReadyForPickup,
+      VendorOrderStatus.Shipped,
       VendorOrderStatus.Delivered,
     ];
 
@@ -196,9 +199,10 @@ export class VendorOrderDetails implements OnInit {
   private readonly statusOptionList: readonly { value: VendorOrderStatus; labelKey: string }[] = [
     { value: VendorOrderStatus.Pending, labelKey: 'VENDOR.STATUS.PENDING' },
     { value: VendorOrderStatus.AwaitingCustomerApproval, labelKey: 'VENDOR.STATUS.AWAITING_CUSTOMER_APPROVAL' },
+    { value: VendorOrderStatus.PendingPayment, labelKey: 'VENDOR.STATUS.PENDING_PAYMENT' },
     { value: VendorOrderStatus.Confirmed, labelKey: 'VENDOR.STATUS.CONFIRMED' },
     { value: VendorOrderStatus.InProgress, labelKey: 'VENDOR.STATUS.IN_PROGRESS' },
-    { value: VendorOrderStatus.ReadyForPickup, labelKey: 'VENDOR.STATUS.READY_FOR_PICKUP' },
+    { value: VendorOrderStatus.Shipped, labelKey: 'VENDOR.STATUS.SHIPPED' },
     { value: VendorOrderStatus.Delivered, labelKey: 'VENDOR.STATUS.DELIVERED' },
     { value: VendorOrderStatus.Cancelled, labelKey: 'VENDOR.STATUS.CANCELLED' },
   ];
@@ -221,6 +225,7 @@ export class VendorOrderDetails implements OnInit {
       currentStatus !== null &&
       currentStatus !== VendorOrderStatus.Pending &&
       currentStatus !== VendorOrderStatus.AwaitingCustomerApproval &&
+      currentStatus !== VendorOrderStatus.PendingPayment &&
       !this.isTerminalStatus(currentStatus);
   });
 
@@ -370,12 +375,40 @@ export class VendorOrderDetails implements OnInit {
   onDateChange(event: Event): void {
     const value = (event.target as HTMLInputElement)?.value ?? '';
     this.proposedDate.set(value);
+
+    if (!value) {
+      this.isDateInvalid.set(false);
+      return;
+    }
+
+    const parts = value.split('-');
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    const selectedDate = new Date(year, month, day);
+
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    if (selectedDate < todayStart) {
+      this.isDateInvalid.set(true);
+    } else {
+      this.isDateInvalid.set(false);
+    }
+  }
+
+  getMinDate(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   submitProposedDate(): void {
     const order = this.order();
     const date = this.proposedDate();
-    if (!order || !date) return;
+    if (!order || !date || this.isDateInvalid()) return;
 
     this.isProposingDate.set(true);
     // Convert to ISO String for backend API
