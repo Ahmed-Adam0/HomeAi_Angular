@@ -222,42 +222,68 @@
               </button>
 
               @if (isProfileDropdownOpen()) {
-              <div class="profile-dropdown-card shadow-lg bg-white rounded z-3 position-absolute mt-2 p-0"
+              <div class="profile-dropdown-card shadow-lg z-3 position-absolute"
                 (click)="$event.stopPropagation()">
-                <div class="profile-dropdown-header p-3 border-bottom">
-                  <span class="user-fullname d-block fw-bold text-dark fs-7">{{ authService.currentUser()?.name
-                    }}</span>
-                  <span class="user-email d-block text-muted fs-8">{{ authService.currentUser()?.email }}</span>
-                  <div class="mt-2 text-start">
-                    <span class="user-badge py-0.5 px-2 rounded-pill fs-9 fw-bold text-gold">{{
-                      authService.currentUser()?.tier }}</span>
+                
+                <!-- Dropdown Header -->
+                <div class="profile-dropdown-header d-flex align-items-center gap-3">
+                  <div class="header-avatar-container position-relative">
+                    <img [attr.src]="userAvatarSrc() || undefined" alt="Profile"
+                      class="header-avatar w-100 h-100 rounded-circle object-fit-cover"
+                      [class.d-none]="!userAvatarSrc() || avatarError()" (error)="onAvatarError()" />
+                    <div class="header-avatar-initials w-100 h-100 rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                      [class.d-none]="userAvatarSrc() && !avatarError()">
+                      {{ authService.currentUser()?.initials || 'FM' }}
+                    </div>
+                    <span class="avatar-status-dot"></span>
+                  </div>
+                  <div class="header-user-info flex-grow-1 text-start">
+                    <span class="user-fullname d-block fw-semibold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
+                    <span class="user-email d-block text-muted fs-8">{{ authService.currentUser()?.email }}</span>
+                    <div class="mt-1">
+                      <span class="user-role-badge py-0.5 px-2 rounded-pill fw-semibold">
+                        ✦ {{ 'USER_ROLE_BADGE' | translate }}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div class="profile-dropdown-body py-1">
+                <!-- Quick Actions Section -->
+                <div class="profile-quick-actions d-flex">
+                   <a routerLink="/profile" class="quick-action-btn flex-grow-1 text-decoration-none" (click)="isProfileDropdownOpen.set(false)">
+                     <i class="bi bi-person"></i>
+                     <span>{{ 'NAV_VIEW_PROFILE' | translate }}</span>
+                   </a>
+                 </div>
+
+                <!-- Menu Items Section -->
+                <div class="profile-dropdown-body">
                   <a routerLink="/profile"
-                    class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5"
+                    class="profile-menu-item text-decoration-none"
                     (click)="isProfileDropdownOpen.set(false)">
-                    <i class="bi bi-person-fill text-muted item-icon"></i>
+                    <i class="bi bi-person item-icon"></i>
                     <span>{{ 'NAV_MY_PROFILE' | translate }}</span>
                   </a>
                   <a routerLink="/orders"
-                    class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5"
+                    class="profile-menu-item text-decoration-none"
                     (click)="isProfileDropdownOpen.set(false)">
-                    <i class="bi bi-card-list text-muted item-icon"></i>
+                    <i class="bi bi-receipt item-icon"></i>
                     <span>{{ 'NAV_MY_ORDERS' | translate }}</span>
                   </a>
                   <a routerLink="/ai-chat"
-                    class="profile-menu-item px-3 py-2 text-decoration-none text-dark fs-7 d-flex align-items-center gap-2.5"
+                    class="profile-menu-item text-decoration-none animate-accent-gold"
                     (click)="isProfileDropdownOpen.set(false)">
-                    <i class="bi bi-cpu-fill text-gold item-icon"></i>
+                    <i class="bi bi-magic item-icon text-gold"></i>
                     <span class="fw-semibold">{{ 'NAV_SAVED_SPACES' | translate }}</span>
                   </a>
                 </div>
 
-                <div class="profile-dropdown-footer border-top p-2 bg-light-cream">
+                <div class="profile-dropdown-divider"></div>
+
+                <!-- Footer / Sign Out Section -->
+                <div class="profile-dropdown-footer">
                   <button (click)="onLogout()"
-                    class="w-100 logout-btn-premium py-1.5 px-3 border-0 bg-transparent rounded text-danger fs-7 d-flex align-items-center gap-2.5">
+                    class="w-100 logout-btn-premium border-0 bg-transparent">
                     <i class="bi bi-box-arrow-right"></i>
                     <span>{{ 'NAV_LOGOUT' | translate }}</span>
                   </button>
@@ -392,13 +418,13 @@
           <a routerLink="/orders"
             class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
             (click)="toggleMobileMenu()">
-            <i class="bi bi-card-list text-gold fs-6"></i>
+            <i class="bi bi-receipt text-gold fs-6"></i>
             <span>{{ 'NAV_MY_ORDERS' | translate }}</span>
           </a>
           <a routerLink="/ai-chat"
             class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
             (click)="toggleMobileMenu()">
-            <i class="bi bi-cpu text-gold fs-6"></i>
+            <i class="bi bi-magic text-gold fs-6"></i>
             <span class="fw-semibold">{{ 'NAV_SAVED_SPACES' | translate }}</span>
           </a>
           <button (click)="onLogout(); toggleMobileMenu()"
