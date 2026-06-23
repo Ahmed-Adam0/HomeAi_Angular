@@ -116,6 +116,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/contact/contact.routes').then((m) => m.contactRoutes),
       },
+      {
+        path: 'inspirations',
+        loadComponent: () =>
+          import('./features/inspirations/pages/inspirations-page/inspirations-page.component').then((m) => m.InspirationsPageComponent),
+      },
     ],
   },
   {

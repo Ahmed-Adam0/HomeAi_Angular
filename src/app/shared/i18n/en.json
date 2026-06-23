@@ -883,5 +883,37 @@
     "DETAILS_DESC": "Every detail is carefully finished to deliver a premium experience."
   },
   "FILTER_AI_FEATURES": "AI Features",
-  "FILTER_AI_RECOMMENDED": "AI Recommended Only"
+  "FILTER_AI_RECOMMENDED": "AI Recommended Only",
+  "INSPIRATIONS": {
+    "HERO": {
+      "BADGE": "✦ Transform Your Space",
+      "TITLE": "Inspired Spaces, Real Transformations",
+      "SUBTITLE": "Browse our curated gallery of AI-powered interior designs and see original rooms transformed into luxury living spaces."
+    },
+    "FILTERS": {
+      "ALL_ROOMS": "All Rooms",
+      "LIVING": "Living Room",
+      "LIVING_ROOM": "Living Room",
+      "BEDROOM": "Bedroom",
+      "KITCHEN": "Kitchen",
+      "DINING": "Dining Room",
+      "DINING_ROOM": "Dining Room",
+      "OFFICE": "Home Office",
+      "OUTDOOR": "Outdoor Space",
+      "SORT_LATEST": "Sort by Latest",
+      "SORT_OLDEST": "Sort by Oldest",
+      "SORT_POPULAR": "Sort by Popular",
+      "GRID_VIEW": "Grid View",
+      "LIST_VIEW": "List View"
+    },
+    "CARD": {
+      "ORIGINAL": "Original Room",
+      "IMPLEMENTED": "Implemented Room",
+      "VIEW_DETAILS": "View Items"
+    },
+    "PAGINATION": {
+      "PREVIOUS": "Previous",
+      "NEXT": "Next"
+    }
+  }
 }

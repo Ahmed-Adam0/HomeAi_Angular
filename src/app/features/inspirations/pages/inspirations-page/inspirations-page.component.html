@@ -1,0 +1,71 @@
+<div class="inspirations-page-wrapper">
+  <!-- Hero Section -->
+  <section class="hero-section" style="background-image: url('assets/images/hero_interior.png');">
+    <div class="hero-overlay"></div>
+    <div class="container h-100 position-relative z-index-1">
+      <div class="row h-100 align-items-center">
+        <div class="col-lg-8 hero-content text-start">
+          <span class="hero-badge">
+            {{ 'INSPIRATIONS.HERO.BADGE' | translate }}
+          </span>
+          <h1 class="hero-title font-display">
+            {{ 'INSPIRATIONS.HERO.TITLE' | translate }}
+          </h1>
+          <p class="hero-subtitle">
+            {{ 'INSPIRATIONS.HERO.SUBTITLE' | translate }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Grid Section -->
+  <section class="gallery-section container">
+    <div class="grid-layout">
+      @for (item of paginatedInspirations(); track item.id) {
+        <app-inspiration-card [item]="item" class="scroll-reveal"></app-inspiration-card>
+      }
+    </div>
+  </section>
+
+  <!-- Minimalist Pagination Section -->
+  @if (totalPages() > 1) {
+    <section class="pagination-section container">
+      <div class="pagination-flex">
+        <!-- Previous Page Button -->
+        <button type="button" 
+                class="pag-nav-btn" 
+                [disabled]="currentPage() === 1" 
+                (click)="setPage(currentPage() - 1)"
+                aria-label="Previous Page">
+          <i class="bi" 
+             [class.bi-chevron-left]="translationService.currentLang() === 'en'" 
+             [class.bi-chevron-right]="translationService.currentLang() === 'ar'"></i>
+        </button>
+
+        <!-- Page Numbers List -->
+        <div class="page-numbers-container">
+          @for (num of pageNumbers(); track num) {
+            <button type="button" 
+                    class="pag-num-btn" 
+                    [class.active]="currentPage() === num" 
+                    (click)="setPage(num)">
+              {{ num }}
+            </button>
+          }
+        </div>
+
+        <!-- Next Page Button -->
+        <button type="button" 
+                class="pag-nav-btn" 
+                [disabled]="currentPage() === totalPages()" 
+                (click)="setPage(currentPage() + 1)"
+                aria-label="Next Page">
+          <i class="bi" 
+             [class.bi-chevron-right]="translationService.currentLang() === 'en'" 
+             [class.bi-chevron-left]="translationService.currentLang() === 'ar'"></i>
+        </button>
+      </div>
+    </section>
+  }
+</div>

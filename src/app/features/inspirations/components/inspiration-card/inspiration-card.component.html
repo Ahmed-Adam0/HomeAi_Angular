@@ -1,0 +1,33 @@
+<div class="inspiration-card">
+  <!-- Before/After Comparison Slider Area -->
+  <div class="comparison-container" #container>
+    <!-- AFTER Image (Base Layer) -->
+    <img [src]="item.afterImage" class="image-after" alt="After Transformation" loading="lazy" />
+    <span class="badge-tag badge-after">
+      {{ 'INSPIRATIONS.CARD.IMPLEMENTED' | translate }}
+    </span>
+
+    <!-- BEFORE Image (Clipped Overlay Layer) -->
+    <img [src]="item.beforeImage" 
+         class="image-before" 
+         [style.clip-path]="'inset(0 ' + (100 - sliderPosition) + '% 0 0)'" 
+         alt="Before Transformation" 
+         loading="lazy" />
+    <span class="badge-tag badge-before" [style.opacity]="sliderPosition > 15 ? 1 : 0">
+      {{ 'INSPIRATIONS.CARD.ORIGINAL' | translate }}
+    </span>
+
+    <!-- Interactive Drag Handle -->
+    <div class="slider-handle" 
+         [style.left.%]="sliderPosition" 
+         (mousedown)="startDrag($event)" 
+         (touchstart)="startDrag($event)">
+      <div class="handle-line"></div>
+      <div class="handle-button">
+        <i class="bi bi-chevron-left"></i>
+        <i class="bi bi-chevron-right"></i>
+      </div>
+      <div class="handle-line"></div>
+    </div>
+  </div>
+</div>

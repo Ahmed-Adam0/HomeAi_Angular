@@ -1,0 +1,149 @@
+:host {
+  display: block;
+}
+
+.inspiration-card {
+  background-color: var(--fm-surface-card);
+  border-radius: var(--fm-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--fm-shadow-md);
+  transition: var(--fm-transition-card-hover);
+  border: 1px solid var(--fm-border-medium);
+}
+
+.inspiration-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--fm-shadow-hover);
+  border-color: var(--fm-color-primary-300);
+}
+
+/* Comparison Container */
+.comparison-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 12;
+  overflow: hidden;
+  user-select: none;
+  cursor: ew-resize;
+  background-color: var(--fm-color-neutral-200);
+}
+
+.image-after,
+.image-before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  transition: transform 0.5s var(--fm-ease-smooth);
+}
+
+.inspiration-card:hover .image-after,
+.inspiration-card:hover .image-before {
+  transform: scale(1.03);
+}
+
+/* Badges styling */
+.badge-tag {
+  position: absolute;
+  top: var(--fm-space-20);
+  z-index: 10;
+  padding: 8px 18px;
+  font-size: 0.725rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--fm-radius-pill);
+  box-shadow: var(--fm-shadow-sm);
+  pointer-events: none;
+  transition: opacity 0.3s var(--fm-ease-smooth);
+}
+
+/* Original room: Light grey glass badge */
+.badge-before {
+  inset-inline-start: var(--fm-space-20);
+  background-color: rgba(244, 242, 238, 0.95);
+  color: var(--fm-color-neutral-800);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Implemented room: Gold luxury badge */
+.badge-after {
+  inset-inline-end: var(--fm-space-20);
+  background: linear-gradient(135deg, var(--fm-color-primary-500), var(--fm-color-primary-600));
+  color: var(--fm-text-inverted);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Drag Handle */
+.slider-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #ffffff;
+  z-index: 20;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}
+
+.slider-handle:active {
+  cursor: grabbing;
+}
+
+.handle-line {
+  flex: 1;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.8) 15%, rgba(255, 255, 255, 0.8) 85%, transparent);
+}
+
+.handle-button {
+  width: 44px;
+  height: 44px;
+  background-color: #ffffff;
+  border: 2px solid var(--fm-color-primary-400);
+  border-radius: var(--fm-radius-circle);
+  box-shadow: var(--fm-shadow-floating);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--fm-color-primary-600);
+  font-size: 0.85rem;
+  transition: transform 0.2s var(--fm-ease-smooth), background-color 0.2s var(--fm-ease-smooth);
+}
+
+.slider-handle:hover .handle-button {
+  transform: scale(1.1);
+  background-color: var(--fm-color-primary-50);
+}
+
+.handle-button i {
+  display: inline-flex;
+  margin: 0 -2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .badge-tag {
+    top: var(--fm-space-12);
+    padding: 6px 12px;
+    font-size: 0.65rem;
+  }
+  .badge-before {
+    inset-inline-start: var(--fm-space-12);
+  }
+  .badge-after {
+    inset-inline-end: var(--fm-space-12);
+  }
+  .handle-button {
+    width: 34px;
+    height: 34px;
+    font-size: 0.75rem;
+  }
+}

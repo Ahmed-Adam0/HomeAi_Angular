@@ -49,6 +49,8 @@ export const APP_ROUTES = {
 
   AI_CHAT: 'ai-chat',
 
+  INSPIRATIONS: 'inspirations',
+
   NOT_FOUND: '404',
 
   WILDCARD: '**'
@@ -92,6 +94,7 @@ export const NAV_ROUTES = {
   VENDOR_ANALYTICS: '/vendor/analytics',
   VENDOR_PROFILE: '/vendor/profile',
   VENDOR_NOTIFICATIONS: '/vendor/notifications',
+  VENDOR_SETTINGS: '/vendor/settings',
   VENDOR_DASHBOARD: '/vendor/dashboard',
   VENDOR_REVIEWS: '/vendor/reviews',
   VENDOR_PRODUCTS: '/vendor/products',
@@ -100,6 +103,8 @@ export const NAV_ROUTES = {
   VENDOR_MATERIALS: '/vendor/materials',
 
   AI_CHAT: '/ai-chat',
+
+  INSPIRATIONS: '/inspirations',
 
   NOTIFICATIONS: '/notifications'
 } as const;
