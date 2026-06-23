@@ -180,7 +180,11 @@ export class AuthService {
     this.hubService.stopConnection();
     if (this.isBrowser) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.USER);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.AVATAR_URL);
+      localStorage.removeItem('workshopId');
+      localStorage.removeItem('workshop_id');
     }
     this.clearAuthState();
   }
