@@ -11,6 +11,7 @@ import { mapNotificationsResponse, NotificationsMappedResult } from '../data-acc
 import { INotificationItem } from '../interfaces/inotification';
 import { AuthService } from '../../auth/services/auth.service';
 import { NotificationHubService } from './notification-hub.service';
+import { NotificationSoundService } from '../../../core/services/notification-sound.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,7 @@ export class NotificationService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
   private readonly hubService = inject(NotificationHubService);
+  private readonly soundService = inject(NotificationSoundService);
 
   private unreadCountRequest: Observable<number> | null = null;
   private unreadCountLoaded = false;
@@ -202,7 +204,12 @@ export class NotificationService {
     ]);
 
     this.syncNotificationSignals();
-    this.unreadCount.update((count) => count + (normalizedNotification.isRead ? 0 : 1));
+
+    const isUnread = !normalizedNotification.isRead;
+    if (isUnread) {
+      this.unreadCount.update((count) => count + 1);
+      this.soundService.playSound();
+    }
   }
 
   refreshNotifications(page = 1, pageSize = 5): Observable<NotificationsMappedResult> {

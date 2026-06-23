@@ -14,44 +14,52 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   background: none;
   border: none;
   border-radius: 50%;
-  color: #1e1513;
-  font-size: 20px;
+  color: var(--fm-color-neutral-900);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--fm-transition-smooth);
 }
 
 .notification-bell-btn:hover {
-  background-color: #f0edea;
-  color: #c5a880;
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-color-primary-500) !important;
+  transform: translateY(-1px);
 }
 
 .notification-bell-btn[aria-expanded="true"] {
-  background-color: #f0edea;
-  color: #c5a880;
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-color-primary-500) !important;
+}
+
+.notification-bell-btn:focus-visible {
+  outline: 2px solid var(--fm-color-primary-500);
+  outline-offset: 1px;
 }
 
 .notification-badge {
   position: absolute;
-  top: 2px;
-  right: 2px;
-  min-width: 18px;
-  height: 18px;
+  top: 3px;
+  inset-inline-end: 3px;
+  min-width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #c84b31, #e86a3e);
-  color: #fff;
-  font-size: 10px;
+  background: var(--fm-color-warning-500);
+  color: #ffffff;
+  font-size: 9px;
   font-weight: 700;
   line-height: 1;
-  border-radius: 999px;
-  padding: 0 4px;
-  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--fm-radius-pill);
+  padding: 0 3px;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(29, 27, 24, 0.08);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .notification-badge--loading {
@@ -157,6 +165,24 @@
     top: 56px;
     max-height: calc(100vh - 56px - env(safe-area-inset-bottom, 0px));
     max-height: calc(100dvh - 56px - env(safe-area-inset-bottom, 0px));
+  }
+
+  .notification-bell-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .notification-bell-btn i {
+    font-size: 1rem !important;
+  }
+
+  .notification-badge {
+    min-width: 14px;
+    height: 14px;
+    font-size: 8px;
+    top: 2px;
+    inset-inline-end: 2px;
+    padding: 0 2px;
   }
 }
 
