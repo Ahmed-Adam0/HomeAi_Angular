@@ -1,6 +1,6 @@
 import { Component, Input, HostListener, ElementRef, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InspirationItem } from '../../interfaces/inspiration.interface';
+import { IInspiration } from '../../interfaces/inspiration.interface';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
@@ -12,7 +12,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   styleUrl: './inspiration-card.component.css'
 })
 export class InspirationCardComponent {
-  @Input({ required: true }) item!: InspirationItem;
+  @Input({ required: true }) item!: IInspiration;
   @ViewChild('container', { static: true }) containerRef!: ElementRef<HTMLDivElement>;
 
   readonly translationService = inject(TranslationService);
@@ -23,7 +23,7 @@ export class InspirationCardComponent {
   hasLiked = false;
 
   ngOnInit() {
-    this.likesCount = this.item.likes;
+    this.likesCount = 0;
   }
 
   toggleLike(event: Event) {

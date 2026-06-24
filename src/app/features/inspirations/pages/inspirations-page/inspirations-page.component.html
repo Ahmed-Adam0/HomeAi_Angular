@@ -29,17 +29,60 @@
 
   <!-- Gallery Grid Section -->
   <section class="gallery-section container">
-    <div class="grid-layout">
-      @for (item of paginatedInspirations(); track item.id; let i = $index) {
-        <app-inspiration-card [item]="item" 
-                              [style.animation-delay.ms]="i * 120" 
-                              class="scroll-reveal"></app-inspiration-card>
-      }
-    </div>
+    @if (loading()) {
+      <!-- Elegant Glassmorphic Loading State -->
+      <div class="inspirations-loading-container">
+        <div class="spinner-glow"></div>
+        <h3 class="loading-text">
+          {{ translationService.currentLang() === 'ar' ? 'جاري تحميل الأفكار الملهمة...' : 'Loading Inspired Spaces...' }}
+        </h3>
+        <p class="loading-subtitle">
+          {{ translationService.currentLang() === 'ar' ? 'نحن نسحب أفضل تحولات التصميم لتلهمك.' : 'We are fetching the finest design transformations to inspire you.' }}
+        </p>
+      </div>
+    } @else if (error()) {
+      <!-- Gracious Error Handling State -->
+      <div class="inspirations-error-container">
+        <div class="state-icon-wrap error-icon-wrap">
+          <i class="bi bi-exclamation-triangle animate-bounce"></i>
+        </div>
+        <h3 class="error-title">
+          {{ translationService.currentLang() === 'ar' ? 'فشل تحميل البيانات' : 'Failed to Load' }}
+        </h3>
+        <p class="error-desc">
+          {{ translationService.currentLang() === 'ar' ? 'حدث خطأ أثناء تحميل ألبوم الأفكار الملهمة. يرجى المحاولة مرة أخرى.' : 'An error occurred while fetching the design gallery. Please try again.' }}
+        </p>
+        <button type="button" class="btn-retry" (click)="loadInspirations(currentPage())">
+          {{ translationService.currentLang() === 'ar' ? 'إعادة المحاولة' : 'Retry Now' }}
+        </button>
+      </div>
+    } @else if (inspirations().length === 0) {
+      <!-- Beautiful Empty State -->
+      <div class="inspirations-empty-container">
+        <div class="state-icon-wrap">
+          <i class="bi bi-image"></i>
+        </div>
+        <h3 class="empty-title">
+          {{ translationService.currentLang() === 'ar' ? 'لا توجد أفكار ملهمة بعد' : 'No Inspirations Yet' }}
+        </h3>
+        <p class="empty-desc">
+          {{ translationService.currentLang() === 'ar' ? 'لم يتم العثور على صور قبل وبعد التجديد في المعرض حالياً.' : 'No before & after transformation images are currently available in the gallery.' }}
+        </p>
+      </div>
+    } @else {
+      <!-- Grid Layout -->
+      <div class="grid-layout">
+        @for (item of inspirations(); track item.id; let i = $index) {
+          <app-inspiration-card [item]="item" 
+                                [style.animation-delay.ms]="i * 120" 
+                                class="scroll-reveal"></app-inspiration-card>
+        }
+      </div>
+    }
   </section>
 
   <!-- Minimalist Pagination Section -->
-  @if (totalPages() > 1) {
+  @if (totalPages() > 1 && !loading() && !error()) {
     <section class="pagination-section container">
       <div class="pagination-flex">
         <!-- Previous Page Button -->

@@ -1,8 +1,8 @@
-import { Component, ElementRef, inject, signal, computed, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, inject, signal, computed, PLATFORM_ID, OnInit } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { InspirationsService } from '../../services/inspirations.service';
 import { InspirationCardComponent } from '../../components/inspiration-card/inspiration-card.component';
-import { InspirationItem } from '../../interfaces/inspiration.interface';
+import { IInspiration } from '../../interfaces/inspiration.interface';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
@@ -13,35 +13,52 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   templateUrl: './inspirations-page.component.html',
   styleUrl: './inspirations-page.component.css'
 })
-export class InspirationsPageComponent {
+export class InspirationsPageComponent implements OnInit {
   private readonly inspirationsService = inject(InspirationsService);
   readonly translationService = inject(TranslationService);
   private readonly el = inject(ElementRef);
   private readonly platformId = inject(PLATFORM_ID);
 
   // Gallery items list
-  private readonly allInspirations = signal<InspirationItem[]>([]);
+  readonly inspirations = signal<IInspiration[]>([]);
 
   // Pagination states
   readonly currentPage = signal<number>(1);
+  readonly totalPages = signal<number>(1);
+  readonly totalCount = signal<number>(0);
   readonly pageSize = 4; // 4 items per page
 
-  constructor() {
-    this.allInspirations.set(this.inspirationsService.getInspirations());
+  // Loading and Error states
+  readonly loading = signal<boolean>(false);
+  readonly error = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.loadInspirations(1);
   }
 
-  // Paginated items
-  readonly paginatedInspirations = computed(() => {
-    const items = this.allInspirations();
-    const page = this.currentPage();
-    const start = (page - 1) * this.pageSize;
-    return items.slice(start, start + this.pageSize);
-  });
+  /**
+   * Fetches the inspirations for the given page number.
+   * @param page The page index to fetch.
+   */
+  loadInspirations(page: number): void {
+    this.loading.set(true);
+    this.error.set(null);
 
-  // Total page count
-  readonly totalPages = computed(() => {
-    return Math.ceil(this.allInspirations().length / this.pageSize) || 1;
-  });
+    this.inspirationsService.getInspirations(page, this.pageSize).subscribe({
+      next: (response) => {
+        this.inspirations.set(response.data);
+        this.currentPage.set(response.pagination.currentPage);
+        this.totalPages.set(response.pagination.totalPages);
+        this.totalCount.set(response.pagination.totalCount);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load inspirations', err);
+        this.error.set('INSPIRATIONS.ERROR.FAILED_TO_LOAD');
+        this.loading.set(false);
+      }
+    });
+  }
 
   // Pages array [1, 2, ...]
   readonly pageNumbers = computed(() => {
@@ -49,8 +66,12 @@ export class InspirationsPageComponent {
     return Array.from({ length: total }, (_, i) => i + 1);
   });
 
+  /**
+   * Triggers page navigation and fetches the corresponding items.
+   * @param page The target page index.
+   */
   setPage(page: number): void {
-    if (page < 1 || page > this.totalPages()) return;
+    if (page < 1 || page > this.totalPages() || this.loading()) return;
 
     // Smooth scroll to top of gallery section
     if (isPlatformBrowser(this.platformId)) {
@@ -62,7 +83,7 @@ export class InspirationsPageComponent {
 
     // Delay page state change slightly to allow smooth scroll to finish
     setTimeout(() => {
-      this.currentPage.set(page);
+      this.loadInspirations(page);
     }, 150);
   }
 }

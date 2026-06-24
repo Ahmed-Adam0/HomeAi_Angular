@@ -2,13 +2,13 @@
   <!-- Before/After Comparison Slider Area -->
   <div class="comparison-container" #container>
     <!-- AFTER Image (Base Layer) -->
-    <img [src]="item.afterImage" class="image-after" alt="After Transformation" loading="lazy" />
+    <img [src]="item.afterImageUrl" class="image-after" alt="After Transformation" loading="lazy" />
     <span class="badge-tag badge-after">
       {{ 'INSPIRATIONS.CARD.IMPLEMENTED' | translate }}
     </span>
 
     <!-- BEFORE Image (Clipped Overlay Layer) -->
-    <img [src]="item.beforeImage" 
+    <img [src]="item.beforeImageUrl" 
          class="image-before" 
          [style.clip-path]="'inset(0 ' + (100 - sliderPosition) + '% 0 0)'" 
          alt="Before Transformation" 

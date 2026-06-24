@@ -65,6 +65,9 @@ export const API_URLS = {
     MARK_READ: (id: number) => `internal-notifications/${id}/read`,
     MARK_ALL_READ: 'internal-notifications/read-all',
   },
+  INSPIRATIONS: {
+    LIST: 'inspirations',
+  },
   VENDOR: {
     ORDERS_FILTER: 'VendorOrders/orders/filter',
     ORDER_DETAILS: (orderId: number | string) => `VendorOrders/orders/${orderId}`,

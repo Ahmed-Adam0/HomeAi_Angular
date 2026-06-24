@@ -301,3 +301,96 @@
     gap: var(--fm-space-24);
   }
 }
+
+/* Loading and Empty State Styling */
+.inspirations-loading-container,
+.inspirations-empty-container,
+.inspirations-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+  text-align: center;
+  background-color: var(--fm-surface-card, #ffffff);
+  border-radius: var(--fm-radius-xl, 24px);
+  border: 1px solid rgba(184, 147, 92, 0.12);
+  padding: var(--fm-space-48) var(--fm-space-24);
+  box-shadow: 
+    0 10px 30px rgba(184, 147, 92, 0.03),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  margin: var(--fm-space-24) auto var(--fm-space-48) auto;
+  max-width: 800px;
+  animation: cardEntrance 0.8s var(--fm-ease-smooth) forwards;
+}
+
+.spinner-glow {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(184, 147, 92, 0.15);
+  border-top-color: var(--fm-color-primary-500, #b8935c);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--fm-space-24);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text,
+.empty-title,
+.error-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fm-color-neutral-900, #1d1b18);
+  margin-bottom: var(--fm-space-12);
+}
+
+.loading-subtitle,
+.empty-desc,
+.error-desc {
+  font-size: 0.95rem;
+  color: var(--fm-color-neutral-500, #7a756e);
+  max-width: 480px;
+  line-height: 1.5;
+}
+
+.state-icon-wrap {
+  width: 80px;
+  height: 80px;
+  background-color: rgba(184, 147, 92, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fm-color-primary-500, #b8935c);
+  font-size: 2.2rem;
+  margin-bottom: var(--fm-space-24);
+  box-shadow: 0 8px 20px rgba(184, 147, 92, 0.1);
+}
+
+.error-icon-wrap {
+  background-color: rgba(220, 53, 69, 0.08);
+  color: #dc3545;
+  box-shadow: 0 8px 20px rgba(220, 53, 69, 0.1);
+}
+
+.btn-retry {
+  margin-top: var(--fm-space-24);
+  background: linear-gradient(135deg, var(--fm-color-primary-400) 0%, var(--fm-color-primary-500) 100%);
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: var(--fm-radius-pill);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(184, 147, 92, 0.25);
+  transition: transform 0.3s var(--fm-ease-smooth), box-shadow 0.3s var(--fm-ease-smooth);
+}
+
+.btn-retry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(184, 147, 92, 0.35);
+}
