@@ -337,21 +337,17 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
         from { transform: scale(0.5); opacity: 0; }
         to { transform: scale(1); opacity: 1; }
       }
-      :host-context([dir='rtl']) .premium-input {
-        padding-left: 3rem !important;
-        padding-right: 3rem !important;
+      .premium-input {
+        padding-inline-start: 3rem !important;
+        padding-inline-end: 3rem !important;
       }
-      :host-context([dir='rtl']) .input-icon-left {
-        left: auto !important;
-        right: 0 !important;
-        margin-right: 1rem !important;
-        margin-left: 0 !important;
+      .input-icon-left {
+        inset-inline-start: 1rem !important;
+        inset-inline-end: auto !important;
       }
-      :host-context([dir='rtl']) .btn-toggle-visibility {
-        left: 0 !important;
-        right: auto !important;
-        margin-left: 1rem !important;
-        margin-right: 0 !important;
+      .btn-toggle-visibility {
+        inset-inline-end: 1rem !important;
+        inset-inline-start: auto !important;
       }
     `
   ]

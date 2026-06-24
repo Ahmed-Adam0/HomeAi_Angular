@@ -92,12 +92,7 @@
 .menu-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-direction: row;
-}
-
-:host-context([dir='rtl']) .menu-item {
-  flex-direction: row-reverse;
+  gap: 12px;
 }
 
 /* Nav item buttons */
@@ -111,7 +106,7 @@
   color: var(--clr-text-muted);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   cursor: pointer;
   transition:
     background 0.25s var(--ease-spring),
@@ -128,7 +123,6 @@
 .nav-dock.expanded .nav-item-btn {
   width: 100%;
   padding: 0 12px;
-  justify-content: space-between;
 }
 
 .nav-item-btn:hover:not(.active) {
@@ -142,7 +136,7 @@
   font-weight: 700;
 }
 
-/* Active State layout adjustments to make active start from the right in RTL and left in LTR */
+/* Active State layout adjustments to make active start from the start edge */
 .nav-dock:hover .nav-item-btn.active,
 .nav-dock.expanded .nav-item-btn.active {
   border-start-start-radius: 0;
@@ -177,21 +171,25 @@
   font-size: 0.875rem;
   font-weight: 600;
   opacity: 0;
-  transform: translateX(-6px);
+  transform: translateY(4px);
   transition:
     opacity 0.25s ease 0.05s,
     transform 0.3s var(--ease-spring) 0.05s;
   pointer-events: none;
-  flex-grow: 1;
   text-align: start;
-  margin-inline-start: 8px;
-  margin-inline-end: 8px;
+  margin: 0;
 }
 
 .nav-dock:hover .nav-label,
 .nav-dock.expanded .nav-label {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0);
+}
+
+.mobile-drawer .nav-label {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
 }
 
 /* Notification badges */
@@ -223,6 +221,7 @@
   min-width: 20px;
   height: 20px;
   flex-shrink: 0;
+  margin-inline-start: auto;
 }
 
 .badge-circle-count {
@@ -244,13 +243,14 @@
 .nav-dock:hover .badge-circle-count,
 .nav-dock.expanded .badge-circle-count { opacity: 1; }
 
-.logout-li {
-  border-color: var(--clr-border) !important;
+.logout-btn:hover {
+  background: rgba(220, 53, 69, 0.06);
+  color: var(--clr-danger);
 }
 
-.logout-btn:hover {
-  background: rgba(220, 53, 69, 0.06) !important;
-  color: var(--clr-danger) !important;
+[dir='rtl'] .logout-icon,
+:host-context([dir='rtl']) .logout-icon {
+  transform: scaleX(-1);
 }
 
 /* ── 3. Workspace Shell ───────────────────────────────────────────────────── */
@@ -1340,7 +1340,10 @@
   background: var(--clr-surface);
   border-inline-end: 1px solid var(--clr-border);
   z-index: 1010;
-  transition: inset-inline-start 0.38s var(--ease-spring);
+  transition:
+    inset-inline-start 0.38s var(--ease-spring),
+    left 0.38s var(--ease-spring),
+    right 0.38s var(--ease-spring);
   display: flex;
   flex-direction: column;
 }
@@ -1480,13 +1483,44 @@
 }
 
 /* ── 12. RTL Overrides ───────────────────────────────────────────────────── */
-:host-context([dir='rtl']) .nav-label {
-  transform: translateX(6px);
+/* nav-label direction handled natively */
+
+:host-context([dir='rtl']) .nav-list {
+  padding: 0;
 }
 
-:host-context([dir='rtl']) .nav-dock:hover .nav-label,
-:host-context([dir='rtl']) .nav-dock.expanded .nav-label {
-  transform: translateX(0);
+:host-context([dir='rtl']) .nav-dock-wrapper {
+  right: 20px;
+  left: auto;
+}
+
+:host-context([dir='rtl']) .active-indicator {
+  right: 0;
+  left: auto;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+:host-context([dir='rtl']) .nav-dock:hover .nav-item-btn.active,
+:host-context([dir='rtl']) .nav-dock.expanded .nav-item-btn.active {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+
+:host-context([dir='rtl']) .mobile-drawer {
+  right: -290px;
+  left: auto;
+  border-right: none;
+  border-left: 1px solid var(--clr-border);
+}
+
+:host-context([dir='rtl']) .mobile-drawer.open {
+  right: 0;
+  left: auto;
 }
 
 :host-context([dir='rtl']) .hero-glow-bg {

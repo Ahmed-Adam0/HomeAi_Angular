@@ -248,15 +248,13 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
         color: #dc3545;
         font-weight: 500;
       }
-      :host-context([dir='rtl']) .premium-input {
-        padding-left: 1rem !important;
-        padding-right: 3rem !important;
+      .premium-input {
+        padding-inline-start: 3rem !important;
+        padding-inline-end: 1rem !important;
       }
-      :host-context([dir='rtl']) .input-icon-left {
-        left: auto !important;
-        right: 0 !important;
-        margin-right: 1rem !important;
-        margin-left: 0 !important;
+      .input-icon-left {
+        inset-inline-start: 1rem !important;
+        inset-inline-end: auto !important;
       }
     `
   ]

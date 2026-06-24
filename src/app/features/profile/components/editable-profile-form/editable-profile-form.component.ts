@@ -334,33 +334,27 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
       .google-email-help i {
         font-size: 0.9rem;
       }
-      :host-context([dir='rtl']) .input-icon-right {
-        right: auto !important;
-        left: 0 !important;
-        margin-left: 1rem !important;
-        margin-right: 0 !important;
+      .premium-input {
+        padding-inline-start: 3rem !important;
+        padding-inline-end: 1rem !important;
       }
-      :host-context([dir='rtl']) .disabled-email-input {
-        padding-right: 3rem !important;
-        padding-left: 3rem !important;
+      .premium-input.pe-5 {
+        padding-inline-end: 3rem !important;
       }
-      :host-context([dir='rtl']) .premium-input {
-        padding-left: 1rem !important;
-        padding-right: 3rem !important;
+      .input-icon-left {
+        inset-inline-start: 1rem !important;
+        inset-inline-end: auto !important;
       }
-      :host-context([dir='rtl']) .input-icon-left {
-        left: auto !important;
-        right: 0 !important;
-        margin-right: 1rem !important;
-        margin-left: 0 !important;
+      .input-icon-right {
+        inset-inline-end: 1rem !important;
+        inset-inline-start: auto !important;
       }
-      :host-context([dir='rtl']) .ms-3 {
-        margin-left: 0 !important;
-        margin-right: 1rem !important;
+      .info-content-flex {
+        margin-inline-start: 1rem !important;
       }
-      :host-context([dir='rtl']) .ms-auto {
-        margin-left: 1px !important;
-        margin-right: auto !important;
+      .ms-auto {
+        margin-inline-start: auto !important;
+        margin-inline-end: 0 !important;
       }
     `
   ]

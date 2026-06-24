@@ -95,10 +95,10 @@
               </li>
 
               <!-- Dock Footer: Logout (now aligned in dock list) -->
-              <li class="w-100 logout-li border-top mt-2 pt-2">
+              <li class="w-100">
                 <button class="nav-item-btn menu-item logout-btn w-100" (click)="onLogout()">
                   <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
-                    <i class="bi bi-box-arrow-right"></i>
+                    <i class="bi bi-box-arrow-right logout-icon"></i>
                   </span>
                   <span class="nav-label">{{ 'PROFILE.LOGOUT' | translate }}</span>
                   <span class="nav-item-meta"></span>
@@ -208,7 +208,7 @@
         <div class="drawer-footer p-3 border-top">
           <button class="mobile-nav-btn menu-item logout-btn w-100" (click)="onLogout(); isMobileDrawerOpen.set(false)">
             <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
-              <i class="bi bi-box-arrow-right"></i>
+              <i class="bi bi-box-arrow-right logout-icon"></i>
             </span>
             <span class="nav-label">{{ 'PROFILE.LOGOUT' | translate }}</span>
             <span class="nav-item-meta"></span>

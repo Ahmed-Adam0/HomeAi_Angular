@@ -8,6 +8,7 @@ import { UiState } from '../../../../core/state/ui.state';
 import { AuthService } from '../../../auth/services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { OrdersApiService } from '../../../orders/data-access/orders-api.service';
+import { FavoritesService } from '../../../favorites/services/favorites.service';
 import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
 import { ProfileSettingsCard } from '../../components/profile-settings-card/profile-settings-card.component';
 import { EditableProfileForm } from '../../components/editable-profile-form/editable-profile-form.component';
@@ -52,6 +53,7 @@ export class Profile implements AfterViewInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly productCacheService = inject(ProductCacheService);
+  private readonly favoritesService = inject(FavoritesService);
 
   readonly profile = signal<IProfile | null>(null);
   readonly loading = signal(true);
@@ -117,8 +119,17 @@ export class Profile implements AfterViewInit, OnDestroy {
   @ViewChild('profileAddresses', { static: false })
   private readonly profileAddressesRef?: ElementRef<HTMLElement>;
 
-  @ViewChild('statsSection', { static: false })
-  private readonly statsSectionRef?: ElementRef<HTMLElement>;
+  private statsSectionRef?: ElementRef<HTMLElement>;
+
+  @ViewChild('statsSection', { static: false }) set statsSection(element: ElementRef<HTMLElement> | undefined) {
+    if (element) {
+      this.statsSectionRef = element;
+      this.setupStatsObserver();
+    } else {
+      this.statsSectionRef = undefined;
+      this.countersRan = false;
+    }
+  }
 
   readonly actionItems = computed(() => {
     const stats = this.profile()?.stats;
@@ -195,7 +206,13 @@ export class Profile implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Set up IntersectionObserver to trigger counter animation when stats enter viewport
+    // Left empty since setupStatsObserver handles dynamic initialization via ViewChild setter
+  }
+
+  private setupStatsObserver(): void {
+    if (this.statsObserver) {
+      this.statsObserver.disconnect();
+    }
     if (typeof IntersectionObserver !== 'undefined' && this.statsSectionRef) {
       this.statsObserver = new IntersectionObserver(
         (entries) => {
@@ -209,9 +226,8 @@ export class Profile implements AfterViewInit, OnDestroy {
       this.statsObserver.observe(this.statsSectionRef.nativeElement);
     } else {
       // Fallback: set values immediately
-      this.animatedOrders.set(this.ordersCount());
-      this.animatedFavorites.set(this.favoritesCount());
-      this.animatedAddresses.set(this.profile()?.addresses?.length ?? 0);
+      this.runCounters();
+      this.countersRan = true;
     }
   }
 
@@ -280,7 +296,7 @@ export class Profile implements AfterViewInit, OnDestroy {
         preferredLanguage: profile.preferredLanguage,
       });
 
-      this.loadFavoritesCount();
+      await this.loadFavoritesCount();
 
       // Fetch real orders from API
       try {
@@ -372,24 +388,29 @@ export class Profile implements AfterViewInit, OnDestroy {
     }
   }
 
-  private loadFavoritesCount(): void {
+  private async loadFavoritesCount(): Promise<void> {
     try {
-      const raw = localStorage.getItem('furniture_favorites_list');
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          this.favoritesCount.set(parsed.length);
-        } else if (parsed && typeof parsed === 'object') {
-          const items = parsed.items || [];
-          this.favoritesCount.set(items.length);
+      const favorites = await firstValueFrom(this.favoritesService.getFavorites());
+      this.favoritesCount.set(favorites ? favorites.length : 0);
+    } catch {
+      try {
+        const raw = localStorage.getItem('furniture_favorites_list');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            this.favoritesCount.set(parsed.length);
+          } else if (parsed && typeof parsed === 'object') {
+            const items = parsed.items || [];
+            this.favoritesCount.set(items.length);
+          } else {
+            this.favoritesCount.set(0);
+          }
         } else {
           this.favoritesCount.set(0);
         }
-      } else {
+      } catch {
         this.favoritesCount.set(0);
       }
-    } catch {
-      this.favoritesCount.set(0);
     }
   }
 
@@ -421,6 +442,7 @@ export class Profile implements AfterViewInit, OnDestroy {
 
       this.profile.set(profileUpdate);
       this.selectedImage.set(null);
+      this.runCounters();
 
       this.authService.updateUserProfile({
         name: updated.fullName,
@@ -495,6 +517,7 @@ export class Profile implements AfterViewInit, OnDestroy {
         membership: this.profile()?.membership ?? 'Premium Member',
         stats: this.profile()?.stats,
       });
+      this.runCounters();
 
       this.authService.updateUserProfile({
         name: updated.fullName,
@@ -604,6 +627,7 @@ export class Profile implements AfterViewInit, OnDestroy {
         stats: this.profile()?.stats,
       });
       this.selectedImage.set(null);
+      this.runCounters();
 
       // Sync the navbar and all downstream avatar consumers
       this.authService.updateUserProfile({

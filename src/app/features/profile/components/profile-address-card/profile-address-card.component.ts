@@ -102,7 +102,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
       }
       .set-default-trigger {
         top: 1rem;
-        right: 1rem;
+        inset-inline-end: 1rem;
         font-size: 0.68rem;
         font-weight: 600;
         opacity: 0;
@@ -150,13 +150,9 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
       .pointer {
         cursor: pointer;
       }
-      :host-context([dir='rtl']) .set-default-trigger {
-        right: auto;
-        left: 1rem;
-      }
-      :host-context([dir='rtl']) .ms-auto {
-        margin-right: auto !important;
-        margin-left: 0 !important;
+      .ms-auto {
+        margin-inline-start: auto !important;
+        margin-inline-end: 0 !important;
       }
     `
   ]
