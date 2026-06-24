@@ -1,0 +1,8 @@
+{
+  "buildCommand": "ng build",
+  "installCommand": "npm install --legacy-peer-deps",
+  "outputDirectory": "dist/course-management-dashboard/browser",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
