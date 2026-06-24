@@ -1,8 +1,11 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "ng build",
   "installCommand": "npm install --legacy-peer-deps",
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/home-ai-angular",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
