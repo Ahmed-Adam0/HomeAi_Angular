@@ -249,8 +249,17 @@ export class Login implements OnInit, AfterViewInit {
     this.errorMessage = '';
 
     this.authService.loginWithGoogleIdToken(idToken).subscribe({
-      next: () => {
+      next: (response: any) => {
         this.isLoading = false;
+        
+        if (response?.data?.registrationRequired) {
+          const registrationToken = response.data.registrationToken;
+          const googleProfile = response.data.googleProfile;
+          this.authService.saveGoogleRegistrationState(registrationToken, googleProfile);
+          this.router.navigate([NAV_ROUTES.COMPLETE_GOOGLE_REGISTRATION]);
+          return;
+        }
+
         if (this.authService.isVendor()) {
           console.warn('[Google Login] - Vendor account detected on customer login. Rejecting and logging out.');
           this.authService.logout();

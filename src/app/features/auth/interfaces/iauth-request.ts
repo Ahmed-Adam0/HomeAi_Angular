@@ -33,3 +33,10 @@ export interface IResetPasswordRequest {
   newPassword: string;
   confirmNewPassword: string;
 }
+
+export interface ICompleteGoogleRegistrationRequest {
+  registrationToken: string;
+  password: string;
+  confirmPassword: string;
+}
+
