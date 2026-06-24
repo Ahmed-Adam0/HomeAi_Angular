@@ -19,7 +19,7 @@ export interface IActionItem {
     <div class="settings-card card border-0 overflow-hidden">
       <div class="card-body p-4 p-md-5">
         <div class="mb-4 pb-2">
-          <h3 class="h5 mb-1 font-semibold text-dark">{{ 'PROFILE.ACCOUNT_SETTINGS' | translate }}</h3>
+          <h3 class="h5 mb-1 font-bold text-dark tracking-tight">{{ 'PROFILE.ACCOUNT_SETTINGS' | translate }}</h3>
           <p class="text-muted small mb-0">{{ 'PROFILE.AI_ACTIVITY' | translate }}</p>
         </div>
 
@@ -28,20 +28,23 @@ export interface IActionItem {
           <div class="col" *ngFor="let action of actions; trackBy: trackByAction">
             <button
               type="button"
-              class="setting-item-btn w-100 d-flex align-items-center justify-content-between p-3 rounded-4 bg-white"
+              class="setting-item-btn w-100 d-flex align-items-center justify-content-between p-3.5 rounded-4 bg-white"
               (click)="selectAction.emit(action)">
               <div class="d-flex align-items-center gap-3 text-start">
                 <!-- Icon Box -->
-                <div class="icon-box d-flex align-items-center justify-content-center rounded-3" [style.background-color]="action.iconBg || 'rgba(31, 28, 24, 0.04)'" [style.color]="action.iconColor || 'var(--fm-color-neutral-800)'">
+                <div class="icon-box d-flex align-items-center justify-content-center rounded-3" [style.background-color]="action.iconBg || 'rgba(184, 147, 92, 0.08)'" [style.color]="action.iconColor || 'var(--fm-color-primary-500)'">
                   <i class="bi" [class]="action.iconClass || 'bi-gear'"></i>
                 </div>
-                <!-- Label -->
-                <span class="setting-label font-semibold text-dark small">{{ action.labelKey | translate }}</span>
+                <!-- Label & Desc -->
+                <div class="d-flex flex-column">
+                  <span class="setting-label font-bold text-dark small">{{ action.labelKey | translate }}</span>
+                  <span class="setting-desc text-muted">{{ action.labelKey + '_DESC' | translate }}</span>
+                </div>
               </div>
 
               <!-- Badge + Caret -->
-              <div class="d-flex align-items-center gap-2">
-                <span class="badge-count rounded-pill px-2 py-0.5 small" *ngIf="action.badgeValue">
+              <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <span class="badge-count rounded-pill px-2 py-0.5" *ngIf="action.badgeValue">
                   {{ action.badgeValue }}
                 </span>
                 <i class="bi bi-chevron-right caret-icon text-muted"></i>
@@ -55,50 +58,75 @@ export interface IActionItem {
   styles: [
     `
       .settings-card {
-        background: var(--fm-glass-bg);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.6) 100%);
         backdrop-filter: var(--fm-glass-blur);
         -webkit-backdrop-filter: var(--fm-glass-blur);
         border: 1px solid var(--fm-glass-border) !important;
         box-shadow: var(--fm-shadow-lg) !important;
         border-radius: var(--fm-radius-xl) !important;
+        transition: var(--fm-transition-smooth);
+      }
+      .settings-card:hover {
+        box-shadow: 0 30px 60px rgba(184, 147, 92, 0.05) !important;
+        border-color: rgba(184, 147, 92, 0.2) !important;
       }
       .setting-item-btn {
-        border: 1px solid var(--fm-border-subtle);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(184, 147, 92, 0.06);
+        background-color: rgba(255, 255, 255, 0.5) !important;
+        transition: var(--fm-transition-smooth);
         cursor: pointer;
+        outline: none;
       }
       .setting-item-btn:hover {
-        transform: translateY(-2px);
+        transform: translateY(-3px);
         box-shadow: var(--fm-shadow-md);
-        border-color: rgba(184, 147, 92, 0.15);
-        background-color: var(--fm-color-neutral-50) !important;
+        border-color: rgba(184, 147, 92, 0.2);
+        background-color: #ffffff !important;
       }
       .setting-item-btn:active {
         transform: scale(0.98);
       }
       .icon-box {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         font-size: 1.2rem;
+        flex-shrink: 0;
+        transition: var(--fm-transition-smooth);
+      }
+      .setting-item-btn:hover .icon-box {
+        transform: scale(1.05);
+      }
+      .setting-label {
+        font-size: 0.88rem;
+        color: var(--fm-color-neutral-800);
+      }
+      .setting-desc {
+        font-size: 0.72rem;
+        font-weight: 500;
+        margin-top: 2px;
       }
       .badge-count {
         background-color: var(--fm-color-primary-soft);
         color: var(--fm-color-primary-700);
-        font-size: 0.75rem;
-        font-weight: 600;
+        font-size: 0.72rem;
+        font-weight: 700;
       }
       .caret-icon {
         font-size: 0.85rem;
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       }
       .setting-item-btn:hover .caret-icon {
-        transform: translateX(3px);
+        transform: translateX(4px);
+        color: var(--fm-color-primary-500) !important;
       }
       :host-context([dir='rtl']) .setting-item-btn:hover .caret-icon {
-        transform: scaleX(-1) translateX(3px);
+        transform: scaleX(-1) translateX(4px);
       }
       :host-context([dir='rtl']) .caret-icon {
         transform: scaleX(-1);
+      }
+      :host-context([dir='rtl']) .text-start {
+        text-align: right !important;
       }
     `
   ]

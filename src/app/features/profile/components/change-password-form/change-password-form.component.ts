@@ -18,11 +18,11 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   template: `
     <div appRtl class="change-password-card card border-0 overflow-hidden">
       <div class="card-body p-4 p-md-5">
-        <h3 class="h5 mb-4 font-semibold text-dark">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</h3>
+        <h3 class="h5 mb-4 font-bold text-dark tracking-tight">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</h3>
         <form [formGroup]="passwordForm" (ngSubmit)="submit()" class="row g-4">
           <!-- Old Password -->
           <div class="col-12 col-md-4">
-            <label class="form-label font-medium text-dark small mb-2" for="oldPassword">{{ 'PROFILE.OLD_PASSWORD' | translate }}</label>
+            <label class="form-label font-semibold text-dark small mb-2" for="oldPassword">{{ 'PROFILE.OLD_PASSWORD' | translate }}</label>
             <div class="input-container position-relative">
               <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
                 <i class="bi bi-shield-lock"></i>
@@ -42,7 +42,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 
           <!-- New Password -->
           <div class="col-12 col-md-4">
-            <label class="form-label font-medium text-dark small mb-2" for="newPassword">{{ 'PROFILE.NEW_PASSWORD' | translate }}</label>
+            <label class="form-label font-semibold text-dark small mb-2" for="newPassword">{{ 'PROFILE.NEW_PASSWORD' | translate }}</label>
             <div class="input-container position-relative">
               <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
                 <i class="bi bi-key"></i>
@@ -67,7 +67,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 
           <!-- Confirm New Password -->
           <div class="col-12 col-md-4">
-            <label class="form-label font-medium text-dark small mb-2" for="confirmNewPassword">{{ 'PROFILE.CONFIRM_PASSWORD' | translate }}</label>
+            <label class="form-label font-semibold text-dark small mb-2" for="confirmNewPassword">{{ 'PROFILE.CONFIRM_PASSWORD' | translate }}</label>
             <div class="input-container position-relative">
               <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
                 <i class="bi bi-key-fill"></i>
@@ -92,7 +92,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 
           <!-- Submit Button -->
           <div class="col-12 d-flex justify-content-end mt-4 pt-2">
-            <button type="submit" class="btn btn-dark btn-md btn-rounded btn-ripple-effect px-4" [disabled]="submitting()">
+            <button type="submit" class="btn btn-change-pw btn-md btn-rounded px-4" [disabled]="submitting()">
               <span *ngIf="submitting()" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
               {{ 'PROFILE.CHANGE_PASSWORD' | translate }}
             </button>
@@ -104,34 +104,62 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   styles: [
     `
       .change-password-card {
-        background: var(--fm-glass-bg);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.6) 100%);
         backdrop-filter: var(--fm-glass-blur);
         -webkit-backdrop-filter: var(--fm-glass-blur);
         border: 1px solid var(--fm-glass-border) !important;
         box-shadow: var(--fm-shadow-lg) !important;
         border-radius: var(--fm-radius-xl) !important;
+        transition: var(--fm-transition-smooth);
+      }
+      .change-password-card:hover {
+        box-shadow: 0 30px 60px rgba(184, 147, 92, 0.05) !important;
+        border-color: rgba(184, 147, 92, 0.2) !important;
       }
       .premium-input {
         border-radius: var(--fm-radius-lg);
-        border: 1px solid var(--fm-input-border);
-        background-color: var(--fm-input-bg);
+        border: 1px solid var(--fm-color-neutral-200);
+        background-color: rgba(255, 255, 255, 0.8);
         font-size: 0.95rem;
         height: 48px;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: var(--fm-transition-smooth);
         color: var(--fm-color-neutral-800);
       }
       .premium-input:focus {
-        border-color: var(--fm-input-focus-border);
-        box-shadow: 0 0 0 4px var(--fm-input-focus-ring);
+        border-color: var(--fm-color-primary-500);
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.1);
         outline: none;
       }
       .input-icon-left {
         z-index: 4;
         display: flex;
         align-items: center;
+        font-size: 1.1rem;
       }
       .invalid-feedback {
-        font-size: 0.85rem;
+        font-size: 0.82rem;
+        color: #dc3545;
+        font-weight: 500;
+      }
+      .btn-change-pw {
+        background-color: var(--fm-color-neutral-900);
+        color: #ffffff;
+        font-weight: 600;
+        border-radius: var(--fm-radius-pill);
+        transition: var(--fm-transition-smooth);
+        border: 1px solid var(--fm-color-neutral-900);
+      }
+      .btn-change-pw:hover {
+        background-color: var(--fm-color-primary-500);
+        border-color: var(--fm-color-primary-500);
+        color: #ffffff;
+        box-shadow: 0 8px 20px rgba(184, 147, 92, 0.25);
+        transform: translateY(-2px);
+      }
+      .btn-change-pw:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
       }
       :host-context([dir='rtl']) .premium-input {
         padding-left: 1rem !important;

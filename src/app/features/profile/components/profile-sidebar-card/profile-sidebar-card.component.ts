@@ -36,9 +36,20 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
 
         <!-- Name & Email Info -->
         <div class="text-center mb-3">
-          <h2 class="h5 mb-1 text-dark font-semibold">{{ profile?.fullName || profile?.userName || 'FurniMind AI' }}</h2>
-          <p class="mb-0 text-muted small text-truncate" style="max-width: 250px;">{{ profile?.email }}</p>
-          <span class="membership-badge mt-3 d-inline-block">{{ profile?.membership || ('PROFILE.MEMBERSHIP' | translate) }}</span>
+          <div class="d-flex align-items-center justify-content-center gap-2 mb-1 flex-wrap">
+            <h2 class="h5 mb-0 text-dark font-bold tracking-tight">{{ profile?.fullName || profile?.userName || 'FurniMind AI' }}</h2>
+            <span class="verify-badge d-flex align-items-center justify-content-center" title="Verified Member">
+              <i class="bi bi-patch-check-fill text-brand"></i>
+            </span>
+          </div>
+          <p class="mb-1 text-muted small text-truncate" style="max-width: 250px; font-weight: 500;">{{ profile?.email }}</p>
+          <p class="mb-0 text-muted small" *ngIf="profile?.phoneNumber" style="font-weight: 500;">
+            <i class="bi bi-telephone-fill me-1.5 text-muted opacity-60"></i>{{ profile?.phoneNumber }}
+          </p>
+          <div class="d-flex align-items-center justify-content-center gap-2 mt-3 flex-wrap">
+            <span class="membership-badge">{{ profile?.membership || ('PROFILE.MEMBERSHIP' | translate) }}</span>
+            <span class="member-since-badge">{{ 'PROFILE.ESTABLISHED' | translate }}</span>
+          </div>
         </div>
 
         <!-- Stats Horizontal Summary (Orders, Designs, Saved) -->
@@ -50,7 +61,7 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
         </div>
 
         <!-- Sign Out Action -->
-        <button type="button" class="btn btn-outline-danger w-100 rounded-pill btn-md d-flex align-items-center justify-content-center gap-2 mt-4" (click)="logout.emit()">
+        <button type="button" class="btn btn-outline-logout w-100 rounded-pill btn-md d-flex align-items-center justify-content-center gap-2 mt-4" (click)="logout.emit()">
           <i class="bi bi-box-arrow-right"></i>
           {{ 'PROFILE.LOGOUT' | translate }}
         </button>
@@ -60,13 +71,28 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
   styles: [
     `
       .sidebar-card {
-        background: var(--fm-glass-bg);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.6) 100%);
         backdrop-filter: var(--fm-glass-blur);
         -webkit-backdrop-filter: var(--fm-glass-blur);
         border: 1px solid var(--fm-glass-border) !important;
         box-shadow: var(--fm-shadow-lg) !important;
         border-radius: var(--fm-radius-xl) !important;
         transition: var(--fm-transition-smooth);
+        position: relative;
+      }
+      .sidebar-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, var(--fm-color-primary-300), var(--fm-color-primary-500), var(--fm-color-primary-700));
+      }
+      .sidebar-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 30px 60px rgba(184, 147, 92, 0.08) !important;
+        border-color: rgba(184, 147, 92, 0.25) !important;
       }
       .sticky-xl-top {
         top: 2rem;
@@ -75,6 +101,10 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
       .avatar-container {
         width: 120px;
         height: 120px;
+        transition: var(--fm-transition-smooth);
+      }
+      .avatar-container:hover {
+        transform: scale(1.04);
       }
       .avatar-circle-wrapper {
         width: 100%;
@@ -83,7 +113,13 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
         display: grid;
         place-items: center;
         overflow: hidden;
-        background-color: var(--fm-color-neutral-100);
+        background: linear-gradient(135deg, var(--fm-color-primary-50), var(--fm-color-primary-100));
+        border: 3px solid #ffffff !important;
+        box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.15), var(--fm-shadow-md);
+        transition: var(--fm-transition-smooth);
+      }
+      .avatar-container:hover .avatar-circle-wrapper {
+        box-shadow: 0 0 0 5px rgba(184, 147, 92, 0.25), var(--fm-shadow-lg);
       }
       .avatar-img {
         width: 100%;
@@ -93,8 +129,9 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
       .avatar-initials {
         font-size: 2.25rem;
         font-weight: 700;
-        color: var(--fm-color-neutral-800);
+        color: var(--fm-color-primary-800);
         font-family: var(--fm-font-display);
+        letter-spacing: -0.03em;
       }
       .camera-upload-badge {
         width: 36px;
@@ -107,10 +144,11 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 2px solid #ffffff;
+        box-shadow: var(--fm-shadow-md);
       }
       .camera-upload-badge:hover:not(.cursor-not-allowed) {
         background-color: var(--fm-color-primary-500);
-        transform: scale(1.1);
+        transform: scale(1.1) rotate(15deg);
         box-shadow: var(--fm-shadow-hover);
       }
       .cursor-not-allowed {
@@ -121,37 +159,67 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
         right: auto;
         left: 0;
       }
+      .verify-badge {
+        font-size: 1.15rem;
+        animation: pulseBadge 2.5s infinite;
+      }
+      @keyframes pulseBadge {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); filter: drop-shadow(0 0 2px rgba(184,147,92,0.4)); }
+      }
       .membership-badge {
-        background-color: var(--fm-color-primary-soft);
+        background: linear-gradient(135deg, var(--fm-color-primary-50) 0%, var(--fm-color-primary-100) 100%);
         color: var(--fm-color-primary-700);
         font-weight: 600;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
+        padding: 4px 14px;
+        border-radius: var(--fm-radius-pill);
+        border: 1px solid rgba(184, 147, 92, 0.2);
+        letter-spacing: 0.02em;
+      }
+      .member-since-badge {
+        background-color: var(--fm-color-neutral-100);
+        color: var(--fm-color-neutral-600);
+        font-weight: 500;
+        font-size: 0.72rem;
         padding: 4px 12px;
         border-radius: var(--fm-radius-pill);
+        border: 1px solid var(--fm-color-neutral-200);
       }
       .stats-container {
-        background-color: rgba(31, 28, 24, 0.02);
-        border: 1px solid rgba(31, 28, 24, 0.04);
+        background-color: rgba(184, 147, 92, 0.03);
+        border: 1px solid rgba(184, 147, 92, 0.06);
+        box-shadow: inset 0 1px 2px rgba(184, 147, 92, 0.02);
       }
       .stat-block {
-        border-color: rgba(31, 28, 24, 0.08) !important;
+        border-color: rgba(184, 147, 92, 0.08) !important;
       }
       .stat-value {
         font-size: 1.5rem !important;
         letter-spacing: -0.02em;
-        font-family: var(--fm-font-sans);
+        font-family: var(--fm-font-display);
+        color: var(--fm-color-neutral-800) !important;
       }
-      .btn-outline-danger {
-        border-color: rgba(173, 92, 81, 0.2);
-        background-color: rgba(173, 92, 81, 0.02);
-        color: var(--fm-color-danger-500);
-        font-weight: 500;
+      .stat-label {
+        font-weight: 600;
       }
-      .btn-outline-danger:hover {
-        background-color: var(--fm-color-danger-500);
-        border-color: var(--fm-color-danger-500);
+      .btn-outline-logout {
+        border: 1px solid rgba(220, 53, 69, 0.25);
+        background-color: rgba(220, 53, 69, 0.02);
+        color: #dc3545;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: var(--fm-transition-smooth);
+      }
+      .btn-outline-logout:hover {
+        background-color: #dc3545;
+        border-color: #dc3545;
         color: #ffffff !important;
-        box-shadow: 0 4px 12px rgba(173, 92, 81, 0.15);
+        box-shadow: 0 8px 20px rgba(220, 53, 69, 0.2);
+        transform: translateY(-2px);
+      }
+      .btn-outline-logout:active {
+        transform: translateY(0);
       }
     `
   ]

@@ -16,14 +16,14 @@ import { ProfileAddressForm } from '../profile-address-form/profile-address-form
         <!-- Header -->
         <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
           <div>
-            <h3 class="h5 mb-1 font-semibold text-dark">{{ 'PROFILE.ADDRESS' | translate }}</h3>
+            <h3 class="h5 mb-1 font-bold text-dark tracking-tight">{{ 'PROFILE.ADDRESS' | translate }}</h3>
             <p class="text-muted small mb-0">{{ 'PROFILE.AI_ACTIVITY' | translate }}</p>
           </div>
           <!-- Add Address Button (hidden when form is open) -->
           <button
             *ngIf="!isFormOpen()"
             type="button"
-            class="btn btn-sm btn-dark d-flex align-items-center gap-1.5 rounded-pill px-3"
+            class="btn btn-sm btn-add-address d-flex align-items-center gap-2 rounded-pill px-3"
             (click)="onAddNew()">
             <i class="bi bi-plus-lg"></i>
             {{ 'PROFILE.ADD_ADDRESS' | translate }}
@@ -56,14 +56,14 @@ import { ProfileAddressForm } from '../profile-address-form/profile-address-form
         <ng-template #emptyState>
           <div class="empty-state-box p-5 rounded-4 text-center d-flex flex-column align-items-center justify-content-center border" *ngIf="!isFormOpen()">
             <div class="empty-icon-wrapper d-flex align-items-center justify-content-center rounded-circle mb-3 bg-light">
-              <i class="bi bi-map text-muted fs-3"></i>
+              <i class="bi bi-map-fill text-brand fs-3 animate-map"></i>
             </div>
-            <p class="text-muted mb-4 small max-width-350 mx-auto">
+            <p class="text-muted mb-4 small max-width-350 mx-auto" style="font-weight: 500; line-height: 1.5;">
               {{ 'PROFILE.NO_ADDRESSES' | translate }}
             </p>
             <button
               type="button"
-              class="btn btn-md btn-dark rounded-pill px-4"
+              class="btn btn-md btn-add-address rounded-pill px-4"
               (click)="onAddNew()">
               <i class="bi bi-plus-lg me-1.5"></i>
               {{ 'PROFILE.ADD_ADDRESS' | translate }}
@@ -76,20 +76,58 @@ import { ProfileAddressForm } from '../profile-address-form/profile-address-form
   styles: [
     `
       .address-list-card {
-        background: var(--fm-glass-bg);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.6) 100%);
         backdrop-filter: var(--fm-glass-blur);
         -webkit-backdrop-filter: var(--fm-glass-blur);
         border: 1px solid var(--fm-glass-border) !important;
         box-shadow: var(--fm-shadow-lg) !important;
         border-radius: var(--fm-radius-xl) !important;
+        transition: var(--fm-transition-smooth);
+      }
+      .address-list-card:hover {
+        box-shadow: 0 30px 60px rgba(184, 147, 92, 0.05) !important;
+        border-color: rgba(184, 147, 92, 0.2) !important;
+      }
+      .btn-add-address {
+        background-color: var(--fm-color-neutral-900);
+        color: #ffffff;
+        font-weight: 600;
+        transition: var(--fm-transition-smooth);
+        border: 1px solid var(--fm-color-neutral-900);
+      }
+      .btn-add-address:hover {
+        background-color: var(--fm-color-primary-500);
+        border-color: var(--fm-color-primary-500);
+        color: #ffffff;
+        box-shadow: 0 8px 20px rgba(184, 147, 92, 0.25);
+        transform: translateY(-2px);
       }
       .empty-state-box {
-        background-color: rgba(244, 242, 238, 0.2);
-        border: 1px dashed var(--fm-border-medium) !important;
+        background-color: rgba(255, 255, 255, 0.3) !important;
+        border: 2px dashed rgba(184, 147, 92, 0.2) !important;
+        transition: var(--fm-transition-smooth);
+      }
+      .empty-state-box:hover {
+        border-color: rgba(184, 147, 92, 0.4) !important;
+        background-color: rgba(255, 255, 255, 0.6) !important;
       }
       .empty-icon-wrapper {
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
+        background-color: rgba(184, 147, 92, 0.08) !important;
+        transition: var(--fm-transition-smooth);
+      }
+      .empty-state-box:hover .empty-icon-wrapper {
+        background-color: var(--fm-color-primary-500) !important;
+      }
+      .empty-state-box:hover .empty-icon-wrapper i {
+        color: #ffffff !important;
+      }
+      .animate-map {
+        transition: var(--fm-transition-smooth);
+      }
+      .empty-state-box:hover .animate-map {
+        transform: scale(1.1) rotate(5deg);
       }
       .max-width-350 {
         max-width: 350px;
