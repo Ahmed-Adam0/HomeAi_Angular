@@ -67,6 +67,7 @@ export const API_URLS = {
   },
   INSPIRATIONS: {
     LIST: 'inspirations',
+    CREATE: 'inspirations',
   },
   VENDOR: {
     ORDERS_FILTER: 'VendorOrders/orders/filter',

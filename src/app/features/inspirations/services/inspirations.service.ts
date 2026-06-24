@@ -19,6 +19,14 @@ export class InspirationsService {
    * @param pageNumber The page index to fetch.
    * @param pageSize The number of items to return per page (defaults to 4).
    */
+  /**
+   * Submits a new room transformation post (before/after images) for admin review.
+   * @param formData FormData containing OrderId, BeforeImages[], AfterImages[].
+   */
+  createInspiration(formData: FormData): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}${API_URLS.INSPIRATIONS.CREATE}`, formData);
+  }
+
   getInspirations(pageNumber: number, pageSize: number = 4): Observable<IInspirationsResponse> {
     const params = new HttpParams()
       .set('pageNumber', pageNumber.toString())

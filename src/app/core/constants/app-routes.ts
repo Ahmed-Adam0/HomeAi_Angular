@@ -51,6 +51,7 @@ export const APP_ROUTES = {
   AI_CHAT: 'ai-chat',
 
   INSPIRATIONS: 'inspirations',
+  SHARE_TRANSFORMATION: 'share-transformation',
 
   NOT_FOUND: '404',
 
@@ -107,6 +108,7 @@ export const NAV_ROUTES = {
   AI_CHAT: '/ai-chat',
 
   INSPIRATIONS: '/inspirations',
+  SHARE_TRANSFORMATION: '/share-transformation',
 
   NOTIFICATIONS: '/notifications'
 } as const;

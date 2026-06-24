@@ -117,9 +117,9 @@ export const routes: Routes = [
           import('./features/contact/contact.routes').then((m) => m.contactRoutes),
       },
       {
-        path: 'inspirations',
-        loadComponent: () =>
-          import('./features/inspirations/pages/inspirations-page/inspirations-page.component').then((m) => m.InspirationsPageComponent),
+        path: '',
+        loadChildren: () =>
+          import('./features/inspirations/inspirations.routes').then((m) => m.inspirationsRoutes),
       },
     ],
   },
