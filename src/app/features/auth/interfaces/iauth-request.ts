@@ -38,5 +38,6 @@ export interface ICompleteGoogleRegistrationRequest {
   registrationToken: string;
   password: string;
   confirmPassword: string;
+  preferredLanguage: string;
 }
 

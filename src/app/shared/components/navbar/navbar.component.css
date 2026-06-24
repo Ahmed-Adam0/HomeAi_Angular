@@ -1333,11 +1333,6 @@
     top: 115%;
     max-inline-size: calc(100vw - 1rem);
   }
-
-  [dir="rtl"] .profile-dropdown-card {
-    inset-inline-start: -60px !important;
-    inset-inline-end: auto !important;
-  }
 }
 
 @media (max-width: 374px) {
@@ -1346,10 +1341,27 @@
     inset-inline-end: -40px !important;
     max-inline-size: calc(100vw - 1rem);
   }
+}
 
-  [dir="rtl"] .profile-dropdown-card {
-    inset-inline-start: -40px !important;
-    inset-inline-end: auto !important;
+/* ==========================================================================
+   7b. Desktop Grid Centering
+   ========================================================================== */
+@media (min-width: 992px) {
+  .header-container {
+    display: grid !important;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+  .logo-area {
+    justify-self: start;
+  }
+  .desktop-nav {
+    justify-self: center;
+    display: flex !important;
+  }
+  .actions-area {
+    justify-self: end;
+    display: flex !important;
   }
 }
 
@@ -1371,7 +1383,5 @@
 
 [dir="rtl"] .profile-dropdown-card,
 [dir="rtl"] .dropdown-menu-custom {
-  inset-inline-start: auto;
-  inset-inline-end: 0;
   transform-origin: top left;
 }

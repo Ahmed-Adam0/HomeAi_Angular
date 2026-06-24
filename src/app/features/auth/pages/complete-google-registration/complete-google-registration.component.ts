@@ -147,7 +147,8 @@ export class CompleteGoogleRegistration implements OnInit {
     this.authService.completeGoogleRegistration({
       registrationToken: this.registrationToken,
       password,
-      confirmPassword
+      confirmPassword,
+      preferredLanguage: this.translationService.currentLang()
     }).subscribe({
       next: () => {
         this.isLoading = false;

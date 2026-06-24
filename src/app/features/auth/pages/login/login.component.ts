@@ -248,7 +248,7 @@ export class Login implements OnInit, AfterViewInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.loginWithGoogleIdToken(idToken).subscribe({
+    this.authService.loginWithGoogleIdToken(idToken, this.translationService.currentLang()).subscribe({
       next: (response: any) => {
         this.isLoading = false;
         

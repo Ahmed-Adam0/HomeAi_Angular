@@ -84,8 +84,8 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
         content: '';
         position: absolute;
         top: 0;
-        left: 0;
-        right: 0;
+        inset-inline-start: 0;
+        inset-inline-end: 0;
         height: 6px;
         background: linear-gradient(90deg, var(--fm-color-primary-300), var(--fm-color-primary-500), var(--fm-color-primary-700));
       }
@@ -140,7 +140,7 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
         background-color: var(--fm-color-neutral-900);
         color: #ffffff;
         bottom: 0;
-        right: 0;
+        inset-inline-end: 0;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 2px solid #ffffff;
@@ -154,10 +154,6 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
       .cursor-not-allowed {
         cursor: not-allowed !important;
         opacity: 0.7;
-      }
-      :host-context([dir='rtl']) .camera-upload-badge {
-        right: auto;
-        left: 0;
       }
       .verify-badge {
         font-size: 1.15rem;

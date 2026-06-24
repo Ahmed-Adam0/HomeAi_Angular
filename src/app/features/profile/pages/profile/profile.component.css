@@ -52,7 +52,7 @@
 .nav-dock-wrapper {
   position: fixed;
   top: 50%;
-  left: 20px;
+  inset-inline-start: 20px;
   transform: translateY(-50%);
   z-index: 1000;
   gap: 10px;
@@ -88,8 +88,17 @@
     0 20px 48px rgba(0,0,0,0.07);
 }
 
-.nav-list { width: 100%; }
-.dock-nav  { width: 100%; }
+/* Menu item layout */
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+:host-context([dir='rtl']) .menu-item {
+  flex-direction: row-reverse;
+}
 
 /* Nav item buttons */
 .nav-item-btn {
@@ -102,13 +111,14 @@
   color: var(--clr-text-muted);
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   cursor: pointer;
   transition:
     background 0.25s var(--ease-spring),
     color 0.2s ease,
     width 0.35s var(--ease-spring),
-    padding 0.35s var(--ease-spring);
+    padding 0.35s var(--ease-spring),
+    border-radius 0.3s ease;
   position: relative;
   white-space: nowrap;
   overflow: hidden;
@@ -118,6 +128,7 @@
 .nav-dock.expanded .nav-item-btn {
   width: 100%;
   padding: 0 12px;
+  justify-content: space-between;
 }
 
 .nav-item-btn:hover:not(.active) {
@@ -129,6 +140,28 @@
   background: var(--clr-gold-light);
   color: var(--clr-gold);
   font-weight: 700;
+}
+
+/* Active State layout adjustments to make active start from the right in RTL and left in LTR */
+.nav-dock:hover .nav-item-btn.active,
+.nav-dock.expanded .nav-item-btn.active {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  border-start-end-radius: 14px;
+  border-end-end-radius: 14px;
+}
+
+.active-indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  width: 4px;
+  background: var(--clr-gold);
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  border-start-end-radius: 4px;
+  border-end-end-radius: 4px;
 }
 
 .nav-icon-wrapper {
@@ -149,6 +182,10 @@
     opacity 0.25s ease 0.05s,
     transform 0.3s var(--ease-spring) 0.05s;
   pointer-events: none;
+  flex-grow: 1;
+  text-align: start;
+  margin-inline-start: 8px;
+  margin-inline-end: 8px;
 }
 
 .nav-dock:hover .nav-label,
@@ -161,7 +198,7 @@
 .badge-dot-count {
   position: absolute;
   top: 2px;
-  right: 2px;
+  inset-inline-end: 2px;
   background: var(--clr-gold);
   color: #fff;
   font-size: 0.6rem;
@@ -178,6 +215,15 @@
 
 .nav-dock:hover .badge-dot-count,
 .nav-dock.expanded .badge-dot-count { opacity: 0; }
+
+.nav-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
 
 .badge-circle-count {
   background: rgba(0,0,0,0.05);
@@ -198,11 +244,8 @@
 .nav-dock:hover .badge-circle-count,
 .nav-dock.expanded .badge-circle-count { opacity: 1; }
 
-/* Dock Footer */
-.dock-footer {
-  border-top: 1px solid var(--clr-border);
-  padding-top: 10px;
-  width: 100%;
+.logout-li {
+  border-color: var(--clr-border) !important;
 }
 
 .logout-btn:hover {
@@ -212,17 +255,17 @@
 
 /* ── 3. Workspace Shell ───────────────────────────────────────────────────── */
 .workspace-main {
-  margin-left: 96px;
+  margin-inline-start: 96px;
   min-height: 100vh;
   background: var(--clr-bg);
-  transition: margin-left 0.4s var(--ease-spring);
+  transition: margin-inline-start 0.4s var(--ease-spring);
 }
 
 .workspace-content {
   max-width: 1020px;
   margin: 0 auto;
-  padding-left: 28px;
-  padding-right: 28px;
+  padding-inline-start: 28px;
+  padding-inline-end: 28px;
 }
 
 /* ── 4. Account Hero ─────────────────────────────────────────────────────── */
@@ -291,7 +334,7 @@
 .hero-orb-1 {
   width: 320px; height: 320px;
   background: radial-gradient(circle, rgba(184,147,92,0.35) 0%, transparent 70%);
-  top: -80px; right: -60px;
+  top: -80px; inset-inline-end: -60px;
   animation-duration: 12s;
   animation-delay: 0s;
 }
@@ -299,7 +342,7 @@
 .hero-orb-2 {
   width: 220px; height: 220px;
   background: radial-gradient(circle, rgba(210,170,100,0.2) 0%, transparent 70%);
-  bottom: -50px; left: 30%;
+  bottom: -50px; inset-inline-start: 30%;
   animation-duration: 9s;
   animation-delay: -3s;
   animation-direction: alternate-reverse;
@@ -308,7 +351,7 @@
 .hero-orb-3 {
   width: 160px; height: 160px;
   background: radial-gradient(circle, rgba(255,200,120,0.12) 0%, transparent 70%);
-  top: 20%; left: -30px;
+  top: 20%; inset-inline-start: -30px;
   animation-duration: 14s;
   animation-delay: -6s;
 }
@@ -346,6 +389,8 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  margin-inline-start: 16px;
+  margin-inline-end: 16px;
 }
 
 .profile-avatar-wrapper {
@@ -429,7 +474,7 @@
 /* Camera edit button */
 .profile-avatar-edit-btn {
   bottom: 4px;
-  right: 4px;
+  inset-inline-end: 4px;
   width: 32px;
   height: 32px;
   background: rgba(184,147,92,0.9);
@@ -457,7 +502,7 @@
 .hero-watch-widget {
   position: absolute;
   top: 24px;
-  right: 28px;
+  inset-inline-end: 28px;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
@@ -524,6 +569,7 @@
 .hero-identity {
   flex: 1;
   min-width: 0;
+  padding-inline-end: 180px;
 }
 
 /* Staggered entrance for each child */
@@ -575,7 +621,7 @@
     transparent 100%);
   margin: 16px 0;
   border-radius: 1px;
-  transform-origin: left;
+  transform-origin: inline-start;
   animation: rule-grow 0.8s var(--ease-spring) 0.4s both;
 }
 
@@ -695,6 +741,10 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   transition:
     transform 0.35s var(--ease-spring),
     box-shadow 0.35s var(--ease-spring),
@@ -733,7 +783,7 @@
 /* Metric card layout */
 .metric-icon-row {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   margin-bottom: 16px;
 }
 
@@ -758,6 +808,10 @@
 .metric-content {
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .metric-label {
@@ -770,7 +824,8 @@
 .metric-value-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
 }
 
@@ -1280,17 +1335,17 @@
   position: fixed;
   top: 0;
   bottom: 0;
-  left: -290px;
+  inset-inline-start: -290px;
   width: 290px;
   background: var(--clr-surface);
-  border-right: 1px solid var(--clr-border);
+  border-inline-end: 1px solid var(--clr-border);
   z-index: 1010;
-  transition: left 0.38s var(--ease-spring);
+  transition: inset-inline-start 0.38s var(--ease-spring);
   display: flex;
   flex-direction: column;
 }
 
-.mobile-drawer.open { left: 0; }
+.mobile-drawer.open { inset-inline-start: 0; }
 
 .drawer-header {
   display: flex;
@@ -1425,16 +1480,6 @@
 }
 
 /* ── 12. RTL Overrides ───────────────────────────────────────────────────── */
-:host-context([dir='rtl']) .nav-dock-wrapper {
-  left: auto;
-  right: 20px;
-}
-
-:host-context([dir='rtl']) .workspace-main {
-  margin-left: 0;
-  margin-right: 96px;
-}
-
 :host-context([dir='rtl']) .nav-label {
   transform: translateX(6px);
 }
@@ -1444,35 +1489,18 @@
   transform: translateX(0);
 }
 
-:host-context([dir='rtl']) .mobile-drawer {
-  left: auto;
-  right: -290px;
-  border-right: none;
-  border-left: 1px solid var(--clr-border);
-}
-
-:host-context([dir='rtl']) .mobile-drawer.open {
-  right: 0;
-  left: auto;
-}
-
 :host-context([dir='rtl']) .hero-glow-bg {
   background:
     radial-gradient(ellipse 60% 80% at 5%  50%, rgba(184,147,92,0.06) 0%, transparent 65%),
     radial-gradient(ellipse 40% 60% at 95% 20%, rgba(184,147,92,0.03) 0%, transparent 60%);
 }
 
-:host-context([dir='rtl']) .profile-avatar-edit-btn {
-  right: auto;
-  left: 2px;
-}
-
-:host-context([dir='rtl']) .metric-cta-arrow {
+:host-context([dir='rtl']) .metric-action-arrow {
   transform: scaleX(-1);
 }
 
-:host-context([dir='rtl']) .metric-card:hover .metric-cta-arrow {
-  transform: scaleX(-1) translate(3px, -3px);
+:host-context([dir='rtl']) .metric-card:hover .metric-action-arrow {
+  transform: scaleX(-1) translateX(4px);
 }
 
 :host-context([dir='rtl']) .section-view-all:hover i {
@@ -1494,8 +1522,8 @@
 /* ── 13. Responsive Breakpoints ──────────────────────────────────────────── */
 @media (max-width: 991px) {
   .workspace-content {
-    padding-left: 18px;
-    padding-right: 18px;
+    padding-inline-start: 18px;
+    padding-inline-end: 18px;
   }
 
   .account-hero {
@@ -1504,8 +1532,12 @@
 
   .hero-watch-widget {
     top: 20px;
-    right: 20px;
+    inset-inline-end: 20px;
     padding: 8px 12px;
+  }
+
+  .hero-identity {
+    padding-inline-end: 130px;
   }
 
   .watch-time {
@@ -1532,8 +1564,7 @@
 
 @media (max-width: 767px) {
   .workspace-main {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    margin-inline: 0 !important;
   }
 
   .account-hero {
@@ -1560,6 +1591,10 @@
     align-items: center;
     gap: 24px;
     text-align: center;
+  }
+
+  .hero-identity {
+    padding-inline-end: 0;
   }
 
   .hero-avatar-col { gap: 10px; }
@@ -1600,6 +1635,7 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    text-align: start;
     gap: 14px;
   }
 
@@ -1610,6 +1646,12 @@
   .metric-content {
     flex: 1;
     min-width: 0;
+    align-items: flex-start;
+  }
+
+  .metric-value-row {
+    justify-content: space-between;
+    gap: 0;
   }
 
   .metric-value {

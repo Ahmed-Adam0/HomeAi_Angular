@@ -20,20 +20,21 @@
             <ul class="nav-list list-unstyled mb-0 d-flex flex-column gap-2 align-items-center">
               <!-- Profile Link -->
               <li class="w-100">
-                <button class="nav-item-btn w-100 d-flex align-items-center"
+                <button class="nav-item-btn menu-item w-100"
                         [class.active]="activeSection() === 'profile'"
                         (click)="activeSection.set('profile')">
                   <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
                     <i class="bi bi-person"></i>
                   </span>
                   <span class="nav-label">{{ 'NAV_PROFILE' | translate }}</span>
+                  <span class="nav-item-meta"></span>
                   <span class="active-indicator" *ngIf="activeSection() === 'profile'"></span>
                 </button>
               </li>
 
               <!-- Addresses Link -->
               <li class="w-100">
-                <button class="nav-item-btn w-100 d-flex align-items-center"
+                <button class="nav-item-btn menu-item w-100"
                         [class.active]="activeSection() === 'addresses'"
                         (click)="activeSection.set('addresses')">
                   <span class="nav-icon-wrapper d-flex align-items-center justify-content-center position-relative">
@@ -41,61 +42,70 @@
                     <span class="badge-dot-count" *ngIf="sidebarAddressCount() > 0">{{ sidebarAddressCount() }}</span>
                   </span>
                   <span class="nav-label">{{ 'PROFILE.ADDRESS' | translate }}</span>
+                  <span class="nav-item-meta">
+                    <span class="badge-circle-count" *ngIf="sidebarAddressCount() > 0">{{ sidebarAddressCount() }}</span>
+                  </span>
                   <span class="active-indicator" *ngIf="activeSection() === 'addresses'"></span>
-                  <span class="badge-circle-count ms-auto" *ngIf="sidebarAddressCount() > 0">{{ sidebarAddressCount() }}</span>
                 </button>
               </li>
 
               <!-- Orders Link -->
               <li class="w-100">
-                <button class="nav-item-btn w-100 d-flex align-items-center"
+                <button class="nav-item-btn menu-item w-100"
                         (click)="handleAction({ labelKey: 'PROFILE.MY_ORDERS', route: '/orders' })">
                   <span class="nav-icon-wrapper d-flex align-items-center justify-content-center position-relative">
                     <i class="bi bi-box-seam"></i>
                     <span class="badge-dot-count" *ngIf="sidebarOrdersCount() > 0">{{ sidebarOrdersCount() }}</span>
                   </span>
                   <span class="nav-label">{{ 'PROFILE.MY_ORDERS' | translate }}</span>
-                  <span class="badge-circle-count ms-auto" *ngIf="sidebarOrdersCount() > 0">{{ sidebarOrdersCount() }}</span>
+                  <span class="nav-item-meta">
+                    <span class="badge-circle-count" *ngIf="sidebarOrdersCount() > 0">{{ sidebarOrdersCount() }}</span>
+                  </span>
                 </button>
               </li>
 
               <!-- Favorites Link -->
               <li class="w-100">
-                <button class="nav-item-btn w-100 d-flex align-items-center"
+                <button class="nav-item-btn menu-item w-100"
                         (click)="handleAction({ labelKey: 'PROFILE.FAVORITES', route: '/favorites' })">
                   <span class="nav-icon-wrapper d-flex align-items-center justify-content-center position-relative">
                     <i class="bi bi-heart"></i>
                     <span class="badge-dot-count" *ngIf="sidebarFavoritesCount() > 0">{{ sidebarFavoritesCount() }}</span>
                   </span>
                   <span class="nav-label">{{ 'PROFILE.FAVORITES' | translate }}</span>
-                  <span class="badge-circle-count ms-auto" *ngIf="sidebarFavoritesCount() > 0">{{ sidebarFavoritesCount() }}</span>
+                  <span class="nav-item-meta">
+                    <span class="badge-circle-count" *ngIf="sidebarFavoritesCount() > 0">{{ sidebarFavoritesCount() }}</span>
+                  </span>
                 </button>
               </li>
 
               <!-- Notifications Link -->
               <li class="w-100">
-                <button class="nav-item-btn w-100 d-flex align-items-center position-relative"
+                <button class="nav-item-btn menu-item w-100"
                         (click)="handleAction({ labelKey: 'PROFILE.NOTIFICATIONS', route: '/notifications' })">
                   <span class="nav-icon-wrapper d-flex align-items-center justify-content-center position-relative">
                     <i class="bi bi-bell"></i>
                     <span class="badge-dot-count" *ngIf="notificationsUnreadCount() > 0">{{ notificationsUnreadCount() }}</span>
                   </span>
                   <span class="nav-label">{{ 'PROFILE.NOTIFICATIONS' | translate }}</span>
-                  <span class="badge-circle-count ms-auto" *ngIf="notificationsUnreadCount() > 0">{{ notificationsUnreadCount() }}</span>
+                  <span class="nav-item-meta">
+                    <span class="badge-circle-count" *ngIf="notificationsUnreadCount() > 0">{{ notificationsUnreadCount() }}</span>
+                  </span>
+                </button>
+              </li>
+
+              <!-- Dock Footer: Logout (now aligned in dock list) -->
+              <li class="w-100 logout-li border-top mt-2 pt-2">
+                <button class="nav-item-btn menu-item logout-btn w-100" (click)="onLogout()">
+                  <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
+                    <i class="bi bi-box-arrow-right"></i>
+                  </span>
+                  <span class="nav-label">{{ 'PROFILE.LOGOUT' | translate }}</span>
+                  <span class="nav-item-meta"></span>
                 </button>
               </li>
             </ul>
           </nav>
-
-          <!-- Dock Footer: Logout -->
-          <div class="dock-footer w-100 mt-auto pt-3">
-            <button class="nav-item-btn logout-btn w-100 d-flex align-items-center" (click)="onLogout()">
-              <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
-                <i class="bi bi-box-arrow-right"></i>
-              </span>
-              <span class="nav-label">{{ 'PROFILE.LOGOUT' | translate }}</span>
-            </button>
-          </div>
         </div>
       </aside>
 
@@ -133,50 +143,75 @@
         <div class="drawer-body p-3 flex-grow-1">
           <ul class="nav-list list-unstyled mb-0 d-flex flex-column gap-1">
             <li>
-              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+              <button class="mobile-nav-btn menu-item w-100"
                       [class.active]="activeSection() === 'profile'"
                       (click)="activeSection.set('profile'); isMobileDrawerOpen.set(false)">
-                <i class="bi bi-person"></i>
-                <span>{{ 'NAV_PROFILE' | translate }}</span>
+                <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
+                  <i class="bi bi-person"></i>
+                </span>
+                <span class="nav-label">{{ 'NAV_PROFILE' | translate }}</span>
+                <span class="nav-item-meta"></span>
               </button>
             </li>
             <li>
-              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+              <button class="mobile-nav-btn menu-item w-100"
                       [class.active]="activeSection() === 'addresses'"
                       (click)="activeSection.set('addresses'); isMobileDrawerOpen.set(false)">
-                <i class="bi bi-geo-alt"></i>
-                <span>{{ 'PROFILE.ADDRESS' | translate }}</span>
+                <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
+                  <i class="bi bi-geo-alt"></i>
+                </span>
+                <span class="nav-label">{{ 'PROFILE.ADDRESS' | translate }}</span>
+                <span class="nav-item-meta">
+                  <span class="badge bg-secondary" *ngIf="sidebarAddressCount() > 0">{{ sidebarAddressCount() }}</span>
+                </span>
               </button>
             </li>
             <li>
-              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+              <button class="mobile-nav-btn menu-item w-100"
                       (click)="handleAction({ labelKey: 'PROFILE.MY_ORDERS', route: '/orders' }); isMobileDrawerOpen.set(false)">
-                <i class="bi bi-box-seam"></i>
-                <span>{{ 'PROFILE.MY_ORDERS' | translate }}</span>
+                <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
+                  <i class="bi bi-box-seam"></i>
+                </span>
+                <span class="nav-label">{{ 'PROFILE.MY_ORDERS' | translate }}</span>
+                <span class="nav-item-meta">
+                  <span class="badge bg-secondary" *ngIf="sidebarOrdersCount() > 0">{{ sidebarOrdersCount() }}</span>
+                </span>
               </button>
             </li>
             <li>
-              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+              <button class="mobile-nav-btn menu-item w-100"
                       (click)="handleAction({ labelKey: 'PROFILE.FAVORITES', route: '/favorites' }); isMobileDrawerOpen.set(false)">
-                <i class="bi bi-heart"></i>
-                <span>{{ 'PROFILE.FAVORITES' | translate }}</span>
+                <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
+                  <i class="bi bi-heart"></i>
+                </span>
+                <span class="nav-label">{{ 'PROFILE.FAVORITES' | translate }}</span>
+                <span class="nav-item-meta">
+                  <span class="badge bg-secondary" *ngIf="sidebarFavoritesCount() > 0">{{ sidebarFavoritesCount() }}</span>
+                </span>
               </button>
             </li>
             <li>
-              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+              <button class="mobile-nav-btn menu-item w-100"
                       (click)="handleAction({ labelKey: 'PROFILE.NOTIFICATIONS', route: '/notifications' }); isMobileDrawerOpen.set(false)">
-                <i class="bi bi-bell"></i>
-                <span>{{ 'PROFILE.NOTIFICATIONS' | translate }}</span>
-                <span class="badge bg-secondary ms-auto" *ngIf="notificationsUnreadCount() > 0">{{ notificationsUnreadCount() }}</span>
+                <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
+                  <i class="bi bi-bell"></i>
+                </span>
+                <span class="nav-label">{{ 'PROFILE.NOTIFICATIONS' | translate }}</span>
+                <span class="nav-item-meta">
+                  <span class="badge bg-secondary" *ngIf="notificationsUnreadCount() > 0">{{ notificationsUnreadCount() }}</span>
+                </span>
               </button>
             </li>
           </ul>
         </div>
 
         <div class="drawer-footer p-3 border-top">
-          <button class="mobile-nav-btn logout-btn w-100 d-flex align-items-center gap-3" (click)="onLogout(); isMobileDrawerOpen.set(false)">
-            <i class="bi bi-box-arrow-right"></i>
-            <span>{{ 'PROFILE.LOGOUT' | translate }}</span>
+          <button class="mobile-nav-btn menu-item logout-btn w-100" (click)="onLogout(); isMobileDrawerOpen.set(false)">
+            <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
+              <i class="bi bi-box-arrow-right"></i>
+            </span>
+            <span class="nav-label">{{ 'PROFILE.LOGOUT' | translate }}</span>
+            <span class="nav-item-meta"></span>
           </button>
         </div>
       </aside>
@@ -337,7 +372,7 @@
                     <div class="metric-content">
                       <p class="metric-label">{{ 'PROFILE.ORDERS_COUNT_LABEL' | translate }}</p>
                       <div class="metric-value-row">
-                        <span class="metric-value">{{ ordersCount() }}</span>
+                        <span class="metric-value">{{ animatedOrders() }}</span>
                         <div class="metric-action-arrow">
                           <i class="bi bi-arrow-right"></i>
                         </div>
@@ -371,7 +406,7 @@
                     <div class="metric-content">
                       <p class="metric-label">{{ 'PROFILE.FAVORITES' | translate }}</p>
                       <div class="metric-value-row">
-                        <span class="metric-value">{{ favoritesCount() }}</span>
+                        <span class="metric-value">{{ animatedFavorites() }}</span>
                         <div class="metric-action-arrow">
                           <i class="bi bi-arrow-right"></i>
                         </div>
@@ -405,7 +440,7 @@
                     <div class="metric-content">
                       <p class="metric-label">{{ 'PROFILE.ADDRESS' | translate }}</p>
                       <div class="metric-value-row">
-                        <span class="metric-value">{{ profile()?.addresses?.length ?? 0 }}</span>
+                        <span class="metric-value">{{ animatedAddresses() }}</span>
                         <div class="metric-action-arrow">
                           <i class="bi bi-arrow-right"></i>
                         </div>

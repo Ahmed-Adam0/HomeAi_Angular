@@ -16,6 +16,12 @@ export const authRoutes: Routes = [
       import('./pages/register/register.component').then((m) => m.Register),
   },
   {
+    path: APP_ROUTES.GOOGLE_SUCCESS,
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./pages/google-success/google-success.component').then((m) => m.GoogleSuccess),
+  },
+  {
     path: APP_ROUTES.COMPLETE_GOOGLE_REGISTRATION,
     canActivate: [guestGuard],
     loadComponent: () =>

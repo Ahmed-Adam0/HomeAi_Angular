@@ -150,8 +150,8 @@ export class AuthService {
   authenticate(token: string): void {
     this.setAuthState(token);
   }
-  loginWithGoogleIdToken(idToken: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}${API_URLS.AUTH.GOOGLE_LOGIN}`, { idToken }).pipe(
+  loginWithGoogleIdToken(idToken: string, preferredLanguage?: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}${API_URLS.AUTH.GOOGLE_LOGIN}`, { idToken, preferredLanguage }).pipe(
       tap((response: any) => {
         const token = this.getAuthToken(response);
         if (!token) {

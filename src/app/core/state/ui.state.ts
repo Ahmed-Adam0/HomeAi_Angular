@@ -1,5 +1,6 @@
 import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslationService } from '../../shared/i18n/translation.service';
 
 export interface AlertAction {
   label: string;
@@ -17,6 +18,7 @@ export interface AlertData {
 })
 export class UiState {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly translationService = inject(TranslationService);
   private alertTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Global loading overlay signal
@@ -41,7 +43,8 @@ export class UiState {
   }
 
   showAlert(type: AlertData['type'], message: string, action?: AlertAction): void {
-    this.activeAlert.set(action ? { type, message, action } : { type, message });
+    const translatedMessage = this.translationService.translate(message);
+    this.activeAlert.set(action ? { type, message: translatedMessage, action } : { type, message: translatedMessage });
 
     if (isPlatformBrowser(this.platformId)) {
       if (this.alertTimeout) {

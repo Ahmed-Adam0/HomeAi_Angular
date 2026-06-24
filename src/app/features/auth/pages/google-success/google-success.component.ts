@@ -102,6 +102,9 @@ export class GoogleSuccess implements OnInit {
         });
       }
 
+      // Sync language preference from backend profile
+      this.translationService.syncFromBackend();
+
       // Simulate processing time for UX polish (2 seconds)
       setTimeout(() => {
         this.performRedirect();
