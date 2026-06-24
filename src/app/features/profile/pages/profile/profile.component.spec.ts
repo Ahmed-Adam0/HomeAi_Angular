@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { Profile } from './profile.component';
@@ -32,6 +32,8 @@ describe('Profile', () => {
     profileImage: 'test-avatar.jpg',
     preferredLanguage: 'en',
     addresses: [],
+    isGoogleUser: false,
+    canEditEmail: true,
     membership: 'Premium Member',
     stats: {
       roomsDesigned: 5,
@@ -127,14 +129,15 @@ describe('Profile', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(Profile);
-    component = fixture.componentInstance;
   });
 
   it('should resolve product image for recent orders', fakeAsync(() => {
+    fixture = TestBed.createComponent(Profile);
+    component = fixture.componentInstance;
+
     // When the profile loads
     fixture.detectChanges(); // triggers ngOnInit/constructor logic
-    tick(); // complete async tasks
+    flush(); // complete async tasks
 
     // Then it should have loaded the profile
     expect(component.profile()).toBeTruthy();
@@ -151,5 +154,22 @@ describe('Profile', () => {
     expect(orders.length).toBe(1);
     expect(orders[0].items[0].productImage).toBe('http://example.com/chair.jpg');
     expect(orders[0].items[0].image).toBe('http://example.com/chair.jpg');
+  }));
+
+  it('should filter Privacy & Security action for Google users', fakeAsync(() => {
+    const googleProfile = { ...dummyProfile, isGoogleUser: true };
+    mockProfileService.getProfile.and.returnValue(of(googleProfile));
+
+    fixture = TestBed.createComponent(Profile);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+    flush();
+
+    expect(component.profile()?.isGoogleUser).toBe(true);
+
+    const actions = component.actionItems();
+    const hasPrivacySecurity = actions.some(item => item.labelKey === 'PROFILE.PRIVACY_SECURITY');
+    expect(hasPrivacySecurity).toBe(false);
   }));
 });

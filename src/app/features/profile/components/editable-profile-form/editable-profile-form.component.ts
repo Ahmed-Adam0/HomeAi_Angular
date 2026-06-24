@@ -120,9 +120,14 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
                   id="email"
                   class="form-control premium-input ps-5"
                   [class.is-invalid]="email.invalid && email.touched"
+                  [class.disabled-email-input]="email.disabled"
+                  [class.pe-5]="email.disabled"
                   type="email"
                   formControlName="email"
                   appAutoDir />
+                <span *ngIf="email.disabled" class="input-icon-right position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
+                  <i class="bi bi-lock-fill"></i>
+                </span>
               </div>
               <div class="invalid-feedback d-block mt-1" *ngIf="email.invalid && email.touched">
                 <ng-container *ngIf="email.hasError('required')">
@@ -131,6 +136,10 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
                 <ng-container *ngIf="email.hasError('email')">
                   {{ 'PROFILE.EMAIL_INVALID' | translate }}
                 </ng-container>
+              </div>
+              <div *ngIf="email.disabled" class="form-text text-muted small mt-2 d-flex align-items-center gap-1.5 google-email-help">
+                <i class="bi bi-info-circle text-primary"></i>
+                <span>{{ 'PROFILE.GOOGLE_EMAIL_HELP' | translate }}</span>
               </div>
             </div>
 
@@ -306,6 +315,35 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
         from { opacity: 0; transform: scale(0.98) translateY(6px); }
         to { opacity: 1; transform: scale(1) translateY(0); }
       }
+      .disabled-email-input {
+        background-color: rgba(245, 245, 240, 0.6) !important;
+        border-color: rgba(0, 0, 0, 0.05) !important;
+        color: #8c8c87 !important;
+        cursor: not-allowed !important;
+      }
+      .input-icon-right {
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        font-size: 1.05rem;
+      }
+      .google-email-help {
+        font-size: 0.78rem;
+        font-weight: 500;
+      }
+      .google-email-help i {
+        font-size: 0.9rem;
+      }
+      :host-context([dir='rtl']) .input-icon-right {
+        right: auto !important;
+        left: 0 !important;
+        margin-left: 1rem !important;
+        margin-right: 0 !important;
+      }
+      :host-context([dir='rtl']) .disabled-email-input {
+        padding-right: 3rem !important;
+        padding-left: 3rem !important;
+      }
       :host-context([dir='rtl']) .premium-input {
         padding-left: 1rem !important;
         padding-right: 3rem !important;
@@ -352,6 +390,18 @@ export class EditableProfileForm implements OnChanges {
         phoneNumber: this.profile.phoneNumber ?? '',
         preferredLanguage: this.profile.preferredLanguage ?? 'en',
       });
+      this.updateEmailEditability();
+    }
+  }
+
+  updateEmailEditability(): void {
+    const emailControl = this.profileForm.get('email');
+    if (emailControl) {
+      if (this.profile?.canEditEmail === false) {
+        emailControl.disable();
+      } else {
+        emailControl.enable();
+      }
     }
   }
 
@@ -387,6 +437,7 @@ export class EditableProfileForm implements OnChanges {
         });
       }
     }
+    this.updateEmailEditability();
   }
 
   onSubmit(): void {

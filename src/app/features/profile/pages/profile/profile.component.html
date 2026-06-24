@@ -449,17 +449,19 @@
               </section>
 
               <!-- ── SECURITY (Change Password) ── -->
-              <section class="content-section stagger-item" style="--i:3">
-                <div class="section-header">
-                  <div class="section-tag">
-                    <i class="bi bi-shield-check"></i>
-                    <span>{{ 'PROFILE.PRIVACY_SECURITY' | translate }}</span>
+              @if (!profile()?.isGoogleUser) {
+                <section class="content-section stagger-item" style="--i:3">
+                  <div class="section-header">
+                    <div class="section-tag">
+                      <i class="bi bi-shield-check"></i>
+                      <span>{{ 'PROFILE.PRIVACY_SECURITY' | translate }}</span>
+                    </div>
                   </div>
-                </div>
-                <div class="content-card">
-                  <app-change-password-form></app-change-password-form>
-                </div>
-              </section>
+                  <div class="content-card">
+                    <app-change-password-form></app-change-password-form>
+                  </div>
+                </section>
+              }
 
               <!-- ── RECENT ORDERS (Secondary) ── -->
               <section class="content-section stagger-item" style="--i:4">
@@ -576,14 +578,16 @@
             <div class="settings-grid animate-section-in">
               <div class="row g-4">
                 <!-- Change Password -->
-                <div class="col-12 col-md-8">
-                  <div class="content-card">
-                    <app-change-password-form></app-change-password-form>
+                @if (!profile()?.isGoogleUser) {
+                  <div class="col-12 col-md-8">
+                    <div class="content-card">
+                      <app-change-password-form></app-change-password-form>
+                    </div>
                   </div>
-                </div>
+                }
 
                 <!-- Account Actions -->
-                <div class="col-12 col-md-4">
+                <div class="col-12" [class.col-md-4]="!profile()?.isGoogleUser" [class.col-md-12]="profile()?.isGoogleUser">
                   <div class="content-card h-100">
                     <app-profile-settings-card
                       [actions]="actionItems()"

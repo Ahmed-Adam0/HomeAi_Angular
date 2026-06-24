@@ -10,6 +10,8 @@ export interface IProfile {
   preferredLanguage?: 'en' | 'ar';
   membership?: string;
   addresses: IAddressDto[];
+  isGoogleUser?: boolean;
+  canEditEmail?: boolean;
   stats?: {
     roomsDesigned?: number;
     productsViewed?: number;

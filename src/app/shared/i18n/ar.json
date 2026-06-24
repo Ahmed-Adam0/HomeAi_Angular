@@ -69,6 +69,7 @@
   "PROFILE.CANCEL": "إلغاء",
   "PROFILE.EMAIL_REQUIRED": "البريد الإلكتروني مطلوب.",
   "PROFILE.EMAIL_INVALID": "يرجى إدخال بريد إلكتروني صالح.",
+  "PROFILE.GOOGLE_EMAIL_HELP": "هذا البريد الإلكتروني مدار بواسطة Google ولا يمكن تغييره.",
   "PROFILE.CURRENT_PASSWORD_REQUIRED": "كلمة المرور الحالية مطلوبة.",
   "PROFILE.OLD_PASSWORD_REQUIRED": "كلمة المرور القديمة مطلوبة.",
   "PROFILE.NEW_PASSWORD_REQUIRED": "كلمة المرور الجديدة مطلوبة.",

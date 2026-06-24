@@ -69,6 +69,7 @@
   "PROFILE.CANCEL": "Cancel",
   "PROFILE.EMAIL_REQUIRED": "Email is required.",
   "PROFILE.EMAIL_INVALID": "Please enter a valid email address.",
+  "PROFILE.GOOGLE_EMAIL_HELP": "This email is managed by Google and cannot be changed.",
   "PROFILE.CURRENT_PASSWORD_REQUIRED": "Current password is required.",
   "PROFILE.OLD_PASSWORD_REQUIRED": "Old password is required.",
   "PROFILE.NEW_PASSWORD_REQUIRED": "New password is required.",

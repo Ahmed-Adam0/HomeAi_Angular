@@ -125,8 +125,9 @@ export class Profile implements AfterViewInit, OnDestroy {
     const orders = this.ordersCount();
     const favorites = this.favoritesCount();
     const designs = stats?.roomsDesigned ?? 0;
+    const isGoogle = this.profile()?.isGoogleUser ?? false;
 
-    return [
+    const items = [
       { 
         labelKey: 'PROFILE.MY_ORDERS', 
         route: NAV_ROUTES.ORDERS, 
@@ -157,6 +158,11 @@ export class Profile implements AfterViewInit, OnDestroy {
       { labelKey: 'PROFILE.PRIVACY_SECURITY', route: '', iconClass: 'bi-shield-check', iconBg: 'rgba(108, 117, 125, 0.08)', iconColor: '#6c757d' },
       { labelKey: 'PROFILE.DESIGN_PREFERENCES', route: '', iconClass: 'bi-palette', iconBg: 'rgba(253, 126, 20, 0.08)', iconColor: '#fd7e14' },
     ];
+
+    if (isGoogle) {
+      return items.filter(item => item.labelKey !== 'PROFILE.PRIVACY_SECURITY');
+    }
+    return items;
   });
 
   readonly sidebarStats = computed(() => {
@@ -261,6 +267,8 @@ export class Profile implements AfterViewInit, OnDestroy {
       const profile = await firstValueFrom(this.profileService.getProfile());
       this.profile.set({
         ...profile,
+        isGoogleUser: profile.isGoogleUser ?? false,
+        canEditEmail: profile.canEditEmail ?? true,
         membership: profile.membership ?? 'Premium Member',
         stats: profile.stats || undefined,
       });
@@ -405,6 +413,8 @@ export class Profile implements AfterViewInit, OnDestroy {
       const updated = await firstValueFrom(this.profileService.updateProfile(requestPayload));
       const profileUpdate = {
         ...updated,
+        isGoogleUser: updated.isGoogleUser ?? this.profile()?.isGoogleUser ?? false,
+        canEditEmail: updated.canEditEmail ?? this.profile()?.canEditEmail ?? true,
         membership: this.profile()?.membership ?? 'Premium Member',
         stats: this.profile()?.stats,
       } as IProfile;
@@ -431,7 +441,9 @@ export class Profile implements AfterViewInit, OnDestroy {
 
       let errorMessage = this.translationService.translate('PROFILE.PROFILE_UPDATE_ERROR');
       if (error instanceof HttpErrorResponse) {
-        if (error.error?.message) {
+        if (typeof error.error === 'string' && error.error) {
+          errorMessage = error.error;
+        } else if (error.error?.message) {
           errorMessage = error.error.message;
         } else if (error.error?.errors) {
           const validationErrors = error.error.errors;
@@ -478,6 +490,8 @@ export class Profile implements AfterViewInit, OnDestroy {
       const updated = await firstValueFrom(this.profileService.updateProfile(requestPayload));
       this.profile.set({
         ...updated,
+        isGoogleUser: updated.isGoogleUser ?? this.profile()?.isGoogleUser ?? false,
+        canEditEmail: updated.canEditEmail ?? this.profile()?.canEditEmail ?? true,
         membership: this.profile()?.membership ?? 'Premium Member',
         stats: this.profile()?.stats,
       });
@@ -497,7 +511,9 @@ export class Profile implements AfterViewInit, OnDestroy {
 
       let errorMessage = this.translationService.translate('PROFILE.ADDRESSES_UPDATE_ERROR');
       if (error instanceof HttpErrorResponse) {
-        if (error.error?.message) {
+        if (typeof error.error === 'string' && error.error) {
+          errorMessage = error.error;
+        } else if (error.error?.message) {
           errorMessage = error.error.message;
         } else if (error.error?.errors) {
           const validationErrors = error.error.errors;
@@ -582,6 +598,8 @@ export class Profile implements AfterViewInit, OnDestroy {
       const updated = await firstValueFrom(this.profileService.getProfile());
       this.profile.set({
         ...updated,
+        isGoogleUser: updated.isGoogleUser ?? this.profile()?.isGoogleUser ?? false,
+        canEditEmail: updated.canEditEmail ?? this.profile()?.canEditEmail ?? true,
         membership: this.profile()?.membership ?? 'Premium Member',
         stats: this.profile()?.stats,
       });
