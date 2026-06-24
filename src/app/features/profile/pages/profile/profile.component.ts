@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, signal, computed, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { UiState } from '../../../../core/state/ui.state';
 import { AuthService } from '../../../auth/services/auth.service';
 import { ProfileService } from '../../services/profile.service';
 import { OrdersApiService } from '../../../orders/data-access/orders-api.service';
-import { ProfileSidebarCard } from '../../components/profile-sidebar-card/profile-sidebar-card.component';
+import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
 import { ProfileSettingsCard } from '../../components/profile-settings-card/profile-settings-card.component';
 import { EditableProfileForm } from '../../components/editable-profile-form/editable-profile-form.component';
 import { ChangePasswordForm } from '../../components/change-password-form/change-password-form.component';
@@ -16,10 +16,14 @@ import { ProfileAddressList } from '../../components/profile-address-list/profil
 import { IProfile } from '../../interfaces/iprofile';
 import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
 import { IAddressDto } from '../../interfaces/iaddress.dto';
+import { IOrder } from '../../../orders/interfaces';
 import { NAV_ROUTES } from '../../../../core/constants/app-routes';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { environment } from '../../../../../environments/environment';
+import { NotificationService } from '../../../notifications/services/notification.service';
+import { ProductCacheService } from '../../../../core/services/product-cache.service';
+import { IProduct } from '../../../products/interfaces/iproduct';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 
 @Component({
@@ -29,7 +33,7 @@ import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/sk
     CommonModule,
     RtlDirective,
     TranslatePipe,
-    ProfileSidebarCard,
+    LazyImageDirective,
     ProfileSettingsCard,
     EditableProfileForm,
     ChangePasswordForm,
@@ -39,13 +43,15 @@ import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/sk
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
-export class Profile {
+export class Profile implements AfterViewInit, OnDestroy {
   private readonly profileService = inject(ProfileService);
   private readonly ordersApiService = inject(OrdersApiService);
   private readonly translationService = inject(TranslationService);
+  private readonly notificationService = inject(NotificationService);
   private readonly uiState = inject(UiState);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly productCacheService = inject(ProductCacheService);
 
   readonly profile = signal<IProfile | null>(null);
   readonly loading = signal(true);
@@ -55,11 +61,64 @@ export class Profile {
 
   readonly ordersCount = signal<number>(0);
   readonly favoritesCount = signal<number>(0);
+  readonly recentOrders = signal<IOrder[]>([]);
+
+  // Animated counter display values (count up from 0)
+  readonly animatedOrders = signal<number>(0);
+  readonly animatedFavorites = signal<number>(0);
+  readonly animatedAddresses = signal<number>(0);
+
+  private statsObserver: IntersectionObserver | null = null;
+  private countersRan = false;
+
+  readonly activeSection = signal<string>('profile');
+  readonly isSidebarExpanded = signal<boolean>(false);
+  readonly isMobileDrawerOpen = signal<boolean>(false);
+
+  readonly currentTime = signal<string>('');
+  readonly timePeriod = signal<string>('');
+  readonly currentDate = signal<string>('');
+  private clockTimer: any = null;
 
   readonly profilePreview = computed(() => this.selectedImage() ?? this.profile()?.profileImage ?? null);
 
+  /**
+   * Time-based greeting key — updates on each page load.
+   * 05:00–11:59 → Morning | 12:00–16:59 → Afternoon | 17:00–04:59 → Evening
+   */
+  readonly greetingKey = computed((): string => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12)  return 'PROFILE.GREETING_MORNING';
+    if (hour >= 12 && hour < 17) return 'PROFILE.GREETING_AFTERNOON';
+    return 'PROFILE.GREETING_EVENING';
+  });
+
+  /** Real-time notification unread count from the NotificationService signal */
+  readonly notificationsUnreadCount = computed(() => this.notificationService.unreadCount());
+
+  /** Sidebar badge counts — derived from real data; hide when 0 */
+  readonly sidebarAddressCount = computed(() => this.profile()?.addresses?.length ?? 0);
+  readonly sidebarOrdersCount   = computed(() => this.ordersCount());
+  readonly sidebarFavoritesCount = computed(() => this.favoritesCount());
+
+  get initials(): string {
+    const name = this.profile()?.fullName || this.profile()?.userName || 'FM';
+    return name
+      .split(' ')
+      .map((segment) => segment.charAt(0).toUpperCase())
+      .join('')
+      .substring(0, 2);
+  }
+
+  get isArabic(): boolean {
+    return this.translationService.currentLang() === 'ar';
+  }
+
   @ViewChild('profileAddresses', { static: false })
   private readonly profileAddressesRef?: ElementRef<HTMLElement>;
+
+  @ViewChild('statsSection', { static: false })
+  private readonly statsSectionRef?: ElementRef<HTMLElement>;
 
   readonly actionItems = computed(() => {
     const stats = this.profile()?.stats;
@@ -123,6 +182,77 @@ export class Profile {
 
   constructor() {
     this.loadProfile();
+    this.updateClock();
+    if (typeof window !== 'undefined') {
+      this.clockTimer = setInterval(() => this.updateClock(), 1000);
+    }
+  }
+
+  ngAfterViewInit(): void {
+    // Set up IntersectionObserver to trigger counter animation when stats enter viewport
+    if (typeof IntersectionObserver !== 'undefined' && this.statsSectionRef) {
+      this.statsObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting && !this.countersRan) {
+            this.countersRan = true;
+            this.runCounters();
+          }
+        },
+        { threshold: 0.2 }
+      );
+      this.statsObserver.observe(this.statsSectionRef.nativeElement);
+    } else {
+      // Fallback: set values immediately
+      this.animatedOrders.set(this.ordersCount());
+      this.animatedFavorites.set(this.favoritesCount());
+      this.animatedAddresses.set(this.profile()?.addresses?.length ?? 0);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.statsObserver?.disconnect();
+    if (this.clockTimer) {
+      clearInterval(this.clockTimer);
+    }
+  }
+
+  private updateClock(): void {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const period = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 should be 12
+    this.currentTime.set(`${hours}:${minutes}`);
+    this.timePeriod.set(period);
+
+    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+    this.currentDate.set(now.toLocaleDateString('en-US', options));
+  }
+
+  private runCounters(): void {
+    const targets = [
+      { target: this.ordersCount(),                      setter: this.animatedOrders },
+      { target: this.favoritesCount(),                   setter: this.animatedFavorites },
+      { target: this.profile()?.addresses?.length ?? 0,  setter: this.animatedAddresses },
+    ];
+
+    const DURATION   = 900;  // ms total
+    const FRAME_RATE = 16;   // ~60fps
+    const steps      = Math.ceil(DURATION / FRAME_RATE);
+
+    targets.forEach(({ target, setter }) => {
+      if (target === 0) { setter.set(0); return; }
+      let step = 0;
+      const interval = setInterval(() => {
+        step++;
+        // Ease-out curve: value = target * (1 - (1 - t)^3)
+        const t   = step / steps;
+        const val = Math.round(target * (1 - Math.pow(1 - t, 3)));
+        setter.set(Math.min(val, target));
+        if (step >= steps) clearInterval(interval);
+      }, FRAME_RATE);
+    });
   }
 
   private async loadProfile(): Promise<void> {
@@ -144,12 +274,62 @@ export class Profile {
 
       this.loadFavoritesCount();
 
-      // Fetch real orders count from API
+      // Fetch real orders from API
       try {
         const orders = await firstValueFrom(this.ordersApiService.getMyOrders());
         this.ordersCount.set(orders ? orders.length : 0);
+        const recent = orders ? orders.slice(0, 3) : [];
+
+        if (recent.length > 0) {
+          const productIds: number[] = [];
+          recent.forEach(order => {
+            order.items.forEach(item => {
+              if (item.productId) {
+                productIds.push(Number(item.productId));
+              }
+            });
+          });
+
+          if (productIds.length > 0) {
+            try {
+              console.log('[Profile Debug] Fetching product details for IDs:', productIds);
+              const products = await firstValueFrom(this.productCacheService.getProducts(productIds));
+              console.log('[Profile Debug] Retrieved products:', products);
+              const productMap = new Map<number, IProduct>();
+              products.forEach(p => productMap.set(p.id, p));
+
+              recent.forEach(order => {
+                order.items.forEach(item => {
+                  if (item.productId) {
+                    const prod = productMap.get(Number(item.productId));
+                    console.log(`[Profile Debug] Mapping item ${item.productId}:`, prod);
+                    if (prod) {
+                      item.productImage = prod.mainImageUrl || prod.imageUrl || undefined;
+                      item.image = prod.mainImageUrl || prod.imageUrl || undefined;
+                      console.log(`[Profile Debug] Set image to:`, item.productImage);
+                    }
+                  }
+                });
+              });
+            } catch (err) {
+              console.error('[Profile Debug] Failed to resolve order item images:', err);
+            }
+          }
+        }
+
+        console.log('[Profile Debug] Final recent orders list:', recent);
+        this.recentOrders.set(recent);
       } catch {
         this.ordersCount.set(0);
+        this.recentOrders.set([]);
+      }
+
+      // If stats section is already visible (counters already triggered with zeros),
+      // re-run counters now that we have real data
+      if (this.countersRan) {
+        this.countersRan = false;
+        this.runCounters();
+        this.countersRan = true;
       }
     } catch (error) {
       if (!environment.production) {
@@ -345,7 +525,8 @@ export class Profile {
 
   async handleAction(action: { labelKey: string; route: string }): Promise<void> {
     if (action.route === 'profile-addresses') {
-      this.scrollToAddresses();
+      this.activeSection.set('addresses');
+      setTimeout(() => this.scrollToAddresses(), 100);
       return;
     }
     if (action.route) {
@@ -358,6 +539,20 @@ export class Profile {
 
   private scrollToAddresses(): void {
     this.profileAddressesRef?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  scrollToProfileForm(): void {
+    const el = document.querySelector('app-editable-profile-form');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const editBtn = el.querySelector('.btn-outline-edit') as HTMLButtonElement;
+      if (editBtn) {
+        const isEdit = el.querySelector('form')?.querySelector('input');
+        if (!isEdit) {
+          editBtn.click();
+        }
+      }
+    }
   }
 
   async handleImageSelected(file: File): Promise<void> {

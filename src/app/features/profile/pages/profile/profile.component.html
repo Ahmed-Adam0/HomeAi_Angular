@@ -1,218 +1,603 @@
-<main class="profile-page container py-4 py-md-5" appRtl>
+<main class="profile-page-container" appRtl>
   @if (loading()) {
-    <app-skeleton-loader type="profile" [count]="1"></app-skeleton-loader>
+    <div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+      <app-skeleton-loader type="profile" [count]="1"></app-skeleton-loader>
+    </div>
   } @else {
-    <!-- Floating background decorative shapes -->
-    <div class="floating-shape shape-1"></div>
-    <div class="floating-shape shape-2"></div>
+    <div class="account-workspace-layout" [class.dock-expanded]="isSidebarExpanded()">
 
-    <div class="row gy-4 position-relative" style="z-index: 2;">
-      <!-- Sidebar Left Column -->
-      <section class="col-12 col-xl-4">
-        <app-profile-sidebar-card
-          [profile]="profile()"
-          [avatarPreview]="profilePreview()"
-          [stats]="sidebarStats()"
-          [uploading]="imageUploading()"
-          (logout)="onLogout()"
-          (createAiDesign)="onCreateAiDesign()"
-          (fileSelected)="handleImageSelected($event)">
-        </app-profile-sidebar-card>
-      </section>
+      <!-- 1. Floating Navigation Dock (Desktop & Tablet) -->
+      <aside class="nav-dock-wrapper d-none d-md-flex flex-column align-items-center">
 
-      <!-- Content Right Column -->
-      <section class="col-12 col-xl-8">
-        <div class="row g-4">
-          <!-- Premium Counter Statistics Grid -->
-          <div class="col-12">
-            <div class="row row-cols-2 row-cols-md-4 g-3">
-              <!-- Orders Count -->
-              <div class="col">
-                <div class="stat-card p-3 rounded-4 d-flex flex-column justify-content-between h-100 transition-all border">
-                  <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="stat-icon-wrapper d-flex align-items-center justify-content-center rounded-3 icon-orders">
-                      <i class="bi bi-box-seam-fill"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 class="stat-count display-6 font-bold text-dark mb-1">{{ ordersCount() }}</h4>
-                    <p class="stat-name text-muted text-uppercase mb-0">{{ 'PROFILE.ORDERS_COUNT_LABEL' | translate }}</p>
-                  </div>
-                </div>
-              </div>
-              <!-- Favorites Count -->
-              <div class="col">
-                <div class="stat-card p-3 rounded-4 d-flex flex-column justify-content-between h-100 transition-all border">
-                  <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="stat-icon-wrapper d-flex align-items-center justify-content-center rounded-3 icon-saved">
-                      <i class="bi bi-heart-fill"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 class="stat-count display-6 font-bold text-dark mb-1">{{ favoritesCount() }}</h4>
-                    <p class="stat-name text-muted text-uppercase mb-0">{{ 'PROFILE.SAVED_COUNT_LABEL' | translate }}</p>
-                  </div>
-                </div>
-              </div>
-              <!-- Saved Addresses -->
-              <div class="col">
-                <div class="stat-card p-3 rounded-4 d-flex flex-column justify-content-between h-100 transition-all border">
-                  <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="stat-icon-wrapper d-flex align-items-center justify-content-center rounded-3 icon-addresses">
-                      <i class="bi bi-geo-alt-fill"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 class="stat-count display-6 font-bold text-dark mb-1">{{ profile()?.addresses?.length ?? 0 }}</h4>
-                    <p class="stat-name text-muted text-uppercase mb-0">{{ 'PROFILE.SAVED_ADDRESSES' | translate }}</p>
-                  </div>
-                </div>
-              </div>
-              <!-- Designs Count -->
-              <div class="col">
-                <div class="stat-card p-3 rounded-4 d-flex flex-column justify-content-between h-100 transition-all border">
-                  <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="stat-icon-wrapper d-flex align-items-center justify-content-center rounded-3 icon-designs">
-                      <i class="bi bi-sparkles"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 class="stat-count display-6 font-bold text-dark mb-1">{{ profile()?.stats?.roomsDesigned ?? 0 }}</h4>
-                    <p class="stat-name text-muted text-uppercase mb-0">{{ 'PROFILE.DESIGNS_COUNT_LABEL' | translate }}</p>
-                  </div>
-                </div>
-              </div>
+
+        <!-- Main Floating Dock Card -->
+        <div class="nav-dock"
+             [class.expanded]="isSidebarExpanded()"
+             (mouseenter)="isSidebarExpanded.set(true)"
+             (mouseleave)="isSidebarExpanded.set(false)">
+
+          <nav class="dock-nav flex-grow-1 w-100">
+            <ul class="nav-list list-unstyled mb-0 d-flex flex-column gap-2 align-items-center">
+              <!-- Profile Link -->
+              <li class="w-100">
+                <button class="nav-item-btn w-100 d-flex align-items-center"
+                        [class.active]="activeSection() === 'profile'"
+                        (click)="activeSection.set('profile')">
+                  <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
+                    <i class="bi bi-person"></i>
+                  </span>
+                  <span class="nav-label">{{ 'NAV_PROFILE' | translate }}</span>
+                  <span class="active-indicator" *ngIf="activeSection() === 'profile'"></span>
+                </button>
+              </li>
+
+              <!-- Addresses Link -->
+              <li class="w-100">
+                <button class="nav-item-btn w-100 d-flex align-items-center"
+                        [class.active]="activeSection() === 'addresses'"
+                        (click)="activeSection.set('addresses')">
+                  <span class="nav-icon-wrapper d-flex align-items-center justify-content-center position-relative">
+                    <i class="bi bi-geo-alt"></i>
+                    <span class="badge-dot-count" *ngIf="sidebarAddressCount() > 0">{{ sidebarAddressCount() }}</span>
+                  </span>
+                  <span class="nav-label">{{ 'PROFILE.ADDRESS' | translate }}</span>
+                  <span class="active-indicator" *ngIf="activeSection() === 'addresses'"></span>
+                  <span class="badge-circle-count ms-auto" *ngIf="sidebarAddressCount() > 0">{{ sidebarAddressCount() }}</span>
+                </button>
+              </li>
+
+              <!-- Orders Link -->
+              <li class="w-100">
+                <button class="nav-item-btn w-100 d-flex align-items-center"
+                        (click)="handleAction({ labelKey: 'PROFILE.MY_ORDERS', route: '/orders' })">
+                  <span class="nav-icon-wrapper d-flex align-items-center justify-content-center position-relative">
+                    <i class="bi bi-box-seam"></i>
+                    <span class="badge-dot-count" *ngIf="sidebarOrdersCount() > 0">{{ sidebarOrdersCount() }}</span>
+                  </span>
+                  <span class="nav-label">{{ 'PROFILE.MY_ORDERS' | translate }}</span>
+                  <span class="badge-circle-count ms-auto" *ngIf="sidebarOrdersCount() > 0">{{ sidebarOrdersCount() }}</span>
+                </button>
+              </li>
+
+              <!-- Favorites Link -->
+              <li class="w-100">
+                <button class="nav-item-btn w-100 d-flex align-items-center"
+                        (click)="handleAction({ labelKey: 'PROFILE.FAVORITES', route: '/favorites' })">
+                  <span class="nav-icon-wrapper d-flex align-items-center justify-content-center position-relative">
+                    <i class="bi bi-heart"></i>
+                    <span class="badge-dot-count" *ngIf="sidebarFavoritesCount() > 0">{{ sidebarFavoritesCount() }}</span>
+                  </span>
+                  <span class="nav-label">{{ 'PROFILE.FAVORITES' | translate }}</span>
+                  <span class="badge-circle-count ms-auto" *ngIf="sidebarFavoritesCount() > 0">{{ sidebarFavoritesCount() }}</span>
+                </button>
+              </li>
+
+              <!-- Notifications Link -->
+              <li class="w-100">
+                <button class="nav-item-btn w-100 d-flex align-items-center position-relative"
+                        (click)="handleAction({ labelKey: 'PROFILE.NOTIFICATIONS', route: '/notifications' })">
+                  <span class="nav-icon-wrapper d-flex align-items-center justify-content-center position-relative">
+                    <i class="bi bi-bell"></i>
+                    <span class="badge-dot-count" *ngIf="notificationsUnreadCount() > 0">{{ notificationsUnreadCount() }}</span>
+                  </span>
+                  <span class="nav-label">{{ 'PROFILE.NOTIFICATIONS' | translate }}</span>
+                  <span class="badge-circle-count ms-auto" *ngIf="notificationsUnreadCount() > 0">{{ notificationsUnreadCount() }}</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+
+          <!-- Dock Footer: Logout -->
+          <div class="dock-footer w-100 mt-auto pt-3">
+            <button class="nav-item-btn logout-btn w-100 d-flex align-items-center" (click)="onLogout()">
+              <span class="nav-icon-wrapper d-flex align-items-center justify-content-center">
+                <i class="bi bi-box-arrow-right"></i>
+              </span>
+              <span class="nav-label">{{ 'PROFILE.LOGOUT' | translate }}</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 2. Responsive Mobile Drawer / Navigation -->
+      <div class="mobile-drawer-backdrop" *ngIf="isMobileDrawerOpen()" (click)="isMobileDrawerOpen.set(false)"></div>
+      <aside class="mobile-drawer" [class.open]="isMobileDrawerOpen()">
+        <div class="drawer-header d-flex align-items-center justify-content-between border-bottom">
+          <div class="sidebar-logo d-flex align-items-center gap-2">
+            <span class="logo-mark d-flex align-items-center justify-content-center rounded-2 bg-dark">
+              <i class="bi bi-sparkles text-white"></i>
+            </span>
+            <span class="logo-text font-semibold text-dark">FurniMind</span>
+          </div>
+          <button type="button" class="btn-close" (click)="isMobileDrawerOpen.set(false)"></button>
+        </div>
+
+        <!-- Mobile Drawer User Info -->
+        <div class="drawer-user-info p-4 border-bottom">
+          <div class="d-flex align-items-center gap-3">
+            <div class="drawer-avatar">
+              <ng-container *ngIf="profilePreview() as preview; else drawerInitials">
+                <img [appLazyImage]="preview" alt="avatar" class="drawer-avatar-img rounded-circle" />
+              </ng-container>
+              <ng-template #drawerInitials>
+                <span class="drawer-avatar-initials">{{ initials }}</span>
+              </ng-template>
             </div>
-          </div>
-
-          <!-- Unified Personal Information Card -->
-          <div class="col-12">
-            <app-editable-profile-form
-              [profile]="profile()"
-              [submitting]="formSubmitting()"
-              (saveProfile)="handleSaveProfile($event)">
-            </app-editable-profile-form>
-          </div>
-
-          <!-- Change Password Card -->
-          <div class="col-12">
-            <app-change-password-form></app-change-password-form>
-          </div>
-
-          <!-- Account Settings Card -->
-          <div class="col-12">
-            <app-profile-settings-card
-              [actions]="actionItems()"
-              (selectAction)="handleAction($event)">
-            </app-profile-settings-card>
-          </div>
-
-          <!-- Address List Card -->
-          <div class="col-12" #profileAddresses>
-            <app-profile-address-list
-              [addresses]="profile()?.addresses ?? []"
-              [submitting]="formSubmitting()"
-              (updateAddresses)="handleUpdateAddresses($event)">
-            </app-profile-address-list>
-          </div>
-
-          <!-- AI Design Activity Card (Focal Point) -->
-          <div class="col-12">
-            <div class="ai-activity-card card border-0 rounded-4 overflow-hidden shadow-sm">
-              <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-center gap-3 mb-4">
-                  <div class="activity-icon-container d-flex align-items-center justify-content-center rounded-3 bg-white shadow-sm">
-                    <i class="bi bi-sparkles text-brand fs-4"></i>
-                  </div>
-                  <div>
-                    <h3 class="h5 mb-1 font-bold text-dark tracking-tight">{{ 'PROFILE.AI_DESIGN_ACTIVITY' | translate }}</h3>
-                    <p class="text-muted small mb-0">{{ 'PROFILE.AI_DESIGN_JOURNEY' | translate }}</p>
-                  </div>
-                </div>
-
-                <!-- Stat Boxes Grid -->
-                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
-                  <div class="col" *ngFor="let stat of profileStats(); trackBy: trackByStat">
-                    <div class="activity-stat-box p-3 rounded-4 bg-white shadow-xs text-center d-flex flex-column justify-content-center h-100 transition-all">
-                      <span class="activity-stat-value display-6 font-bold text-dark mb-1">{{ stat.value }}</span>
-                      <span class="activity-stat-label text-muted text-uppercase" style="font-size: 0.6875rem; letter-spacing: 0.04em;">{{ stat.labelKey | translate }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Vertical Activity Timeline -->
-                <div class="timeline-container mt-5 pt-3 border-top">
-                  <h4 class="timeline-title h6 text-dark font-bold tracking-tight mb-4 d-flex align-items-center gap-2">
-                    <i class="bi bi-clock-history text-brand"></i>
-                    {{ 'PROFILE.AI_ACTIVITY' | translate }}
-                  </h4>
-                  <div class="vertical-timeline ps-3 position-relative">
-                    <!-- Line -->
-                    <div class="timeline-line position-absolute start-0 top-0 bottom-0"></div>
-
-                    <!-- Timeline Item 1: Recent Orders -->
-                    <div class="timeline-item position-relative mb-4 d-flex gap-3 align-items-start">
-                      <div class="timeline-dot position-absolute start-0 translate-middle-y d-flex align-items-center justify-content-center rounded-circle bg-white shadow-sm border">
-                        <i class="bi bi-box-seam-fill text-brand"></i>
-                      </div>
-                      <div class="timeline-content p-3 rounded-4 bg-white shadow-xs border flex-grow-1">
-                        <div class="d-flex align-items-center justify-content-between mb-1 flex-wrap gap-2">
-                          <span class="timeline-event-title font-bold text-dark small">Recent Purchase Activity</span>
-                          <span class="timeline-time text-muted small">Recently</span>
-                        </div>
-                        <p class="timeline-event-desc text-muted mb-0 small" style="line-height: 1.5;">
-                          {{ ordersCount() > 0 ? 'You have ' + ordersCount() + ' active order(s) logged in your luxury furniture profile.' : 'No recent orders placed. Start custom designing your rooms to checkout items.' }}
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Timeline Item 2: Account Updates -->
-                    <div class="timeline-item position-relative mb-4 d-flex gap-3 align-items-start">
-                      <div class="timeline-dot position-absolute start-0 translate-middle-y d-flex align-items-center justify-content-center rounded-circle bg-white shadow-sm border">
-                        <i class="bi bi-shield-fill-check text-brand"></i>
-                      </div>
-                      <div class="timeline-content p-3 rounded-4 bg-white shadow-xs border flex-grow-1">
-                        <div class="d-flex align-items-center justify-content-between mb-1 flex-wrap gap-2">
-                          <span class="timeline-event-title font-bold text-dark small">Profile Sync & Integrity</span>
-                          <span class="timeline-time text-muted small">Synchronized</span>
-                        </div>
-                        <p class="timeline-event-desc text-muted mb-0 small" style="line-height: 1.5;">
-                          Your shipping details and design preferences are encrypted and synchronized.
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Timeline Item 3: Latest Actions -->
-                    <div class="timeline-item position-relative d-flex gap-3 align-items-start">
-                      <div class="timeline-dot position-absolute start-0 translate-middle-y d-flex align-items-center justify-content-center rounded-circle bg-white shadow-sm border">
-                        <i class="bi bi-sparkles text-brand"></i>
-                      </div>
-                      <div class="timeline-content p-3 rounded-4 bg-white shadow-xs border flex-grow-1">
-                        <div class="d-flex align-items-center justify-content-between mb-1 flex-wrap gap-2">
-                          <span class="timeline-event-title font-bold text-dark small">Spatial Design Studio</span>
-                          <span class="timeline-time text-muted small">Active</span>
-                        </div>
-                        <p class="timeline-event-desc text-muted mb-0 small" style="line-height: 1.5;">
-                          {{ (profile()?.stats?.roomsDesigned ?? 0) > 0 ? 'Rendered and saved ' + profile()?.stats?.roomsDesigned + ' custom interior designs using FurniMind AI.' : 'Start your first room design scan in 3D using spatial artificial intelligence.' }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- CTA Button -->
-                <div class="text-center mt-5">
-                  <button type="button" class="btn btn-create-design btn-md rounded-pill px-4" (click)="onCreateAiDesign()">
-                    <i class="bi bi-sparkles me-2"></i>
-                    {{ 'PROFILE.CREATE_AI_DESIGN' | translate }}
-                  </button>
-                </div>
-              </div>
+            <div class="min-w-0">
+              <p class="drawer-user-name mb-0 text-truncate">{{ profile()?.fullName || profile()?.userName }}</p>
+              <span class="drawer-membership-pill">{{ profile()?.membership || 'Premium Member' }}</span>
             </div>
           </div>
         </div>
-      </section>
+
+        <div class="drawer-body p-3 flex-grow-1">
+          <ul class="nav-list list-unstyled mb-0 d-flex flex-column gap-1">
+            <li>
+              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+                      [class.active]="activeSection() === 'profile'"
+                      (click)="activeSection.set('profile'); isMobileDrawerOpen.set(false)">
+                <i class="bi bi-person"></i>
+                <span>{{ 'NAV_PROFILE' | translate }}</span>
+              </button>
+            </li>
+            <li>
+              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+                      [class.active]="activeSection() === 'addresses'"
+                      (click)="activeSection.set('addresses'); isMobileDrawerOpen.set(false)">
+                <i class="bi bi-geo-alt"></i>
+                <span>{{ 'PROFILE.ADDRESS' | translate }}</span>
+              </button>
+            </li>
+            <li>
+              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+                      (click)="handleAction({ labelKey: 'PROFILE.MY_ORDERS', route: '/orders' }); isMobileDrawerOpen.set(false)">
+                <i class="bi bi-box-seam"></i>
+                <span>{{ 'PROFILE.MY_ORDERS' | translate }}</span>
+              </button>
+            </li>
+            <li>
+              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+                      (click)="handleAction({ labelKey: 'PROFILE.FAVORITES', route: '/favorites' }); isMobileDrawerOpen.set(false)">
+                <i class="bi bi-heart"></i>
+                <span>{{ 'PROFILE.FAVORITES' | translate }}</span>
+              </button>
+            </li>
+            <li>
+              <button class="mobile-nav-btn w-100 d-flex align-items-center gap-3"
+                      (click)="handleAction({ labelKey: 'PROFILE.NOTIFICATIONS', route: '/notifications' }); isMobileDrawerOpen.set(false)">
+                <i class="bi bi-bell"></i>
+                <span>{{ 'PROFILE.NOTIFICATIONS' | translate }}</span>
+                <span class="badge bg-secondary ms-auto" *ngIf="notificationsUnreadCount() > 0">{{ notificationsUnreadCount() }}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="drawer-footer p-3 border-top">
+          <button class="mobile-nav-btn logout-btn w-100 d-flex align-items-center gap-3" (click)="onLogout(); isMobileDrawerOpen.set(false)">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>{{ 'PROFILE.LOGOUT' | translate }}</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- 3. Main Workspace Area -->
+      <div class="workspace-main flex-grow-1">
+
+        <!-- Mobile Header Bar -->
+        <header class="mobile-topbar d-md-none d-flex align-items-center justify-content-between p-3">
+          <button class="mobile-menu-trigger btn d-flex align-items-center gap-2" (click)="isMobileDrawerOpen.set(true)">
+            <i class="bi bi-list fs-5"></i>
+            <span>{{ 'PROFILE.MENU' | translate }}</span>
+          </button>
+          <div class="mobile-logo d-flex align-items-center gap-2">
+            <span class="logo-mark d-flex align-items-center justify-content-center rounded-2 bg-dark">
+              <i class="bi bi-sparkles text-white"></i>
+            </span>
+          </div>
+        </header>
+
+        <!-- Workspace Content Inner -->
+        <div class="workspace-content container-fluid py-4 py-md-5">
+
+          <!-- === PROFILE SECTION === -->
+          <ng-container *ngIf="activeSection() === 'profile'">
+            <div class="profile-dashboard-grid d-flex flex-column gap-5">
+
+              <!-- ── ACCOUNT HERO ── -->
+              <section class="account-hero stagger-item" style="--i:0">
+
+                <!-- Layered background: gradient + floating orbs -->
+                <div class="hero-bg-layer">
+                  <div class="hero-bg-image"></div>
+                  <div class="hero-orb hero-orb-1"></div>
+                  <div class="hero-orb hero-orb-2"></div>
+                  <div class="hero-orb hero-orb-3"></div>
+                  <div class="hero-mesh-overlay"></div>
+                </div>
+
+                <!-- Floating Modern Smart Watch Widget -->
+                <div class="hero-watch-widget hero-anim" style="--anim-i:5">
+                  <div class="watch-dial">
+                    <div class="watch-time-wrapper">
+                      <span class="watch-time">{{ currentTime() }}</span>
+                      <span class="watch-period">{{ timePeriod() }}</span>
+                    </div>
+                    <div class="watch-date">
+                      {{ currentDate() }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="hero-inner">
+
+                  <!-- ─ Left: Avatar column ─ -->
+                  <div class="hero-avatar-col">
+                    <div class="profile-avatar-wrapper position-relative">
+                      <!-- Halo rings -->
+                      <div class="avatar-halo avatar-halo-outer"></div>
+                      <div class="avatar-halo avatar-halo-inner"></div>
+
+                      <!-- Avatar ring + circle -->
+                      <div class="profile-avatar-ring">
+                        <div class="profile-avatar-circle">
+                          <ng-container *ngIf="profilePreview() as preview; else initialsIcon">
+                            <img [appLazyImage]="preview" alt="avatar" class="profile-avatar-img" />
+                          </ng-container>
+                          <ng-template #initialsIcon>
+                            <span class="profile-avatar-initials">{{ initials }}</span>
+                          </ng-template>
+                        </div>
+                      </div>
+
+                      <!-- Upload button -->
+                      <label class="profile-avatar-edit-btn position-absolute"
+                             [class.cursor-pointer]="!imageUploading()"
+                             [class.cursor-not-allowed]="imageUploading()">
+                        <span *ngIf="imageUploading()" class="spinner-border spinner-border-sm"></span>
+                        <i *ngIf="!imageUploading()" class="bi bi-camera-fill"></i>
+                        <input type="file" accept="image/*" hidden
+                               (change)="handleImageSelected($any($event.target).files[0])"
+                               [disabled]="imageUploading()" />
+                      </label>
+                    </div>
+
+                  </div>
+
+                  <!-- ─ Right: Identity column ─ -->
+                  <div class="hero-identity">
+
+                    <!-- Greeting line -->
+                    <p class="hero-greeting hero-anim" style="--anim-i:0">
+                      {{ greetingKey() | translate }} 👋
+                    </p>
+
+                    <!-- Name -->
+                    <h1 class="hero-name hero-anim" style="--anim-i:1">
+                      {{ profile()?.fullName || profile()?.userName || 'User' }}
+                      <span class="verified-seal" title="Verified Member">
+                        <i class="bi bi-patch-check-fill"></i>
+                      </span>
+                    </h1>
+
+                    <!-- Divider rule -->
+                    <div class="hero-rule hero-anim" style="--anim-i:2"></div>
+
+                    <!-- Info chips row -->
+                    <div class="hero-chips hero-anim" style="--anim-i:3">
+                      <span class="hero-chip" *ngIf="profile()?.email">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span class="text-truncate">{{ profile()?.email }}</span>
+                      </span>
+                      <span class="hero-chip" *ngIf="profile()?.phoneNumber">
+                        <i class="bi bi-telephone-fill"></i>
+                        {{ profile()?.phoneNumber }}
+                      </span>
+                      <span class="hero-chip">
+                        <i class="bi bi-calendar3"></i>
+                        {{ 'PROFILE.EST_YEAR' | translate }}
+                      </span>
+                    </div>
+
+                    <!-- Quick-stats mini row -->
+                    <div class="hero-mini-stats hero-anim" style="--anim-i:4">
+                      <div class="mini-stat" (click)="handleAction({ labelKey: 'PROFILE.MY_ORDERS', route: '/orders' })">
+                        <span class="mini-stat-value">{{ ordersCount() }}</span>
+                        <span class="mini-stat-label">{{ 'PROFILE.ORDERS_COUNT_LABEL' | translate }}</span>
+                      </div>
+                      <div class="mini-stat-divider"></div>
+                      <div class="mini-stat" (click)="handleAction({ labelKey: 'PROFILE.FAVORITES', route: '/favorites' })">
+                        <span class="mini-stat-value">{{ favoritesCount() }}</span>
+                        <span class="mini-stat-label">{{ 'PROFILE.FAVORITES' | translate }}</span>
+                      </div>
+                      <div class="mini-stat-divider"></div>
+                      <div class="mini-stat" (click)="activeSection.set('addresses')">
+                        <span class="mini-stat-value">{{ profile()?.addresses?.length ?? 0 }}</span>
+                        <span class="mini-stat-label">{{ 'PROFILE.ADDRESS' | translate }}</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </section>
+
+
+              <!-- ── STATISTICS CARDS ── -->
+              <section class="stats-section stagger-item" #statsSection style="--i:1">
+                <div class="stats-grid">
+
+                  <!-- Orders Metric -->
+                  <div class="metric-card stagger-card" style="--card-i:0"
+                       (click)="handleAction({ labelKey: 'PROFILE.MY_ORDERS', route: '/orders' })">
+                    <div class="metric-icon-row">
+                      <div class="metric-icon-wrap order-icon">
+                        <i class="bi bi-box-seam"></i>
+                      </div>
+                    </div>
+                    <div class="metric-content">
+                      <p class="metric-label">{{ 'PROFILE.ORDERS_COUNT_LABEL' | translate }}</p>
+                      <div class="metric-value-row">
+                        <span class="metric-value">{{ ordersCount() }}</span>
+                        <div class="metric-action-arrow">
+                          <i class="bi bi-arrow-right"></i>
+                        </div>
+                      </div>
+                      <p class="metric-sublabel">{{ 'PROFILE.ACTIVE_ORDERS_TEXT' | translate }}</p>
+                    </div>
+                    <!-- Bottom Wavy Chart -->
+                    <div class="metric-wave-container">
+                      <svg viewBox="0 0 300 40" preserveAspectRatio="none" class="metric-wave-svg">
+                        <defs>
+                          <linearGradient id="order-wave-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="rgba(240, 140, 50, 0.15)" />
+                            <stop offset="100%" stop-color="rgba(240, 140, 50, 0)" />
+                          </linearGradient>
+                        </defs>
+                        <path d="M 0 32 Q 75 18 150 28 T 300 24 L 300 40 L 0 40 Z" fill="url(#order-wave-grad)" />
+                        <path d="M 0 32 Q 75 18 150 28 T 300 24" fill="none" stroke="#f08c32" stroke-width="2" stroke-linecap="round" />
+                        <circle cx="297" cy="24" r="3.5" fill="#f08c32" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Favorites Metric -->
+                  <div class="metric-card stagger-card" style="--card-i:1"
+                       (click)="handleAction({ labelKey: 'PROFILE.FAVORITES', route: '/favorites' })">
+                    <div class="metric-icon-row">
+                      <div class="metric-icon-wrap favorite-icon">
+                        <i class="bi bi-heart-fill"></i>
+                      </div>
+                    </div>
+                    <div class="metric-content">
+                      <p class="metric-label">{{ 'PROFILE.FAVORITES' | translate }}</p>
+                      <div class="metric-value-row">
+                        <span class="metric-value">{{ favoritesCount() }}</span>
+                        <div class="metric-action-arrow">
+                          <i class="bi bi-arrow-right"></i>
+                        </div>
+                      </div>
+                      <p class="metric-sublabel">{{ 'PROFILE.SAVED_ITEMS_TEXT' | translate }}</p>
+                    </div>
+                    <!-- Bottom Wavy Chart -->
+                    <div class="metric-wave-container">
+                      <svg viewBox="0 0 300 40" preserveAspectRatio="none" class="metric-wave-svg">
+                        <defs>
+                          <linearGradient id="fav-wave-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="rgba(230, 80, 120, 0.15)" />
+                            <stop offset="100%" stop-color="rgba(230, 80, 120, 0)" />
+                          </linearGradient>
+                        </defs>
+                        <path d="M 0 32 Q 75 18 150 28 T 300 24 L 300 40 L 0 40 Z" fill="url(#fav-wave-grad)" />
+                        <path d="M 0 32 Q 75 18 150 28 T 300 24" fill="none" stroke="#e65078" stroke-width="2" stroke-linecap="round" />
+                        <circle cx="297" cy="24" r="3.5" fill="#e65078" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Addresses Metric -->
+                  <div class="metric-card stagger-card" style="--card-i:2"
+                       (click)="activeSection.set('addresses')">
+                    <div class="metric-icon-row">
+                      <div class="metric-icon-wrap address-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                      </div>
+                    </div>
+                    <div class="metric-content">
+                      <p class="metric-label">{{ 'PROFILE.ADDRESS' | translate }}</p>
+                      <div class="metric-value-row">
+                        <span class="metric-value">{{ profile()?.addresses?.length ?? 0 }}</span>
+                        <div class="metric-action-arrow">
+                          <i class="bi bi-arrow-right"></i>
+                        </div>
+                      </div>
+                      <p class="metric-sublabel">{{ 'PROFILE.SAVED_ADDRESSES_TEXT' | translate }}</p>
+                    </div>
+                    <!-- Bottom Wavy Chart -->
+                    <div class="metric-wave-container">
+                      <svg viewBox="0 0 300 40" preserveAspectRatio="none" class="metric-wave-svg">
+                        <defs>
+                          <linearGradient id="addr-wave-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="rgba(75, 160, 80, 0.15)" />
+                            <stop offset="100%" stop-color="rgba(75, 160, 80, 0)" />
+                          </linearGradient>
+                        </defs>
+                        <path d="M 0 32 Q 75 18 150 28 T 300 24 L 300 40 L 0 40 Z" fill="url(#addr-wave-grad)" />
+                        <path d="M 0 32 Q 75 18 150 28 T 300 24" fill="none" stroke="#4ba050" stroke-width="2" stroke-linecap="round" />
+                        <circle cx="297" cy="24" r="3.5" fill="#4ba050" />
+                      </svg>
+                    </div>
+                  </div>
+
+                </div>
+              </section>
+
+              <!-- ── PERSONAL INFORMATION (Primary, Full-Width) ── -->
+              <section class="content-section stagger-item" style="--i:2">
+                <div class="section-header">
+                  <div class="section-tag">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>{{ 'PROFILE.PERSONAL_INFORMATION' | translate }}</span>
+                  </div>
+                </div>
+                <div class="content-card">
+                  <app-editable-profile-form
+                    [profile]="profile()"
+                    [submitting]="formSubmitting()"
+                    (saveProfile)="handleSaveProfile($event)">
+                  </app-editable-profile-form>
+                </div>
+              </section>
+
+              <!-- ── SECURITY (Change Password) ── -->
+              <section class="content-section stagger-item" style="--i:3">
+                <div class="section-header">
+                  <div class="section-tag">
+                    <i class="bi bi-shield-check"></i>
+                    <span>{{ 'PROFILE.PRIVACY_SECURITY' | translate }}</span>
+                  </div>
+                </div>
+                <div class="content-card">
+                  <app-change-password-form></app-change-password-form>
+                </div>
+              </section>
+
+              <!-- ── RECENT ORDERS (Secondary) ── -->
+              <section class="content-section stagger-item" style="--i:4">
+                <div class="section-header">
+                  <div class="section-tag">
+                    <i class="bi bi-bag-check"></i>
+                    <span>{{ 'PROFILE.RECENT_ORDERS' | translate }}</span>
+                  </div>
+                  <a (click)="handleAction({ labelKey: 'PROFILE.MY_ORDERS', route: '/orders' })"
+                     class="section-view-all cursor-pointer">
+                    {{ 'PROFILE.VIEW_ALL' | translate }}
+                    <i class="bi bi-arrow-right"></i>
+                  </a>
+                </div>
+
+                <div class="content-card">
+                  @if (recentOrders().length > 0) {
+                    <div class="orders-timeline">
+                      @for (order of recentOrders(); track order.id; let i = $index) {
+                        <div class="order-row animate-order-item" [style.--i]="i"
+                             (click)="handleAction({ labelKey: 'PROFILE.MY_ORDERS', route: '/orders' })">
+                          
+                          <!-- Status Glowing Badge -->
+                          <div class="order-status-badge status-{{ order.status }}">
+                            <i class="bi" [ngClass]="{
+                              'bi-check-circle-fill': order.status === 'delivered' || order.status === 'completed',
+                              'bi-truck': order.status === 'shipped' || order.status === 'ready',
+                              'bi-gear-wide-connected gear-spin-icon': order.status === 'processing' || order.status === 'confirmed',
+                              'bi-x-circle-fill': order.status === 'cancelled' || order.status === 'refunded',
+                              'bi-clock-fill': order.status !== 'delivered' && order.status !== 'completed' && order.status !== 'shipped' && order.status !== 'ready' && order.status !== 'processing' && order.status !== 'confirmed' && order.status !== 'cancelled' && order.status !== 'refunded'
+                            }"></i>
+                          </div>
+
+                          <!-- Reference Column -->
+                          <div class="order-ref-col">
+                            <span class="order-number-text">#{{ order.orderNumber || (order.id | slice:0:8) }}</span>
+                            <span class="order-date-text">{{ order.createdAt | date:'MMM d, y' }}</span>
+                          </div>
+
+                          <!-- Details Column -->
+                          <div class="order-details-col flex-grow-1">
+                            <span class="order-product-summary text-truncate">
+                              {{ isArabic && order.items[0]?.productNameAr
+                                 ? order.items[0]?.productNameAr
+                                 : (order.items[0]?.productNameEn || order.items[0]?.productName || 'Order') }}
+                            </span>
+                            <span class="order-items-count-badge" *ngIf="order.items && order.items.length > 0">
+                              {{ order.items.length }} {{ (order.items.length === 1 ? 'PROFILE.ORDER_ITEM' : 'PROFILE.ORDER_ITEMS') | translate }}
+                            </span>
+                          </div>
+
+                          <!-- Meta Column -->
+                          <div class="order-price-col">
+                            <span class="order-price-value">
+                              {{ order.totalAmount || order.total || 0 | currency:'USD':'symbol':'1.2-2' }}
+                            </span>
+                            <span class="status-pill status-{{ order.status }}">
+                              {{ 'ORDERS_STATUS_' + order.status.toUpperCase() | translate }}
+                            </span>
+                          </div>
+
+                          <!-- Interactive Arrow -->
+                          <div class="order-arrow-col">
+                            <i class="bi" [ngClass]="isArabic ? 'bi-chevron-left' : 'bi-chevron-right'"></i>
+                          </div>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Bottom CTA -->
+                    <div class="orders-cta-row">
+                      <button class="btn-orders-cta"
+                              (click)="handleAction({ labelKey: 'PROFILE.MY_ORDERS', route: '/orders' })">
+                        <span>{{ 'ORDERS_VIEW_DETAILS' | translate }}</span>
+                        <i class="bi bi-arrow-right"></i>
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="empty-state">
+                      <div class="empty-icon-wrap">
+                        <i class="bi bi-bag-x"></i>
+                      </div>
+                      <h5 class="empty-title">{{ 'ORDERS_EMPTY_TITLE' | translate }}</h5>
+                      <p class="empty-desc">{{ 'ORDERS_EMPTY_DESC' | translate }}</p>
+                    </div>
+                  }
+                </div>
+              </section>
+
+            </div>
+          </ng-container>
+
+          <!-- === ADDRESSES SECTION === -->
+          <ng-container *ngIf="activeSection() === 'addresses'">
+            <div class="animate-section-in">
+              <div class="section-header mb-4">
+                <div class="section-tag">
+                  <i class="bi bi-geo-alt-fill"></i>
+                  <span>{{ 'PROFILE.ADDRESS' | translate }}</span>
+                </div>
+              </div>
+              <div class="content-card" #profileAddresses>
+                <app-profile-address-list
+                  [addresses]="profile()?.addresses ?? []"
+                  [submitting]="formSubmitting()"
+                  (updateAddresses)="handleUpdateAddresses($event)">
+                </app-profile-address-list>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- === SETTINGS SECTION === -->
+          <ng-container *ngIf="activeSection() === 'settings'">
+            <div class="settings-grid animate-section-in">
+              <div class="row g-4">
+                <!-- Change Password -->
+                <div class="col-12 col-md-8">
+                  <div class="content-card">
+                    <app-change-password-form></app-change-password-form>
+                  </div>
+                </div>
+
+                <!-- Account Actions -->
+                <div class="col-12 col-md-4">
+                  <div class="content-card h-100">
+                    <app-profile-settings-card
+                      [actions]="actionItems()"
+                      (selectAction)="handleAction($event)">
+                    </app-profile-settings-card>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+        </div>
+      </div>
+
     </div>
   }
 </main>
-

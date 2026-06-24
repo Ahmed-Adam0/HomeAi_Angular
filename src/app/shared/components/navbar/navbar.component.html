@@ -218,7 +218,6 @@
                     </span>
                   </div>
                 </div>
-                <span class="online-indicator"></span>
               </button>
 
               @if (isProfileDropdownOpen()) {
@@ -235,7 +234,6 @@
                       [class.d-none]="userAvatarSrc() && !avatarError()">
                       {{ authService.currentUser()?.initials || 'FM' }}
                     </div>
-                    <span class="avatar-status-dot"></span>
                   </div>
                   <div class="header-user-info flex-grow-1 text-start">
                     <span class="user-fullname d-block fw-semibold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
