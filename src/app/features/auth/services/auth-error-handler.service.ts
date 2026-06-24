@@ -321,6 +321,8 @@ export class AuthErrorHandler {
     ['rate limit', { ar: 'محاولات كثيرة جداً.', en: 'Too many requests.' }],
     ['email not confirmed', { ar: 'البريد الإلكتروني غير مؤكد.', en: 'Email not confirmed.' }],
     ['one or more validation errors', { ar: 'يرجى مراجعة الحقول التي تحمل أخطاء.', en: 'Please check the fields with errors below.' }],
+    ['google-authenticated users cannot change their email address manually', { ar: 'لا يمكن لمستخدمي مصادقة Google تغيير بريدهم الإلكتروني يدوياً.', en: 'Google-authenticated users cannot change their email address manually.' }],
+    ['google users cannot change their email address', { ar: 'لا يمكن لمستخدمي مصادقة Google تغيير بريدهم الإلكتروني يدوياً.', en: 'Google-authenticated users cannot change their email address manually.' }],
   ]);
 
   private readonly codeMap = new Map<string, { ar: string; en: string }>([
