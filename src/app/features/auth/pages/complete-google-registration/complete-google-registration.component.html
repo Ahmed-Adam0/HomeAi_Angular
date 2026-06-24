@@ -37,8 +37,18 @@
 
         <!-- Google Profile Summary -->
         <div class="google-profile-card" *ngIf="googleProfile">
-          <div class="profile-avatar-container">
-            <img [src]="googleProfile.profileImage || 'assets/images/default-avatar.png'" alt="Google Profile" class="profile-avatar" />
+          <div class="profile-avatar-container position-relative">
+            <!-- Profile IMAGE: shown when profileImage is truthy AND no error -->
+            <img [attr.src]="googleProfile.profileImage || undefined" alt="Google Profile" 
+              class="profile-avatar w-100 h-100 rounded-circle object-fit-cover" 
+              [class.d-none]="!googleProfile.profileImage || avatarError"
+              (error)="onAvatarError()" />
+
+            <!-- INITIALS FALLBACK: shown when no image or image errored -->
+            <div class="profile-avatar-initials w-100 h-100 rounded-circle d-flex align-items-center justify-content-center fw-bold"
+              [class.d-none]="googleProfile.profileImage && !avatarError">
+              {{ initials }}
+            </div>
           </div>
           <div class="profile-info">
             <h3 class="profile-name">{{ googleProfile.firstName }} {{ googleProfile.lastName }}</h3>

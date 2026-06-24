@@ -90,15 +90,33 @@
 }
 
 .profile-avatar-container {
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
+  position: relative;
 }
 
 .profile-avatar {
-  width: 52px;
-  height: 52px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #795c4b;
+  border: 1.5px solid var(--fm-color-primary-100, #f4eae0);
+  display: block;
+}
+
+.profile-avatar-initials {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background-color: var(--fm-color-primary-50, #faf6f0);
+  color: var(--fm-color-primary-600, #a37e4c);
+  font-size: 0.95rem;
+  border: 1.5px solid var(--fm-color-primary-100, #f4eae0);
 }
 
 .profile-info {

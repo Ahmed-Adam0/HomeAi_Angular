@@ -37,6 +37,20 @@ export class CompleteGoogleRegistration implements OnInit {
     profileImage: string;
   } | null = null;
 
+  avatarError = false;
+
+  get initials(): string {
+    if (!this.googleProfile) return '';
+    const firstName = (this.googleProfile.firstName || '').trim();
+    const lastName = (this.googleProfile.lastName || '').trim();
+    const name = (firstName + ' ' + lastName).trim() || 'Google User';
+    return name.charAt(0).toUpperCase();
+  }
+
+  onAvatarError(): void {
+    this.avatarError = true;
+  }
+
   readonly currentLang = this.translationService.currentLang;
   readonly direction = computed(() => this.currentLang() === 'ar' ? 'rtl' : 'ltr');
   readonly t = computed(() => this.translations[this.currentLang()]);
@@ -95,6 +109,7 @@ export class CompleteGoogleRegistration implements OnInit {
       this.hasSession = true;
       this.registrationToken = session.registrationToken;
       this.googleProfile = session.googleProfile;
+      this.avatarError = false;
     } else {
       this.hasSession = false;
     }
