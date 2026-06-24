@@ -193,10 +193,22 @@ export class NotificationService {
       createdAt: notification.createdAt instanceof Date ? notification.createdAt : new Date(notification.createdAt),
     };
 
-    this.notificationsById.update((previous) => ({
-      ...previous,
-      [normalizedNotification.id]: normalizedNotification,
-    }));
+    let isDuplicate = false;
+    this.notificationsById.update((previous) => {
+      if (previous[normalizedNotification.id]) {
+        isDuplicate = true;
+        return previous;
+      }
+      return {
+        ...previous,
+        [normalizedNotification.id]: normalizedNotification,
+      };
+    });
+
+    if (isDuplicate) {
+      console.warn(`[NotificationService] Duplicate notification received (ID: ${normalizedNotification.id}). Ignoring.`);
+      return;
+    }
 
     this.currentPageNotifications.update((items) => [
       normalizedNotification,

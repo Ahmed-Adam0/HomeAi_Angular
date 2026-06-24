@@ -15,7 +15,6 @@ import {
 } from '../interfaces/iauth-request';
 import { IAuthResponse } from '../interfaces/iauth-response';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
-import { NotificationHubService } from '../../../features/notifications/services/notification-hub.service';
 
 interface AuthProfile {
   id?: string;
@@ -38,7 +37,6 @@ export class AuthService {
   private readonly authToken = signal<string | null>(null);
   private readonly userProfile = signal<AuthProfile | null>(null);
   private profileImageFetched = false;
-  private readonly hubService = inject(NotificationHubService);
 
   readonly googleRegistrationState = signal<{
     registrationToken: string;
@@ -103,7 +101,6 @@ export class AuthService {
         this.setAuthState(savedToken);
         this.restoreCachedAvatar();
         this.ensureProfileImage();
-        this.hubService.startConnection();
       }
     }
   }
@@ -125,7 +122,6 @@ export class AuthService {
         }
         this.setAuthState(token);
         this.applyResponseAvatar(response);
-        this.hubService.startConnection();
       })
     );
   }
@@ -242,7 +238,6 @@ export class AuthService {
   }
 
   logout(): void {
-    this.hubService.stopConnection();
     if (this.isBrowser) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN);
