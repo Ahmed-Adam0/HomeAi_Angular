@@ -629,6 +629,11 @@
 }
 @media (max-width: 639px) {
   .vod-info-grid { grid-template-columns: 1fr; }
+  .vod-info-block--full-width { grid-column: span 1 !important; }
+}
+
+.vod-info-block--full-width {
+  grid-column: span 2;
 }
 
 .vod-info-block {

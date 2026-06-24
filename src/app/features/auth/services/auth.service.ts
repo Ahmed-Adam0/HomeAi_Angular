@@ -10,7 +10,8 @@ import {
   IForgotPasswordRequest,
   IVerifyOtpRequest,
   IConfirmEmailOtpRequest,
-  IResetPasswordRequest
+  IResetPasswordRequest,
+  ICompleteGoogleRegistrationRequest
 } from '../interfaces/iauth-request';
 import { IAuthResponse } from '../interfaces/iauth-response';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
@@ -38,6 +39,47 @@ export class AuthService {
   private readonly userProfile = signal<AuthProfile | null>(null);
   private profileImageFetched = false;
   private readonly hubService = inject(NotificationHubService);
+
+  readonly googleRegistrationState = signal<{
+    registrationToken: string;
+    googleProfile: {
+      email: string;
+      firstName: string;
+      lastName: string;
+      profileImage: string;
+    };
+  } | null>(null);
+
+  saveGoogleRegistrationState(token: string, profile: any): void {
+    const state = { registrationToken: token, googleProfile: profile };
+    this.googleRegistrationState.set(state);
+    if (this.isBrowser) {
+      sessionStorage.setItem('google_registration_state', JSON.stringify(state));
+    }
+  }
+
+  getGoogleRegistrationState() {
+    let state = this.googleRegistrationState();
+    if (!state && this.isBrowser) {
+      const stored = sessionStorage.getItem('google_registration_state');
+      if (stored) {
+        try {
+          state = JSON.parse(stored);
+          this.googleRegistrationState.set(state);
+        } catch (e) {
+          console.error('Failed to parse google registration state from sessionStorage', e);
+        }
+      }
+    }
+    return state;
+  }
+
+  clearGoogleRegistrationState(): void {
+    this.googleRegistrationState.set(null);
+    if (this.isBrowser) {
+      sessionStorage.removeItem('google_registration_state');
+    }
+  }
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -126,6 +168,29 @@ export class AuthService {
         }
         this.setAuthState(token);
         this.applyResponseAvatar(response);
+      })
+    );
+  }
+
+  completeGoogleRegistration(data: ICompleteGoogleRegistrationRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}${API_URLS.AUTH.COMPLETE_GOOGLE_REGISTRATION}`, data).pipe(
+      tap((response: any) => {
+        const token = this.getAuthToken(response);
+        if (!token) {
+          return;
+        }
+        const workshopId =
+          response.workshopId ||
+          response.workshop?.id ||
+          (response.user && response.user.workshopId) ||
+          (response.data && response.data.workshopId) ||
+          (response.result && response.result.workshopId);
+        if (workshopId && this.isBrowser) {
+          localStorage.setItem('workshopId', String(workshopId));
+        }
+        this.setAuthState(token);
+        this.applyResponseAvatar(response);
+        this.clearGoogleRegistrationState();
       })
     );
   }

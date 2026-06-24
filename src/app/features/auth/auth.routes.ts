@@ -15,6 +15,12 @@ export const authRoutes: Routes = [
     loadComponent: () =>
       import('./pages/register/register.component').then((m) => m.Register),
   },
+  {
+    path: APP_ROUTES.COMPLETE_GOOGLE_REGISTRATION,
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./pages/complete-google-registration/complete-google-registration.component').then((m) => m.CompleteGoogleRegistration),
+  },
   
   {
     path: APP_ROUTES.FORGOT_PASSWORD,
