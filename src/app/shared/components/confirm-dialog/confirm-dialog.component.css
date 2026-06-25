@@ -14,13 +14,13 @@
 .confirm-card {
   width: 100%;
   max-width: 400px;
-  background: #fff;
-  border-radius: 16px;
+  background: var(--fm-surface-modal, #fff);
+  border-radius: var(--border-radius-lg, 16px);
   padding: 32px;
   text-align: center;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--fm-shadow-xl);
   animation: confirmScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--fm-border-medium);
   max-height: calc(100vh - 32px);
   overflow-y: auto;
 }
@@ -46,21 +46,23 @@
 }
 
 .confirm-info .confirm-icon-wrapper {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+  background: var(--fm-color-primary-soft);
+  color: var(--fm-color-primary-500);
 }
 
 .confirm-title {
+  font-family: var(--fm-font-display);
   font-size: 18px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--fm-text-heading, #1e293b);
   margin: 0 0 8px;
   letter-spacing: -0.02em;
 }
 
 .confirm-message {
+  font-family: var(--fm-font-sans);
   font-size: 14px;
-  color: #64748b;
+  color: var(--fm-text-body, #64748b);
   line-height: 1.5;
   margin: 0 0 24px;
 }
@@ -72,13 +74,13 @@
 }
 
 .confirm-btn {
-  padding: 10px 24px;
-  border-radius: 999px;
+  padding: 12px 24px;
+  border-radius: var(--border-radius-md, 12px);
   font-weight: 600;
   font-size: 14px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-smooth, all 0.2s ease);
   flex: 1;
   max-width: 180px;
 }
@@ -92,12 +94,13 @@
 }
 
 .confirm-btn-cancel {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--fm-color-neutral-100, #f1f5f9);
+  color: var(--fm-color-neutral-700, #475569);
+  border: 1px solid var(--fm-border-medium);
 }
 
 .confirm-btn-cancel:hover {
-  background: #e2e8f0;
+  background: var(--fm-color-neutral-200, #e2e8f0);
 }
 
 .confirm-btn-primary {
@@ -128,12 +131,13 @@
 }
 
 .confirm-btn-info {
-  background: #3b82f6;
-  color: #fff;
+  background: var(--fm-color-primary-500, #3b82f6);
+  color: var(--fm-text-inverted, #fff);
 }
 
 .confirm-btn-info:hover {
-  background: #2563eb;
+  background: var(--fm-color-primary-hover, #2563eb);
+  box-shadow: var(--fm-shadow-hover);
 }
 
 @media (max-width: 575px) {

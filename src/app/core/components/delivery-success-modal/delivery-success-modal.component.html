@@ -1,0 +1,38 @@
+<app-modal [visible]="service.isModalVisible()" [title]="'ORDER_DELIVERED_MODAL_TITLE' | translate"
+  (close)="service.dismissModal()" size="md">
+  <div class="delivery-success-modal-content text-center p-4">
+    <!-- Confetti/Celebration Icon -->
+    <div class="celebration-badge mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+        class="text-primary animate-pulse">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+
+    <h3 class="fw-bold font-display text-dark mb-3">
+      {{ 'ORDER_DELIVERED_MODAL_HEADING' | translate }}
+    </h3>
+
+    <p class="text-secondary mb-4">
+      {{ 'ORDER_DELIVERED_MODAL_DESC' | translate }}
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="d-flex flex-column gap-2.5">
+      <button class="btn-share-modal-primary" (click)="service.navigateToShare()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 inline-icon">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+          <circle cx="12" cy="13" r="4" />
+        </svg>
+        {{ 'ORDER_DELIVERED_MODAL_ACTION_SHARE' | translate }}
+      </button>
+
+      <button class="btn-share-modal-secondary" (click)="service.dismissModal()">
+        {{ 'ORDER_DELIVERED_MODAL_ACTION_LATER' | translate }}
+      </button>
+    </div>
+  </div>
+</app-modal>

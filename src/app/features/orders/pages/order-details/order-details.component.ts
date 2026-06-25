@@ -1,10 +1,10 @@
-import { Component, computed, inject, signal, effect } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OrdersFacade, PaymentStatus } from '../../data-access/orders.facade';
 import { OrderStatus } from '../../interfaces';
-import { NotificationService as InternalNotificationService } from '../../../notifications/services/notification.service';
+
 import { Button } from '../../../../shared/components/button/button.component';
 import { StatusBadgeComponent, StatusBadgeTone } from '../../../../shared/components/status-badge/status-badge.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -75,7 +75,7 @@ export class OrderDetails {
   private authService = inject(AuthService);
   private paymentService = inject(PaymentService);
   private readonly router = inject(Router);
-  private readonly internalNotificationService = inject(InternalNotificationService);
+
 
   readonly order = computed(() => this.facade.selectedOrder());
 
@@ -85,7 +85,7 @@ export class OrderDetails {
   readonly isRejectDialogVisible = signal(false);
   readonly selectedVendorOrderId = signal<string | null>(null);
   readonly isInitiatingPayment = signal(false);
-  readonly isDeliveryModalVisible = signal(false);
+
 
   readonly hasPendingPaymentOrders = computed(() => {
     const vOrders = this.order()?.vendorOrders ?? [];
@@ -112,38 +112,6 @@ export class OrderDetails {
 
   constructor() {
     this.facade.connectDetailsRoute(this.route);
-
-    // Delivery success triggers (Modal & Notification Center)
-    effect(() => {
-      const currentOrder = this.order();
-      if (currentOrder && currentOrder.status === 'delivered') {
-        const orderId = currentOrder.id;
-
-        // 1. Show delivery success modal once per order
-        const modalStorageKey = `delivery_modal_shown_${orderId}`;
-        const hasShownModal = localStorage.getItem(modalStorageKey);
-        if (!hasShownModal) {
-          this.isDeliveryModalVisible.set(true);
-          localStorage.setItem(modalStorageKey, 'true');
-        }
-
-        // 2. Add local notification for delivered order once
-        const notificationStorageKey = `delivered_notification_added_${orderId}`;
-        const hasNotificationAdded = localStorage.getItem(notificationStorageKey);
-        if (!hasNotificationAdded) {
-          const orderNum = currentOrder.orderNumber || '';
-          this.internalNotificationService.addNotification({
-            id: Math.floor(Math.random() * 1000000) + 9000000,
-            title: this.translationService.translate('NOTIFICATION_ORDER_DELIVERED_TITLE').replace('{{orderNumber}}', orderNum),
-            message: this.translationService.translate('NOTIFICATION_ORDER_DELIVERED_DESC'),
-            isRead: false,
-            createdAt: new Date(),
-            actionUrl: `/share-transformation?orderId=${orderId}`
-          });
-          localStorage.setItem(notificationStorageKey, 'true');
-        }
-      }
-    });
   }
 
   onShareTransformation(): void {
@@ -153,10 +121,7 @@ export class OrderDetails {
     }
   }
 
-  onShareFromModal(): void {
-    this.isDeliveryModalVisible.set(false);
-    this.onShareTransformation();
-  }
+
 
   onPayApprovedOrders(): void {
     const orderData = this.order();
@@ -205,7 +170,21 @@ export class OrderDetails {
   }
 
   private buildEditForm(): void {
-    const items = this.order()?.items ?? [];
+    const order = this.order();
+    console.log('[EditOrder] Raw order object:', order);
+    console.log('[EditOrder] Master items:', order?.items);
+    console.log('[EditOrder] Vendor orders:', order?.vendorOrders);
+
+    let items = order?.items ?? [];
+
+    // When backend distributes items into vendor sub-orders,
+    // the master-level items array may be empty.
+    // Aggregate from vendorOrders in that case.
+    if (items.length === 0 && order?.vendorOrders?.length) {
+      items = order.vendorOrders.flatMap(vo => vo.items);
+    }
+
+    console.log('[EditOrder] Items for edit form:', items);
     if (items.length === 0) return;
 
     this.editForm = this.fb.group({
@@ -213,41 +192,73 @@ export class OrderDetails {
         items.map((item) =>
           this.fb.nonNullable.group({
             productId: [item.productId, Validators.required],
-
             quantity: [item.quantity, [Validators.required, Validators.min(1), Validators.max(99)]],
-            productName: [item.productName, Validators.required],
-            productNameEn: [item.productNameEn ?? item.productName],
-            productNameAr: [item.productNameAr ?? item.productName],
-            price: [item.unitPrice, Validators.required],
+            productName: [item.productName || ''],
+            productNameEn: [item.productNameEn || item.productName || ''],
+            productNameAr: [item.productNameAr || item.productName || ''],
+            price: [item.unitPrice || 0],
             productImage: [item.productImage ?? ''],
           })
         )
       ),
     });
+
+    console.log('[EditOrder] Form values after build:', this.editForm?.getRawValue());
   }
 
 
   onSaveEdit(): void {
-    if (!this.editForm?.valid || !this.order()) return;
+    console.log('[EditOrder] onSaveEdit triggered');
+    console.log('[EditOrder] Form validity:', this.editForm?.valid);
+    console.log('[EditOrder] Form values:', this.editForm?.getRawValue());
+    
+    if (this.editForm && !this.editForm.valid) {
+      console.log('[EditOrder] Form validation errors:');
+      const itemsArray = this.editItemsArray;
+      if (itemsArray) {
+        itemsArray.controls.forEach((group, idx) => {
+          console.log(`[EditOrder] Item ${idx} group status:`, group.status);
+          Object.keys(group.controls).forEach(key => {
+            const control = group.get(key);
+            if (control?.errors) {
+              console.log(`[EditOrder] Item ${idx} control "${key}" errors:`, control.errors);
+            }
+          });
+        });
+      }
+    }
+
+    if (!this.editForm?.valid || !this.order()) {
+      console.log('[EditOrder] Early return: form invalid or order not found');
+      return;
+    }
 
     const orderId = this.order()!.id;
+    console.log('[EditOrder] Order ID:', orderId);
+    
     const raw = this.editForm.getRawValue() as { items: { productId: number; quantity: number; productName: string; productNameEn: string; productNameAr: string; price: number; productImage: string }[] };
     const items = raw.items.map((item) => ({
       productId: item.productId,
       quantity: item.quantity,
     }));
 
-    if (!items || items.length === 0) return;
+    console.log('[EditOrder] Submitting items payload:', items);
+    if (!items || items.length === 0) {
+      console.log('[EditOrder] No items to save');
+      return;
+    }
 
     this.facade.updateOrderItems(orderId, items).subscribe({
       next: (updatedOrder) => {
+        console.log('[EditOrder] Save success. Mapped response order:', updatedOrder);
         if (updatedOrder) {
           this.isEditModalVisible.set(false);
           this.editForm = null;
           this.uiState.showAlert('success', this.translationService.translate('ORDER_DETAILS_EDIT_SUCCESS'));
         }
       },
-      error: () => {
+      error: (err) => {
+        console.error('[EditOrder] Save error occurred:', err);
         this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_EDIT_ERROR'));
       },
     });
