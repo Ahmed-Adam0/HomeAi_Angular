@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { AiService } from '../../services/ai.service';
 import { UiState } from '../../../../core/state/ui.state';
 import { IProduct } from '../../../products/interfaces/iproduct';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-inspiration-analysis-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './inspiration-analysis-modal.component.html',
   styleUrl: './inspiration-analysis-modal.component.css'
 })

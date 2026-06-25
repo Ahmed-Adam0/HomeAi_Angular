@@ -16,10 +16,11 @@ import { ChatService } from '../../../features/ai/services/chat.service';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { ChatMessage } from '../../../features/ai/interfaces/chat-message.interface';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-chatbot-widget',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './chatbot-widget.component.html',
   styleUrl: './chatbot-widget.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -317,7 +318,7 @@ export class ChatbotWidget implements OnDestroy {
         this.startDurationTimer();
       })
       .catch(() => {
-        this.notificationService.error('Microphone access denied or not available.');
+        this.notificationService.error('AI.CHATBOT.MIC_ERROR');
         this.chatService.isRecording.set(false);
       });
   }

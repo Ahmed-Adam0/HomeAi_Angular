@@ -33,7 +33,7 @@
           <span class="chatbot-name">FurniMind AI</span>
           <span class="chatbot-status">
             <span class="status-dot"></span>
-            Online
+            {{ 'AI.CHATBOT.ONLINE' | translate }}
           </span>
         </div>
       </div>
@@ -60,10 +60,10 @@
               <path d="M9 13v2"></path>
             </svg>
           </div>
-          <h3 class="welcome-title">Hi! I'm FurniMind AI</h3>
-          <p class="welcome-text">Your personal furniture assistant. Ask me anything about our products, styles, or design recommendations.</p>
+          <h3 class="welcome-title">{{ 'AI.CHATBOT.WELCOME_TITLE' | translate }}</h3>
+          <p class="welcome-text">{{ 'AI.CHATBOT.WELCOME_TEXT' | translate }}</p>
           <div class="welcome-divider"></div>
-          <p class="welcome-hint">Type a message or use the mic to send a voice note</p>
+          <p class="welcome-hint">{{ 'AI.CHATBOT.HINT' | translate }}</p>
         </div>
       }
 
@@ -181,7 +181,7 @@
           </button>
 
           <div class="voice-preview-body">
-            <div class="voice-preview-label">Voice message</div>
+            <div class="voice-preview-label">{{ 'AI.CHATBOT.VOICE_MESSAGE' | translate }}</div>
             <div class="voice-preview-track" (click)="seekPreview($event)">
               <div class="voice-preview-progress" [style.width.%]="previewProgress()"></div>
             </div>
@@ -214,14 +214,14 @@
           </div>
           <div class="recording-bar-actions">
             <button class="btn-recording-cancel" (click)="clearRecording()" aria-label="Cancel recording">
-              Cancel
+              {{ 'AI.CHATBOT.CANCEL' | translate }}
             </button>
             <button class="btn-recording-send" (click)="sendMessage()" aria-label="Stop recording and send">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M5 12h14"></path>
                 <path d="m12 5 7 7-7 7"></path>
               </svg>
-              Send
+              {{ 'AI.CHATBOT.SEND' | translate }}
             </button>
           </div>
         </div>
@@ -234,7 +234,7 @@
             [value]="messageInput()"
             (input)="onInputChange($event)"
             (keydown)="onKeydown($event)"
-            placeholder="Ask about furniture, styles..."
+            [placeholder]="'AI.CHATBOT.PLACEHOLDER' | translate"
             [disabled]="loading()"
           ></textarea>
 
