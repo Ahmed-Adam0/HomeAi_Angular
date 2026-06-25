@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router, RouterLink } from '@angular/router';
 
 import { InspirationsService } from '../../services/inspirations.service';
 import { OrdersApiService } from '../../../orders/data-access/orders-api.service';
@@ -17,16 +18,20 @@ import { NotificationService } from '../../../../shared/services/notification.se
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 
-/** Lightweight ViewModel for the image preview */
-interface ImagePreview {
-  name: string;
-  url: string;
+export interface TransformationPair {
+  id: string;
+  beforeFile: File | null;
+  beforePreviewUrl: string | null;
+  afterFile: File | null;
+  afterPreviewUrl: string | null;
+  beforeDragOver: boolean;
+  afterDragOver: boolean;
 }
 
 @Component({
   selector: 'app-share-transformation',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, RouterLink],
   templateUrl: './share-transformation.component.html',
   styleUrl: './share-transformation.component.css',
 })
@@ -37,23 +42,15 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
   private readonly toast = inject(NotificationService);
   readonly translationService = inject(TranslationService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly router = inject(Router);
 
   // ── Order loading state ──
   readonly loadingOrders = signal(false);
   readonly completedOrders = signal<IOrder[]>([]);
   readonly selectedOrderId = signal<string | null>(null);
 
-  // ── File state ──
-  readonly beforeFiles = signal<File[]>([]);
-  readonly afterFiles = signal<File[]>([]);
-
-  // ── Preview URLs (need manual revoke on destroy) ──
-  readonly beforePreviews = signal<ImagePreview[]>([]);
-  readonly afterPreviews = signal<ImagePreview[]>([]);
-
-  // ── Drag state ──
-  readonly beforeDragOver = signal(false);
-  readonly afterDragOver = signal(false);
+  // ── Transformation pairs state ──
+  readonly pairs = signal<TransformationPair[]>([this.createNewPair()]);
 
   // ── Submission state ──
   readonly isSubmitting = signal(false);
@@ -64,18 +61,28 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
   // ── Object URLs to revoke on destroy ──
   private objectUrls: string[] = [];
 
-  // ── Computed validations ──
+  // ── Computed validations & details ──
+  readonly selectedOrder = computed(() => {
+    const orderId = this.selectedOrderId();
+    if (!orderId) return null;
+    return this.completedOrders().find((o) => o.id === orderId) || null;
+  });
+
+  readonly showIncompletePairs = computed(() => {
+    if (!this.formTouched()) return false;
+    return this.pairs().some((p) => !p.beforeFile || !p.afterFile);
+  });
+
   readonly showCountMismatch = computed(() => {
-    const bLen = this.beforeFiles().length;
-    const aLen = this.afterFiles().length;
-    return bLen > 0 && aLen > 0 && bLen !== aLen;
+    if (!this.formTouched()) return false;
+    return this.pairs().some((p) => (p.beforeFile && !p.afterFile) || (!p.beforeFile && p.afterFile));
   });
 
   readonly isFormValid = computed(() => {
     const orderId = this.selectedOrderId();
-    const bLen = this.beforeFiles().length;
-    const aLen = this.afterFiles().length;
-    return !!orderId && bLen > 0 && aLen > 0 && bLen === aLen;
+    const pairList = this.pairs();
+    if (!orderId || pairList.length === 0) return false;
+    return pairList.every((p) => !!p.beforeFile && !!p.afterFile);
   });
 
   // ── Lifecycle ──
@@ -92,13 +99,23 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
     this.loadingOrders.set(true);
     this.ordersApi.getMyOrders().subscribe({
       next: (orders) => {
-        const completed = orders.filter(
-          (o) => o.status === 'delivered'
-        );
+        console.log('[ShareTransformation] Raw Orders API response:', orders);
+
+        const completed = orders.filter((o) => {
+          const statusLower = o.status?.toLowerCase();
+          const isEligible = statusLower === 'delivered' || statusLower === 'completed';
+          console.log(`[ShareTransformation] Order #${o.orderNumber} - raw status: "${o.status}", mapped lower: "${statusLower}", eligible: ${isEligible}`);
+          return isEligible;
+        });
+
+        console.log('[ShareTransformation] Eligible orders count:', completed.length);
+        console.log('[ShareTransformation] Final empty state active:', completed.length === 0);
+
         this.completedOrders.set(completed);
         this.loadingOrders.set(false);
       },
-      error: () => {
+      error: (err) => {
+        console.error('[ShareTransformation] Error loading orders:', err);
         this.completedOrders.set([]);
         this.loadingOrders.set(false);
       },
@@ -112,90 +129,145 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
     this.formTouched.set(true);
   }
 
+  // ── Helper: Create a new empty pair ──
+  private createNewPair(): TransformationPair {
+    return {
+      id: 'pair_' + Math.random().toString(36).substring(2, 9),
+      beforeFile: null,
+      beforePreviewUrl: null,
+      afterFile: null,
+      afterPreviewUrl: null,
+      beforeDragOver: false,
+      afterDragOver: false,
+    };
+  }
+
+  // ── Pair Actions ──
+  addPair(): void {
+    this.pairs.update((list) => [...list, this.createNewPair()]);
+    this.formTouched.set(true);
+  }
+
+  removePair(pairId: string): void {
+    this.pairs.update((list) => {
+      const target = list.find((p) => p.id === pairId);
+      if (target) {
+        if (target.beforePreviewUrl) {
+          URL.revokeObjectURL(target.beforePreviewUrl);
+          this.objectUrls = this.objectUrls.filter((u) => u !== target.beforePreviewUrl);
+        }
+        if (target.afterPreviewUrl) {
+          URL.revokeObjectURL(target.afterPreviewUrl);
+          this.objectUrls = this.objectUrls.filter((u) => u !== target.afterPreviewUrl);
+        }
+      }
+      const filtered = list.filter((p) => p.id !== pairId);
+      return filtered.length > 0 ? filtered : [this.createNewPair()];
+    });
+    this.formTouched.set(true);
+  }
+
+  removeFileFromPair(pairId: string, zone: 'before' | 'after'): void {
+    this.pairs.update((list) =>
+      list.map((p) => {
+        if (p.id !== pairId) return p;
+
+        if (zone === 'before') {
+          if (p.beforePreviewUrl) {
+            URL.revokeObjectURL(p.beforePreviewUrl);
+            this.objectUrls = this.objectUrls.filter((u) => u !== p.beforePreviewUrl);
+          }
+          return { ...p, beforeFile: null, beforePreviewUrl: null };
+        } else {
+          if (p.afterPreviewUrl) {
+            URL.revokeObjectURL(p.afterPreviewUrl);
+            this.objectUrls = this.objectUrls.filter((u) => u !== p.afterPreviewUrl);
+          }
+          return { ...p, afterFile: null, afterPreviewUrl: null };
+        }
+      })
+    );
+    this.formTouched.set(true);
+  }
+
   // ── Drag & drop handlers ──
-  onDragOver(event: DragEvent, zone: 'before' | 'after'): void {
+  onDragOver(event: DragEvent, pairId: string, zone: 'before' | 'after'): void {
     event.preventDefault();
     event.stopPropagation();
-    if (zone === 'before') this.beforeDragOver.set(true);
-    else this.afterDragOver.set(true);
+    this.setDragOver(pairId, zone, true);
   }
 
-  onDragLeave(zone: 'before' | 'after'): void {
-    if (zone === 'before') this.beforeDragOver.set(false);
-    else this.afterDragOver.set(false);
+  onDragLeave(pairId: string, zone: 'before' | 'after'): void {
+    this.setDragOver(pairId, zone, false);
   }
 
-  onDrop(event: DragEvent, zone: 'before' | 'after'): void {
+  onDrop(event: DragEvent, pairId: string, zone: 'before' | 'after'): void {
     event.preventDefault();
     event.stopPropagation();
-    this.onDragLeave(zone);
+    this.onDragLeave(pairId, zone);
 
     const files = event.dataTransfer?.files;
     if (!files || files.length === 0) return;
 
-    const imageFiles = Array.from(files).filter((f) =>
-      f.type.startsWith('image/')
-    );
-    this.addFiles(imageFiles, zone);
+    const imageFile = Array.from(files).find((f) => f.type.startsWith('image/'));
+    if (imageFile) {
+      this.setFileForPair(imageFile, pairId, zone);
+    }
   }
 
   // ── File input change ──
-  onFilesSelected(event: Event, zone: 'before' | 'after'): void {
+  onFileSelected(event: Event, pairId: string, zone: 'before' | 'after'): void {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
-    const imageFiles = Array.from(input.files).filter((f) =>
-      f.type.startsWith('image/')
+    const imageFile = Array.from(input.files).find((f) => f.type.startsWith('image/'));
+    if (imageFile) {
+      this.setFileForPair(imageFile, pairId, zone);
+    }
+    input.value = ''; // Reset input element
+  }
+
+  private setDragOver(pairId: string, zone: 'before' | 'after', isOver: boolean): void {
+    this.pairs.update((list) =>
+      list.map((p) => {
+        if (p.id !== pairId) return p;
+        return {
+          ...p,
+          beforeDragOver: zone === 'before' ? isOver : p.beforeDragOver,
+          afterDragOver: zone === 'after' ? isOver : p.afterDragOver,
+        };
+      })
     );
-    this.addFiles(imageFiles, zone);
-
-    // Reset input so selecting the same file again triggers change
-    input.value = '';
   }
 
-  // ── Add files and generate previews ──
-  private addFiles(newFiles: File[], zone: 'before' | 'after'): void {
-    if (!isPlatformBrowser(this.platformId) || newFiles.length === 0) return;
+  private setFileForPair(file: File, pairId: string, zone: 'before' | 'after'): void {
+    if (!isPlatformBrowser(this.platformId)) return;
 
-    const existingFiles = zone === 'before' ? this.beforeFiles() : this.afterFiles();
-    const existingPreviews = zone === 'before' ? this.beforePreviews() : this.afterPreviews();
+    const url = URL.createObjectURL(file);
+    this.objectUrls.push(url);
 
-    const addedPreviews: ImagePreview[] = newFiles.map((file) => {
-      const url = URL.createObjectURL(file);
-      this.objectUrls.push(url);
-      return { name: file.name, url };
-    });
+    this.pairs.update((list) =>
+      list.map((p) => {
+        if (p.id !== pairId) return p;
 
-    if (zone === 'before') {
-      this.beforeFiles.set([...existingFiles, ...newFiles]);
-      this.beforePreviews.set([...existingPreviews, ...addedPreviews]);
-    } else {
-      this.afterFiles.set([...existingFiles, ...newFiles]);
-      this.afterPreviews.set([...existingPreviews, ...addedPreviews]);
-    }
+        if (zone === 'before' && p.beforePreviewUrl) {
+          URL.revokeObjectURL(p.beforePreviewUrl);
+          this.objectUrls = this.objectUrls.filter((u) => u !== p.beforePreviewUrl);
+        } else if (zone === 'after' && p.afterPreviewUrl) {
+          URL.revokeObjectURL(p.afterPreviewUrl);
+          this.objectUrls = this.objectUrls.filter((u) => u !== p.afterPreviewUrl);
+        }
 
+        return {
+          ...p,
+          beforeFile: zone === 'before' ? file : p.beforeFile,
+          beforePreviewUrl: zone === 'before' ? url : p.beforePreviewUrl,
+          afterFile: zone === 'after' ? file : p.afterFile,
+          afterPreviewUrl: zone === 'after' ? url : p.afterPreviewUrl,
+        };
+      })
+    );
     this.formTouched.set(true);
-  }
-
-  // ── Remove a single file ──
-  removeFile(index: number, zone: 'before' | 'after'): void {
-    if (zone === 'before') {
-      const files = [...this.beforeFiles()];
-      const previews = [...this.beforePreviews()];
-      const removed = previews.splice(index, 1);
-      files.splice(index, 1);
-      this.revokeUrls(removed);
-      this.beforeFiles.set(files);
-      this.beforePreviews.set(previews);
-    } else {
-      const files = [...this.afterFiles()];
-      const previews = [...this.afterPreviews()];
-      const removed = previews.splice(index, 1);
-      files.splice(index, 1);
-      this.revokeUrls(removed);
-      this.afterFiles.set(files);
-      this.afterPreviews.set(previews);
-    }
   }
 
   // ── Submit ──
@@ -209,12 +281,10 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
     const formData = new FormData();
     formData.append('OrderId', this.selectedOrderId()!);
 
-    this.beforeFiles().forEach((file) =>
-      formData.append('BeforeImages', file)
-    );
-    this.afterFiles().forEach((file) =>
-      formData.append('AfterImages', file)
-    );
+    this.pairs().forEach((p) => {
+      if (p.beforeFile) formData.append('BeforeImages', p.beforeFile);
+      if (p.afterFile) formData.append('AfterImages', p.afterFile);
+    });
 
     this.inspirationsService.createInspiration(formData).subscribe({
       next: () => {
@@ -235,10 +305,7 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
   resetForm(): void {
     this.revokeAllUrls();
     this.selectedOrderId.set(null);
-    this.beforeFiles.set([]);
-    this.afterFiles.set([]);
-    this.beforePreviews.set([]);
-    this.afterPreviews.set([]);
+    this.pairs.set([this.createNewPair()]);
     this.submitError.set(null);
     this.submitted.set(false);
     this.formTouched.set(false);
@@ -256,7 +323,6 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
       return this.translationService.translate('SHARE_TRANSFORMATION.ERROR_NOT_FOUND');
     }
     if (err.status === 400) {
-      // Try to extract backend validation errors
       const body = err.error;
       if (typeof body === 'string') return body;
       if (body?.errors) {
@@ -276,15 +342,51 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
   }
 
   // ── URL cleanup ──
-  private revokeUrls(previews: ImagePreview[]): void {
-    previews.forEach((p) => {
-      URL.revokeObjectURL(p.url);
-      this.objectUrls = this.objectUrls.filter((u) => u !== p.url);
-    });
-  }
-
   private revokeAllUrls(): void {
+    this.pairs().forEach((p) => {
+      if (p.beforePreviewUrl) URL.revokeObjectURL(p.beforePreviewUrl);
+      if (p.afterPreviewUrl) URL.revokeObjectURL(p.afterPreviewUrl);
+    });
     this.objectUrls.forEach((url) => URL.revokeObjectURL(url));
     this.objectUrls = [];
+  }
+
+  // ── UI Actions ──
+  goBack(): void {
+    this.router.navigate(['/inspirations']);
+  }
+
+  copyShareLink(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const shareUrl = window.location.origin + '/inspirations';
+    navigator.clipboard.writeText(shareUrl).then(
+      () => {
+        this.toast.success('SHARE_TRANSFORMATION.COPY_SUCCESS');
+      },
+      () => {
+        this.toast.error('SHARE_TRANSFORMATION.COPY_FAIL');
+      }
+    );
+  }
+
+  downloadImages(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.toast.info('SHARE_TRANSFORMATION.DOWNLOAD_START');
+    const allFiles: File[] = [];
+    this.pairs().forEach((p) => {
+      if (p.beforeFile) allFiles.push(p.beforeFile);
+      if (p.afterFile) allFiles.push(p.afterFile);
+    });
+    if (allFiles.length === 0) return;
+    allFiles.forEach((file, index) => {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${index + 1}_${file.name}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    });
   }
 }

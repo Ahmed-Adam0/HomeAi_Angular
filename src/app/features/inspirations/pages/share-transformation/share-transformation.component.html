@@ -1,199 +1,404 @@
 <div class="share-transformation-wrapper">
-  <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="hero-content">
-      <span class="hero-badge">{{ 'SHARE_TRANSFORMATION.BADGE' | translate }}</span>
-      <h1 class="hero-title">
-        {{ 'SHARE_TRANSFORMATION.TITLE_BEFORE' | translate }}
-        <span class="hero-title-accent">{{ 'SHARE_TRANSFORMATION.TITLE_ACCENT' | translate }}</span>
-      </h1>
-      <p class="hero-subtitle">{{ 'SHARE_TRANSFORMATION.SUBTITLE' | translate }}</p>
+  <!-- Premium Page Header -->
+  <header class="page-header">
+    <div class="header-container">
+      <button class="btn-back-floating" (click)="goBack()" [title]="'SHARE_TRANSFORMATION.ACTION_BACK' | translate" aria-label="Go back to Inspirations">
+        <i class="bi bi-arrow-left"></i>
+        <span>{{ 'SHARE_TRANSFORMATION.ACTION_BACK' | translate }}</span>
+      </button>
+      <div class="header-titles">
+        <span class="hero-badge">{{ 'SHARE_TRANSFORMATION.BADGE' | translate }}</span>
+        <h1 class="hero-title font-display">
+          {{ 'SHARE_TRANSFORMATION.TITLE_BEFORE' | translate }}
+          <span class="hero-title-accent">{{ 'SHARE_TRANSFORMATION.TITLE_ACCENT' | translate }}</span>
+        </h1>
+        <p class="hero-subtitle">{{ 'SHARE_TRANSFORMATION.SUBTITLE' | translate }}</p>
+      </div>
     </div>
-  </section>
+  </header>
 
-  <!-- Form Container -->
-  <div class="form-container">
-    <div class="glass-card">
-
-      @if (submitted()) {
-        <!-- ✅ Success State -->
-        <div class="success-state">
-          <div class="success-icon-wrap">✓</div>
-          <h2 class="success-title">{{ 'SHARE_TRANSFORMATION.SUCCESS_TITLE' | translate }}</h2>
-          <p class="success-text">{{ 'SHARE_TRANSFORMATION.SUCCESS_MESSAGE' | translate }}</p>
-          <button class="btn-new-submission" (click)="resetForm()">
-            ✦ {{ 'SHARE_TRANSFORMATION.NEW_SUBMISSION' | translate }}
+  <!-- Main Content Container -->
+  <main class="form-container">
+    
+    @if (loadingOrders()) {
+      <!-- ── Loading State ── -->
+      <div class="orders-loading-card glass-card">
+        <span class="premium-spinner"></span>
+        <p class="loading-text">{{ 'SHARE_TRANSFORMATION.LOADING_ORDERS' | translate }}</p>
+      </div>
+    } @else if (completedOrders().length === 0) {
+      <!-- ── Empty State: No Delivered Orders ── -->
+      <section class="empty-state-card glass-card animate-fade-in" aria-labelledby="empty-title">
+        <div class="empty-state-illustration">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" class="empty-svg" aria-hidden="true">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--fm-color-primary-200)" stroke-width="1.5" stroke-dasharray="8 6"/>
+            <!-- Elegant Lounge Chair outline -->
+            <path d="M42 75 h36 M46 75 v16 M74 75 v16 M44 55 h32 v20 h-32 z M44 42 h32 M50 42 v13 M70 42 v13" fill="none" stroke="var(--fm-color-primary-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M48 65 h24" fill="none" stroke="var(--fm-color-primary-300)" stroke-width="2" stroke-linecap="round"/>
+            <!-- Sparkles -->
+            <path d="M25 35 l2 2 m-2 0 l2 -2" stroke="var(--fm-color-primary-400)" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M95 30 l3 3 m-3 0 l3 -3" stroke="var(--fm-color-primary-400)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h2 id="empty-title" class="empty-state-title font-display">{{ 'SHARE_TRANSFORMATION.EMPTY_TITLE' | translate }}</h2>
+        <p class="empty-state-description">{{ 'SHARE_TRANSFORMATION.EMPTY_DESC' | translate }}</p>
+        <div class="empty-state-actions">
+          <a routerLink="/products" class="btn-primary-elegant">
+            <i class="bi bi-bag"></i>
+            {{ 'SHARE_TRANSFORMATION.BROWSE_PRODUCTS' | translate }}
+          </a>
+          <button (click)="goBack()" class="btn-secondary-elegant">
+            <i class="bi bi-arrow-left-short"></i>
+            {{ 'SHARE_TRANSFORMATION.BACK_TO_GALLERY' | translate }}
           </button>
         </div>
-      } @else {
-        <!-- ── Order Selection ── -->
-        <div class="section-header">
-          <div class="section-icon">📋</div>
-          <div>
-            <h2 class="section-title">{{ 'SHARE_TRANSFORMATION.ORDER_TITLE' | translate }}</h2>
-            <p class="section-subtitle">{{ 'SHARE_TRANSFORMATION.ORDER_SUBTITLE' | translate }}</p>
-          </div>
-        </div>
-
-        <div class="order-select-group">
-          @if (loadingOrders()) {
-            <div class="orders-loading">
-              <span class="mini-spinner"></span>
-              {{ 'SHARE_TRANSFORMATION.LOADING_ORDERS' | translate }}
+      </section>
+    } @else {
+      
+      <div class="glass-card">
+        @if (submitted()) {
+          <!-- ✅ Success State -->
+          <section class="success-state animate-fade-in" aria-labelledby="success-title">
+            <div class="success-icon-wrap">
+              <i class="bi bi-check2-circle"></i>
             </div>
-          } @else {
-            <select
-              class="order-select"
-              [class.invalid]="formTouched() && !selectedOrderId()"
-              [value]="selectedOrderId() ?? ''"
-              (change)="onOrderChange($event)">
-              <option value="" disabled>{{ 'SHARE_TRANSFORMATION.SELECT_ORDER' | translate }}</option>
-              @for (order of completedOrders(); track order.id) {
-                <option [value]="order.id">
-                  {{ order.orderNumber }} — {{ order.totalAmount | currency:'EGP':'symbol':'1.0-0' }} — {{ order.createdAt | date:'mediumDate' }}
-                </option>
-              }
-            </select>
-          }
-        </div>
+            <h2 id="success-title" class="success-title font-display">{{ 'SHARE_TRANSFORMATION.SUCCESS_TITLE' | translate }}</h2>
+            <p class="success-text">{{ 'SHARE_TRANSFORMATION.SUCCESS_MESSAGE' | translate }}</p>
+            
+            <!-- Success Preview Comparison -->
+            <div class="success-preview-container">
+              <h3 class="preview-heading font-display">{{ 'SHARE_TRANSFORMATION.ORDER_DETAILS' | translate }}: #{{ selectedOrder()?.orderNumber }}</h3>
+              
+              <div class="success-pairs-list">
+                @for (p of pairs(); track p.id; let idx = $index) {
+                  <div class="success-pair-row animate-slide-down" [style.animation-delay]="(idx * 80) + 'ms'">
+                    <span class="success-pair-label font-display">{{ 'SHARE_TRANSFORMATION.PAIR_NUMBER' | translate }} #{{ idx + 1 }}</span>
+                    
+                    <div class="side-by-side-comparison">
+                      <!-- Before Preview -->
+                      <div class="comparison-column-preview before">
+                        <span class="preview-badge before">{{ 'SHARE_TRANSFORMATION.BEFORE_LABEL' | translate }}</span>
+                        <div class="preview-img-wrapper">
+                          <img [src]="p.beforePreviewUrl" alt="Before image" />
+                        </div>
+                      </div>
+                      
+                      <!-- Connector Icon -->
+                      <div class="success-connector">
+                        <i class="bi bi-arrow-right"></i>
+                      </div>
 
-        <hr class="form-divider" />
+                      <!-- After Preview -->
+                      <div class="comparison-column-preview after">
+                        <span class="preview-badge after">{{ 'SHARE_TRANSFORMATION.AFTER_LABEL' | translate }}</span>
+                        <div class="preview-img-wrapper">
+                          <img [src]="p.afterPreviewUrl" alt="After image" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
 
-        <!-- ── Before Images Upload ── -->
-        <div class="section-header">
-          <div class="section-icon">🖼️</div>
-          <div>
-            <h2 class="section-title">{{ 'SHARE_TRANSFORMATION.BEFORE_TITLE' | translate }}</h2>
-            <p class="section-subtitle">{{ 'SHARE_TRANSFORMATION.BEFORE_SUBTITLE' | translate }}</p>
-          </div>
-        </div>
+            <!-- Action Buttons Group -->
+            <div class="success-actions-section">
+              <div class="primary-actions">
+                <button class="btn-action-success share" (click)="copyShareLink()">
+                  <i class="bi bi-share-fill"></i>
+                  <span>{{ 'SHARE_TRANSFORMATION.ACTION_SHARE' | translate }}</span>
+                </button>
+                <button class="btn-action-success download" (click)="downloadImages()">
+                  <i class="bi bi-download"></i>
+                  <span>{{ 'SHARE_TRANSFORMATION.ACTION_DOWNLOAD' | translate }}</span>
+                </button>
+                <button class="btn-action-success save" disabled>
+                  <i class="bi bi-bookmark-check-fill"></i>
+                  <span>{{ 'SHARE_TRANSFORMATION.ACTION_SAVE' | translate }}</span>
+                </button>
+              </div>
+              <div class="secondary-actions">
+                <button class="btn-new-submission" (click)="resetForm()">
+                  ✦ {{ 'SHARE_TRANSFORMATION.NEW_SUBMISSION' | translate }}
+                </button>
+                <button class="btn-back-gallery-success" (click)="goBack()">
+                  {{ 'SHARE_TRANSFORMATION.BACK_TO_GALLERY' | translate }}
+                </button>
+              </div>
+            </div>
+          </section>
+        } @else {
+          <!-- ── Active Form State ── -->
+          
+          <!-- Step 1: Order Selection -->
+          <section class="form-step-section" aria-labelledby="step1-title">
+            <div class="section-header">
+              <div class="step-indicator">1</div>
+              <div>
+                <h2 id="step1-title" class="section-title font-display">{{ 'SHARE_TRANSFORMATION.ORDER_TITLE' | translate }}</h2>
+                <p class="section-subtitle">{{ 'SHARE_TRANSFORMATION.ORDER_SUBTITLE' | translate }}</p>
+              </div>
+            </div>
 
-        <div
-          class="upload-zone"
-          [class.drag-over]="beforeDragOver()"
-          [class.has-files]="beforeFiles().length > 0"
-          (dragover)="onDragOver($event, 'before')"
-          (dragleave)="onDragLeave('before')"
-          (drop)="onDrop($event, 'before')"
-          (click)="beforeFileInput.click()">
+            <div class="order-select-group">
+              <select
+                class="order-select"
+                [class.invalid]="formTouched() && !selectedOrderId()"
+                [value]="selectedOrderId() ?? ''"
+                (change)="onOrderChange($event)"
+                [aria-label]="'SHARE_TRANSFORMATION.SELECT_ORDER' | translate">
+                <option value="" disabled>{{ 'SHARE_TRANSFORMATION.SELECT_ORDER' | translate }}</option>
+                @for (order of completedOrders(); track order.id) {
+                  <option [value]="order.id">
+                    {{ order.orderNumber }} — {{ order.totalAmount | currency:'EGP':'symbol':'1.0-0' }} — {{ order.createdAt | date:'mediumDate' }}
+                  </option>
+                }
+              </select>
+            </div>
 
-          @if (beforeFiles().length === 0) {
-            <div class="upload-icon-wrapper">📤</div>
-            <p class="upload-primary-text">
-              {{ 'SHARE_TRANSFORMATION.DROP_OR' | translate }} <span class="text-accent">{{ 'SHARE_TRANSFORMATION.BROWSE' | translate }}</span>
-            </p>
-            <p class="upload-hint">{{ 'SHARE_TRANSFORMATION.FILE_HINT' | translate }}</p>
-          }
-
-          <input
-            #beforeFileInput
-            type="file"
-            class="file-input-hidden"
-            accept="image/*"
-            multiple
-            (click)="$event.stopPropagation()"
-            (change)="onFilesSelected($event, 'before')" />
-
-          @if (beforeFiles().length > 0) {
-            <div class="image-preview-grid" (click)="$event.stopPropagation()">
-              @for (preview of beforePreviews(); track preview.name; let i = $index) {
-                <div class="preview-item" [style.animation-delay]="(i * 60) + 'ms'">
-                  <img [src]="preview.url" [alt]="preview.name" />
-                  <div class="preview-overlay">
-                    <button class="btn-remove-preview" (click)="removeFile(i, 'before')" type="button">✕</button>
+            <!-- Order Details Summary Card -->
+            @if (selectedOrder()) {
+              <div class="order-summary-card animate-slide-down">
+                <div class="summary-header">
+                  <h3 class="summary-title font-display">{{ 'SHARE_TRANSFORMATION.ORDER_DETAILS' | translate }}</h3>
+                  <span class="status-badge success-tint">
+                    <i class="bi bi-patch-check-fill"></i>
+                    {{ 'SHARE_TRANSFORMATION.STATUS_DELIVERED' | translate }}
+                  </span>
+                </div>
+                <div class="summary-details-grid">
+                  <div class="detail-item">
+                    <span class="detail-label">{{ 'SHARE_TRANSFORMATION.ORDER_NUMBER' | translate }}</span>
+                    <span class="detail-value">#{{ selectedOrder()?.orderNumber }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">{{ 'SHARE_TRANSFORMATION.ORDER_DATE' | translate }}</span>
+                    <span class="detail-value">{{ selectedOrder()?.createdAt | date:'mediumDate' }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="detail-label">{{ 'SHARE_TRANSFORMATION.ORDER_TOTAL' | translate }}</span>
+                    <span class="detail-value gold-text">{{ selectedOrder()?.totalAmount | currency:'EGP':'symbol':'1.0-0' }}</span>
                   </div>
                 </div>
-              }
-            </div>
-            <span class="file-count-badge">📎 {{ beforeFiles().length }} {{ 'SHARE_TRANSFORMATION.FILES_SELECTED' | translate }}</span>
-          }
-        </div>
-
-        <hr class="form-divider" />
-
-        <!-- ── After Images Upload ── -->
-        <div class="section-header">
-          <div class="section-icon">✨</div>
-          <div>
-            <h2 class="section-title">{{ 'SHARE_TRANSFORMATION.AFTER_TITLE' | translate }}</h2>
-            <p class="section-subtitle">{{ 'SHARE_TRANSFORMATION.AFTER_SUBTITLE' | translate }}</p>
-          </div>
-        </div>
-
-        <div
-          class="upload-zone"
-          [class.drag-over]="afterDragOver()"
-          [class.has-files]="afterFiles().length > 0"
-          (dragover)="onDragOver($event, 'after')"
-          (dragleave)="onDragLeave('after')"
-          (drop)="onDrop($event, 'after')"
-          (click)="afterFileInput.click()">
-
-          @if (afterFiles().length === 0) {
-            <div class="upload-icon-wrapper">📤</div>
-            <p class="upload-primary-text">
-              {{ 'SHARE_TRANSFORMATION.DROP_OR' | translate }} <span class="text-accent">{{ 'SHARE_TRANSFORMATION.BROWSE' | translate }}</span>
-            </p>
-            <p class="upload-hint">{{ 'SHARE_TRANSFORMATION.FILE_HINT' | translate }}</p>
-          }
-
-          <input
-            #afterFileInput
-            type="file"
-            class="file-input-hidden"
-            accept="image/*"
-            multiple
-            (click)="$event.stopPropagation()"
-            (change)="onFilesSelected($event, 'after')" />
-
-          @if (afterFiles().length > 0) {
-            <div class="image-preview-grid" (click)="$event.stopPropagation()">
-              @for (preview of afterPreviews(); track preview.name; let i = $index) {
-                <div class="preview-item" [style.animation-delay]="(i * 60) + 'ms'">
-                  <img [src]="preview.url" [alt]="preview.name" />
-                  <div class="preview-overlay">
-                    <button class="btn-remove-preview" (click)="removeFile(i, 'after')" type="button">✕</button>
+                @if (selectedOrder()?.items?.length) {
+                  <div class="summary-items">
+                    @for (item of selectedOrder()?.items; track item.productId) {
+                      <span class="summary-item-badge">
+                        <i class="bi bi-tag-fill"></i>
+                        {{ translationService.currentLang() === 'ar' ? (item.productNameAr || item.productName) : (item.productNameEn || item.productName) }}
+                        <span class="qty">(x{{ item.quantity }})</span>
+                      </span>
+                    }
                   </div>
-                </div>
-              }
-            </div>
-            <span class="file-count-badge">📎 {{ afterFiles().length }} {{ 'SHARE_TRANSFORMATION.FILES_SELECTED' | translate }}</span>
-          }
-        </div>
-
-        <!-- Validation Messages -->
-        @if (showCountMismatch()) {
-          <div class="validation-message">
-            <span class="validation-icon">⚠</span>
-            <p class="validation-text">{{ 'SHARE_TRANSFORMATION.COUNT_MISMATCH' | translate }}</p>
-          </div>
-        }
-
-        <!-- Submit Error -->
-        @if (submitError()) {
-          <div class="error-banner">
-            <span class="error-banner-icon">✕</span>
-            <p class="error-banner-text">{{ submitError() }}</p>
-          </div>
-        }
-
-        <!-- Submit Button -->
-        <div class="submit-section">
-          <button
-            class="btn-submit"
-            [disabled]="!isFormValid() || isSubmitting()"
-            (click)="onSubmit()">
-            @if (isSubmitting()) {
-              <span class="btn-spinner"></span>
-              {{ 'SHARE_TRANSFORMATION.SUBMITTING' | translate }}
-            } @else {
-              ✦ {{ 'SHARE_TRANSFORMATION.SUBMIT' | translate }}
+                }
+              </div>
             }
-          </button>
-          <p class="submit-hint">{{ 'SHARE_TRANSFORMATION.SUBMIT_HINT' | translate }}</p>
-        </div>
-      }
+          </section>
 
-    </div>
-  </div>
+          <hr class="form-divider" />
+
+          <!-- Step 2: Upload Before & After side-by-side comparison -->
+          <section class="form-step-section" aria-labelledby="step2-title">
+            <div class="section-header">
+              <div class="step-indicator">2</div>
+              <div>
+                <h2 id="step2-title" class="section-title font-display">
+                  {{ 'SHARE_TRANSFORMATION.BEFORE_LABEL' | translate }} & {{ 'SHARE_TRANSFORMATION.AFTER_LABEL' | translate }}
+                </h2>
+                <p class="section-subtitle">{{ 'SHARE_TRANSFORMATION.BEFORE_SUBTITLE' | translate }}</p>
+              </div>
+            </div>
+
+            <!-- Explicit Image Pairing List -->
+            <div class="pairs-list">
+              @for (p of pairs(); track p.id; let idx = $index) {
+                <div class="pair-card animate-slide-down" [style.animation-delay]="(idx * 50) + 'ms'">
+                  
+                  <!-- Pair Card Header -->
+                  <div class="pair-card-header">
+                    <span class="pair-badge-title font-display">
+                      <i class="bi bi-intersect"></i>
+                      {{ 'SHARE_TRANSFORMATION.PAIR_NUMBER' | translate }} #{{ idx + 1 }}
+                    </span>
+                    @if (pairs().length > 1) {
+                      <button class="btn-remove-pair" (click)="removePair(p.id)" type="button" [title]="'SHARE_TRANSFORMATION.REMOVE_PAIR' | translate">
+                        <i class="bi bi-trash3"></i>
+                        <span>{{ 'SHARE_TRANSFORMATION.REMOVE_PAIR' | translate }}</span>
+                      </button>
+                    }
+                  </div>
+
+                  <div class="pair-comparison-container">
+                    
+                    <!-- Before Upload Slot -->
+                    <div class="pair-column-upload before">
+                      <div class="column-card-header before">
+                        <i class="bi bi-image"></i>
+                        <h3>{{ 'SHARE_TRANSFORMATION.BEFORE_LABEL' | translate }}</h3>
+                      </div>
+                      
+                      <div
+                        class="upload-zone"
+                        [class.drag-over]="p.beforeDragOver"
+                        [class.has-files]="p.beforeFile"
+                        (dragover)="onDragOver($event, p.id, 'before')"
+                        (dragleave)="onDragLeave(p.id, 'before')"
+                        (drop)="onDrop($event, p.id, 'before')"
+                        (click)="beforeFileInput.click()"
+                        tabindex="0"
+                        (keydown.enter)="beforeFileInput.click()"
+                        [aria-label]="'SHARE_TRANSFORMATION.UPLOAD_PROMPT_BEFORE' | translate">
+
+                        @if (!p.beforeFile) {
+                          <div class="upload-icon-wrapper">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                          </div>
+                          <p class="upload-primary-text">
+                            {{ 'SHARE_TRANSFORMATION.DROP_OR' | translate }} <span class="text-accent">{{ 'SHARE_TRANSFORMATION.BROWSE' | translate }}</span>
+                          </p>
+                          <p class="upload-hint">{{ 'SHARE_TRANSFORMATION.FILE_HINT' | translate }}</p>
+                        } @else {
+                          <div class="preview-container-single" (click)="$event.stopPropagation()">
+                            <img [src]="p.beforePreviewUrl" [alt]="p.beforeFile.name" />
+                            <div class="preview-actions-overlay">
+                              <button class="btn-preview-action replace" (click)="beforeFileInput.click()" type="button">
+                                <i class="bi bi-arrow-left-right"></i>
+                                <span>{{ 'SHARE_TRANSFORMATION.REPLACE_IMAGE' | translate }}</span>
+                              </button>
+                              <button class="btn-preview-action remove" (click)="removeFileFromPair(p.id, 'before')" type="button">
+                                <i class="bi bi-trash3"></i>
+                                <span>{{ 'SHARE_TRANSFORMATION.REMOVE_IMAGE' | translate }}</span>
+                              </button>
+                            </div>
+                          </div>
+                        }
+
+                        <input
+                          #beforeFileInput
+                          type="file"
+                          class="file-input-hidden"
+                          accept="image/*"
+                          (click)="$event.stopPropagation()"
+                          (change)="onFileSelected($event, p.id, 'before')"
+                          tabindex="-1" />
+                      </div>
+                    </div>
+
+                    <!-- Connector Line and Arrow -->
+                    <div class="pair-connector" aria-hidden="true">
+                      <div class="connector-line"></div>
+                      <div class="connector-arrow">
+                        <i class="bi bi-arrow-right"></i>
+                      </div>
+                      <div class="connector-line"></div>
+                    </div>
+
+                    <!-- After Upload Slot -->
+                    <div class="pair-column-upload after">
+                      <div class="column-card-header after">
+                        <i class="bi bi-stars"></i>
+                        <h3>{{ 'SHARE_TRANSFORMATION.AFTER_LABEL' | translate }}</h3>
+                      </div>
+                      
+                      <div
+                        class="upload-zone"
+                        [class.drag-over]="p.afterDragOver"
+                        [class.has-files]="p.afterFile"
+                        (dragover)="onDragOver($event, p.id, 'after')"
+                        (dragleave)="onDragLeave(p.id, 'after')"
+                        (drop)="onDrop($event, p.id, 'after')"
+                        (click)="afterFileInput.click()"
+                        tabindex="0"
+                        (keydown.enter)="afterFileInput.click()"
+                        [aria-label]="'SHARE_TRANSFORMATION.UPLOAD_PROMPT_AFTER' | translate">
+
+                        @if (!p.afterFile) {
+                          <div class="upload-icon-wrapper">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                          </div>
+                          <p class="upload-primary-text">
+                            {{ 'SHARE_TRANSFORMATION.DROP_OR' | translate }} <span class="text-accent">{{ 'SHARE_TRANSFORMATION.BROWSE' | translate }}</span>
+                          </p>
+                          <p class="upload-hint">{{ 'SHARE_TRANSFORMATION.FILE_HINT' | translate }}</p>
+                        } @else {
+                          <div class="preview-container-single" (click)="$event.stopPropagation()">
+                            <img [src]="p.afterPreviewUrl" [alt]="p.afterFile.name" />
+                            <div class="preview-actions-overlay">
+                              <button class="btn-preview-action replace" (click)="afterFileInput.click()" type="button">
+                                <i class="bi bi-arrow-left-right"></i>
+                                <span>{{ 'SHARE_TRANSFORMATION.REPLACE_IMAGE' | translate }}</span>
+                              </button>
+                              <button class="btn-preview-action remove" (click)="removeFileFromPair(p.id, 'after')" type="button">
+                                <i class="bi bi-trash3"></i>
+                                <span>{{ 'SHARE_TRANSFORMATION.REMOVE_IMAGE' | translate }}</span>
+                              </button>
+                            </div>
+                          </div>
+                        }
+
+                        <input
+                          #afterFileInput
+                          type="file"
+                          class="file-input-hidden"
+                          accept="image/*"
+                          (click)="$event.stopPropagation()"
+                          (change)="onFileSelected($event, p.id, 'after')"
+                          tabindex="-1" />
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Add Pair Elegant Button -->
+            <div class="add-pair-action-container">
+              <button class="btn-add-pair-elegant font-display" (click)="addPair()" type="button">
+                <i class="bi bi-plus-lg"></i>
+                <span>{{ 'SHARE_TRANSFORMATION.ADD_PAIR' | translate }}</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Step 3: Submission Feedback & Buttons -->
+          <footer class="form-submission-section">
+            
+            <!-- Incomplete Pair Alert Banner -->
+            @if (showCountMismatch()) {
+              <div class="validation-message-banner" role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <p class="validation-text">{{ 'SHARE_TRANSFORMATION.INCOMPLETE_PAIR' | translate }}</p>
+              </div>
+            }
+
+            <!-- Server/API Error Banner -->
+            @if (submitError()) {
+              <div class="error-message-banner" role="alert">
+                <i class="bi bi-x-circle-fill"></i>
+                <p class="error-text">{{ submitError() }}</p>
+              </div>
+            }
+
+            <!-- Submit Button Trigger -->
+            <div class="submit-action-wrapper">
+              <button
+                class="btn-submit-elegant"
+                [disabled]="!isFormValid() || isSubmitting()"
+                (click)="onSubmit()">
+                @if (isSubmitting()) {
+                  <span class="loading-ring"></span>
+                  {{ 'SHARE_TRANSFORMATION.SUBMITTING' | translate }}
+                } @else {
+                  <i class="bi bi-send-fill"></i>
+                  {{ 'SHARE_TRANSFORMATION.SUBMIT' | translate }}
+                }
+              </button>
+              <p class="submit-hint">{{ 'SHARE_TRANSFORMATION.SUBMIT_HINT' | translate }}</p>
+            </div>
+          </footer>
+        }
+      </div>
+    }
+  </main>
 </div>
