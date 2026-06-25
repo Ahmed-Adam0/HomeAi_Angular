@@ -2,9 +2,11 @@ import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ErrorHandlerService } from '../services/error-handler.service';
+import { AuthService } from '../../features/auth/services/auth.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const errorHandlerService = inject(ErrorHandlerService);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -15,8 +17,16 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       console.error('Full Error Object:', error);
       console.groupEnd();
 
-      // Delegate global handling, mapping, and display to the dedicated service
-      errorHandlerService.handleError(error);
+      // For 401 Unauthorized or 403 Forbidden errors when the user is logged in,
+      // the authInterceptor will handle the token clearance, toast notification, and redirection.
+      // We skip delegating to errorHandlerService to prevent duplicate or generic toast notifications.
+      const isAuthStatus = error.status === 401 || error.status === 403;
+      const wasLoggedIn = authService.isLoggedIn();
+
+      if (!(isAuthStatus && wasLoggedIn)) {
+        // Delegate global handling, mapping, and display to the dedicated service
+        errorHandlerService.handleError(error);
+      }
 
       return throwError(() => error);
     })
