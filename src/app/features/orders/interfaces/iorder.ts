@@ -1,7 +1,7 @@
 import { IOrderItem } from './iorder-item';
 import { IShippingAddress } from './ishipping-address';
 
-export type OrderStatus = 'pending' | 'awaiting_customer_approval' | 'pending_payment' | 'confirmed' | 'processing' | 'ready' | 'shipped' | 'delivered' | 'cancelled' | 'refunded' | 'completed';
+export type OrderStatus = 'pending' | 'awaiting_customer_approval' | 'pending_payment' | 'confirmed' | 'in_progress' | 'processing' | 'ready' | 'shipped' | 'delivered' | 'cancelled' | 'refunded' | 'completed' | 'returned';
 
 
 export interface IStatusHistory {
@@ -24,7 +24,7 @@ export interface IOrder {
   discountAmount: number;
   totalAmount: number;
   paymentMethod: string;
-  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded' | 'unpaid';
   trackingNumber?: string;
   carrier?: string;
   createdAt: string;

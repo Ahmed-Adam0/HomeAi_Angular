@@ -46,17 +46,28 @@
                     <td class="fw-semibold">{{ o.totalAmount | currencyFormat }}</td>
                     <td>
                       <app-status-badge
-                        [label]="'ORDERS_PAYMENT_' + (o.paymentStatus | uppercase) | translate"
+                        [label]="o.paymentStatus | statusTranslation:'payment'"
                         [tone]="paymentStatusTone(o.paymentStatus)"
                         size="sm"
                       />
                     </td>
                     <td>
-                      <app-status-badge
-                        [label]="'ORDERS_STATUS_' + (o.orderStatus | uppercase) | translate"
-                        [tone]="orderStatusTone(o.orderStatus)"
-                        size="sm"
-                      />
+                      <div class="d-flex align-items-center gap-2">
+                        <app-status-badge
+                          [label]="o.orderStatus | statusTranslation:'order'"
+                          [tone]="orderStatusTone(o.orderStatus)"
+                          size="sm"
+                        />
+                        @if (o.orderStatus === 'delivered') {
+                          <button class="btn-share-badge animate-fade-in" (click)="onShareTransformationList($event, o.id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="me-1 inline-icon">
+                              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                              <circle cx="12" cy="13" r="4"/>
+                            </svg>
+                            <span>{{ 'ORDERS_SHARE_TRANSFORMATION' | translate }}</span>
+                          </button>
+                        }
+                      </div>
                     </td>
                     <td class="text-end">
                       <a class="text-decoration-none" [routerLink]="['/orders', o.id]">
@@ -88,15 +99,26 @@
 
               <div class="orders-card-badges">
                 <app-status-badge
-                  [label]="'ORDERS_PAYMENT_' + (o.paymentStatus | uppercase) | translate"
+                  [label]="o.paymentStatus | statusTranslation:'payment'"
                   [tone]="paymentStatusTone(o.paymentStatus)"
                   size="sm"
                 />
-                <app-status-badge
-                  [label]="'ORDERS_STATUS_' + (o.orderStatus | uppercase) | translate"
-                  [tone]="orderStatusTone(o.orderStatus)"
-                  size="sm"
-                />
+                <div class="d-flex align-items-center gap-2">
+                  <app-status-badge
+                    [label]="o.orderStatus | statusTranslation:'order'"
+                    [tone]="orderStatusTone(o.orderStatus)"
+                    size="sm"
+                  />
+                  @if (o.orderStatus === 'delivered') {
+                    <button class="btn-share-badge animate-fade-in" (click)="onShareTransformationList($event, o.id)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="me-1 inline-icon">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                      </svg>
+                      <span>{{ 'ORDERS_SHARE_TRANSFORMATION' | translate }}</span>
+                    </button>
+                  }
+                </div>
               </div>
 
               <div class="orders-card-cta">

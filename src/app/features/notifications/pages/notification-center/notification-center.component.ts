@@ -15,6 +15,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { NotificationService } from '../../services/notification.service';
 import { NotificationHubService } from '../../services/notification-hub.service';
 import { NotificationsMappedResult } from '../../data-access/mappers/notification.mapper';
+import { INotificationItem } from '../../interfaces/inotification';
 
 export interface PaginationMeta {
   pageNumber: number;
@@ -140,6 +141,13 @@ export class NotificationCenterComponent implements OnInit {
       .ensureUnreadCountLoaded()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
+  }
+
+  onNotificationClick(notif: INotificationItem): void {
+    this.onMarkAsRead(notif.id);
+    if (notif.actionUrl) {
+      this.router.navigateByUrl(notif.actionUrl);
+    }
   }
 
   onMarkAsRead(id: number): void {

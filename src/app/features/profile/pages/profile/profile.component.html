@@ -554,7 +554,7 @@
                               {{ order.totalAmount || order.total || 0 | currency:'USD':'symbol':'1.2-2' }}
                             </span>
                             <span class="status-pill status-{{ order.status }}">
-                              {{ 'ORDERS_STATUS_' + order.status.toUpperCase() | translate }}
+                              {{ order.status | statusTranslation:'order' }}
                             </span>
                           </div>
 

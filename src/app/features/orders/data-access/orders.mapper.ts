@@ -1,6 +1,14 @@
 import { IBackendOrder, IOrder, OrderStatus, IShippingAddress, IOrderItem, ICustomerVendorOrder } from '../interfaces';
 
 
+function normalizeRawStatus(value: string | undefined | null): string {
+  if (!value) return '';
+  return value
+    .replace(/([a-z])([A-Z])/g, '$1_$2')
+    .replace(/[\s_-]+/g, '_')
+    .toLowerCase();
+}
+
 /**
  * Maps a raw backend order (IBackendOrder) to the frontend IOrder model.
  * This mapper assumes the backend already returns a single order object.
@@ -12,25 +20,31 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
 
   console.log('Backend order response inside mapper:', order);
 
-  const rawStatus = (order.status ?? '').toLowerCase();
+  const rawStatus = normalizeRawStatus(order.status);
   const status: OrderStatus =
-    rawStatus === 'awaitingcustomerapproval' || rawStatus === 'awaiting_customer_approval'
+    rawStatus === 'awaiting_customer_approval'
       ? 'awaiting_customer_approval'
-    : rawStatus === 'pendingpayment' || rawStatus === 'pending_payment'
+    : rawStatus === 'pending_payment'
       ? 'pending_payment'
-      : rawStatus === 'confirmed'
+    : rawStatus === 'confirmed'
       ? 'confirmed'
-      : rawStatus === 'inprogress' || rawStatus === 'processing' || rawStatus === 'in progress'
-      ? 'processing'
-      : rawStatus === 'readyforpickup' || rawStatus === 'ready' || rawStatus === 'shipped' || rawStatus === 'ready for pickup'
+    : rawStatus === 'in_progress' || rawStatus === 'processing'
+      ? 'in_progress'
+    : rawStatus === 'ready'
+      ? 'ready'
+    : rawStatus === 'shipped'
       ? 'shipped'
-      : rawStatus === 'delivered'
+    : rawStatus === 'delivered'
       ? 'delivered'
-      : rawStatus === 'cancelled'
+    : rawStatus === 'cancelled'
       ? 'cancelled'
-      : rawStatus === 'refunded'
+    : rawStatus === 'refunded'
       ? 'refunded'
-      : 'pending';
+    : rawStatus === 'returned'
+      ? 'returned'
+    : rawStatus === 'completed'
+      ? 'completed'
+    : 'pending';
 
   const shippingAddress: IShippingAddress = order.shippingAddress ?? {
     firstName: '',
@@ -91,25 +105,31 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
             })
           : [];
 
-        const voRawStatus = (vo.status ?? '').toLowerCase();
+        const voRawStatus = normalizeRawStatus(vo.status);
         const voStatus: OrderStatus =
-          voRawStatus === 'awaitingcustomerapproval' || voRawStatus === 'awaiting_customer_approval'
+          voRawStatus === 'awaiting_customer_approval'
             ? 'awaiting_customer_approval'
-          : voRawStatus === 'pendingpayment' || voRawStatus === 'pending_payment'
+          : voRawStatus === 'pending_payment'
             ? 'pending_payment'
-            : voRawStatus === 'confirmed'
+          : voRawStatus === 'confirmed'
             ? 'confirmed'
-            : voRawStatus === 'inprogress' || voRawStatus === 'processing' || voRawStatus === 'in progress'
-            ? 'processing'
-            : voRawStatus === 'readyforpickup' || voRawStatus === 'ready' || voRawStatus === 'shipped' || voRawStatus === 'ready for pickup'
+          : voRawStatus === 'in_progress' || voRawStatus === 'processing'
+            ? 'in_progress'
+          : voRawStatus === 'ready'
+            ? 'ready'
+          : voRawStatus === 'shipped'
             ? 'shipped'
-            : voRawStatus === 'delivered'
+          : voRawStatus === 'delivered'
             ? 'delivered'
-            : voRawStatus === 'cancelled'
+          : voRawStatus === 'cancelled'
             ? 'cancelled'
-            : voRawStatus === 'refunded'
+          : voRawStatus === 'refunded'
             ? 'refunded'
-            : 'pending';
+          : voRawStatus === 'returned'
+            ? 'returned'
+          : voRawStatus === 'completed'
+            ? 'completed'
+          : 'pending';
 
         return {
           id: String(vo.id),
@@ -122,12 +142,23 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
       })
     : [];
 
+  const paymentMethod = order.paymentMethod ?? 'Paymob';
+  const isCOD = paymentMethod === 'COD' || paymentMethod === 'Cash on Delivery' || paymentMethod.toLowerCase().includes('cash');
+
+  let finalStatus = status;
+  const isPaid = paymentStatus === 'paid';
+  const isPostApproval = status === 'pending_payment' || status === 'confirmed' || status === 'in_progress';
+  
+  if (isPostApproval && !isPaid && !isCOD) {
+    finalStatus = 'pending_payment';
+  }
+
   const mapped: IOrder = {
     id: String(order.id),
     orderNumber: `ORD-${String(order.id).padStart(6, '0')}`,
     userId: order.userId,
     items,
-    status,
+    status: finalStatus,
     shippingAddress,
     billingAddress,
     shippingCost: order.shippingCost ?? 0,

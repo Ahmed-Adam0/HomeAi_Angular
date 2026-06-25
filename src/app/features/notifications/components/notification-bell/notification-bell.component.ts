@@ -6,6 +6,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { NotificationService } from '../../services/notification.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 import { AuthService } from '../../../../features/auth/services/auth.service';
+import { INotificationItem } from '../../interfaces/inotification';
 
 @Component({
   selector: 'app-notification-bell',
@@ -58,6 +59,14 @@ export class NotificationBellComponent implements OnInit {
   closeDropdown(): void {
     this.isOpen.set(false);
     document.body.style.overflow = '';
+  }
+
+  onNotificationClick(notif: INotificationItem): void {
+    this.markAsRead(notif.id);
+    if (notif.actionUrl) {
+      this.closeDropdown();
+      this.router.navigateByUrl(notif.actionUrl);
+    }
   }
 
   markAsRead(id: number): void {

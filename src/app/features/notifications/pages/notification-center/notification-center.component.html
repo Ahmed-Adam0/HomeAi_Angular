@@ -108,6 +108,8 @@
           <article
             class="notification-card"
             [class.notification-card--unread]="!notification.isRead"
+            [class.notification-card--clickable]="!!notification.actionUrl"
+            (click)="onNotificationClick(notification)"
             role="listitem"
           >
             <div class="notification-card__body">
@@ -125,7 +127,7 @@
               <p class="notification-card__message">{{ notification.message }}</p>
             </div>
             @if (!notification.isRead) {
-              <div class="notification-card__actions">
+              <div class="notification-card__actions" (click)="$event.stopPropagation()">
                 <button
                   type="button"
                   class="notification-card__mark-read-btn"

@@ -21,6 +21,7 @@ import { IOrder } from '../../../orders/interfaces';
 import { NAV_ROUTES } from '../../../../core/constants/app-routes';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { StatusTranslationPipe } from '../../../../shared/pipes/status-translation.pipe';
 import { environment } from '../../../../../environments/environment';
 import { NotificationService } from '../../../notifications/services/notification.service';
 import { ProductCacheService } from '../../../../core/services/product-cache.service';
@@ -34,6 +35,7 @@ import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/sk
     CommonModule,
     RtlDirective,
     TranslatePipe,
+    StatusTranslationPipe,
     LazyImageDirective,
     ProfileSettingsCard,
     EditableProfileForm,

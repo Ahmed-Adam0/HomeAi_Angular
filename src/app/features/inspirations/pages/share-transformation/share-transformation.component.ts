@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 
 import { InspirationsService } from '../../services/inspirations.service';
 import { OrdersApiService } from '../../../orders/data-access/orders-api.service';
@@ -43,6 +43,7 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
   readonly translationService = inject(TranslationService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   // ── Order loading state ──
   readonly loadingOrders = signal(false);
@@ -88,6 +89,12 @@ export class ShareTransformationComponent implements OnInit, OnDestroy {
   // ── Lifecycle ──
   ngOnInit(): void {
     this.loadCompletedOrders();
+    this.route.queryParams.subscribe((params) => {
+      const orderId = params['orderId'];
+      if (orderId) {
+        this.selectedOrderId.set(orderId);
+      }
+    });
   }
 
   ngOnDestroy(): void {

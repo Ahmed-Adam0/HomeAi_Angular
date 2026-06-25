@@ -3,12 +3,24 @@
     @for (s of stepClass(); track s.key; let idx = $index; let last = $last) {
       <div class="fm-timeline-node" [ngClass]="s.cls">
         <!-- Circular icon box containing unique step SVG -->
-        <div class="fm-timeline-icon-box" [attr.aria-label]="s.labelKey | translate">
+        <div class="fm-timeline-icon-box" [attr.aria-label]="s.key | statusTranslation:'order'" [class.danger-box]="s.isTerminalNegative">
           @if (s.key === 'pending') {
             <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-          } @else if (s.key === 'processing') {
+          } @else if (s.key === 'awaiting_customer_approval') {
+            <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          } @else if (s.key === 'pending_payment') {
+            <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+          } @else if (s.key === 'confirmed') {
+            <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          } @else if (s.key === 'in_progress' || s.key === 'processing') {
             <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
               <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
@@ -21,40 +33,23 @@
             <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
+          } @else if (s.isTerminalNegative) {
+            <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
           }
         </div>
 
         <div class="fm-timeline-text">
-          <div class="fm-timeline-label">{{ s.labelKey | translate }}</div>
-          <div class="fm-timeline-status-desc text-muted">
-            @if (s.isComplete && !isCancelled()) {
-              Completed
-            } @else if (s.isActive && !isCancelled()) {
-              Active
-            } @else {
-              Muted
-            }
+          <div class="fm-timeline-label" [class.text-danger]="s.isTerminalNegative">{{ s.key | statusTranslation:'order' }}</div>
+          <div class="fm-timeline-status-desc" [ngClass]="s.isTerminalNegative ? 'text-danger fw-bold' : 'text-muted'">
+            {{ s.descKey | translate }}
           </div>
         </div>
 
         @if (!last) {
           <div class="fm-timeline-connector" [class.is-active-line]="s.isComplete"></div>
         }
-      </div>
-    }
-
-    <!-- Red Danger Override Cancelled Step appended when status is Cancelled/Refunded -->
-    @if (isCancelled()) {
-      <div class="fm-timeline-node is-cancelled-node">
-        <div class="fm-timeline-icon-box danger-box">
-          <svg class="step-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>
-          </svg>
-        </div>
-        <div class="fm-timeline-text">
-          <div class="fm-timeline-label text-danger fw-bold">{{ 'ORDERS_STATUS_CANCELLED' | translate }}</div>
-          <div class="fm-timeline-status-desc text-danger small">Cancelled</div>
-        </div>
       </div>
     }
   </div>

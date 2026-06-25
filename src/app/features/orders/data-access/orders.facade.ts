@@ -19,7 +19,7 @@ export interface OrderListItemVm {
 }
 
 export interface TimelineStepVm {
-  key: 'pending' | 'processing' | 'shipped' | 'delivered';
+  key: OrderStatus;
   isComplete: boolean;
   isActive: boolean;
 }
@@ -275,33 +275,92 @@ export class OrdersFacade {
   /**
    * Generates step view models for the status timeline component.
    */
-  timelineFor(status: OrderStatus): TimelineStepVm[] {
-    const sequence: TimelineStepVm['key'][] = ['pending', 'processing', 'shipped', 'delivered'];
+  timelineFor(order: IOrder): TimelineStepVm[] {
+    const status = order.status;
+    const history = order.statusHistory;
+    const isTerminalNegative = status === 'cancelled' || status === 'refunded' || status === 'returned';
 
-    const normalized: TimelineStepVm['key'] =
-      status === 'pending' || status === 'awaiting_customer_approval' || status === 'pending_payment' || status === 'confirmed'
-        ? 'pending'
-        : status === 'processing'
-        ? 'processing'
-        : status === 'shipped'
-        ? 'shipped'
-        : status === 'delivered'
-        ? 'delivered'
-        : 'pending';
+    // Sequence of steps shown in the timeline
+    const coreSequence: OrderStatus[] = [
+      'pending',
+      'awaiting_customer_approval',
+      'pending_payment',
+      'confirmed',
+      'in_progress',
+      'shipped',
+      'delivered'
+    ];
 
-    const activeIndex = sequence.indexOf(normalized);
+    const sequence: OrderStatus[] = [...coreSequence];
+    if (isTerminalNegative) {
+      sequence.push(status);
+    }
 
-    return sequence.map((key, idx) => ({
-      key,
-      isComplete: idx < activeIndex,
-      isActive: idx === activeIndex,
-    }));
+    // Determine the base status for normal steps completion mapping
+    let baseStatus: OrderStatus = status;
+    if (isTerminalNegative) {
+      if (history?.oldStatus) {
+        const mappedOld = history.oldStatus.toLowerCase();
+        baseStatus = (
+          mappedOld === 'awaitingcustomerapproval' || mappedOld === 'awaiting_customer_approval'
+            ? 'awaiting_customer_approval'
+            : mappedOld === 'pendingpayment' || mappedOld === 'pending_payment'
+            ? 'pending_payment'
+            : mappedOld === 'confirmed'
+            ? 'confirmed'
+            : mappedOld === 'inprogress' || mappedOld === 'in progress' || mappedOld === 'in_progress' || mappedOld === 'processing'
+            ? 'in_progress'
+            : mappedOld === 'shipped' || mappedOld === 'ready'
+            ? 'shipped'
+            : mappedOld === 'delivered' || mappedOld === 'completed'
+            ? 'delivered'
+            : 'pending'
+        ) as OrderStatus;
+      } else {
+        baseStatus = 'pending';
+      }
+    }
+
+    // Map base status to one of the core sequence steps for indexing
+    let baseStatusKey: OrderStatus = baseStatus;
+    if (baseStatus === 'processing') {
+      baseStatusKey = 'in_progress';
+    } else if (baseStatus === 'ready') {
+      baseStatusKey = 'shipped';
+    } else if (baseStatus === 'completed') {
+      baseStatusKey = 'delivered';
+    }
+
+    const baseActiveIndex = coreSequence.indexOf(baseStatusKey);
+
+    return sequence.map((key) => {
+      if (key === 'cancelled' || key === 'refunded' || key === 'returned') {
+        return {
+          key,
+          isComplete: false,
+          isActive: true, // The terminal status itself is current/active
+        };
+      }
+
+      const idx = coreSequence.indexOf(key);
+      const isComplete = idx < baseActiveIndex || (idx === baseActiveIndex && (status === 'delivered' || status === 'completed'));
+      const isActive = idx === baseActiveIndex && !isTerminalNegative && status !== 'delivered' && status !== 'completed';
+
+      return {
+        key,
+        isComplete,
+        isActive,
+      };
+    });
   }
 
   /**
    * Centralized Business Logic: Order status badge tone mapping.
    * Pending -> warning
-   * Processing -> info
+   * Awaiting Customer Approval -> warning
+   * Pending Payment -> warning
+   * Confirmed -> info
+   * In Progress -> info
    * Shipped -> primary (brand)
    * Delivered -> success
    * Cancelled -> danger
@@ -309,21 +368,22 @@ export class OrdersFacade {
   orderStatusTone(status: OrderStatus): StatusBadgeTone {
     switch (status) {
       case 'pending':
-        return 'warning';
       case 'awaiting_customer_approval':
-        return 'warning';
       case 'pending_payment':
         return 'warning';
       case 'confirmed':
-        return 'info';
+      case 'in_progress':
       case 'processing':
         return 'info';
+      case 'ready':
       case 'shipped':
         return 'brand'; // primary brand color
       case 'delivered':
+      case 'completed':
         return 'success';
       case 'cancelled':
       case 'refunded':
+      case 'returned':
         return 'danger';
       default:
         return 'neutral';
@@ -338,6 +398,7 @@ export class OrdersFacade {
       case 'paid':
         return 'success';
       case 'pending':
+      case 'unpaid':
         return 'warning';
       case 'failed':
         return 'danger';

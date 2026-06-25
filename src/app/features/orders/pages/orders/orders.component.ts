@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { OrdersFacade, OrderListItemVm } from '../../data-access/orders.facade';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
@@ -8,6 +8,7 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
 import { Button } from '../../../../shared/components/button/button.component';
 import { StatusBadgeComponent, StatusBadgeTone } from '../../../../shared/components/status-badge/status-badge.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { StatusTranslationPipe } from '../../../../shared/pipes/status-translation.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
@@ -25,6 +26,7 @@ import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/sk
     Button,
     StatusBadgeComponent,
     TranslatePipe,
+    StatusTranslationPipe,
     CurrencyFormatPipe,
     RtlDirective,
     SkeletonLoader
@@ -35,6 +37,7 @@ import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/sk
 })
 export class Orders implements OnInit {
   readonly facade = inject(OrdersFacade);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     this.facade.loadOrders();
@@ -56,5 +59,11 @@ export class Orders implements OnInit {
    */
   paymentStatusTone(status: OrderListItemVm['paymentStatus']): StatusBadgeTone {
     return this.facade.paymentStatusTone(status);
+  }
+
+  onShareTransformationList(event: MouseEvent, orderId: string): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.router.navigate(['/share-transformation'], { queryParams: { orderId } });
   }
 }

@@ -1,13 +1,14 @@
 import { Component, computed, input } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { StatusTranslationPipe } from '../../../../shared/pipes/status-translation.pipe';
 import { TimelineStepVm } from '../../data-access/orders.facade';
 import { OrderStatus } from '../../interfaces';
 
 @Component({
   selector: 'app-order-timeline',
   standalone: true,
-  imports: [NgClass, TranslatePipe],
+  imports: [NgClass, TranslatePipe, StatusTranslationPipe],
   templateUrl: './order-timeline.component.html',
   styleUrl: './order-timeline.component.css',
 })
@@ -17,24 +18,38 @@ export class OrderTimelineComponent {
 
   readonly isCancelled = computed(() => {
     const s = this.status();
-    return s === 'cancelled' || s === 'refunded';
+    return s === 'cancelled' || s === 'refunded' || s === 'returned';
   });
 
   readonly stepClass = computed(() => {
     const steps = this.steps();
-    const cancelled = this.isCancelled();
     
     return steps.map((s) => {
-      // If cancelled, make all steps complete/active lose primary gold styling and instead be styled in red/danger or muted
+      const isTerminal = s.key === 'cancelled' || s.key === 'refunded' || s.key === 'returned';
+      
+      // Determine description key
+      let descKey = 'ORDER_DETAILS_TIMELINE_MUTED';
+      if (s.isComplete) {
+        descKey = 'ORDER_DETAILS_TIMELINE_COMPLETED';
+      } else if (s.isActive) {
+        if (isTerminal) {
+          descKey = `ORDER_DETAILS_TIMELINE_${s.key.toUpperCase()}`;
+        } else {
+          descKey = 'ORDER_DETAILS_TIMELINE_ACTIVE';
+        }
+      }
+
       return {
         ...s,
+        isTerminalNegative: isTerminal,
         cls: {
           'fm-tl-step': true,
-          'is-complete': cancelled ? false : s.isComplete,
-          'is-active': cancelled ? false : s.isActive,
-          'is-cancelled': cancelled,
+          'is-complete': s.isComplete,
+          'is-active': s.isActive && !isTerminal,
+          'is-cancelled': isTerminal,
         },
-        labelKey: `ORDERS_TIMELINE_${s.key.toUpperCase()}`,
+        labelKey: `ORDERS_STATUS_${s.key.toUpperCase()}`,
+        descKey,
       };
     });
   });

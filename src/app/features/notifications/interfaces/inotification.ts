@@ -13,6 +13,7 @@ export interface INotificationItem {
   message: string;
   isRead: boolean;
   createdAt: Date;
+  actionUrl?: string;
 }
 
 export interface SignalRNotification {

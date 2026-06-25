@@ -60,7 +60,7 @@
             <div
               class="notification-item"
               [class.notification-item--unread]="!notif.isRead"
-              (click)="markAsRead(notif.id)"
+              (click)="onNotificationClick(notif)"
               role="button"
               tabindex="0"
               [attr.aria-label]="notif.title"

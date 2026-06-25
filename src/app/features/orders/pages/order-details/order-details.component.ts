@@ -1,12 +1,14 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component, computed, inject, signal, effect } from '@angular/core';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OrdersFacade, PaymentStatus } from '../../data-access/orders.facade';
 import { OrderStatus } from '../../interfaces';
+import { NotificationService as InternalNotificationService } from '../../../notifications/services/notification.service';
 import { Button } from '../../../../shared/components/button/button.component';
 import { StatusBadgeComponent, StatusBadgeTone } from '../../../../shared/components/status-badge/status-badge.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { StatusTranslationPipe } from '../../../../shared/pipes/status-translation.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { RtlDirective } from '../../../../shared/directives/rtl.directive';
@@ -46,6 +48,7 @@ export interface EditItemForm {
     Button,
     StatusBadgeComponent,
     TranslatePipe,
+    StatusTranslationPipe,
     CurrencyFormatPipe,
     LocalizedPipe,
     RtlDirective,
@@ -71,6 +74,8 @@ export class OrderDetails {
   readonly translationService = inject(TranslationService);
   private authService = inject(AuthService);
   private paymentService = inject(PaymentService);
+  private readonly router = inject(Router);
+  private readonly internalNotificationService = inject(InternalNotificationService);
 
   readonly order = computed(() => this.facade.selectedOrder());
 
@@ -80,6 +85,7 @@ export class OrderDetails {
   readonly isRejectDialogVisible = signal(false);
   readonly selectedVendorOrderId = signal<string | null>(null);
   readonly isInitiatingPayment = signal(false);
+  readonly isDeliveryModalVisible = signal(false);
 
   readonly hasPendingPaymentOrders = computed(() => {
     const vOrders = this.order()?.vendorOrders ?? [];
@@ -93,10 +99,63 @@ export class OrderDetails {
       .reduce((sum, vo) => sum + vo.totalPrice, 0);
   });
 
+  readonly amountPaid = computed(() => {
+    const data = this.order();
+    if (!data) return 0;
+    if (this.hasPendingPaymentOrders()) {
+      return Math.max(0, data.totalAmount - this.pendingPaymentTotal());
+    }
+    return data.paymentStatus === 'paid' ? data.totalAmount : 0;
+  });
+
   editForm: FormGroup | null = null;
 
   constructor() {
     this.facade.connectDetailsRoute(this.route);
+
+    // Delivery success triggers (Modal & Notification Center)
+    effect(() => {
+      const currentOrder = this.order();
+      if (currentOrder && currentOrder.status === 'delivered') {
+        const orderId = currentOrder.id;
+
+        // 1. Show delivery success modal once per order
+        const modalStorageKey = `delivery_modal_shown_${orderId}`;
+        const hasShownModal = localStorage.getItem(modalStorageKey);
+        if (!hasShownModal) {
+          this.isDeliveryModalVisible.set(true);
+          localStorage.setItem(modalStorageKey, 'true');
+        }
+
+        // 2. Add local notification for delivered order once
+        const notificationStorageKey = `delivered_notification_added_${orderId}`;
+        const hasNotificationAdded = localStorage.getItem(notificationStorageKey);
+        if (!hasNotificationAdded) {
+          const orderNum = currentOrder.orderNumber || '';
+          this.internalNotificationService.addNotification({
+            id: Math.floor(Math.random() * 1000000) + 9000000,
+            title: this.translationService.translate('NOTIFICATION_ORDER_DELIVERED_TITLE').replace('{{orderNumber}}', orderNum),
+            message: this.translationService.translate('NOTIFICATION_ORDER_DELIVERED_DESC'),
+            isRead: false,
+            createdAt: new Date(),
+            actionUrl: `/share-transformation?orderId=${orderId}`
+          });
+          localStorage.setItem(notificationStorageKey, 'true');
+        }
+      }
+    });
+  }
+
+  onShareTransformation(): void {
+    const orderId = this.order()?.id;
+    if (orderId) {
+      this.router.navigate(['/share-transformation'], { queryParams: { orderId } });
+    }
+  }
+
+  onShareFromModal(): void {
+    this.isDeliveryModalVisible.set(false);
+    this.onShareTransformation();
   }
 
   onPayApprovedOrders(): void {
@@ -303,5 +362,18 @@ export class OrderDetails {
 
   paymentStatusTone(status: PaymentStatus): StatusBadgeTone {
     return this.facade.paymentStatusTone(status);
+  }
+
+  historyStatusTone(statusStr: string): StatusBadgeTone {
+    const raw = (statusStr ?? '').toLowerCase();
+    const status: OrderStatus = 
+      raw === 'inprogress' || raw === 'in progress' || raw === 'in_progress'
+        ? 'in_progress'
+        : raw === 'awaitingcustomerapproval' || raw === 'awaiting_customer_approval'
+        ? 'awaiting_customer_approval'
+        : raw === 'pendingpayment' || raw === 'pending_payment'
+        ? 'pending_payment'
+        : raw as OrderStatus;
+    return this.facade.orderStatusTone(status);
   }
 }
