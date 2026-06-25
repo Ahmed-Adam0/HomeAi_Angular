@@ -12,6 +12,7 @@ import { unwrap } from '../../../core/utils/api-utils';
 import { localized } from '../../../shared/utils/localized';
 import { firstValueFrom, filter, from, Observable, switchMap, tap, distinctUntilChanged } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { CartSuccessService } from './cart-success.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,7 @@ export class CartService {
   private readonly translationService = inject(TranslationService);
   private readonly cartApi = inject(CartApiService);
   private readonly authService = inject(AuthService);
+  private readonly cartSuccessService = inject(CartSuccessService);
   private readonly loadingStates = signal<Record<string, { adding?: boolean; updating?: boolean; removing?: boolean }>>({});
   private readonly activeSyncRequests = new Set<string>();
   private readonly updateQuantityDebounceTimers = new Map<string, any>();
@@ -220,6 +222,10 @@ export class CartService {
     const state = this.loadingStates()[String(itemId)];
     return !!state?.adding || !!state?.updating || !!state?.removing;
   }
+
+  resetUiState(): void {
+    this.cartSuccessService.reset();
+  }
   readonly totals = this.cartStore.totals;
 
   constructor() {
@@ -236,6 +242,7 @@ export class CartService {
         tap((authenticated) => {
           if (!authenticated) {
             this.cartStore.clear();
+            this.resetUiState();
           }
         }),
         filter(Boolean),
@@ -492,6 +499,11 @@ export class CartService {
             ? `تمت إضافة ${quantityToAdd} × ${productTitle} إلى سلة التسوق بنجاح.`
             : `Added ${quantityToAdd} × ${productTitle} to your cart successfully.`;
           this.uiState.showAlert('success', successMsg, { label: isAr ? 'عرض السلة' : 'View Cart', routerLink: '/cart' });
+
+          const updatedItem = this.findCartItem(itemId);
+          if (updatedItem) {
+            this.cartSuccessService.open(updatedItem, quantityToAdd);
+          }
 
           if (this.authService.isAuthenticated()) {
             const matched = this.findCartItem(itemId);

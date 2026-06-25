@@ -1,5 +1,4 @@
-import { Injectable, effect, inject, signal } from '@angular/core';
-import { CartStore } from '../store/cart.store';
+import { Injectable, signal } from '@angular/core';
 import { ICartItem } from '../interfaces/icart-item';
 
 @Injectable({
@@ -10,40 +9,19 @@ export class CartSuccessService {
   readonly item = signal<ICartItem | null>(null);
   readonly quantityAdded = signal(1);
 
-  private cartStore = inject(CartStore);
-
-  constructor() {
-    let prevItems = this.cartStore.items();
-
-    effect(() => {
-      const currentItems = this.cartStore.items();
-
-      if (currentItems.length > prevItems.length) {
-        const newItem = currentItems[currentItems.length - 1];
-        this.item.set(newItem);
-        this.quantityAdded.set(newItem.quantity);
-        this.isOpen.set(true);
-        prevItems = currentItems;
-        return;
-      }
-
-      if (currentItems.length === prevItems.length && prevItems.length > 0) {
-        for (const item of currentItems) {
-          const prev = prevItems.find(p => p.productId === item.productId);
-          if (prev && item.quantity > prev.quantity) {
-            this.item.set(item);
-            this.quantityAdded.set(item.quantity - prev.quantity);
-            this.isOpen.set(true);
-            break;
-          }
-        }
-      }
-
-      prevItems = currentItems;
-    });
+  open(item: ICartItem, quantity: number): void {
+    this.item.set(item);
+    this.quantityAdded.set(quantity);
+    this.isOpen.set(true);
   }
 
   close(): void {
     this.isOpen.set(false);
+  }
+
+  reset(): void {
+    this.isOpen.set(false);
+    this.item.set(null);
+    this.quantityAdded.set(1);
   }
 }

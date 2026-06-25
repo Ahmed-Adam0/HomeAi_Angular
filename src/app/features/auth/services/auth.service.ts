@@ -122,6 +122,7 @@ export class AuthService {
         }
         this.setAuthState(token);
         this.applyResponseAvatar(response);
+        this.ensureProfileImage();
       })
     );
   }
@@ -139,6 +140,7 @@ export class AuthService {
         }
         this.setAuthState(token);
         this.applyResponseAvatar(response);
+        this.ensureProfileImage();
       })
     );
   }
@@ -164,6 +166,7 @@ export class AuthService {
         }
         this.setAuthState(token);
         this.applyResponseAvatar(response);
+        this.ensureProfileImage();
       })
     );
   }
@@ -187,6 +190,7 @@ export class AuthService {
         this.setAuthState(token);
         this.applyResponseAvatar(response);
         this.clearGoogleRegistrationState();
+        this.ensureProfileImage();
       })
     );
   }
@@ -271,6 +275,7 @@ export class AuthService {
   private clearAuthState(): void {
     this.authToken.set(null);
     this.userProfile.set(null);
+    this.profileImageFetched = false;
   }
 
   private decodeToken(token: string): AuthProfile {

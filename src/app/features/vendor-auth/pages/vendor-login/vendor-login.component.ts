@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -8,6 +8,7 @@ import { AuthErrorHandler } from '../../../auth/services/auth-error-handler.serv
 import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
+import { CartService } from '../../../cart/services/cart.service';
 
 @Component({
   selector: 'app-vendor-login',
@@ -16,13 +17,14 @@ import { AutoDirectionDirective } from '../../../../shared/directives/auto-direc
   templateUrl: './vendor-login.component.html',
   styleUrls: ['./vendor-login.component.css']
 })
-export class VendorLogin {
+export class VendorLogin implements OnInit {
   private fb = inject(FormBuilder);
   private vendorAuthService = inject(VendorAuthService);
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
+  private cartService = inject(CartService);
 
   loginForm: FormGroup;
   isLoading = false;
@@ -98,6 +100,10 @@ export class VendorLogin {
     });
 
     this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '';
+  }
+
+  ngOnInit(): void {
+    this.cartService.resetUiState();
   }
 
   onSubmit(): void {

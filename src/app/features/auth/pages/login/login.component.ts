@@ -8,6 +8,7 @@ import { NAV_ROUTES } from '../../../../core/constants';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import{environment} from '../../../../../environments/environment';
 import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
+import { CartService } from '../../../cart/services/cart.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -24,6 +25,7 @@ export class Login implements OnInit, AfterViewInit {
   private route = inject(ActivatedRoute);
   private translationService = inject(TranslationService);
   private platformId = inject(PLATFORM_ID);
+  private cartService = inject(CartService);
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -161,7 +163,9 @@ export class Login implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.cartService.resetUiState();
+  }
 
   ngAfterViewInit(): void {
     if (!this.isBrowser) {
