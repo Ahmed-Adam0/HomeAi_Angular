@@ -4,6 +4,7 @@ export interface IVendorOrderItemDto {
   unitPrice: number;
   quantity: number;
   total: number;
+  productImage?: string;
 }
 
 export interface IVendorOrderStatusHistoryDto {

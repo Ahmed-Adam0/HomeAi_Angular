@@ -1,5 +1,6 @@
 import { IVendorOrderDashboardDto } from '../dto/vendor-order-dashboard.dto';
 import { IOrder } from '../../../orders/interfaces/iorder';
+import { formatImageUrl } from '../../../../core/utils/api-utils';
 
 
 import { IVendorOrdersFilterResponseDto } from '../dto/vendor-orders-filter-response.dto';
@@ -76,6 +77,7 @@ export function mapVendorOrderDetails(
       quantity: item.quantity ?? 0,
       unitPrice: item.unitPrice ?? 0,
       lineTotal: item.total ?? 0,
+      thumbnailUrl: formatImageUrl(item.productImage),
     })),
     status: dto.status ? mapStringToStatus(dto.status) : VendorOrderStatus.Pending,
     paymentStatus: 'pending',
