@@ -784,35 +784,95 @@
 }
 
 /* =========================
-   Audio in Messages
+   Audio / Waveform Bubble in Messages
    ========================= */
-.message-audio-bubble {
-  padding: 6px 10px !important;
-  max-width: 290px;
-  width: 100%;
+.voice-hidden-audio {
+  display: none;
 }
 
-.audio-player-container {
+.audio-waveform-bubble {
   display: flex;
   align-items: center;
-  width: 100%;
-  min-width: 220px;
-  padding: 2px 0;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  min-width: 200px;
+  box-shadow: 0 4px 18px rgba(31, 28, 24, 0.18), 0 1px 4px rgba(31, 28, 24, 0.10);
+  background: var(--fm-color-neutral-900, #1f1c18);
+  position: relative;
+  overflow: hidden;
 }
 
-.chat-audio-player {
-  width: 100%;
-  height: 32px;
-  outline: none;
-  border-radius: 9999px;
+.message-bot .audio-waveform-bubble {
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(31, 28, 24, 0.10), 0 1px 4px rgba(31, 28, 24, 0.06);
 }
 
-.chat-audio-player::-webkit-media-controls-panel {
-  background-color: #ffffff;
+.waveform-play-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.15);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 150ms ease, transform 150ms ease;
 }
 
-.message-user .chat-audio-player::-webkit-media-controls-panel {
-  background-color: rgba(255, 255, 255, 0.08);
+.message-bot .waveform-play-btn {
+  background: var(--fm-color-neutral-900, #1f1c18);
+  color: #ffffff;
+}
+
+.waveform-play-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: scale(1.08);
+}
+
+.message-bot .waveform-play-btn:hover {
+  background: var(--fm-color-primary-700, #8a683d);
+}
+
+.waveform-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 28px;
+}
+
+.wb {
+  display: inline-block;
+  width: 3px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.65);
+  animation: wb-idle 1.4s ease-in-out infinite;
+}
+
+.message-bot .wb {
+  background: var(--fm-color-primary-600, #a37e4c);
+}
+
+/* varied heights for a natural waveform look */
+.wb-1  { height: 8px;  animation-delay: 0s; }
+.wb-2  { height: 14px; animation-delay: 0.1s; }
+.wb-3  { height: 20px; animation-delay: 0.2s; }
+.wb-4  { height: 12px; animation-delay: 0.3s; }
+.wb-5  { height: 24px; animation-delay: 0.4s; }
+.wb-6  { height: 16px; animation-delay: 0.5s; }
+.wb-7  { height: 20px; animation-delay: 0.35s; }
+.wb-8  { height: 10px; animation-delay: 0.25s; }
+.wb-9  { height: 18px; animation-delay: 0.15s; }
+.wb-10 { height: 24px; animation-delay: 0.45s; }
+.wb-11 { height: 12px; animation-delay: 0.55s; }
+.wb-12 { height: 7px;  animation-delay: 0.05s; }
+
+@keyframes wb-idle {
+  0%, 100% { opacity: 0.45; transform: scaleY(0.7); }
+  50%       { opacity: 1;    transform: scaleY(1); }
 }
 
 .message-text-content {

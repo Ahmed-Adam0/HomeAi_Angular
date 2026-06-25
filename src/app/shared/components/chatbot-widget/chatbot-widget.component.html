@@ -82,8 +82,38 @@
           <div class="message-content">
             <div class="message-bubble" [class.message-audio-bubble]="message.audioUrl">
               @if (message.audioUrl) {
-                <div class="audio-player-container">
-                  <audio [src]="message.audioUrl" controls class="chat-audio-player"></audio>
+                <div class="audio-waveform-bubble">
+                  <audio #msgAudio [src]="message.audioUrl" preload="metadata" class="voice-hidden-audio"></audio>
+                  <button
+                    class="waveform-play-btn"
+                    (click)="msgAudio.paused ? msgAudio.play() : msgAudio.pause()"
+                    [attr.aria-label]="msgAudio.paused ? 'Play voice message' : 'Pause voice message'"
+                  >
+                    @if (!msgAudio.paused) {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+                        <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+                      </svg>
+                    } @else {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M8 5v14l11-7z"></path>
+                      </svg>
+                    }
+                  </button>
+                  <div class="waveform-bars" aria-hidden="true">
+                    <span class="wb wb-1"></span>
+                    <span class="wb wb-2"></span>
+                    <span class="wb wb-3"></span>
+                    <span class="wb wb-4"></span>
+                    <span class="wb wb-5"></span>
+                    <span class="wb wb-6"></span>
+                    <span class="wb wb-7"></span>
+                    <span class="wb wb-8"></span>
+                    <span class="wb wb-9"></span>
+                    <span class="wb wb-10"></span>
+                    <span class="wb wb-11"></span>
+                    <span class="wb wb-12"></span>
+                  </div>
                 </div>
               }
               @if (message.content) {
@@ -185,9 +215,6 @@
           <div class="recording-bar-actions">
             <button class="btn-recording-cancel" (click)="clearRecording()" aria-label="Cancel recording">
               Cancel
-            </button>
-            <button class="btn-recording-done" (click)="finishRecording()" aria-label="Stop recording and preview">
-              Done
             </button>
             <button class="btn-recording-send" (click)="sendMessage()" aria-label="Stop recording and send">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

@@ -65,6 +65,7 @@ export class ChatbotWidget implements OnDestroy {
   private audioChunks: Blob[] = [];
   private durationIntervalId: ReturnType<typeof setInterval> | null = null;
   private sendAfterStop = false;
+  private cancelledRecording = false;
 
   constructor() {
     // Auto-scroll when messages change
@@ -161,7 +162,9 @@ export class ChatbotWidget implements OnDestroy {
 
   finishRecording(): void {
     if (!this.isRecording()) return;
-    this.sendAfterStop = false;
+    // Done = Send immediately
+    this.sendAfterStop = true;
+    this.cancelledRecording = false;
     this.stopRecording();
   }
 
@@ -181,6 +184,7 @@ export class ChatbotWidget implements OnDestroy {
 
   clearRecording(): void {
     this.sendAfterStop = false;
+    this.cancelledRecording = true; // Signal onstop not to save any blob
     this.resetPreviewPlayer();
 
     const url = this.recordedAudioUrl();
@@ -261,7 +265,9 @@ export class ChatbotWidget implements OnDestroy {
     if (!isPlatformBrowser(this.platformId) || !this.voiceSupported()) return;
 
     this.clearRecording();
-
+    // clearRecording() sets cancelledRecording = true to discard the old onstop.
+    // Reset it here so the new recording session is treated as valid.
+    this.cancelledRecording = false;
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(stream => {
@@ -276,8 +282,16 @@ export class ChatbotWidget implements OnDestroy {
         };
 
         this.mediaRecorder.onstop = () => {
+          // If the recording was cancelled, discard everything and reset state
+          if (this.cancelledRecording) {
+            this.cancelledRecording = false;
+            this.audioChunks = [];
+            return;
+          }
+
           const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
           const url = URL.createObjectURL(audioBlob);
+          this.audioChunks = [];
           this.recordedAudioBlob.set(audioBlob);
           this.recordedAudioUrl.set(url);
           this.chatService.isRecording.set(false);
