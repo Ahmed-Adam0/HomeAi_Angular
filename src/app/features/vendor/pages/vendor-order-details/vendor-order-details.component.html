@@ -316,14 +316,28 @@
                     <label for="proposed-delivery-date" class="form-label text-secondary fw-semibold small mb-2 d-block">
                       {{ 'VENDOR.ORDER_DETAILS.PROPOSE_DATE_LABEL' | translate }}
                     </label>
-                    <input
-                      id="proposed-delivery-date"
-                      type="date"
-                      class="vod-select w-100 mb-3"
-                      [disabled]="isUpdatingStatus() || isProposingDate()"
-                      [attr.min]="getMinDate()"
-                      (change)="onDateChange($event)"
-                    />
+                    <div class="premium-date-picker-wrapper mb-3" [class.disabled]="isUpdatingStatus() || isProposingDate()">
+                      <span class="premium-date-picker-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                      </span>
+                      <p-datepicker
+                        id="proposed-delivery-date"
+                        [(ngModel)]="proposedDate"
+                        [disabled]="isUpdatingStatus() || isProposingDate()"
+                        [minDate]="minDate()"
+                        [readonlyInput]="true"
+                        placeholder="{{ 'VENDOR.ORDER_DETAILS.SELECT_DATE_PLACEHOLDER' | translate }}"
+                        dateFormat="yy-mm-dd"
+                        styleClass="premium-date-picker-input-p w-100"
+                        panelStyleClass="premium-datepicker-panel"
+                        appendTo="body"
+                      />
+                    </div>
                     @if (isDateInvalid()) {
                       <div class="text-danger small mb-3">
                         {{ 'VENDOR.ORDER_DETAILS.PROPOSE_DATE_VALIDATION_ERROR' | translate }}

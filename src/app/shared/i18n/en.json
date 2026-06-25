@@ -519,6 +519,7 @@
   "VENDOR.ORDER_DETAILS.ERROR_500": "Internal server error. Please try again later.",
   "VENDOR.ORDER_DETAILS.UPDATE_STATUS_DISABLED": "Order status cannot be updated once it is Delivered or Cancelled.",
   "VENDOR.ORDER_DETAILS.PROPOSE_DATE_LABEL": "Propose Estimated Delivery Date",
+  "VENDOR.ORDER_DETAILS.SELECT_DATE_PLACEHOLDER": "Select delivery date",
   "VENDOR.ORDER_DETAILS.PROPOSE_DATE_CTA": "Propose Delivery Date",
   "VENDOR.ORDER_DETAILS.PROPOSE_DATE_SUCCESS": "Estimated delivery date proposed successfully.",
   "VENDOR.ORDER_DETAILS.PROPOSE_DATE_ERROR": "Failed to propose delivery date. Please try again.",

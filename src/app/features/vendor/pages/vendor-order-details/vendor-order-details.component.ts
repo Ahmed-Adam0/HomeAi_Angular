@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { DatePicker } from 'primeng/datepicker';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { OrderStatusBadge } from '../../components';
@@ -33,6 +35,8 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pip
     EmptyStateComponent,
     SkeletonLoader,
     LoadingSpinner,
+    DatePicker,
+    FormsModule,
   ],
   templateUrl: './vendor-order-details.component.html',
   styleUrls: ['./vendor-order-details.component.css'],
@@ -55,8 +59,21 @@ export class VendorOrderDetails implements OnInit {
   readonly statusUpdateError = signal<string | null>(null);
   readonly isConfirmDialogVisible = signal(false);
   readonly isProposingDate = signal<boolean>(false);
-  readonly proposedDate = signal<string>('');
-  readonly isDateInvalid = signal<boolean>(false);
+  readonly proposedDate = signal<Date | null>(null);
+
+  readonly minDate = computed(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
+  });
+
+  readonly isDateInvalid = computed(() => {
+    const date = this.proposedDate();
+    if (!date) return false;
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    return date.getTime() < todayStart.getTime();
+  });
 
   protected readonly skeletonItems = Array(3);
 
@@ -372,39 +389,6 @@ export class VendorOrderDetails implements OnInit {
     this.isConfirmDialogVisible.set(false);
   }
 
-  onDateChange(event: Event): void {
-    const value = (event.target as HTMLInputElement)?.value ?? '';
-    this.proposedDate.set(value);
-
-    if (!value) {
-      this.isDateInvalid.set(false);
-      return;
-    }
-
-    const parts = value.split('-');
-    const year = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10) - 1;
-    const day = parseInt(parts[2], 10);
-    const selectedDate = new Date(year, month, day);
-
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-
-    if (selectedDate < todayStart) {
-      this.isDateInvalid.set(true);
-    } else {
-      this.isDateInvalid.set(false);
-    }
-  }
-
-  getMinDate(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
   submitProposedDate(): void {
     const order = this.order();
     const date = this.proposedDate();
@@ -412,7 +396,7 @@ export class VendorOrderDetails implements OnInit {
 
     this.isProposingDate.set(true);
     // Convert to ISO String for backend API
-    const isoDate = new Date(date).toISOString();
+    const isoDate = date.toISOString();
 
     this.vendorService.proposeDeliveryDate(order.id, isoDate)
       .pipe(takeUntilDestroyed(this.destroyRef))

@@ -781,6 +781,152 @@
 }
 .vod-select:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* ==========================================
+   PREMIUM DATE/TIME PICKER REDESIGN
+   ========================================== */
+.premium-date-picker-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px; /* High-end standard height */
+  border-radius: var(--fm-radius-md, 12px);
+  border: 1px solid var(--picker-border);
+  background-color: var(--picker-bg);
+  padding: 0 16px;
+  box-sizing: border-box;
+  transition: border-color 0.25s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
+              box-shadow 0.25s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1)),
+              background-color 0.25s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+  cursor: pointer;
+
+  /* CSS variables to easily support theme adjustments */
+  --picker-bg: var(--fm-input-bg, #ffffff);
+  --picker-border: var(--fm-input-border, rgba(31, 28, 24, 0.08));
+  --picker-text: var(--fm-color-neutral-800, #38332c);
+  --picker-placeholder: var(--fm-color-neutral-400, #b3ab9d);
+  --picker-icon-color: var(--fm-color-neutral-500, #8c8375);
+}
+
+/* Hover effects */
+.premium-date-picker-wrapper:hover:not(.disabled) {
+  border-color: var(--fm-color-primary-400, #c8a87b);
+  box-shadow: 0 2px 8px rgba(184, 147, 92, 0.04);
+}
+
+/* Focus effects (when input is focused) */
+.premium-date-picker-wrapper:focus-within:not(.disabled) {
+  border-color: var(--fm-input-focus-border, var(--fm-color-primary-500, #b8935c));
+  box-shadow: 0 0 0 4px var(--fm-input-focus-ring, rgba(184, 147, 92, 0.08));
+  background-color: #ffffff;
+}
+
+/* Disabled state */
+.premium-date-picker-wrapper.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: rgba(244, 242, 238, 0.4);
+  border-color: var(--fm-border-medium, rgba(31, 28, 24, 0.08));
+}
+
+/* Date Picker Input */
+.premium-date-picker-input {
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0;
+  margin: 0;
+  font-family: var(--fm-font-sans, 'Inter', -apple-system, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--picker-text);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.premium-date-picker-input:disabled {
+  cursor: not-allowed;
+}
+
+/* Custom Calendar/Clock Icon */
+.premium-date-picker-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--picker-icon-color);
+  margin-inline-end: 12px;
+  pointer-events: none; /* Make click transparent to let it pass to the input below */
+  transition: color 0.25s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.premium-date-picker-wrapper:hover:not(.disabled) .premium-date-picker-icon {
+  color: var(--fm-color-primary-500, #b8935c);
+}
+
+.premium-date-picker-wrapper:focus-within:not(.disabled) .premium-date-picker-icon {
+  color: var(--fm-color-primary-500, #b8935c);
+}
+
+/* Webkit-specific overrides to hide native calendar button but overlay it to cover the entire container */
+.premium-date-picker-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+  z-index: 3;
+}
+
+/* Hide spin & clear buttons */
+.premium-date-picker-input::-webkit-inner-spin-button,
+.premium-date-picker-input::-webkit-clear-button {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Webkit input text editing layout styling */
+.premium-date-picker-input::-webkit-datetime-edit {
+  display: flex;
+  align-items: center;
+  color: var(--picker-placeholder);
+  font-weight: 400;
+}
+
+.premium-date-picker-input.has-value::-webkit-datetime-edit {
+  color: var(--picker-text);
+  font-weight: 500;
+}
+
+/* Individual fields (days, months, years) */
+.premium-date-picker-input::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+/* Support for dark backgrounds or dark mode card structures in future views */
+.bg-dark .premium-date-picker-wrapper,
+.card-dark .premium-date-picker-wrapper,
+[data-theme="dark"] .premium-date-picker-wrapper {
+  --picker-bg: var(--fm-color-neutral-900, #1f1c18);
+  --picker-border: rgba(255, 255, 255, 0.12);
+  --picker-text: var(--fm-color-neutral-100, #f4f2ee);
+  --picker-placeholder: var(--fm-color-neutral-500, #8c8375);
+  --picker-icon-color: var(--fm-color-neutral-400, #b3ab9d);
+}
+
+.bg-dark .premium-date-picker-wrapper:focus-within:not(.disabled),
+.card-dark .premium-date-picker-wrapper:focus-within:not(.disabled),
+[data-theme="dark"] .premium-date-picker-wrapper:focus-within:not(.disabled) {
+  background-color: var(--fm-color-neutral-900, #1f1c18);
+}
+
 .vod-action-complete {
   padding: 1.25rem;
   display: flex;
@@ -1012,3 +1158,41 @@
   .vod-item-thumb { width: 64px; height: 64px; }
   .vod-hero-title-row { flex-direction: column; align-items: flex-start; }
 }
+
+/* Styling to override PrimeNG DatePicker to fit our custom premium-date-picker-wrapper */
+:host ::ng-deep .premium-date-picker-input-p.p-datepicker {
+  width: 100%;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: flex;
+}
+
+:host ::ng-deep .premium-date-picker-input-p .p-datepicker-input {
+  width: 100%;
+  height: 46px; /* slightly smaller than 48px wrapper to fit inside borders */
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0;
+  font-family: var(--fm-font-sans, 'Inter', -apple-system, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--picker-text, #38332c);
+  cursor: pointer;
+}
+
+:host ::ng-deep .premium-date-picker-input-p .p-datepicker-input:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure placeholder styling in PrimeNG input */
+:host ::ng-deep .premium-date-picker-input-p .p-datepicker-input::placeholder {
+  color: var(--picker-placeholder, #b3ab9d);
+  font-weight: 400;
+}
+

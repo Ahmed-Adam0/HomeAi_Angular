@@ -519,6 +519,7 @@
   "VENDOR.ORDER_DETAILS.ERROR_500": "خطأ داخلي في الخادم. يرجى المحاولة مرة أخرى لاحقاً.",
   "VENDOR.ORDER_DETAILS.UPDATE_STATUS_DISABLED": "لا يمكن تحديث حالة الطلب بعد أن يتم تسليمها أو إلغاؤها.",
   "VENDOR.ORDER_DETAILS.PROPOSE_DATE_LABEL": "مقترح تاريخ التوصيل المتوقع",
+  "VENDOR.ORDER_DETAILS.SELECT_DATE_PLACEHOLDER": "اختر تاريخ التوصيل",
   "VENDOR.ORDER_DETAILS.PROPOSE_DATE_CTA": "تقديم مقترح التاريخ",
   "VENDOR.ORDER_DETAILS.PROPOSE_DATE_SUCCESS": "تم تقديم مقترح تاريخ التوصيل بنجاح.",
   "VENDOR.ORDER_DETAILS.PROPOSE_DATE_ERROR": "فشل تقديم مقترح تاريخ التوصيل. يرجى المحاولة مرة أخرى.",
