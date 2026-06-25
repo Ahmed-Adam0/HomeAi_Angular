@@ -934,6 +934,7 @@
   },
   "FILTER_AI_FEATURES": "ميزات الذكاء الاصطناعي",
   "FILTER_AI_RECOMMENDED": "مقترح بالذكاء الاصطناعي فقط",
+  "AUTH.SESSION_EXPIRED_OR_INACTIVE": "عفواً، تم إيقاف حسابك من قبل الإدارة أو انتهت صلاحية الجلسة. يرجى مراجعة الدعم الفني.",
   "INSPIRATIONS": {
     "HERO": {
       "BADGE": "✦ غيّر مساحتك",

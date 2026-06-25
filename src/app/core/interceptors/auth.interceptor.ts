@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { LOCAL_STORAGE_KEYS, NAV_ROUTES } from '../constants';
 import { AuthService } from '../../features/auth/services/auth.service';
+import { NotificationService } from '../../shared/services/notification.service';
 
 /**
  * Functional interceptor to automatically attach the JWT access token securely
@@ -16,6 +17,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
   const router = inject(Router);
   const authService = inject(AuthService);
+  const notificationService = inject(NotificationService);
 
   // Safely retrieve the token if running in the browser
   let token: string | null = null;
@@ -49,6 +51,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           authService.logout();
 
           if (wasAuthenticated) {
+            notificationService.error('AUTH.SESSION_EXPIRED_OR_INACTIVE');
             const targetRoute = router.url.startsWith('/vendor') ? NAV_ROUTES.VENDOR_LOGIN : NAV_ROUTES.LOGIN;
             console.warn(`[authInterceptor] Redirecting to ${targetRoute} after session expiry.`);
             void router.navigate([targetRoute], { queryParams: { returnUrl: router.url } });
@@ -61,6 +64,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           authService.logout();
 
           if (wasAuthenticated) {
+            notificationService.error('AUTH.SESSION_EXPIRED_OR_INACTIVE');
             const targetRoute = isVendorUser ? NAV_ROUTES.VENDOR_LOGIN : NAV_ROUTES.LOGIN;
             console.warn(`[authInterceptor] Redirecting to ${targetRoute} due to vendor account deactivation.`);
             void router.navigate([targetRoute]);

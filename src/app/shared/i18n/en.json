@@ -934,6 +934,7 @@
   },
   "FILTER_AI_FEATURES": "AI Features",
   "FILTER_AI_RECOMMENDED": "AI Recommended Only",
+  "AUTH.SESSION_EXPIRED_OR_INACTIVE": "Sorry, your account has been deactivated by the admin or your session has expired. Please contact support.",
   "INSPIRATIONS": {
     "HERO": {
       "BADGE": "✦ Transform Your Space",
