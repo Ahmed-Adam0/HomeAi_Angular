@@ -47,7 +47,7 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
             </svg>
-            All Orders
+            {{ 'VENDOR.ORDER_DETAILS.ALL_ORDERS' | translate }}
           </a>
           <span class="vod-breadcrumb-sep">/</span>
           <span class="vod-breadcrumb-current">Order #{{ order()!.orderNumber }}</span>
@@ -67,7 +67,7 @@
                 </span>
               </div>
             </div>
-            <p class="vod-order-meta">Placed on {{ order()!.placedAt | date:'MMMM d, yyyy · h:mm a' }}</p>
+            <p class="vod-order-meta">{{ 'VENDOR.ORDER_DETAILS.PLACED_ON' | translate }} {{ order()!.placedAt | date:'MMMM d, yyyy · h:mm a' }}</p>
           </div>
 
           <div class="vod-hero-actions">
@@ -76,7 +76,7 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
                 </svg>
-                Print
+                {{ 'VENDOR.ORDER_DETAILS.PRINT' | translate }}
               </div>
             </app-button>
           </div>
@@ -85,28 +85,28 @@
         <!-- ── KEY METRICS STRIP ──────────────────────────────────────── -->
         <div class="vod-metrics-strip">
           <div class="vod-metric">
-            <span class="vod-metric-label">Order Total</span>
+            <span class="vod-metric-label">{{ 'VENDOR.ORDERS.COL_TOTAL' | translate }}</span>
             <span class="vod-metric-value vod-metric-value--large">{{ order()!.totalAmount | currencyFormat }}</span>
           </div>
           <div class="vod-metric-divider"></div>
           <div class="vod-metric">
-            <span class="vod-metric-label">Customer</span>
+            <span class="vod-metric-label">{{ 'VENDOR.ORDERS.COL_CUSTOMER' | translate }}</span>
             <span class="vod-metric-value">{{ order()!.customer.fullName }}</span>
           </div>
           <div class="vod-metric-divider"></div>
           <div class="vod-metric">
-            <span class="vod-metric-label">Items</span>
-            <span class="vod-metric-value">{{ totalQuantity() }} {{ totalQuantity() === 1 ? 'item' : 'items' }}</span>
+            <span class="vod-metric-label">{{ 'VENDOR.ORDER_DETAILS.ITEMS' | translate }}</span>
+            <span class="vod-metric-value">{{ totalQuantity() }} {{ totalQuantity() === 1 ? ('VENDOR.ORDER_DETAILS.ITEM' | translate) : ('VENDOR.ORDER_DETAILS.ITEMS' | translate) }}</span>
           </div>
           <div class="vod-metric-divider"></div>
           <div class="vod-metric">
-            <span class="vod-metric-label">Carrier</span>
+            <span class="vod-metric-label">{{ 'VENDOR.ORDER_DETAILS.CARRIER' | translate }}</span>
             <span class="vod-metric-value">{{ order()!.carrier || '—' }}</span>
           </div>
           <div class="vod-metric-divider"></div>
           <div class="vod-metric">
-            <span class="vod-metric-label">Tracking</span>
-            <span class="vod-metric-value font-mono text-sm">{{ order()!.trackingNumber || 'Not assigned' }}</span>
+            <span class="vod-metric-label">{{ 'VENDOR.COMMON.TRACKING_NUMBER' | translate }}</span>
+            <span class="vod-metric-value font-mono text-sm">{{ order()!.trackingNumber || ('VENDOR.COMMON.NOT_SPECIFIED' | translate) }}</span>
           </div>
         </div>
 
@@ -146,8 +146,8 @@
           <!-- ≡ SECTION: ORDER ITEMS ─────────────────────────────────── -->
           <section class="vod-section mb-5">
             <div class="vod-section-header">
-              <h2 class="vod-section-title">Order Items</h2>
-              <span class="vod-section-count">{{ totalQuantity() }} items</span>
+              <h2 class="vod-section-title">{{ 'VENDOR.ORDER_DETAILS.ORDERED_PRODUCTS' | translate }}</h2>
+              <span class="vod-section-count">{{ totalQuantity() }} {{ 'AI.DESIGN_SUMMARY.ITEMS_SELECTED' | translate }}</span>
             </div>
 
             <div class="vod-items-list">
@@ -177,22 +177,22 @@
                       <div class="vod-item-info">
                         <h3 class="vod-item-name">{{ item.productName }}</h3>
                         @if (item.sku) {
-                          <span class="vod-item-sku">SKU: {{ item.sku }}</span>
+                          <span class="vod-item-sku">{{ 'VENDOR.COMMON.SKU' | translate }}: {{ item.sku }}</span>
                         }
                       </div>
 
                       <!-- Product Pricing -->
                       <div class="vod-item-pricing">
                         <div class="vod-item-price-row">
-                          <span class="vod-item-price-label">Qty</span>
+                          <span class="vod-item-price-label">{{ 'VENDOR.COMMON.QTY' | translate }}</span>
                           <span class="vod-item-price-val">{{ item.quantity }}</span>
                         </div>
                         <div class="vod-item-price-row">
-                          <span class="vod-item-price-label">Unit</span>
+                          <span class="vod-item-price-label">{{ 'VENDOR.COMMON.PRICE' | translate }}</span>
                           <span class="vod-item-price-val">{{ item.unitPrice | currencyFormat }}</span>
                         </div>
                         <div class="vod-item-price-row vod-item-price-row--total">
-                          <span class="vod-item-price-label">Total</span>
+                          <span class="vod-item-price-label">{{ 'VENDOR.COMMON.TOTAL' | translate }}</span>
                           <span class="vod-item-total">{{ item.lineTotal | currencyFormat }}</span>
                         </div>
                       </div>
@@ -206,7 +206,7 @@
           <!-- ≡ SECTION: ACTIVITY LOG ────────────────────────────────── -->
           <section class="vod-section mb-5">
             <div class="vod-section-header">
-              <h2 class="vod-section-title">Activity</h2>
+              <h2 class="vod-section-title">{{ 'VENDOR.NOTIFICATIONS.ACTIVITY_CENTER' | translate }}</h2>
             </div>
 
             <div class="vod-activity-feed">
@@ -215,7 +215,7 @@
                   <div class="vod-activity-node vod-activity-node--active"></div>
                   <div class="vod-activity-content">
                     <div class="vod-activity-text">
-                      Status updated to
+                      {{ 'VENDOR.ORDER_DETAILS.STATUS_UPDATED_TO' | translate }}
                       <span class="vod-activity-badge">{{ history.newStatus }}</span>
                     </div>
                     <time class="vod-activity-time">{{ history.createdAt | date: 'MMM d, yyyy · h:mm a' }}</time>
@@ -225,7 +225,7 @@
                   <div class="vod-activity-node"></div>
                   <div class="vod-activity-content">
                     <div class="vod-activity-text">
-                      Status transitioned from
+                      {{ 'VENDOR.ORDER_DETAILS.STATUS_TRANSITIONED_FROM' | translate }}
                       <span class="vod-activity-badge vod-activity-badge--muted">{{ history.oldStatus }}</span>
                     </div>
                     <time class="vod-activity-time">{{ history.createdAt | date: 'MMM d, yyyy · h:mm a' }}</time>
@@ -235,7 +235,7 @@
               <div class="vod-activity-entry vod-activity-entry--last">
                 <div class="vod-activity-node"></div>
                 <div class="vod-activity-content">
-                  <div class="vod-activity-text">Order created and queued for fulfillment</div>
+                  <div class="vod-activity-text">{{ 'VENDOR.ORDER_DETAILS.ORDER_CREATED_FULFILLMENT' | translate }}</div>
                   <time class="vod-activity-time">{{ order()!.placedAt | date: 'MMM d, yyyy · h:mm a' }}</time>
                 </div>
               </div>
@@ -245,13 +245,13 @@
           <!-- ≡ SECTION: CUSTOMER & SHIPPING ─────────────────────────── -->
           <section class="vod-section mb-5">
             <div class="vod-section-header">
-              <h2 class="vod-section-title">Customer & Delivery</h2>
+              <h2 class="vod-section-title">{{ 'VENDOR.ORDER_DETAILS.CUSTOMER_DELIVERY' | translate }}</h2>
             </div>
 
             <div class="vod-info-grid">
               <!-- Customer Profile -->
               <div class="vod-info-block">
-                <div class="vod-info-block-label">Contact</div>
+                <div class="vod-info-block-label">{{ 'VENDOR.ORDER_DETAILS.CONTACT' | translate }}</div>
                 <div class="vod-info-block-main">{{ order()!.customer.fullName || 'Customer' }}</div>
                 @if (order()!.customer.email) {
                   <a [href]="'mailto:' + order()!.customer.email" class="vod-info-link">{{ order()!.customer.email }}</a>
@@ -263,7 +263,7 @@
 
               <!-- Shipping Address -->
               <div class="vod-info-block">
-                <div class="vod-info-block-label">Delivery Address</div>
+                <div class="vod-info-block-label">{{ 'VENDOR.ORDER_DETAILS.DELIVERY_ADDRESS' | translate }}</div>
                 @if (order()!.shippingAddress.addressLine1) {
                   <div class="vod-address-card">
                     <div>{{ order()!.shippingAddress.addressLine1 }}</div>
@@ -277,14 +277,14 @@
                     <div class="vod-address-country">{{ order()!.shippingAddress.country }}</div>
                   </div>
                 } @else {
-                  <span class="vod-info-empty">Not provided</span>
+                  <span class="vod-info-empty">{{ 'VENDOR.COMMON.NOT_AVAILABLE' | translate }}</span>
                 }
               </div>
 
               <!-- Proposed Delivery Date -->
               @if (order()!.estimatedDeliveryDate) {
                 <div class="vod-info-block animate-fade-in">
-                  <div class="vod-info-block-label">Proposed Delivery Date</div>
+                  <div class="vod-info-block-label">{{ 'VENDOR.ORDER_DETAILS.PROPOSED_DELIVERY_DATE' | translate }}</div>
                   <div class="vod-info-block-main text-gradient-gold fw-bold">
                     {{ order()!.estimatedDeliveryDate | date: 'dd/MM/yyyy' }}
                   </div>
@@ -294,7 +294,7 @@
               <!-- Customer Notes -->
               @if (order()!.notes) {
                 <div class="vod-info-block vod-info-block--full-width">
-                  <div class="vod-info-block-label">Customer Notes</div>
+                  <div class="vod-info-block-label">{{ 'VENDOR.ORDER_DETAILS.CUSTOMER_NOTES' | translate }}</div>
                   <div class="vod-info-block-main text-secondary fw-normal fs-6" style="white-space: pre-wrap; font-size: 0.9375rem; line-height: 1.5;">
                     "{{ order()!.notes }}"
                   </div>
@@ -312,7 +312,7 @@
             <!-- ◉ ACTION PANEL ─────────────────────────────────────── -->
             <div class="vod-action-panel">
               <div class="vod-action-header">
-                <span class="vod-action-title">Fulfillment</span>
+                <span class="vod-action-title">{{ 'VENDOR.ORDER_DETAILS.FULFILLMENT' | translate }}</span>
                 <app-order-status-badge [status]="order()!.status" size="sm"></app-order-status-badge>
               </div>
 
@@ -366,25 +366,25 @@
                     <app-button variant="premium" size="lg" class="w-100"
                       [disabled]="isUpdatingStatus()"
                       (clicked)="setQuickStatus(VendorOrderStatus.InProgress)">
-                      ⚡ Start Processing
+                      ⚡ {{ 'VENDOR.ORDER_DETAILS.START_PROCESSING' | translate }}
                     </app-button>
                   } @else if (order()!.status === VendorOrderStatus.InProgress) {
                     <app-button variant="premium" size="lg" class="w-100"
                       [disabled]="isUpdatingStatus()"
                       (clicked)="setQuickStatus(VendorOrderStatus.Shipped)">
-                      📦 Mark as Shipped
+                      📦 {{ 'VENDOR.ORDER_DETAILS.MARK_SHIPPED' | translate }}
                     </app-button>
                   } @else if (order()!.status === VendorOrderStatus.Shipped) {
                     <app-button variant="premium" size="lg" class="w-100"
                       [disabled]="isUpdatingStatus()"
                       (clicked)="setQuickStatus(VendorOrderStatus.Delivered)">
-                      🚀 Mark as Delivered
+                      🚀 {{ 'VENDOR.ORDER_DETAILS.MARK_DELIVERED' | translate }}
                     </app-button>
                   }
 
                   <!-- Advanced status selector -->
                   <div class="vod-action-divider">
-                    <span>or update manually</span>
+                    <span>{{ 'VENDOR.ORDER_DETAILS.OR_UPDATE_MANUALLY' | translate }}</span>
                   </div>
 
                   <div class="vod-status-form">
@@ -406,7 +406,7 @@
                       [disabled]="isUpdateButtonDisabled()"
                       [isLoading]="isUpdatingStatus()"
                       (clicked)="openStatusUpdateConfirmation()">
-                      Update Status
+                      {{ 'VENDOR.ORDER_DETAILS.UPDATE_STATUS' | translate }}
                     </app-button>
                   </div>
 
@@ -416,7 +416,7 @@
                       <app-button variant="danger" size="sm" class="w-100 mt-2"
                         [disabled]="isUpdatingStatus()"
                         (clicked)="setQuickStatus(VendorOrderStatus.Cancelled)">
-                        Cancel Order
+                        {{ 'VENDOR.ORDER_DETAILS.CANCEL_ORDER' | translate }}
                       </app-button>
                     }
                   }
@@ -427,36 +427,36 @@
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
                   </svg>
-                  <span>Order is finalized</span>
+                  <span>{{ 'VENDOR.ORDER_DETAILS.ORDER_FINALIZED' | translate }}</span>
                 </div>
               }
             </div>
 
             <!-- ◉ FINANCIALS ────────────────────────────────────────── -->
             <div class="vod-financials-panel">
-              <div class="vod-financials-title">Summary</div>
+              <div class="vod-financials-title">{{ 'VENDOR.ORDER_DETAILS.ORDER_SUMMARY' | translate }}</div>
               <div class="vod-financials-rows">
                 <div class="vod-fin-row">
-                  <span>Subtotal</span>
+                  <span>{{ 'VENDOR.COMMON.SUBTOTAL' | translate }}</span>
                   <span>{{ order()!.subtotal | currencyFormat }}</span>
                 </div>
                 <div class="vod-fin-row">
-                  <span>Shipping</span>
+                  <span>{{ 'VENDOR.COMMON.SHIPPING' | translate }}</span>
                   <span>{{ order()!.shippingCost | currencyFormat }}</span>
                 </div>
                 <div class="vod-fin-row">
-                  <span>Tax</span>
+                  <span>{{ 'VENDOR.COMMON.TAX' | translate }}</span>
                   <span>{{ order()!.taxAmount | currencyFormat }}</span>
                 </div>
                 @if (order()!.discountAmount > 0) {
                   <div class="vod-fin-row vod-fin-row--discount">
-                    <span>Discount</span>
+                    <span>{{ 'VENDOR.COMMON.DISCOUNT' | translate }}</span>
                     <span>−{{ order()!.discountAmount | currencyFormat }}</span>
                   </div>
                 }
               </div>
               <div class="vod-fin-total">
-                <span>Total</span>
+                <span>{{ 'VENDOR.COMMON.TOTAL' | translate }}</span>
                 <span class="vod-fin-total-value">{{ order()!.totalAmount | currencyFormat }}</span>
               </div>
             </div>
@@ -464,18 +464,18 @@
             <!-- ◉ BILLING INFO ───────────────────────────────────────── -->
             <div class="vod-meta-panel">
               <div class="vod-meta-row">
-                <span class="vod-meta-label">Payment</span>
+                <span class="vod-meta-label">{{ 'VENDOR.COMMON.PAYMENT_STATUS' | translate }}</span>
                 <span class="vod-payment-chip" [attr.data-status]="order()!.paymentStatus">
                   {{ 'VENDOR.PAYMENT.' + (order()!.paymentStatus | uppercase) | translate }}
                 </span>
               </div>
               <div class="vod-meta-row">
-                <span class="vod-meta-label">Gateway</span>
+                <span class="vod-meta-label">{{ 'VENDOR.ORDER_DETAILS.PAYMENT_METHOD' | translate }}</span>
                 <span class="vod-meta-val">Paymob</span>
               </div>
               @if (order()!.trackingNumber) {
                 <div class="vod-meta-row">
-                  <span class="vod-meta-label">Tracking</span>
+                  <span class="vod-meta-label">{{ 'VENDOR.COMMON.TRACKING_NUMBER' | translate }}</span>
                   <code class="vod-tracking-code">{{ order()!.trackingNumber }}</code>
                 </div>
               }
@@ -495,8 +495,8 @@
   @else {
     <div class="container-fluid px-3 px-lg-5 pt-4">
       <app-empty-state
-        title="No Order Details Found"
-        description="We could not retrieve details for this order."
+        [title]="'VENDOR.ORDER_DETAILS.ERROR_404' | translate"
+        [description]="'VENDOR.ORDER_DETAILS.ERROR_500' | translate"
         icon="📦"
       ></app-empty-state>
     </div>

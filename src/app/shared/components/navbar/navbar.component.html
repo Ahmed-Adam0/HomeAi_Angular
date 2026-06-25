@@ -165,7 +165,7 @@
                       }
                     </div>
                     <div class="cart-item-details">
-                      <span class="cart-item-qty-pill">Qty {{ item.quantity }}</span>
+                      <span class="cart-item-qty-pill">{{ 'MINI_CART_QTY' | translate }} {{ item.quantity }}</span>
                       <span class="cart-item-price">{{ item.price | currencyFormat }}</span>
                     </div>
                   </div>
@@ -192,9 +192,6 @@
                     <i class="bi bi-bag"></i>
                     {{ 'VIEW_CART' | translate }}
                   </a>
-                  <button type="button" class="cart-continue-link" (click)="closeAllFloatingDropdowns()">
-                    {{ 'CONTINUE_SHOPPING' | translate }}
-                  </button>
                 </div>
               </div>
               }
@@ -238,11 +235,6 @@
                   <div class="header-user-info flex-grow-1 text-start">
                     <span class="user-fullname d-block fw-semibold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
                     <span class="user-email d-block text-muted fs-8">{{ authService.currentUser()?.email }}</span>
-                    <div class="mt-1">
-                      <span class="user-role-badge py-0.5 px-2 rounded-pill fw-semibold">
-                        ✦ {{ 'USER_ROLE_BADGE' | translate }}
-                      </span>
-                    </div>
                   </div>
                 </div>
 
@@ -256,12 +248,6 @@
 
                 <!-- Menu Items Section -->
                 <div class="profile-dropdown-body">
-                  <a routerLink="/profile"
-                    class="profile-menu-item text-decoration-none"
-                    (click)="isProfileDropdownOpen.set(false)">
-                    <i class="bi bi-person item-icon"></i>
-                    <span>{{ 'NAV_MY_PROFILE' | translate }}</span>
-                  </a>
                   <a routerLink="/orders"
                     class="profile-menu-item text-decoration-none"
                     (click)="isProfileDropdownOpen.set(false)">
