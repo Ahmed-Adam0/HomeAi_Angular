@@ -408,6 +408,7 @@
 /* Option Meta & Stacked Names/Prices */
 .option-meta {
   flex-grow: 1;
+  min-width: 0;
 }
 
 .option-title {
@@ -415,12 +416,14 @@
   font-weight: 600;
   color: var(--fm-color-neutral-900);
   letter-spacing: -0.01em;
+  word-break: break-word;
 }
 
 .option-title-ar {
   font-size: 0.78rem;
   font-weight: 500;
   color: var(--fm-color-neutral-500);
+  word-break: break-word;
 }
 
 /* Price Pill badge */
@@ -902,9 +905,9 @@
 }
 
 /* Outer-edge viewport overflow prevention on 2-column layout */
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   /* LTR: Right-hand column (even child) opens submenu to the left */
-  [dir="ltr"] .col-md-6:nth-child(even) .dropdown-submenu-menu {
+  [dir="ltr"] .col-lg-6:nth-child(even) .dropdown-submenu-menu {
     left: auto;
     right: 100%;
     margin-left: 0;
@@ -912,7 +915,7 @@
   }
 
   /* RTL: Left-hand column (even child) opens submenu to the right */
-  [dir="rtl"] .col-md-6:nth-child(even) .dropdown-submenu-menu {
+  [dir="rtl"] .col-lg-6:nth-child(even) .dropdown-submenu-menu {
     right: auto;
     left: 100%;
     margin-right: 0;
@@ -941,7 +944,7 @@
 
 .bulk-actions-bar {
   position: fixed;
-  top: 70px; /* Elevated floating position */
+  top: 70px;
   left: 50%;
   transform: translate(-50%, 20px);
   z-index: 50; /* Stacks above hovered cards but below dropdowns */
@@ -975,7 +978,7 @@
 }
 
 /* Mobile Submenu & Bulk Action Bar Responsive Polish */
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   /* On mobile, open all submenus to the left in LTR to prevent viewport overflow */
   [dir="ltr"] .dropdown-submenu-menu {
     left: auto;
@@ -1000,7 +1003,7 @@
     gap: 12px;
     padding: 1rem !important;
     border-radius: var(--fm-radius-md) !important;
-    bottom: 28px;
+    top: 38px;
     width: 92%;
   }
 

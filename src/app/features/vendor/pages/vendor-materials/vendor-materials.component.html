@@ -135,7 +135,7 @@
       <section cdkDropListGroup class="materials-grid row g-4" *ngIf="filteredMaterials().length > 0">
         
         <div 
-          class="col-12 col-md-6"
+          class="col-12 col-lg-6"
           [class.dropdown-active]="isGroupDropdownActive(material.id)"
           *ngFor="let material of filteredMaterials(); trackBy: trackByGroupId"
         >
@@ -239,7 +239,7 @@
                       <div class="placeholder-content w-100"></div>
                     </div>
 
-                    <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-2 flex-grow-1 min-width-0">
                       <!-- Drag Handle -->
                       <div cdkDragHandle class="option-drag-handle cursor-grab px-1 d-flex align-items-center justify-content-center">
                         <i class="bi bi-grip-vertical text-muted fs-5"></i>
