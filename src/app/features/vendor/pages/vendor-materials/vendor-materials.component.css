@@ -1,4 +1,4 @@
-/* 
+/*
  * Premium SaaS Style Guide: Shopify Polaris / Linear / Notion / Apple
  * Minimal, clean, spacious, with strong visual hierarchy and high-contrast typography.
  */
@@ -220,7 +220,7 @@
   box-shadow: var(--fm-shadow-xs);
   transition: border-color var(--fm-transition-duration-normal) var(--fm-ease-smooth),
               box-shadow var(--fm-transition-duration-normal) var(--fm-ease-smooth);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .material-item-card:hover {
@@ -233,6 +233,8 @@
   background-color: #ffffff;
   user-select: none;
   transition: background-color var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+  border-top-left-radius: calc(var(--fm-radius-md) - 1px);
+  border-top-right-radius: calc(var(--fm-radius-md) - 1px);
 }
 
 .card-header-premium:hover {
@@ -362,6 +364,8 @@
   border-color: var(--fm-color-neutral-300) !important;
   box-shadow: var(--fm-shadow-sm);
   transform: translateY(-1.5px);
+  position: relative;
+  z-index: 10;
 }
 
 /* Swatch container & style */
@@ -534,7 +538,7 @@
   background-color: rgba(31, 28, 24, 0.25);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: var(--fm-z-modal);
+  z-index: 1090 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -551,6 +555,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  z-index: 1095;
 }
 
 .modal-header-luxury {
@@ -731,4 +736,288 @@
 
 .font-xxs {
   font-size: 0.68rem;
+}
+
+/* ==========================================
+   10. DRAG & DROP CUSTOM STYLES
+   ========================================== */
+.option-drag-handle {
+  width: 24px;
+  height: 24px;
+  color: var(--fm-color-neutral-400);
+  transition: var(--fm-transition-fast);
+  cursor: grab;
+}
+
+.option-drag-handle:hover {
+  color: var(--fm-color-neutral-700);
+}
+
+.option-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* CDK drag preview (the card floating with mouse) */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  background-color: #ffffff !important;
+  border: 1px solid var(--fm-color-neutral-300) !important;
+  border-radius: var(--fm-radius-md);
+  box-shadow: var(--fm-shadow-lg) !important;
+  opacity: 0.95;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+.cdk-drag-preview .checkbox-wrapper,
+.cdk-drag-preview .dropdown-wrapper {
+  display: none !important; /* Hide actions and checkbox in drag preview */
+}
+
+/* CDK drag placeholder (dashed outline empty block where it will land) */
+.option-row-placeholder {
+  min-height: 74px;
+  background-color: var(--fm-color-neutral-50) !important;
+  border: 2px dashed var(--fm-color-primary-300) !important;
+  border-radius: var(--fm-radius-md) !important;
+  opacity: 0.6;
+}
+
+/* Smooth drag animations */
+.cdk-drop-list-dragging .cdk-drag {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Highlight receiving list and card */
+.options-list-container.cdk-drop-list-receiving {
+  background-color: rgba(184, 147, 92, 0.02);
+  border: 1.5px dashed var(--fm-color-primary-300) !important;
+  border-radius: var(--fm-radius-md);
+  padding: 0.5rem !important;
+  transition: background-color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
+              border-color var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+}
+
+.material-item-card:has(.cdk-drop-list-receiving) {
+  border-color: var(--fm-color-primary-400) !important;
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.1) !important;
+  background-color: rgba(184, 147, 92, 0.01);
+}
+
+/* ==========================================
+   11. CUSTOM DROPDOWN MENUS (SUBMENUS & MOBILITY)
+   ========================================== */
+.dropdown-panel-custom {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  display: none;
+  min-width: 180px;
+  padding: 0.25rem 0;
+  margin-top: 0.25rem;
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  border-radius: var(--fm-radius-sm);
+  box-shadow: var(--fm-shadow-md);
+}
+
+.dropdown-panel-custom.open {
+  display: block;
+}
+
+[dir="rtl"] .dropdown-panel-custom {
+  right: auto;
+  left: 0;
+}
+
+.dropdown-menu-custom {
+  background-color: #ffffff;
+  border: none;
+}
+
+.dropdown-item-custom {
+  color: var(--fm-color-neutral-700);
+  font-weight: 500;
+  text-align: inherit;
+  transition: var(--fm-transition-fast);
+}
+
+.dropdown-item-custom:hover {
+  background-color: var(--fm-color-neutral-50) !important;
+  color: var(--fm-color-neutral-900);
+}
+
+.dropdown-divider {
+  height: 0;
+  margin: 0.4rem 0;
+  overflow: hidden;
+  border-top: 1px solid var(--fm-color-neutral-200);
+}
+
+/* Stacking context elevations when dropdowns are active */
+.dropdown-active {
+  position: relative;
+  z-index: 80 !important;
+}
+
+/* Submenu positioning & LTR/RTL */
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu-menu {
+  position: absolute;
+  top: -4px;
+  left: 100%;
+  z-index: 110; /* Higher than parent panel */
+  display: none;
+  min-width: 170px;
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  margin-left: 2px;
+  box-shadow: var(--fm-shadow-md);
+}
+
+.dropdown-submenu:hover .dropdown-submenu-menu {
+  display: block;
+}
+
+[dir="rtl"] .dropdown-submenu-menu {
+  left: auto;
+  right: 100%;
+  margin-left: 0;
+  margin-right: 2px;
+}
+
+[dir="rtl"] .dropdown-submenu-arrow {
+  transform: rotate(180deg);
+}
+
+/* Outer-edge viewport overflow prevention on 2-column layout */
+@media (min-width: 768px) {
+  /* LTR: Right-hand column (even child) opens submenu to the left */
+  [dir="ltr"] .col-md-6:nth-child(even) .dropdown-submenu-menu {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 2px;
+  }
+
+  /* RTL: Left-hand column (even child) opens submenu to the right */
+  [dir="rtl"] .col-md-6:nth-child(even) .dropdown-submenu-menu {
+    right: auto;
+    left: 100%;
+    margin-right: 0;
+    margin-left: 2px;
+  }
+}
+
+/* ==========================================
+   12. BULK OPERATIONS SYSTEM
+   ========================================== */
+.option-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px !important;
+  border: 1.5px solid var(--fm-color-neutral-300);
+  cursor: pointer;
+  background-color: #ffffff;
+  transition: var(--fm-transition-fast);
+  margin-top: 0;
+}
+
+.option-checkbox:checked {
+  background-color: var(--fm-color-neutral-900);
+  border-color: var(--fm-color-neutral-900);
+}
+
+.bulk-actions-bar {
+  position: fixed;
+  top: 70px; /* Elevated floating position */
+  left: 50%;
+  transform: translate(-50%, 20px);
+  z-index: 50; /* Stacks above hovered cards but below dropdowns */
+  width: 90%;
+  max-width: 600px;
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200) !important;
+  box-shadow: 0 10px 30px rgba(31, 28, 24, 0.12), var(--fm-shadow-lg) !important; /* Premium richer floating shadow */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+[dir="rtl"] .bulk-actions-bar {
+  direction: rtl;
+}
+
+@keyframes bulkBarSlideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.bulk-actions-bar.animate-slide-up {
+  animation: bulkBarSlideUp 300ms var(--fm-ease-smooth) forwards !important;
+}
+
+/* Mobile Submenu & Bulk Action Bar Responsive Polish */
+@media (max-width: 767px) {
+  /* On mobile, open all submenus to the left in LTR to prevent viewport overflow */
+  [dir="ltr"] .dropdown-submenu-menu {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 2px;
+  }
+
+  /* On mobile, open all submenus to the right in RTL to prevent viewport overflow */
+  [dir="rtl"] .dropdown-submenu-menu {
+    right: auto;
+    left: 100%;
+    margin-right: 0;
+    margin-left: 2px;
+  }
+}
+
+@media (max-width: 575px) {
+  /* Bulk action bar stacks vertically on mobile to preserve layout stability */
+  .bulk-actions-bar {
+    flex-direction: column;
+    gap: 12px;
+    padding: 1rem !important;
+    border-radius: var(--fm-radius-md) !important;
+    bottom: 28px;
+    width: 92%;
+  }
+
+  .bulk-actions-bar .d-flex {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .bulk-actions-bar .dropdown-wrapper {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .bulk-actions-bar .dropdown-wrapper button {
+    width: 100%;
+  }
 }

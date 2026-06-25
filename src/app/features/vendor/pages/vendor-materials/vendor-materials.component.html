@@ -131,12 +131,13 @@
         </button>
       </div>
 
-      <!-- Responsive Grid Layout for Material Groups -->
-      <section class="materials-grid row g-4" *ngIf="filteredMaterials().length > 0">
+      <!-- Responsive Grid Layout for Material Groups (with CDK Drag and Drop Group) -->
+      <section cdkDropListGroup class="materials-grid row g-4" *ngIf="filteredMaterials().length > 0">
         
         <div 
           class="col-12 col-md-6"
-          *ngFor="let material of filteredMaterials()"
+          [class.dropdown-active]="isGroupDropdownActive(material.id)"
+          *ngFor="let material of filteredMaterials(); trackBy: trackByGroupId"
         >
           <!-- Modern Minimal Card -->
           <div class="card material-item-card h-100" [class.collapsed]="collapsedGroups()[material.id]">
@@ -211,20 +212,49 @@
               <!-- Options List Wrapper -->
               <div class="options-wrapper">
                 
-                <!-- No options empty state -->
-                <div *ngIf="!material.options?.length" class="empty-options-text py-4 text-center text-muted">
-                  <i class="bi bi-tag-fill opacity-50 display-8 mb-2 d-block"></i>
-                  <span>{{ translationService.currentLang() === 'ar' ? 'لا توجد خيارات مضافة بعد.' : 'No options added yet.' }}</span>
-                </div>
+                <!-- CDK Drop List Container -->
+                <div 
+                  cdkDropList
+                  [cdkDropListData]="material"
+                  (cdkDropListDropped)="onOptionDropped($event)"
+                  [id]="'group-' + material.id"
+                  class="options-list-container d-flex flex-column gap-3"
+                  style="min-height: 80px;"
+                >
+                  <!-- No options empty state -->
+                  <div *ngIf="!material.options?.length" class="empty-options-text py-4 text-center text-muted">
+                    <i class="bi bi-tag-fill opacity-50 display-8 mb-2 d-block"></i>
+                    <span>{{ translationService.currentLang() === 'ar' ? 'لا توجد خيارات مضافة بعد.' : 'No options added yet.' }}</span>
+                  </div>
 
-                <!-- Clean Vertical Option List -->
-                <div class="options-list d-flex flex-column gap-3" *ngIf="material.options?.length">
-                  
+                  <!-- Clean Vertical Option List -->
                   <div 
-                    *ngFor="let option of material.options"
+                    *ngFor="let option of material.options; trackBy: trackByOptionId"
+                    cdkDrag
+                    [cdkDragData]="option"
                     class="option-row-card d-flex align-items-center justify-content-between p-3 border rounded-3 position-relative"
                   >
-                    <div class="d-flex align-items-center gap-3">
+                    <!-- Drag Placeholder -->
+                    <div *cdkDragPlaceholder class="cdk-drag-placeholder option-row-placeholder p-3 border rounded-3">
+                      <div class="placeholder-content w-100"></div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                      <!-- Drag Handle -->
+                      <div cdkDragHandle class="option-drag-handle cursor-grab px-1 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-grip-vertical text-muted fs-5"></i>
+                      </div>
+
+                      <!-- Bulk Selection Checkbox -->
+                      <div class="checkbox-wrapper me-1">
+                        <input 
+                          type="checkbox" 
+                          [checked]="isOptionSelected(option.id)" 
+                          (change)="toggleOptionSelection(option.id)"
+                          class="form-check-input option-checkbox"
+                        />
+                      </div>
+
                       <!-- Visual Swatch or Bullet Indicator -->
                       <div *ngIf="getOptionVisual(option.valueEn) as swatch; else defaultBullet" class="option-visual-container">
                         <div *ngIf="swatch.type === 'color'" class="option-swatch-large swatch-color" [style.background-color]="swatch.value"></div>
@@ -256,26 +286,67 @@
                       </div>
                     </div>
 
-                    <!-- Action Buttons at the far end -->
-                    <div class="option-actions-group d-flex align-items-center gap-2">
+                    <!-- Custom Dropdown Action Button -->
+                    <div class="option-actions-group dropdown-wrapper">
                       <button 
                         type="button" 
-                        class="btn btn-row-action"
-                        (click)="startEditOption(option)" 
-                        [title]="translationService.currentLang() === 'ar' ? 'تعديل الاختيار' : 'Edit Option'"
+                        class="btn btn-row-action btn-icon-saas p-0"
+                        style="width: 32px; height: 32px;"
+                        (click)="toggleOptionMenu(option.id, $event)" 
+                        [title]="translationService.currentLang() === 'ar' ? 'خيارات الإجراء' : 'Actions Menu'"
                       >
-                        <i class="bi bi-pencil-square"></i>
-                        <span class="d-none d-sm-inline ms-1">{{ translationService.currentLang() === 'ar' ? 'تعديل' : 'Edit' }}</span>
+                        <i class="bi bi-three-dots-vertical"></i>
                       </button>
-                      <button 
-                        type="button" 
-                        class="btn btn-row-action text-danger hover-danger"
-                        (click)="deleteOption(option.id, material.id)" 
-                        [title]="translationService.currentLang() === 'ar' ? 'حذف الاختيار' : 'Delete Option'"
-                      >
-                        <i class="bi bi-trash"></i>
-                        <span class="d-none d-sm-inline ms-1">{{ translationService.currentLang() === 'ar' ? 'حذف' : 'Delete' }}</span>
-                      </button>
+                      <div class="dropdown-panel-custom shadow-lg" [class.open]="activeMenuOptionId() === option.id">
+                        <ul class="dropdown-menu-custom py-1 rounded list-unstyled m-0">
+                          <li>
+                            <button 
+                              type="button"
+                              class="dropdown-item-custom w-100 text-start px-3 py-2 border-0 bg-transparent fs-7 d-flex align-items-center gap-2" 
+                              (click)="startEditOption(option); closeOptionMenu()"
+                            >
+                              <i class="bi bi-pencil-square text-muted"></i>
+                              <span>{{ translationService.currentLang() === 'ar' ? 'تعديل' : 'Edit' }}</span>
+                            </button>
+                          </li>
+                          <li>
+                            <button 
+                              type="button"
+                              class="dropdown-item-custom w-100 text-start px-3 py-2 border-0 bg-transparent fs-7 d-flex align-items-center gap-2 text-danger" 
+                              (click)="deleteOption(option.id, material.id); closeOptionMenu()"
+                            >
+                              <i class="bi bi-trash text-danger"></i>
+                              <span>{{ translationService.currentLang() === 'ar' ? 'حذف' : 'Delete' }}</span>
+                            </button>
+                          </li>
+                          <li class="dropdown-divider"></li>
+                          <li class="dropdown-submenu position-relative">
+                            <div class="dropdown-item-custom w-100 text-start px-3 py-2 border-0 bg-transparent fs-7 d-flex align-items-center justify-content-between gap-2 cursor-pointer">
+                              <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-folder-symlink text-muted"></i>
+                                <span>{{ translationService.currentLang() === 'ar' ? 'نقل إلى' : 'Move To' }}</span>
+                              </div>
+                              <i class="bi bi-chevron-right fs-9 text-muted dropdown-submenu-arrow"></i>
+                            </div>
+                            <ul class="dropdown-submenu-menu shadow rounded list-unstyled m-0 py-1 bg-white">
+                              <li *ngFor="let otherGroup of getOtherGroups(material.id)">
+                                <button 
+                                  type="button"
+                                  class="dropdown-item-custom w-100 text-start px-3 py-2 border-0 bg-transparent fs-7" 
+                                  (click)="moveOptionToGroup(option, material.id, otherGroup.id); closeOptionMenu()"
+                                >
+                                  {{ otherGroup | localized:'name' }}
+                                </button>
+                              </li>
+                              <li *ngIf="getOtherGroups(material.id).length === 0">
+                                <span class="dropdown-item-custom text-muted fs-8 px-3 py-2 d-block">
+                                  {{ translationService.currentLang() === 'ar' ? 'لا توجد مجموعات أخرى' : 'No other groups' }}
+                                </span>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
 
                   </div>
@@ -345,6 +416,7 @@
 
   <!-- Modern Floating Action Button (FAB) for Quick Addition -->
   <button 
+    *ngIf="selectedOptionIds().size === 0"
     type="button" 
     class="btn-saas-fab"
     (click)="showCreateModal.set(true)"
@@ -618,6 +690,65 @@
         </div>
       </form>
 
+    </div>
+  </div>
+
+  <!-- Premium Bulk Actions Bar -->
+  <div 
+    class="bulk-actions-bar shadow-lg border rounded-4 p-3 d-flex align-items-center justify-content-between animate-slide-up"
+    *ngIf="selectedOptionIds().size > 0"
+  >
+    <div class="d-flex align-items-center gap-3">
+      <span class="fs-7 fw-semibold text-dark">
+        {{ selectedOptionIds().size }} 
+        {{ translationService.currentLang() === 'ar' ? 'خيارات محددة' : 'options selected' }}
+      </span>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+      <!-- Move To Dropdown -->
+      <div class="dropdown-wrapper">
+        <button 
+          type="button" 
+          class="btn btn-secondary-saas btn-sm px-3 py-1.5 d-flex align-items-center gap-1.5"
+          (click)="toggleBulkMoveMenu($event)"
+        >
+          <i class="bi bi-folder-symlink"></i>
+          <span>{{ translationService.currentLang() === 'ar' ? 'نقل إلى' : 'Move To' }}</span>
+        </button>
+        <div class="dropdown-panel-custom shadow-lg" [class.open]="showBulkMoveMenu()">
+          <ul class="dropdown-menu-custom py-1 rounded list-unstyled m-0">
+            <li *ngFor="let group of materials()">
+              <button 
+                type="button" 
+                class="dropdown-item-custom w-100 text-start px-3 py-2 border-0 bg-transparent fs-7" 
+                (click)="bulkMoveSelectedTo(group.id)"
+              >
+                {{ group | localized:'name' }}
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Delete Selected -->
+      <button 
+        type="button" 
+        class="btn btn-row-action text-danger hover-danger btn-sm px-3 py-1.5 d-flex align-items-center gap-1.5"
+        (click)="bulkDeleteSelected()"
+      >
+        <i class="bi bi-trash"></i>
+        <span>{{ translationService.currentLang() === 'ar' ? 'حذف المحدد' : 'Delete Selected' }}</span>
+      </button>
+
+      <!-- Clear Selection -->
+      <button 
+        type="button" 
+        class="btn btn-cancel-saas btn-sm px-3 py-1.5"
+        (click)="clearSelection()"
+      >
+        {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+      </button>
     </div>
   </div>
 

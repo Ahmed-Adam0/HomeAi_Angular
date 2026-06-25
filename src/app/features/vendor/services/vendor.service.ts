@@ -218,8 +218,13 @@ export class VendorService {
     return this.http.put<any>(`${this.apiUrl}${API_URLS.VENDOR.MATERIALS}/Groups/${groupId}`, { nameAr, nameEn });
   }
 
-  updateOption(optionId: string | number, valueAr: string, valueEn: string, priceDelta: number): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}${API_URLS.VENDOR.MATERIALS}/Options/${optionId}`, { valueAr, valueEn, priceDelta });
+  updateOption(optionId: string | number, valueAr: string, valueEn: string, priceDelta: number, vendorMaterialGroupId?: number): Observable<any> {
+    const payload: any = { valueAr, valueEn, priceDelta };
+    if (vendorMaterialGroupId !== undefined) {
+      payload.vendorMaterialGroupId = vendorMaterialGroupId;
+      payload.materialGroupId = vendorMaterialGroupId;
+    }
+    return this.http.put<any>(`${this.apiUrl}${API_URLS.VENDOR.MATERIALS}/Options/${optionId}`, payload);
   }
 }
 
