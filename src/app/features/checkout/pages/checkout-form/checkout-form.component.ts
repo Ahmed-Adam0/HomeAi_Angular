@@ -1,10 +1,13 @@
-import { Component, computed, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CheckoutService, ICheckoutPayload, ICheckoutResult } from '../../services/checkout.service';
 import { CartService } from '../../../cart/services/cart.service';
+import { ProfileService } from '../../../profile/services/profile.service';
+import { IProfile } from '../../../profile/interfaces/iprofile';
+import { IAddressDto } from '../../../profile/interfaces/iaddress.dto';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
@@ -31,6 +34,7 @@ export class CheckoutFormComponent implements OnInit {
   private translationService = inject(TranslationService);
   private uiState = inject(UiState);
   private router = inject(Router);
+  private profileService = inject(ProfileService);
 
   readonly currentLang = this.translationService.currentLang;
   readonly cartItems = this.cartService.items;
@@ -39,6 +43,12 @@ export class CheckoutFormComponent implements OnInit {
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly submitCheckoutAction = new Subject<void>();
+
+  readonly profile = signal<IProfile | null>(null);
+  readonly savedAddresses = signal<IAddressDto[]>([]);
+  readonly selectedAddressId = signal<string | null>(null);
+  readonly showAddAddressForm = signal<boolean>(false);
+  readonly addressSaving = signal<boolean>(false);
 
   readonly cartSummary = computed(() => {
     const totals = this.cartTotals();
@@ -77,6 +87,16 @@ export class CheckoutFormComponent implements OnInit {
   }>;
   submitting = false;
 
+  newAddressForm!: FormGroup<{
+    label: FormControl<string>;
+    addressLine1: FormControl<string>;
+    addressLine2: FormControl<string>;
+    city: FormControl<string>;
+    country: FormControl<string>;
+    postalCode: FormControl<string>;
+    primary: FormControl<boolean>;
+  }>;
+
   ngOnInit(): void {
     this.checkoutForm = this.fb.nonNullable.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -86,7 +106,7 @@ export class CheckoutFormComponent implements OnInit {
       addressLine1: ['', [Validators.required]],
       addressLine2: [''],
       city: ['', [Validators.required]],
-      country: ['US', [Validators.required]],
+      country: ['Egypt', [Validators.required]],
       paymentProvider: ['paymob' as 'paymob', [Validators.required]],
       orderNotes: ['', [Validators.maxLength(300)]]
     }) as FormGroup<{
@@ -102,13 +122,28 @@ export class CheckoutFormComponent implements OnInit {
       orderNotes: FormControl<string>;
     }>;
 
+    this.newAddressForm = this.fb.nonNullable.group({
+      label: ['', []],
+      addressLine1: ['', [Validators.required]],
+      addressLine2: [''],
+      city: ['', [Validators.required]],
+      country: ['Egypt', [Validators.required]],
+      postalCode: [''],
+      primary: [false, []]
+    }) as FormGroup<{
+      label: FormControl<string>;
+      addressLine1: FormControl<string>;
+      addressLine2: FormControl<string>;
+      city: FormControl<string>;
+      country: FormControl<string>;
+      postalCode: FormControl<string>;
+      primary: FormControl<boolean>;
+    }>;
+
+    // Load profile and addresses on initialization
+    this.loadProfileAndAddresses();
+
     // Production-safe checkout submission flow.
-    // Verification should rely on browser Network tab counts, not console logs.
-    // Expected results:
-    // - exactly one POST /Order per checkout
-    // - exactly one backend cart update per quantity change
-    // - no repeated GET /orders/:id or syncCart bursts
-    // - no duplicate requests during auth changes
     this.submitCheckoutAction.pipe(
       exhaustMap(() => this.handleCheckoutSubmit()),
       takeUntilDestroyed(this.destroyRef)
@@ -121,6 +156,197 @@ export class CheckoutFormComponent implements OnInit {
 
   onSubmit(): void {
     this.submitCheckoutAction.next();
+  }
+
+  loadProfileAndAddresses(): void {
+    this.profileService.getProfile().pipe(
+      tap((profile) => {
+        this.profile.set(profile);
+
+        // Prefill contact fields if not already modified
+        if (profile.fullName) {
+          const parts = profile.fullName.trim().split(/\s+/);
+          const first = parts[0] || '';
+          const last = parts.slice(1).join(' ') || '';
+          this.checkoutForm.patchValue({
+            firstName: this.checkoutForm.value.firstName || first,
+            lastName: this.checkoutForm.value.lastName || last
+          });
+        }
+        if (profile.email) {
+          this.checkoutForm.patchValue({
+            email: this.checkoutForm.value.email || profile.email
+          });
+        }
+        if (profile.phoneNumber) {
+          this.checkoutForm.patchValue({
+            phone: this.checkoutForm.value.phone || profile.phoneNumber
+          });
+        }
+
+        // Sort addresses by creation date ascending (oldest first).
+        let addresses = profile.addresses || [];
+        addresses = [...addresses].sort((a, b) => this.getAddressSortValue(a) - this.getAddressSortValue(b));
+
+        this.savedAddresses.set(addresses);
+
+        if (addresses.length > 0) {
+          // If a default address exists, select it automatically.
+          // Otherwise, select the oldest address automatically.
+          const defaultAddr = addresses.find(a => a.primary);
+          if (defaultAddr) {
+            this.selectAddress(defaultAddr);
+          } else {
+            this.selectAddress(addresses[0]);
+          }
+          this.showAddAddressForm.set(false);
+        } else {
+          this.showAddAddressForm.set(true);
+        }
+      }),
+      catchError((err) => {
+        console.error('Failed to load profile details for checkout', err);
+        return EMPTY;
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
+  }
+
+  selectAddress(address: IAddressDto): void {
+    this.selectedAddressId.set(address.id || null);
+
+    // Update main checkout form with selected address values
+    this.checkoutForm.patchValue({
+      addressLine1: address.addressLine1 || '',
+      addressLine2: address.addressLine2 || '',
+      city: address.city || '',
+      country: address.country || 'Egypt'
+    });
+  }
+
+  private getAddressSortValue(addr: IAddressDto): number {
+    const id = addr.id;
+    if (id === null || id === undefined) return Infinity;
+    if (typeof id === 'number') return id;
+    const num = Number(id);
+    if (!isNaN(num)) return num;
+    const match = String(id).match(/\d+/);
+    return match ? parseInt(match[0], 10) : 0;
+  }
+
+  toggleAddAddressForm(): void {
+    const isShowing = this.showAddAddressForm();
+    if (isShowing) {
+      this.cancelAddAddress();
+    } else {
+      this.showAddAddressForm.set(true);
+    }
+  }
+
+  cancelAddAddress(): void {
+    this.showAddAddressForm.set(false);
+    this.newAddressForm.reset({
+      label: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      country: 'Egypt',
+      postalCode: '',
+      primary: false
+    });
+    // Reselect the previously selected or default address if exists
+    if (this.savedAddresses().length > 0) {
+      const selected = this.savedAddresses().find(a => a.id === this.selectedAddressId()) || this.savedAddresses()[0];
+      this.selectAddress(selected);
+    }
+  }
+
+  onSaveNewAddress(): void {
+    if (this.newAddressForm.invalid || this.addressSaving()) {
+      this.newAddressForm.markAllAsTouched();
+      return;
+    }
+
+    this.addressSaving.set(true);
+    const formValue = this.newAddressForm.value;
+    const newAddr: IAddressDto = {
+      id: 'addr_' + Date.now().toString(),
+      label: formValue.label || undefined,
+      addressLine1: formValue.addressLine1 || '',
+      addressLine2: formValue.addressLine2 || undefined,
+      city: formValue.city || '',
+      country: formValue.country || 'Egypt',
+      postalCode: formValue.postalCode || undefined,
+      primary: !!formValue.primary
+    };
+
+    const currentProfile = this.profile();
+    if (!currentProfile) {
+      this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_GENERIC'));
+      this.addressSaving.set(false);
+      return;
+    }
+
+    // If marked primary, set all other addresses' primary flag to false
+    let updatedAddresses = currentProfile.addresses || [];
+    if (newAddr.primary) {
+      updatedAddresses = updatedAddresses.map(a => ({ ...a, primary: false }));
+    } else if (updatedAddresses.length === 0) {
+      // If it's the first address, make it primary
+      newAddr.primary = true;
+    }
+
+    updatedAddresses = [...updatedAddresses, newAddr];
+
+    this.profileService.updateProfile({
+      fullName: currentProfile.fullName,
+      preferredLanguage: currentProfile.preferredLanguage || 'en',
+      email: currentProfile.email,
+      phoneNumber: currentProfile.phoneNumber || null,
+      profileImage: currentProfile.profileImage || null,
+      userName: currentProfile.userName || null,
+      addresses: updatedAddresses
+    }).pipe(
+      tap((updatedProfile) => {
+        this.uiState.showAlert('success', this.translationService.translate('PROFILE.SAVE_ADDRESS_SUCCESS') || 'Address saved successfully');
+
+        // Refresh profile and addresses
+        this.profile.set(updatedProfile);
+
+        // Sort addresses
+        let sortedAddresses = updatedProfile.addresses || [];
+        sortedAddresses = [...sortedAddresses].sort((a, b) => this.getAddressSortValue(a) - this.getAddressSortValue(b));
+
+        this.savedAddresses.set(sortedAddresses);
+
+        // Find the newly created address from the updated list
+        const addedAddr = sortedAddresses.find(a => a.addressLine1 === newAddr.addressLine1 && a.city === newAddr.city) || newAddr;
+
+        // Auto select the new address
+        this.selectAddress(addedAddr);
+
+        // Reset form and close
+        this.newAddressForm.reset({
+          label: '',
+          addressLine1: '',
+          addressLine2: '',
+          city: '',
+          country: 'Egypt',
+          postalCode: '',
+          primary: false
+        });
+        this.showAddAddressForm.set(false);
+      }),
+      catchError((err) => {
+        console.error('Failed to save new address to profile during checkout', err);
+        this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_PROFILE_ADDRESS_WARNING'));
+        return EMPTY;
+      }),
+      finalize(() => {
+        this.addressSaving.set(false);
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
   }
 
   private handleCheckoutSubmit() {
@@ -170,6 +396,7 @@ export class CheckoutFormComponent implements OnInit {
             phoneNumber: formValues.phone.trim(),
             notes: formValues.orderNotes?.trim() || null,
             items: cartSnapshot,
+            addressId: this.selectedAddressId() || undefined
           };
 
           return this.checkoutService.submitCheckout(orderPayload);

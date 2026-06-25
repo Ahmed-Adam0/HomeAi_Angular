@@ -26,6 +26,7 @@ export interface ICheckoutPayload {
   country?: string;
   paymentProvider?: 'paymob';
   orderNotes?: string;
+  addressId?: string;
 }
 
 export interface ICheckoutResult {
@@ -51,7 +52,8 @@ export class CheckoutService {
       phoneNumber: payload.phoneNumber,
       address: payload.address,
       secondaryAddress: payload.addressLine2 || null,
-      notes: payload.notes
+      notes: payload.notes,
+      addressId: payload.addressId || null
     };
     return this.ordersApi.createOrder(apiPayload).pipe(
       switchMap((order) =>
