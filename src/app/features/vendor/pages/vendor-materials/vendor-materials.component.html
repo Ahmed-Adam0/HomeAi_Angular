@@ -141,20 +141,27 @@
           <!-- Modern Minimal Card -->
           <div class="card material-item-card h-100" [class.collapsed]="collapsedGroups()[material.id]">
             
-            <!-- Card Header (Shopify Polaris style) -->
+            <!-- Premium Redesigned Card Header -->
             <div 
               class="card-header-premium p-4 d-flex justify-content-between align-items-center cursor-pointer"
               (click)="toggleGroupCollapse(material.id)"
             >
               <div class="d-flex align-items-center gap-3">
+                <!-- Larger Icon Avatar -->
                 <div class="banner-icon-avatar d-flex align-items-center justify-content-center">
-                  <i class="bi" [ngClass]="getGroupType(material).icon"></i>
+                  <i class="bi fs-4" [ngClass]="getGroupType(material).icon"></i>
                 </div>
-                <div>
-                  <span class="group-eyebrow text-muted d-block">
-                    {{ getGroupType(material).name }}
-                  </span>
-                  <h4 class="material-card-title h6 fw-semibold text-dark mb-0 mt-0.5">
+                
+                <div class="d-flex flex-column gap-1">
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="group-eyebrow text-muted mb-0">
+                      {{ getGroupType(material).name }}
+                    </span>
+                    <span class="badge option-count-badge-header">
+                      {{ material.options?.length || 0 }} {{ translationService.currentLang() === 'ar' ? 'خيارات' : 'options' }}
+                    </span>
+                  </div>
+                  <h4 class="material-card-title h5 fw-bold text-dark mb-0">
                     {{ material | localized:'name' }}
                   </h4>
                 </div>
@@ -169,7 +176,7 @@
                   (click)="startEditMaterial(material)"
                   [title]="translationService.currentLang() === 'ar' ? 'تعديل اسم المجموعة' : 'Edit Group Name'"
                 >
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-pencil-fill"></i>
                 </button>
                 
                 <!-- Delete group button -->
@@ -179,12 +186,12 @@
                   (click)="deleteMaterial(material.id)"
                   [title]="translationService.currentLang() === 'ar' ? 'حذف المجموعة' : 'Delete Group'"
                 >
-                  <i class="bi bi-trash"></i>
+                  <i class="bi bi-trash-fill"></i>
                 </button>
 
                 <!-- Collapse Toggle Icon -->
-                <span class="collapse-toggle-icon text-muted ms-1">
-                  <i class="bi" [ngClass]="collapsedGroups()[material.id] ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
+                <span class="collapse-toggle-icon text-muted ms-2">
+                  <i class="bi fs-5" [ngClass]="collapsedGroups()[material.id] ? 'bi-chevron-down' : 'bi-chevron-up'"></i>
                 </span>
               </div>
             </div>
@@ -195,16 +202,13 @@
               *ngIf="!collapsedGroups()[material.id]"
             >
               <!-- Options Section Header -->
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="options-section-label text-muted">
+              <div class="mb-3">
+                <span class="options-section-label text-muted font-xs fw-semibold uppercase letter-spacing-1">
                   {{ translationService.currentLang() === 'ar' ? 'خيارات التخصيص المتوفرة' : 'Available Options' }}
-                </span>
-                <span class="badge option-count-badge">
-                  {{ material.options?.length || 0 }} {{ translationService.currentLang() === 'ar' ? 'خيارات' : 'options' }}
                 </span>
               </div>
 
-              <!-- Options Tags list -->
+              <!-- Options List Wrapper -->
               <div class="options-wrapper">
                 
                 <!-- No options empty state -->
@@ -213,49 +217,64 @@
                   <span>{{ translationService.currentLang() === 'ar' ? 'لا توجد خيارات مضافة بعد.' : 'No options added yet.' }}</span>
                 </div>
 
-                <!-- Wrapping layout of clean chips -->
-                <div class="d-flex flex-wrap gap-2" *ngIf="material.options?.length">
+                <!-- Clean Vertical Option List -->
+                <div class="options-list d-flex flex-column gap-3" *ngIf="material.options?.length">
                   
                   <div 
                     *ngFor="let option of material.options"
-                    class="luxury-option-chip d-flex align-items-center gap-2 px-3 py-2 border rounded position-relative"
+                    class="option-row-card d-flex align-items-center justify-content-between p-3 border rounded-3 position-relative"
                   >
-                    <!-- Visual swatch preview if color/image URL -->
-                    <div *ngIf="getOptionVisual(option.valueEn) as swatch" class="option-swatch-wrapper">
-                      <div *ngIf="swatch.type === 'color'" class="option-swatch swatch-color" [style.background-color]="swatch.value"></div>
-                      <img *ngIf="swatch.type === 'image'" class="option-swatch swatch-image" [src]="swatch.value" alt="" />
+                    <div class="d-flex align-items-center gap-3">
+                      <!-- Visual Swatch or Bullet Indicator -->
+                      <div *ngIf="getOptionVisual(option.valueEn) as swatch; else defaultBullet" class="option-visual-container">
+                        <div *ngIf="swatch.type === 'color'" class="option-swatch-large swatch-color" [style.background-color]="swatch.value"></div>
+                        <img *ngIf="swatch.type === 'image'" class="option-swatch-large swatch-image" [src]="swatch.value" alt="" />
+                      </div>
+                      <ng-template #defaultBullet>
+                        <div class="option-bullet-container">
+                          <span class="option-bullet-dot"></span>
+                        </div>
+                      </ng-template>
+
+                      <!-- Names & Price stacked -->
+                      <div class="option-meta d-flex flex-column gap-1">
+                        <div class="option-names-row d-flex align-items-center flex-wrap gap-2">
+                          <h5 class="option-title mb-0 fw-semibold text-dark">
+                            {{ parseOptionValue(option.valueEn) }}
+                          </h5>
+                          <span class="option-title-ar text-muted font-xs">
+                            ({{ parseOptionValue(option.valueAr) }})
+                          </span>
+                        </div>
+                        
+                        <div class="option-price-row">
+                          <span class="badge option-price-pill" [class.positive]="option.priceDelta > 0">
+                            <span class="price-prefix text-muted me-1">{{ translationService.currentLang() === 'ar' ? 'السعر:' : 'Price:' }}</span>
+                            <span class="price-amount">{{ option.priceDelta > 0 ? '+' : '' }}{{ option.priceDelta | currencyFormat }}</span>
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
-                    <!-- Names -->
-                    <div class="chip-names-group d-flex align-items-center">
-                      <span class="chip-name fw-medium">{{ parseOptionValue(option.valueEn) }}</span>
-                      <span class="chip-name-ar text-muted ms-1.5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
-                        ({{ parseOptionValue(option.valueAr) }})
-                      </span>
-                    </div>
-
-                    <!-- Price delta badge -->
-                    <span class="badge option-delta-badge" [class.positive]="option.priceDelta > 0">
-                      {{ option.priceDelta > 0 ? '+' : '' }}{{ option.priceDelta | currencyFormat }}
-                    </span>
-
-                    <!-- Action Hover Controls (Linear style) -->
-                    <div class="chip-actions-overlay d-flex align-items-center gap-1">
+                    <!-- Action Buttons at the far end -->
+                    <div class="option-actions-group d-flex align-items-center gap-2">
                       <button 
                         type="button" 
-                        class="btn chip-action-btn"
+                        class="btn btn-row-action"
                         (click)="startEditOption(option)" 
                         [title]="translationService.currentLang() === 'ar' ? 'تعديل الاختيار' : 'Edit Option'"
                       >
-                        <i class="bi bi-pencil-fill"></i>
+                        <i class="bi bi-pencil-square"></i>
+                        <span class="d-none d-sm-inline ms-1">{{ translationService.currentLang() === 'ar' ? 'تعديل' : 'Edit' }}</span>
                       </button>
                       <button 
                         type="button" 
-                        class="btn chip-action-btn text-danger"
+                        class="btn btn-row-action text-danger hover-danger"
                         (click)="deleteOption(option.id, material.id)" 
                         [title]="translationService.currentLang() === 'ar' ? 'حذف الاختيار' : 'Delete Option'"
                       >
-                        <i class="bi bi-trash-fill"></i>
+                        <i class="bi bi-trash"></i>
+                        <span class="d-none d-sm-inline ms-1">{{ translationService.currentLang() === 'ar' ? 'حذف' : 'Delete' }}</span>
                       </button>
                     </div>
 

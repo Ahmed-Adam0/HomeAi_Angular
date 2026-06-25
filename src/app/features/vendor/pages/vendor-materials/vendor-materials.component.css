@@ -240,24 +240,45 @@
 }
 
 .banner-icon-avatar {
-  width: 38px;
-  height: 38px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--fm-radius-sm);
   background-color: var(--fm-color-neutral-100);
-  color: var(--fm-color-neutral-600);
-  font-size: 1.1rem;
+  color: var(--fm-color-neutral-700);
+  font-size: 1.35rem;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--fm-color-neutral-200);
+  box-shadow: var(--fm-shadow-xs);
+  transition: var(--fm-transition-smooth);
+}
+
+.card-header-premium:hover .banner-icon-avatar {
+  background-color: var(--fm-color-primary-soft);
+  color: var(--fm-color-primary-500);
+  border-color: var(--fm-color-primary-300);
 }
 
 .group-eyebrow {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   letter-spacing: 0.05em;
   font-weight: 600;
   text-transform: uppercase;
-  opacity: 0.8;
+  opacity: 0.85;
+}
+
+.option-count-badge-header {
+  background-color: var(--fm-color-primary-soft);
+  color: var(--fm-color-primary-700);
+  font-size: 0.68rem;
+  font-weight: 650;
+  padding: 0.25em 0.65em;
+  border-radius: var(--fm-radius-pill);
+  border: 1px solid rgba(184, 147, 92, 0.2);
+  display: inline-flex;
+  align-items: center;
 }
 
 .material-card-title {
@@ -310,18 +331,9 @@
 
 .options-section-label {
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 650;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.option-count-badge {
-  background-color: var(--fm-color-neutral-100);
-  color: var(--fm-color-neutral-600);
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.35em 0.8em;
-  border-radius: var(--fm-radius-pill);
+  letter-spacing: 0.08em;
 }
 
 .empty-options-text {
@@ -332,133 +344,145 @@
 }
 
 /* ==========================================
-   5. OPTION CHIPS (Shopify / Linear Style)
+   5. PREMIUM OPTIONS LIST & FULL-WIDTH ROWS
    ========================================== */
-.luxury-option-chip {
-  background-color: #ffffff;
-  border: 1px solid var(--fm-color-neutral-200) !important;
-  border-radius: var(--fm-radius-sm) !important;
-  height: 36px;
-  padding-right: 0.85rem !important;
-  padding-left: 0.85rem !important;
-  transition: all var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+.options-list {
+  width: 100%;
 }
 
-.luxury-option-chip:hover {
+.option-row-card {
   background-color: var(--fm-color-neutral-50);
+  border: 1px solid var(--fm-color-neutral-200) !important;
+  border-radius: var(--fm-radius-md) !important;
+  transition: var(--fm-transition-smooth);
+}
+
+.option-row-card:hover {
+  background-color: #ffffff;
   border-color: var(--fm-color-neutral-300) !important;
-  padding-right: 3.5rem !important; /* Expand to show action buttons */
+  box-shadow: var(--fm-shadow-sm);
+  transform: translateY(-1.5px);
 }
 
-/* RTL expansion adjustment */
-[dir="rtl"] .luxury-option-chip:hover {
-  padding-right: 0.85rem !important;
-  padding-left: 3.5rem !important;
+/* Swatch container & style */
+.option-visual-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.option-swatch-wrapper {
-  margin-right: 4px;
-}
-
-[dir="rtl"] .option-swatch-wrapper {
-  margin-right: 0;
-  margin-left: 4px;
-}
-
-.option-swatch {
-  width: 16px;
-  height: 16px;
+.option-swatch-large {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 1px solid var(--fm-color-neutral-200);
+  border: 1.5px solid var(--fm-color-neutral-300);
+  box-shadow: var(--fm-shadow-xs);
   object-fit: cover;
   display: block;
 }
 
-.chip-name {
-  color: var(--fm-color-neutral-900);
-  font-size: 0.78rem;
-  font-weight: 550;
-}
-
-.chip-name-ar {
-  font-size: 0.7rem;
-  opacity: 0.75;
-}
-
-.option-delta-badge {
+/* Default Bullet styling */
+.option-bullet-container {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   background-color: var(--fm-color-neutral-100);
-  color: var(--fm-color-neutral-600);
-  border-radius: var(--fm-radius-xs) !important;
-  font-weight: 600;
-  font-size: 0.65rem;
-  padding: 0.25em 0.5em;
-  margin-left: 6px;
-}
-
-[dir="rtl"] .option-delta-badge {
-  margin-left: 0;
-  margin-right: 6px;
-}
-
-.option-delta-badge.positive {
-  background-color: var(--fm-color-success-50) !important;
-  color: var(--fm-color-success-600) !important;
-}
-
-/* Hover overlay actions (Linear design) */
-.chip-actions-overlay {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: -80px; /* Hidden offscreen */
-  width: 65px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #ffffff 40%);
-  padding-right: 0.65rem;
-  justify-content: flex-end;
-  transition: right var(--fm-transition-duration-fast) var(--fm-ease-smooth);
-  z-index: 5;
-}
-
-[dir="rtl"] .chip-actions-overlay {
-  right: auto;
-  left: -80px;
-  background: linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, #ffffff 40%);
-  padding-right: 0;
-  padding-left: 0.65rem;
-}
-
-.luxury-option-chip:hover .chip-actions-overlay {
-  right: 0;
-}
-
-[dir="rtl"] .luxury-option-chip:hover .chip-actions-overlay {
-  left: 0;
-  right: auto;
-}
-
-.chip-action-btn {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--fm-radius-xs);
-  background-color: transparent;
-  border: none;
-  color: var(--fm-color-neutral-500);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 !important;
-  font-size: 0.72rem;
-  transition: var(--fm-transition-fast);
+  flex-shrink: 0;
 }
 
-.chip-action-btn:hover {
+.option-bullet-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--fm-color-primary-500);
+}
+
+/* Option Meta & Stacked Names/Prices */
+.option-meta {
+  flex-grow: 1;
+}
+
+.option-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--fm-color-neutral-900);
+  letter-spacing: -0.01em;
+}
+
+.option-title-ar {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--fm-color-neutral-500);
+}
+
+/* Price Pill badge */
+.option-price-pill {
   background-color: var(--fm-color-neutral-100);
-  color: var(--fm-color-neutral-800);
+  color: var(--fm-color-neutral-700);
+  border-radius: var(--fm-radius-pill) !important;
+  font-weight: 600;
+  font-size: 0.7rem;
+  padding: 0.35em 0.85em;
+  border: 1px solid var(--fm-color-neutral-200);
+  display: inline-flex;
+  align-items: center;
 }
 
-.chip-action-btn.text-danger:hover {
-  background-color: var(--fm-color-danger-50);
-  color: var(--fm-color-danger-500);
+.option-price-pill.positive {
+  background-color: var(--fm-color-success-50) !important;
+  color: var(--fm-color-success-600) !important;
+  border-color: var(--fm-color-success-100) !important;
+}
+
+/* Action Buttons group */
+.option-actions-group {
+  flex-shrink: 0;
+}
+
+.btn-row-action {
+  background-color: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200);
+  color: var(--fm-color-neutral-600);
+  font-weight: 600;
+  font-size: 0.75rem;
+  border-radius: var(--fm-radius-sm);
+  height: 32px;
+  padding: 0 0.75rem;
+  transition: var(--fm-transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-row-action i {
+  font-size: 0.85rem;
+}
+
+.btn-row-action:hover {
+  background-color: var(--fm-color-neutral-50);
+  border-color: var(--fm-color-neutral-300);
+  color: var(--fm-color-neutral-900);
+}
+
+.btn-row-action.text-danger:hover {
+  background-color: var(--fm-color-danger-50) !important;
+  border-color: var(--fm-color-danger-100) !important;
+  color: var(--fm-color-danger-600) !important;
+}
+
+@media (max-width: 576px) {
+  .option-row-card {
+    padding: 0.75rem 1rem !important;
+  }
+  .banner-icon-avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 1.15rem;
+  }
 }
 
 /* ==========================================
