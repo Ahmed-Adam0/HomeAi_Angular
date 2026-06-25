@@ -33,6 +33,10 @@ export class ProfileService {
         country: address.country,
         postalCode: address.postalCode,
         primary: address.primary,
+        area: address.area,
+        street: address.street,
+        buildingNumber: address.buildingNumber,
+        notes: address.notes,
       };
     });
 

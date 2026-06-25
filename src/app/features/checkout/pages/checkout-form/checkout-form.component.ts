@@ -78,10 +78,6 @@ export class CheckoutFormComponent implements OnInit {
     lastName: FormControl<string>;
     email: FormControl<string>;
     phone: FormControl<string>;
-    addressLine1: FormControl<string>;
-    addressLine2: FormControl<string>;
-    city: FormControl<string>;
-    country: FormControl<string>;
     paymentProvider: FormControl<'paymob'>;
     orderNotes: FormControl<string>;
   }>;
@@ -89,10 +85,14 @@ export class CheckoutFormComponent implements OnInit {
 
   newAddressForm!: FormGroup<{
     label: FormControl<string>;
-    addressLine1: FormControl<string>;
-    addressLine2: FormControl<string>;
+    buildingNumber: FormControl<string>;
+    street: FormControl<string>;
+    area: FormControl<string>;
     city: FormControl<string>;
     country: FormControl<string>;
+    notes: FormControl<string>;
+    addressLine1: FormControl<string>;
+    addressLine2: FormControl<string>;
     postalCode: FormControl<string>;
     primary: FormControl<boolean>;
   }>;
@@ -103,10 +103,6 @@ export class CheckoutFormComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, phoneValidator()]],
-      addressLine1: ['', [Validators.required]],
-      addressLine2: [''],
-      city: ['', [Validators.required]],
-      country: ['Egypt', [Validators.required]],
       paymentProvider: ['paymob' as 'paymob', [Validators.required]],
       orderNotes: ['', [Validators.maxLength(300)]]
     }) as FormGroup<{
@@ -114,31 +110,45 @@ export class CheckoutFormComponent implements OnInit {
       lastName: FormControl<string>;
       email: FormControl<string>;
       phone: FormControl<string>;
-      addressLine1: FormControl<string>;
-      addressLine2: FormControl<string>;
-      city: FormControl<string>;
-      country: FormControl<string>;
       paymentProvider: FormControl<'paymob'>;
       orderNotes: FormControl<string>;
     }>;
 
     this.newAddressForm = this.fb.nonNullable.group({
       label: ['', []],
-      addressLine1: ['', [Validators.required]],
-      addressLine2: [''],
+      buildingNumber: ['', [Validators.required]],
+      street: ['', [Validators.required]],
+      area: ['', [Validators.required]],
       city: ['', [Validators.required]],
       country: ['Egypt', [Validators.required]],
+      notes: ['', []],
+      addressLine1: ['', []],
+      addressLine2: [''],
       postalCode: [''],
       primary: [false, []]
     }) as FormGroup<{
       label: FormControl<string>;
-      addressLine1: FormControl<string>;
-      addressLine2: FormControl<string>;
+      buildingNumber: FormControl<string>;
+      street: FormControl<string>;
+      area: FormControl<string>;
       city: FormControl<string>;
       country: FormControl<string>;
+      notes: FormControl<string>;
+      addressLine1: FormControl<string>;
+      addressLine2: FormControl<string>;
       postalCode: FormControl<string>;
       primary: FormControl<boolean>;
     }>;
+
+    // Sync buildingNumber and street with addressLine1 on newAddressForm
+    this.newAddressForm.valueChanges.subscribe(values => {
+      const bld = values.buildingNumber || '';
+      const str = values.street || '';
+      const constructedLine1 = `${bld} ${str}`.trim();
+      if (this.newAddressForm.controls.addressLine1.value !== constructedLine1) {
+        this.newAddressForm.controls.addressLine1.setValue(constructedLine1, { emitEvent: false });
+      }
+    });
 
     // Load profile and addresses on initialization
     this.loadProfileAndAddresses();
@@ -214,14 +224,6 @@ export class CheckoutFormComponent implements OnInit {
 
   selectAddress(address: IAddressDto): void {
     this.selectedAddressId.set(address.id || null);
-
-    // Update main checkout form with selected address values
-    this.checkoutForm.patchValue({
-      addressLine1: address.addressLine1 || '',
-      addressLine2: address.addressLine2 || '',
-      city: address.city || '',
-      country: address.country || 'Egypt'
-    });
   }
 
   private getAddressSortValue(addr: IAddressDto): number {
@@ -247,10 +249,14 @@ export class CheckoutFormComponent implements OnInit {
     this.showAddAddressForm.set(false);
     this.newAddressForm.reset({
       label: '',
-      addressLine1: '',
-      addressLine2: '',
+      buildingNumber: '',
+      street: '',
+      area: '',
       city: '',
       country: 'Egypt',
+      notes: '',
+      addressLine1: '',
+      addressLine2: '',
       postalCode: '',
       primary: false
     });
@@ -272,10 +278,14 @@ export class CheckoutFormComponent implements OnInit {
     const newAddr: IAddressDto = {
       id: 'addr_' + Date.now().toString(),
       label: formValue.label || undefined,
-      addressLine1: formValue.addressLine1 || '',
-      addressLine2: formValue.addressLine2 || undefined,
+      buildingNumber: formValue.buildingNumber || '',
+      street: formValue.street || '',
+      area: formValue.area || '',
       city: formValue.city || '',
       country: formValue.country || 'Egypt',
+      notes: formValue.notes || '',
+      addressLine1: formValue.addressLine1 || '',
+      addressLine2: formValue.addressLine2 || undefined,
       postalCode: formValue.postalCode || undefined,
       primary: !!formValue.primary
     };
@@ -328,10 +338,14 @@ export class CheckoutFormComponent implements OnInit {
         // Reset form and close
         this.newAddressForm.reset({
           label: '',
-          addressLine1: '',
-          addressLine2: '',
+          buildingNumber: '',
+          street: '',
+          area: '',
           city: '',
           country: 'Egypt',
+          notes: '',
+          addressLine1: '',
+          addressLine2: '',
           postalCode: '',
           primary: false
         });
@@ -368,6 +382,12 @@ export class CheckoutFormComponent implements OnInit {
         return EMPTY;
       }
 
+      const selectedAddr = this.savedAddresses().find(a => a.id === this.selectedAddressId());
+      if (!selectedAddr) {
+        this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_VALIDATION'));
+        return EMPTY;
+      }
+
       this.submitting = true;
       const formValues = this.checkoutForm.getRawValue();
       return from(this.cartService.awaitPendingSyncs()).pipe(
@@ -379,10 +399,11 @@ export class CheckoutFormComponent implements OnInit {
           }
 
           const addressParts: string[] = [
-            formValues.addressLine1,
-            formValues.addressLine2,
-            formValues.city,
-            formValues.country
+            selectedAddr.addressLine1 || '',
+            selectedAddr.addressLine2 || '',
+            selectedAddr.area || '',
+            selectedAddr.city || '',
+            selectedAddr.country || ''
           ].map((part) => part?.trim()).filter(Boolean);
 
           const cartSnapshot = this.cartService.items().map((item) => ({
@@ -396,7 +417,11 @@ export class CheckoutFormComponent implements OnInit {
             phoneNumber: formValues.phone.trim(),
             notes: formValues.orderNotes?.trim() || null,
             items: cartSnapshot,
-            addressId: this.selectedAddressId() || undefined
+            addressId: selectedAddr.id || undefined,
+            addressLine1: selectedAddr.addressLine1,
+            addressLine2: selectedAddr.addressLine2,
+            city: selectedAddr.city,
+            country: selectedAddr.country
           };
 
           return this.checkoutService.submitCheckout(orderPayload);

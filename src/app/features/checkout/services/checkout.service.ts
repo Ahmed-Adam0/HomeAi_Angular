@@ -88,9 +88,9 @@ export class CheckoutService {
 
         const isDuplicate = existingAddresses.some(
           (addr) =>
-            addr.addressLine1?.toLowerCase() === newAddress.addressLine1.toLowerCase() &&
-            addr.city?.toLowerCase() === newAddress.city!.toLowerCase() &&
-            addr.country?.toLowerCase() === newAddress.country!.toLowerCase()
+            addr.addressLine1?.toLowerCase() === newAddress.addressLine1?.toLowerCase() &&
+            addr.city?.toLowerCase() === newAddress.city?.toLowerCase() &&
+            addr.country?.toLowerCase() === newAddress.country?.toLowerCase()
         );
 
         if (isDuplicate) {

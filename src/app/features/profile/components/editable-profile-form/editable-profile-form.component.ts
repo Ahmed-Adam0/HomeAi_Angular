@@ -405,7 +405,7 @@ export class EditableProfileForm implements OnChanges {
     }
     const address = this.profile.addresses[0];
     const cityCountry = [address.city, address.country].filter(Boolean).join(', ');
-    return cityCountry ? cityCountry : address.addressLine1;
+    return cityCountry ? cityCountry : (address.addressLine1 || '');
   }
 
   get fullName() {

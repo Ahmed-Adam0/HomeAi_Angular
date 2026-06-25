@@ -135,23 +135,20 @@
                         </div>
                         
                         <div class="address-card-body">
-                          <div class="text-truncate">{{ address.addressLine1 }}</div>
+                          <div class="text-truncate font-semibold">{{ address.addressLine1 }}</div>
                           @if (address.addressLine2) {
                             <div class="text-truncate">{{ address.addressLine2 }}</div>
                           }
+                          @if (address.area) {
+                            <div class="text-truncate">{{ address.area }}</div>
+                          }
                           <div class="text-truncate">{{ address.city }}<span *ngIf="address.postalCode">, {{ address.postalCode }}</span></div>
                           <div class="text-uppercase fw-bold text-primary-gold mt-1" style="font-size: 11px;">{{ address.country }}</div>
-                        </div>
-
-                        <div class="border-top pt-2 mt-2">
-                          <div class="address-recipient-info text-truncate">
-                            <i class="bi bi-person text-muted"></i>
-                            <span>{{ profile()?.fullName || (checkoutForm.get('firstName')?.value + ' ' + checkoutForm.get('lastName')?.value) }}</span>
-                          </div>
-                          <div class="address-phone-info mt-1 text-truncate">
-                            <i class="bi bi-telephone text-muted me-1"></i>
-                            <span>{{ profile()?.phoneNumber || checkoutForm.get('phone')?.value }}</span>
-                          </div>
+                          @if (address.notes) {
+                            <div class="text-truncate mt-1 text-muted small" style="font-style: italic;">
+                              <i class="bi bi-info-circle me-1"></i>{{ address.notes }}
+                            </div>
+                          }
                         </div>
                       </div>
                     </div>
@@ -175,24 +172,42 @@
                       </div>
                     </div>
 
-                    <!-- Address Line 1 -->
+                    <!-- Building Number -->
                     <div class="col-12 col-md-6">
                       <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS1' | translate }} *</label>
-                        <input type="text" formControlName="addressLine1" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم المبنى والشارع' : 'Street Address'" appAutoDir>
-                        @if (newAddressForm.get('addressLine1')?.touched && newAddressForm.get('addressLine1')?.errors?.['required']) {
+                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_BUILDING_NUMBER' | translate }} *</label>
+                        <input type="text" formControlName="buildingNumber" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم المبنى' : 'Building Number'" appAutoDir>
+                        @if (newAddressForm.get('buildingNumber')?.touched && newAddressForm.get('buildingNumber')?.errors?.['required']) {
                           <div class="text-danger-custom small mt-1">
-                            {{ currentLang() === 'ar' ? 'العنوان مطلوب.' : 'Street address is required.' }}
+                            {{ currentLang() === 'ar' ? 'رقم المبنى مطلوب.' : 'Building number is required.' }}
                           </div>
                         }
                       </div>
                     </div>
 
-                    <!-- Address Line 2 -->
+                    <!-- Street -->
                     <div class="col-12 col-md-6">
                       <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS2' | translate }}</label>
-                        <input type="text" formControlName="addressLine2" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم الشقة، الجناح، إلخ (اختياري)' : 'Apartment, suite, etc. (optional)'" appAutoDir>
+                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_STREET' | translate }} *</label>
+                        <input type="text" formControlName="street" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'الشارع' : 'Street'" appAutoDir>
+                        @if (newAddressForm.get('street')?.touched && newAddressForm.get('street')?.errors?.['required']) {
+                          <div class="text-danger-custom small mt-1">
+                            {{ currentLang() === 'ar' ? 'اسم الشارع مطلوب.' : 'Street name is required.' }}
+                          </div>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- Area -->
+                    <div class="col-12 col-md-6">
+                      <div class="form-group-custom">
+                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_AREA' | translate }} *</label>
+                        <input type="text" formControlName="area" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'المنطقة' : 'Area'" appAutoDir>
+                        @if (newAddressForm.get('area')?.touched && newAddressForm.get('area')?.errors?.['required']) {
+                          <div class="text-danger-custom small mt-1">
+                            {{ currentLang() === 'ar' ? 'المنطقة مطلوبة.' : 'Area is required.' }}
+                          </div>
+                        }
                       </div>
                     </div>
 
@@ -222,11 +237,35 @@
                       </div>
                     </div>
 
+                    <!-- Address Line 1 (Full Street Address - Auto Synced) -->
+                    <div class="col-12 col-md-6">
+                      <div class="form-group-custom">
+                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS1' | translate }} ({{ currentLang() === 'ar' ? 'تلقائي' : 'Auto' }})</label>
+                        <input type="text" formControlName="addressLine1" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم المبنى والشارع' : 'Street Address'" appAutoDir readonly>
+                      </div>
+                    </div>
+
+                    <!-- Address Line 2 -->
+                    <div class="col-12 col-md-6">
+                      <div class="form-group-custom">
+                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS2' | translate }}</label>
+                        <input type="text" formControlName="addressLine2" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم الشقة، الجناح، إلخ (اختياري)' : 'Apartment, suite, etc. (optional)'" appAutoDir>
+                      </div>
+                    </div>
+
                     <!-- Postal Code -->
                     <div class="col-12 col-md-6">
                       <div class="form-group-custom">
                         <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ZIP' | translate }}</label>
                         <input type="text" formControlName="postalCode" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'الرمز البريدي (اختياري)' : 'Postal Code (optional)'" appAutoDir>
+                      </div>
+                    </div>
+
+                    <!-- Address Notes -->
+                    <div class="col-12 col-md-6">
+                      <div class="form-group-custom">
+                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS_NOTES' | translate }}</label>
+                        <input type="text" formControlName="notes" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'مثال: الطابق الثاني، شقة 5' : 'e.g. 2nd floor, apt 5'" appAutoDir>
                       </div>
                     </div>
 
@@ -381,7 +420,7 @@
 
             <!-- CTA Submit -->
             <div class="checkout-cta-area">
-              <button type="submit" [disabled]="submitting || checkoutForm.invalid" (click)="onSubmit()" class="btn-checkout w-100 py-3 rounded-pill fw-bold fs-5 shadow-sm d-flex align-items-center justify-content-center gap-2">
+              <button type="submit" [disabled]="submitting || checkoutForm.invalid || !selectedAddressId()" (click)="onSubmit()" class="btn-checkout w-100 py-3 rounded-pill fw-bold fs-5 shadow-sm d-flex align-items-center justify-content-center gap-2">
                 @if (submitting) {
                   <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   <span>{{ 'CHECKOUT_SUBMITTING' | translate }}</span>

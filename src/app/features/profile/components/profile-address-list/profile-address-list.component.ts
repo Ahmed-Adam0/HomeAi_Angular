@@ -212,6 +212,6 @@ export class ProfileAddressList {
   }
 
   trackByAddress(_: number, item: IAddressDto): string {
-    return item.id || item.addressLine1;
+    return item.id || item.addressLine1 || '';
   }
 }
