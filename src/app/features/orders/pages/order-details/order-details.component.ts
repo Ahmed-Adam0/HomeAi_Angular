@@ -91,7 +91,7 @@ export class OrderDetails {
   readonly isLoadingBreakdown = signal<boolean>(false);
 
   readonly hasPendingPaymentOrders = computed(() => {
-    return this.pendingPaymentTotal() > 0;
+    return this.pendingPaymentTotal() > 0 || this.activeVendorOrdersTotal() > 0;
   });
 
   private normalizeStatus(value: string | undefined | null): string {
@@ -118,6 +118,24 @@ export class OrderDetails {
       .reduce((sum: number, m: any) => sum + m.amount, 0);
   });
 
+  /** Active vendor-order statuses — normalized snake_case versions of the
+   *  backend enum, covering Confirmed → Delivered.
+   *  normalizeStatus() converts e.g. "Confirmed" → "confirmed" */
+  private readonly ACTIVE_VO_STATUSES = new Set([
+    'confirmed',                  // Confirmed
+    'in_progress',                // InProgress
+    'pending_payment',            // PendingPayment
+    'shipped',                    // Shipped
+    'delivered',                  // Delivered
+  ]);
+
+  readonly activeVendorOrdersTotal = computed(() => {
+    const vOrders = this.order()?.vendorOrders ?? [];
+    return vOrders
+      .filter(vo => this.ACTIVE_VO_STATUSES.has(this.normalizeStatus(vo.status)))
+      .reduce((sum, vo) => sum + (vo.totalPrice ?? 0), 0);
+  });
+
   readonly amountPaid = computed(() => {
     const breakdown = this.remainingBalanceDetails();
     if (breakdown) {
@@ -126,6 +144,29 @@ export class OrderDetails {
     const data = this.order();
     if (!data) return 0;
     return data.paymentStatus === 'paid' ? data.totalAmount : 0;
+  });
+
+  /** Amount to Pay is the difference between active orders total and amount paid. */
+  readonly amountToPay = computed(() => {
+    return Math.max(0, this.activeVendorOrdersTotal() - this.amountPaid());
+  });
+
+  readonly calculatedPaymentStatus = computed(() => {
+    const total = this.activeVendorOrdersTotal();
+    const paid = this.amountPaid();
+    
+    // Fall back to backend status if no active totals to compare against
+    if (total === 0) {
+      return this.order()?.paymentStatus || 'pending';
+    }
+    
+    if (paid >= total) {
+      return 'paid';
+    }
+    if (paid === 0) {
+      return 'unpaid';
+    }
+    return 'pending'; // Partial payment
   });
 
   editForm: FormGroup | null = null;
@@ -171,10 +212,13 @@ export class OrderDetails {
     });
   }
 
-  getMilestonesForVendorOrder(vendorOrderId: string): any[] {
+  getMilestonesForVendorOrder(vo: any): any[] {
     const breakdown = this.remainingBalanceDetails();
     if (!breakdown || !breakdown.milestones) return [];
-    return breakdown.milestones.filter((m: any) => m.vendorOrderId.toString() === vendorOrderId);
+    return breakdown.milestones.filter((m: any) => {
+      if (m.vendorOrderId.toString() !== vo.id?.toString()) return false;
+      return m.isPaid || this.isMilestoneDue(vo, m);
+    });
   }
 
   isMilestoneDue(vo: any, milestone: any): boolean {
@@ -196,8 +240,7 @@ export class OrderDetails {
     const orderData = this.order();
     if (!orderData) return;
 
-    const hasPendingPaymentOrders = this.hasPendingPaymentOrders();
-    if (!hasPendingPaymentOrders) {
+    if (this.amountToPay() <= 0) {
       this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_NO_APPROVED_ORDERS_ERROR'));
       return;
     }

@@ -377,6 +377,7 @@
   "ORDER_DETAILS_PAYMENT_SUBTITLE": "Method and current payment status.",
   "ORDER_DETAILS_PAYMENT_METHOD": "Payment method",
   "ORDER_DETAILS_PAYMENT_STATUS": "Payment status",
+  "ORDER_DETAILS_ORDER_STATUS": "Order status",
   "ORDER_DETAILS_EDIT": "Edit Order",
   "ORDER_DETAILS_CANCEL": "Cancel Order",
   "ORDER_DETAILS_LOCKED_MSG": "This order can no longer be modified because processing has already started.",

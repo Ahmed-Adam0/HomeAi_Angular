@@ -377,6 +377,7 @@
   "ORDER_DETAILS_PAYMENT_SUBTITLE": "طريقة الدفع وحالة الدفع الحالية.",
   "ORDER_DETAILS_PAYMENT_METHOD": "طريقة الدفع",
   "ORDER_DETAILS_PAYMENT_STATUS": "حالة الدفع",
+  "ORDER_DETAILS_ORDER_STATUS": "حالة الطلب",
   "ORDER_DETAILS_EDIT": "تعديل الطلب",
   "ORDER_DETAILS_CANCEL": "إلغاء الطلب",
   "ORDER_DETAILS_LOCKED_MSG": "لا يمكن تعديل أو إلغاء هذا الطلب بعد الآن نظراً لبدء معالجته بالفعل.",
