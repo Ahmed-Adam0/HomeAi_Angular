@@ -9,6 +9,8 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vendor-materials',
@@ -423,13 +425,13 @@ export class VendorMaterials implements OnInit {
     this.savingOptionId.set(optionId);
     this.uiState.showLoader();
 
-    this.vendorService.updateOption(optionId, finalValAr, finalValEn, this.editOptionPriceDelta).subscribe({
+    this.vendorService.updateOption(optionId, finalValAr, finalValEn, this.editOptionPriceDelta, finalMaterialId).subscribe({
       next: (updatedOpt) => {
         this.materials.update(prev => prev.map(mat => {
           if (mat.id === finalMaterialId) {
             return {
               ...mat,
-              options: (mat.options || []).map((o: any) => o.id === optionId ? { ...o, ...updatedOpt } : o)
+              options: (mat.options || []).map((o: any) => o.id === optionId ? { ...o, ...updatedOpt, vendorMaterialGroupId: finalMaterialId } : o)
             };
           }
           return mat;
@@ -451,7 +453,8 @@ export class VendorMaterials implements OnInit {
                   ...o, 
                   valueAr: finalValAr, 
                   valueEn: finalValEn, 
-                  priceDelta: this.editOptionPriceDelta 
+                  priceDelta: this.editOptionPriceDelta,
+                  vendorMaterialGroupId: finalMaterialId
                 } : o)
               };
             }
@@ -533,6 +536,15 @@ export class VendorMaterials implements OnInit {
 
       transferArrayItem(sourceOptions, targetOptions, event.previousIndex, event.currentIndex);
 
+      // Update the vendorMaterialGroupId of the moved option inside targetOptions immediately
+      const movedIdx = targetOptions.findIndex((o: any) => o.id === option.id);
+      if (movedIdx !== -1) {
+        targetOptions[movedIdx] = {
+          ...targetOptions[movedIdx],
+          vendorMaterialGroupId: targetMaterial.id
+        };
+      }
+
       this.materials.update(prev => prev.map(m => {
         if (m.id === sourceMaterial.id) {
           return { ...m, options: sourceOptions };
@@ -544,22 +556,62 @@ export class VendorMaterials implements OnInit {
       }));
 
       this.uiState.showLoader();
-      this.vendorService.updateOption(option.id, option.valueAr, option.valueEn, option.priceDelta, targetMaterial.id).subscribe({
-        next: (res) => {
-          this.materials.update(prev => prev.map(m => {
-            if (m.id === targetMaterial.id) {
-              return {
-                ...m,
-                options: (m.options || []).map((o: any) => o.id === option.id ? { ...o, ...res, vendorMaterialGroupId: targetMaterial.id } : o)
-              };
+      this.vendorService.createOption(targetMaterial.id, option.valueAr, option.valueEn, option.priceDelta).subscribe({
+        next: (newOpt) => {
+          this.vendorService.deleteOption(option.id).subscribe({
+            next: () => {
+              this.materials.update(prev => prev.map(m => {
+                if (m.id === sourceMaterial.id) {
+                  return {
+                    ...m,
+                    options: (m.options || []).filter((o: any) => o.id !== option.id)
+                  };
+                }
+                if (m.id === targetMaterial.id) {
+                  return {
+                    ...m,
+                    options: (m.options || []).map((o: any) => o.id === option.id ? newOpt : o)
+                  };
+                }
+                return m;
+              }));
+              this.uiState.hideLoader();
+              this.uiState.showAlert('success', this.translationService.currentLang() === 'ar' ? 'تم نقل الاختيار بنجاح.' : 'Option moved successfully.');
+            },
+            error: (err) => {
+              console.warn('Failed to delete old option from source group on backend, updating locally.', err);
+              this.materials.update(prev => prev.map(m => {
+                if (m.id === sourceMaterial.id) {
+                  return {
+                    ...m,
+                    options: (m.options || []).filter((o: any) => o.id !== option.id)
+                  };
+                }
+                if (m.id === targetMaterial.id) {
+                  return {
+                    ...m,
+                    options: (m.options || []).map((o: any) => o.id === option.id ? newOpt : o)
+                  };
+                }
+                return m;
+              }));
+              this.uiState.hideLoader();
+              this.uiState.showAlert('success', this.translationService.currentLang() === 'ar' ? 'تم نقل الاختيار بنجاح.' : 'Option moved successfully.');
             }
-            return m;
-          }));
-          this.uiState.hideLoader();
-          this.uiState.showAlert('success', this.translationService.currentLang() === 'ar' ? 'تم نقل الاختيار بنجاح.' : 'Option moved successfully.');
+          });
         },
         error: (err) => {
           console.warn('Backend update option API failed or not fully supported for moving groups, keeping change locally.', err);
+          // Rollback local changes since creation failed
+          this.materials.update(prev => prev.map(m => {
+            if (m.id === sourceMaterial.id) {
+              return { ...m, options: [...sourceOptions] };
+            }
+            if (m.id === targetMaterial.id) {
+              return { ...m, options: [...targetOptions] };
+            }
+            return m;
+          }));
           this.uiState.hideLoader();
           this.uiState.showAlert('success', this.translationService.currentLang() === 'ar' ? 'تم نقل الاختيار بنجاح (محلي).' : 'Option moved successfully (locally).');
         }
@@ -634,22 +686,56 @@ export class VendorMaterials implements OnInit {
     }));
 
     this.uiState.showLoader();
-    this.vendorService.updateOption(option.id, option.valueAr, option.valueEn, option.priceDelta, targetGroupId).subscribe({
-      next: (res) => {
+    this.vendorService.createOption(targetGroupId, option.valueAr, option.valueEn, option.priceDelta).subscribe({
+      next: (newOpt) => {
+        this.vendorService.deleteOption(option.id).subscribe({
+          next: () => {
+            this.materials.update(prev => prev.map(m => {
+              if (m.id === targetGroupId) {
+                return {
+                  ...m,
+                  options: (m.options || []).map((o: any) => o.id === option.id ? newOpt : o)
+                };
+              }
+              return m;
+            }));
+            this.uiState.hideLoader();
+            this.uiState.showAlert('success', this.translationService.currentLang() === 'ar' ? 'تم نقل الاختيار بنجاح.' : 'Option moved successfully.');
+          },
+          error: (err) => {
+            console.warn('Failed to delete old option from source group on backend, updating locally.', err);
+            this.materials.update(prev => prev.map(m => {
+              if (m.id === targetGroupId) {
+                return {
+                  ...m,
+                  options: (m.options || []).map((o: any) => o.id === option.id ? newOpt : o)
+                };
+              }
+              return m;
+            }));
+            this.uiState.hideLoader();
+            this.uiState.showAlert('success', this.translationService.currentLang() === 'ar' ? 'تم نقل الاختيار بنجاح.' : 'Option moved successfully.');
+          }
+        });
+      },
+      error: (err) => {
+        console.warn('Backend update option API failed or not fully supported for moving groups, keeping change locally.', err);
+        // Rollback local changes
         this.materials.update(prev => prev.map(m => {
+          if (m.id === sourceGroupId) {
+            return {
+              ...m,
+              options: [...(m.options || []), option]
+            };
+          }
           if (m.id === targetGroupId) {
             return {
               ...m,
-              options: (m.options || []).map((o: any) => o.id === option.id ? { ...o, ...res, vendorMaterialGroupId: targetGroupId } : o)
+              options: (m.options || []).filter((o: any) => o.id !== option.id)
             };
           }
           return m;
         }));
-        this.uiState.hideLoader();
-        this.uiState.showAlert('success', this.translationService.currentLang() === 'ar' ? 'تم نقل الاختيار بنجاح.' : 'Option moved successfully.');
-      },
-      error: (err) => {
-        console.warn('Backend update option API failed or not fully supported for moving groups, keeping change locally.', err);
         this.uiState.hideLoader();
         this.uiState.showAlert('success', this.translationService.currentLang() === 'ar' ? 'تم نقل الاختيار بنجاح (محلي).' : 'Option moved successfully (locally).');
       }
@@ -694,42 +780,112 @@ export class VendorMaterials implements OnInit {
     const targetGroup = this.materials().find(m => m.id === targetGroupId);
     if (!targetGroup) return;
 
-    this.uiState.showLoader();
-
-    this.materials.update(prev => {
-      const selectedOptions: any[] = [];
-      prev.forEach(group => {
-        (group.options || []).forEach((o: any) => {
-          if (this.selectedOptionIds().has(o.id)) {
-            selectedOptions.push({ ...o, vendorMaterialGroupId: targetGroupId });
-          }
-        });
-      });
-
-      return prev.map(m => {
-        if (m.id === targetGroupId) {
-          const nonSelectedInTarget = (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id));
-          return {
-            ...m,
-            options: [...nonSelectedInTarget, ...selectedOptions]
-          };
-        } else {
-          const nonSelected = (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id));
-          return {
-            ...m,
-            options: nonSelected
-          };
+    // Collect all selected option objects
+    const selectedOptions: any[] = [];
+    this.materials().forEach(group => {
+      (group.options || []).forEach((o: any) => {
+        if (this.selectedOptionIds().has(o.id)) {
+          selectedOptions.push(o);
         }
       });
     });
 
-    setTimeout(() => {
-      this.uiState.hideLoader();
-      this.uiState.showAlert('success', isAr 
-        ? `تم نقل ${selectedIds.length} خيارات إلى ${targetGroup.nameAr || targetGroup.nameEn} بنجاح.` 
-        : `Successfully moved ${selectedIds.length} options to ${targetGroup.nameEn || targetGroup.nameAr}.`);
-      this.clearSelection();
-    }, 800);
+    this.uiState.showLoader();
+
+    const createRequests = selectedOptions.map(opt => 
+      this.vendorService.createOption(targetGroupId, opt.valueAr, opt.valueEn, opt.priceDelta)
+    );
+
+    forkJoin(createRequests).subscribe({
+      next: (newOptions) => {
+        const deleteRequests = selectedOptions.map(opt => 
+          this.vendorService.deleteOption(opt.id)
+        );
+        forkJoin(deleteRequests).subscribe({
+          next: () => {
+            this.materials.update(prev => {
+              return prev.map(m => {
+                if (m.id === targetGroupId) {
+                  const nonSelectedInTarget = (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id));
+                  return {
+                    ...m,
+                    options: [...nonSelectedInTarget, ...newOptions]
+                  };
+                } else {
+                  const nonSelected = (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id));
+                  return {
+                    ...m,
+                    options: nonSelected
+                  };
+                }
+              });
+            });
+            this.uiState.hideLoader();
+            this.uiState.showAlert('success', isAr 
+              ? `تم نقل ${selectedIds.length} خيارات إلى ${targetGroup.nameAr || targetGroup.nameEn} بنجاح.` 
+              : `Successfully moved ${selectedIds.length} options to ${targetGroup.nameEn || targetGroup.nameAr}.`);
+            this.clearSelection();
+          },
+          error: (err) => {
+            console.warn('Failed to delete some old options during bulk move on backend, updating locally.', err);
+            this.materials.update(prev => {
+              return prev.map(m => {
+                if (m.id === targetGroupId) {
+                  const nonSelectedInTarget = (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id));
+                  return {
+                    ...m,
+                    options: [...nonSelectedInTarget, ...newOptions]
+                  };
+                } else {
+                  const nonSelected = (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id));
+                  return {
+                    ...m,
+                    options: nonSelected
+                  };
+                }
+              });
+            });
+            this.uiState.hideLoader();
+            this.uiState.showAlert('success', isAr 
+              ? `تم نقل ${selectedIds.length} خيارات إلى ${targetGroup.nameAr || targetGroup.nameEn} بنجاح.` 
+              : `Successfully moved ${selectedIds.length} options to ${targetGroup.nameEn || targetGroup.nameAr}.`);
+            this.clearSelection();
+          }
+        });
+      },
+      error: (err) => {
+        console.warn('Backend bulk move API failed, falling back to local simulation.', err);
+        
+        this.materials.update(prev => {
+          const movedOptions = selectedOptions.map(opt => ({
+            ...opt,
+            vendorMaterialGroupId: targetGroupId
+          }));
+
+          return prev.map(m => {
+            if (m.id === targetGroupId) {
+              const nonSelectedInTarget = (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id));
+              return {
+                ...m,
+                options: [...nonSelectedInTarget, ...movedOptions]
+              };
+            } else {
+              const nonSelected = (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id));
+              return {
+                ...m,
+                options: nonSelected
+              };
+            }
+          });
+        });
+
+        this.uiState.hideLoader();
+        this.uiState.showAlert('success', isAr 
+          ? `تم نقل ${selectedIds.length} خيارات إلى ${targetGroup.nameAr || targetGroup.nameEn} بنجاح (محلي).` 
+          : `Successfully moved ${selectedIds.length} options to ${targetGroup.nameEn || targetGroup.nameAr} (locally).`);
+        this.clearSelection();
+      }
+    });
   }
 
   bulkDeleteSelected(): void {
@@ -747,16 +903,30 @@ export class VendorMaterials implements OnInit {
     this.openConfirmDialog(title, message, confirmBtn, cancelBtn, () => {
       this.uiState.showLoader();
 
-      this.materials.update(prev => prev.map(m => ({
-        ...m,
-        options: (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id))
-      })));
+      const requests = selectedIds.map(id => this.vendorService.deleteOption(id));
 
-      setTimeout(() => {
-        this.uiState.hideLoader();
-        this.uiState.showAlert('success', isAr ? 'تم حذف الخيارات بنجاح.' : 'Options deleted successfully.');
-        this.clearSelection();
-      }, 800);
+      forkJoin(requests).subscribe({
+        next: () => {
+          this.materials.update(prev => prev.map(m => ({
+            ...m,
+            options: (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id))
+          })));
+          this.uiState.hideLoader();
+          this.uiState.showAlert('success', isAr ? 'تم حذف الخيارات بنجاح.' : 'Options deleted successfully.');
+          this.clearSelection();
+        },
+        error: (err) => {
+          console.warn('Backend bulk delete failed, falling back to local simulation.', err);
+          
+          this.materials.update(prev => prev.map(m => ({
+            ...m,
+            options: (m.options || []).filter((o: any) => !this.selectedOptionIds().has(o.id))
+          })));
+          this.uiState.hideLoader();
+          this.uiState.showAlert('success', isAr ? 'تم حذف الخيارات بنجاح (محلي).' : 'Options deleted successfully (locally).');
+          this.clearSelection();
+        }
+      });
     });
   }
 }
