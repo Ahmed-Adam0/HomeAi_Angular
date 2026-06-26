@@ -1350,3 +1350,116 @@ app-custom-dropdown {
   font-size: 1.15rem;
   line-height: 1;
 }
+
+/* ==========================================================================
+   3D PRODUCT MODEL STUDIO STYLING
+   ========================================================================== */
+.studio-3d-model-section {
+  display: block;
+  width: 100%;
+}
+
+.studio-section-subheading {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--fm-color-neutral-900, #1f1c18);
+  letter-spacing: -0.01em;
+}
+
+.current-3d-model-card {
+  background-color: #faf9f6;
+  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  transition: all 0.2s ease;
+}
+
+.current-3d-model-card:hover {
+  border-color: var(--fm-color-neutral-300, #d9d3c7);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.bg-gold-soft {
+  background-color: rgba(184, 147, 92, 0.08) !important;
+}
+
+.text-gold {
+  color: var(--fm-color-primary-500, #b8935c) !important;
+}
+
+.bg-success-soft {
+  background-color: rgba(46, 125, 50, 0.08) !important;
+}
+
+.text-success {
+  color: #2e7d32 !important;
+}
+
+.bg-danger-soft {
+  background-color: rgba(198, 40, 40, 0.08) !important;
+}
+
+.rounded-xl {
+  border-radius: 16px !important;
+}
+
+.btn-xs {
+  padding: 6px 16px !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  border-radius: 30px !important;
+}
+
+.btn-outline-studio {
+  background-color: transparent;
+  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  color: var(--fm-color-neutral-700, #544d43);
+  transition: all 0.2s ease;
+}
+
+.btn-outline-studio:hover {
+  background-color: var(--fm-color-neutral-100, #f4f2ee);
+  border-color: var(--fm-color-neutral-400, #b8b8b8);
+  color: var(--fm-color-neutral-900, #1f1c18);
+}
+
+.btn-outline-danger {
+  background-color: transparent;
+  border: 1px solid rgba(198, 40, 40, 0.3);
+  color: #c62828;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-danger:hover {
+  background-color: rgba(198, 40, 40, 0.05);
+  border-color: #c62828;
+}
+
+.studio-dropzone-box--3d {
+  background-color: var(--fm-color-neutral-50, #fdfdfd);
+  border: 2px dashed var(--fm-color-neutral-300, #d9d3c7);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.studio-dropzone-box--3d:hover,
+.studio-dropzone-box--3d.dropzone-hovering {
+  border-color: var(--fm-color-primary-400, #cba16c);
+  background-color: rgba(184, 147, 92, 0.02);
+}
+
+.btn-xs.btn-studio-dark {
+  background-color: var(--fm-color-neutral-900, #1f1c18);
+  color: #ffffff;
+  border: none;
+}
+
+.btn-xs.btn-studio-dark:hover {
+  background-color: var(--fm-color-neutral-950, #0c0a09);
+}
+
+.max-w-250 {
+  max-width: 250px;
+}
+
+.hover-underline:hover {
+  text-decoration: underline !important;
+}
+

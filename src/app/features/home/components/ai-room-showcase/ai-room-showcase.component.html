@@ -1,8 +1,13 @@
-<section class="room-showcase-section">
-  <div class="container-fluid px-lg-5">
+<section class="room-showcase-section" 
+         (mouseenter)="onMouseEnter()" 
+         (mouseleave)="onMouseLeave()"
+         (touchstart)="onTouchStart($event)"
+         (touchend)="onTouchEnd($event)">
+  
+  <div class="container-fluid px-0">
     
-    <!-- Section Header -->
-    <div class="section-header text-center mb-5">
+    <!-- Section Header (Premium floating style over full slider) -->
+    <div class="showcase-section-header text-center mb-4 px-3">
       <span class="subtitle-gold">{{ 'EXPLORE_IN_3D_SUBTITLE' | translate }}</span>
       <h2 class="section-title-display">{{ 'EXPLORE_IN_3D_TITLE' | translate }}</h2>
       <p class="section-desc-light">
@@ -10,148 +15,127 @@
       </p>
     </div>
 
-    <!-- Showcase Container -->
-    <div class="showcase-card shadow-premium" (click)="closeCard()">
-      <div class="room-image-wrapper">
-        
-        <!-- Large Room Background Image -->
-        <img src="assets/images/beige_interior.png" [alt]="isArabic() ? 'غرفة معيشة فاخرة بالذكاء الاصطناعي' : 'Luxury AI Living Room'" class="room-image" />
-        
-        <!-- Overlay Darkener for hotspots to pop out nicely -->
-        <div class="image-overlay"></div>
-
-        <!-- Hotspots -->
-        <div *ngFor="let hotspot of hotspots" 
-             class="hotspot-point" 
-             [style.top.%]="hotspot.top" 
-             [style.left.%]="hotspot.left"
-             [class.active]="selectedHotspot() === hotspot"
-             (click)="selectHotspot(hotspot, $event)">
+    <!-- Main Slider Box -->
+    <div class="showcase-slider-viewport shadow-premium" (click)="closePopup()">
+      
+      <!-- Slide Track -->
+      <div class="slider-slides-track">
+        <div 
+          *ngFor="let slide of slides(); let sIdx = index"
+          class="slider-slide-item"
+          [class.active-slide]="sIdx === currentSlideIndex()"
+        >
+          <!-- Background image with Ken Burns slow zoom -->
+          <img 
+            [src]="slide.backgroundImage" 
+            [alt]="isArabic() ? (slide.titleAr || slide.title) : slide.title" 
+            class="slide-background-img"
+            [class.ken-burns-zoom]="sIdx === currentSlideIndex() && isPlaying()"
+          />
           
-          <div class="hotspot-pulse"></div>
-          <div class="hotspot-dot"></div>
+          <!-- Cinematic Overlay Gradient -->
+          <div class="slide-art-overlay"></div>
 
-          <!-- Hover Tooltip -->
-          <div class="hotspot-tooltip">
-            <span class="tooltip-name">{{ hotspot.product | localized: 'name' }}</span>
-            <span class="tooltip-price">{{ hotspot.product.price | currencyFormat }}</span>
-          </div>
-        </div>
-
-        <!-- Floating Product Preview Card (Desktop) -->
-        <div *ngIf="selectedHotspot() && !isMobile()" 
-             class="floating-product-card reveal-card"
-             [style.top.%]="cardPosition().top"
-             [style.left.%]="cardPosition().left"
-             [class.position-left]="!cardPosition().isRight"
-             (click)="$event.stopPropagation()">
-          
-          <!-- Close Button -->
-          <button class="close-card-btn" (click)="closeCard()" [aria-label]="isArabic() ? 'إغلاق' : 'Close'">
-            <i class="pi pi-times"></i>
-          </button>
-
-          <!-- Favorite/Like Button -->
-          <button class="favorite-card-btn" 
-                  [class.active]="isFavorited(selectedHotspot()!.product.id)"
-                  [disabled]="isTogglingFav()"
-                  (click)="toggleFavorite(selectedHotspot()!.product, $event)">
-            <i class="pi" [class.pi-heart-fill]="isFavorited(selectedHotspot()!.product.id)" [class.pi-heart]="!isFavorited(selectedHotspot()!.product.id)"></i>
-          </button>
-
-          <!-- 3D Interactive Viewer -->
-          <div class="card-viewer-container">
-            <app-three-d-viewer 
-              #desktopViewer
-              [productType]="selectedHotspot()!.type"
-              [glbUrl]="selectedHotspot()!.glbUrl">
-            </app-three-d-viewer>
+          <!-- Slide Meta Text Info (Parallax/Staggered reveal) -->
+          <div class="slide-meta-panel" *ngIf="sIdx === currentSlideIndex()">
+            <span class="slide-room-badge">{{ isArabic() ? 'معاينة حية للغرفة' : 'Live Room Concept' }}</span>
+            <h3 class="slide-title-heading">{{ isArabic() ? (slide.titleAr || slide.title) : slide.title }}</h3>
+            <p class="slide-subtitle-desc">{{ isArabic() ? (slide.subtitleAr || slide.subtitle) : slide.subtitle }}</p>
           </div>
 
-          <!-- Product Details -->
-          <div class="card-details-panel">
-            <span class="product-vendor">{{ selectedHotspot()!.product | localized: 'workshopName' }}</span>
-            <h4 class="product-name">{{ selectedHotspot()!.product | localized: 'name' }}</h4>
-            
-            <!-- Try in your room AR button -->
-            <button class="btn btn-try-ar mt-3" (click)="desktopViewer.triggerAR()">
-              <i class="pi pi-camera"></i>
-              <span>{{ isArabic() ? 'جرب في غرفتك' : 'Try in your room' }}</span>
-            </button>
-            
-            <div class="card-actions-row">
-              <span class="product-price">{{ selectedHotspot()!.product.price | currencyFormat }}</span>
-              
-              <button class="btn btn-gold-action" 
-                      [disabled]="cartService.isProductAdding(selectedHotspot()!.product.id)"
-                      (click)="addToCart(selectedHotspot()!.product, $event)">
-                <span *ngIf="cartService.isProductAdding(selectedHotspot()!.product.id)" class="spinner-border spinner-border-sm me-1"></span>
-                <i *ngIf="!cartService.isProductAdding(selectedHotspot()!.product.id)" class="pi pi-shopping-cart me-1"></i>
-                {{ 'ADD_TO_CART' | translate }}
-              </button>
+          <!-- Hotspots Container -->
+          <div class="slide-hotspots-overlay" *ngIf="sIdx === currentSlideIndex()">
+            <div 
+              *ngFor="let hotspot of slide.hotspots; let hIdx = index"
+              class="hotspot-point"
+              [style.top.%]="hotspot.y"
+              [style.left.%]="hotspot.x"
+              [class.active]="activeHotspot() === hotspot"
+              (click)="onHotspotClick(hotspot, $event)"
+              [style.animation-delay]="(hIdx * 150) + 'ms'"
+            >
+              <div class="hotspot-pulse"></div>
+              <div class="hotspot-dot"></div>
             </div>
           </div>
         </div>
-
       </div>
 
-      <!-- Mobile Product Preview Card (Drawer at Bottom of Section) -->
-      <div *ngIf="selectedHotspot() && isMobile()" 
-           class="mobile-product-drawer"
-           (click)="$event.stopPropagation()">
+      <!-- Floating Product Preview Card (Desktop overlay) -->
+      <div 
+        *ngIf="activeProduct() && !isMobile()"
+        class="floating-product-card reveal-card"
+        [style.top.%]="activeHotspot()?.y"
+        [style.left.%]="activeHotspot()?.x"
+        [ngClass]="getCardDirectionClass(activeHotspot()!.x, activeHotspot()!.y)"
+        (click)="$event.stopPropagation()"
+      >
+        <!-- Card Close control -->
+        <button class="close-card-btn" (click)="closePopup()" [aria-label]="isArabic() ? 'إغلاق' : 'Close'">
+          ✕
+        </button>
+
+        <!-- Dynamic Showcase Card wrapper -->
+        <div class="popup-card-content">
+          <app-showcase-product-card [product]="activeProduct()!" [isMobile]="false"></app-showcase-product-card>
+        </div>
+      </div>
+
+      <!-- Left / Right Slider Navigation Controls -->
+      <button 
+        type="button" 
+        class="slider-nav-arrow slider-nav-arrow--prev" 
+        (click)="prevSlide(); $event.stopPropagation()"
+        [aria-label]="isArabic() ? 'السابق' : 'Previous Slide'"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+
+      <button 
+        type="button" 
+        class="slider-nav-arrow slider-nav-arrow--next" 
+        (click)="nextSlide(); $event.stopPropagation()"
+        [aria-label]="isArabic() ? 'التالي' : 'Next Slide'"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+
+      <!-- Autoplay Pause / Play & Pagination Controls Row -->
+      <div class="slider-utilities-bar" (click)="$event.stopPropagation()">
+        <!-- Play / Pause switch -->
+        <button type="button" class="autoplay-toggle-btn" (click)="togglePlay()" [title]="isPlaying() ? 'Pause Autoplay' : 'Play Autoplay'">
+          <i class="bi" [ngClass]="isPlaying() ? 'bi-pause-fill' : 'bi-play-fill'"></i>
+        </button>
         
-        <!-- Drawer Header -->
-        <div class="drawer-header">
-          <span class="product-vendor">{{ selectedHotspot()!.product | localized: 'workshopName' }}</span>
-          <button class="close-drawer-btn" (click)="closeCard()">
-            <i class="pi pi-times"></i>
-          </button>
+        <div class="slider-bullets-rail">
+          <button 
+            *ngFor="let slide of slides(); let dotIdx = index"
+            type="button" 
+            class="slider-bullet-dot"
+            [class.bullet-active]="dotIdx === currentSlideIndex()"
+            (click)="selectSlide(dotIdx)"
+            [aria-label]="'Go to slide ' + (dotIdx + 1)"
+          ></button>
         </div>
-
-        <div class="drawer-body">
-          <!-- 3D Viewer inside mobile drawer -->
-          <div class="drawer-viewer-wrapper">
-            <app-three-d-viewer 
-              #mobileViewer
-              [productType]="selectedHotspot()!.type"
-              [glbUrl]="selectedHotspot()!.glbUrl">
-            </app-three-d-viewer>
-          </div>
-
-          <!-- Metadata -->
-          <div class="drawer-meta">
-            <h4 class="product-name">{{ selectedHotspot()!.product | localized: 'name' }}</h4>
-            <span class="product-price">{{ selectedHotspot()!.product.price | currencyFormat }}</span>
-          </div>
-
-          <!-- Try in your room AR button -->
-          <button class="btn btn-try-ar w-100 mt-2" (click)="mobileViewer.triggerAR()">
-            <i class="pi pi-camera"></i>
-            <span>{{ isArabic() ? 'جرب في غرفتك' : 'Try in your room' }}</span>
-          </button>
-        </div>
-
-        <!-- Action Row -->
-        <div class="drawer-actions">
-          <button class="btn btn-outline-fav" 
-                  [class.active]="isFavorited(selectedHotspot()!.product.id)"
-                  [disabled]="isTogglingFav()"
-                  (click)="toggleFavorite(selectedHotspot()!.product, $event)">
-            <i class="pi" [class.pi-heart-fill]="isFavorited(selectedHotspot()!.product.id)" [class.pi-heart]="!isFavorited(selectedHotspot()!.product.id)"></i>
-            {{ isArabic() ? 'المفضلة' : 'Favorite' }}
-          </button>
-          
-          <button class="btn btn-gold-action flex-grow-1" 
-                  [disabled]="cartService.isProductAdding(selectedHotspot()!.product.id)"
-                  (click)="addToCart(selectedHotspot()!.product, $event)">
-            <span *ngIf="cartService.isProductAdding(selectedHotspot()!.product.id)" class="spinner-border spinner-border-sm me-1"></span>
-            <i *ngIf="!cartService.isProductAdding(selectedHotspot()!.product.id)" class="pi pi-shopping-cart me-1"></i>
-            {{ 'ADD_TO_CART' | translate }}
-          </button>
-        </div>
-
       </div>
 
+    </div>
+
+    <!-- Mobile Product Preview Card (Drawer at Bottom of Viewport) -->
+    <div class="mobile-drawer-sheet" [class.drawer-open]="activeProduct() && isMobile()">
+      <div class="drawer-sheet-backdrop" (click)="closePopup()"></div>
+      <div class="drawer-sheet-wrapper">
+        <div class="drawer-sheet-handle"></div>
+        <button class="drawer-sheet-close-btn" (click)="closePopup()">✕</button>
+        
+        <div class="drawer-sheet-body" *ngIf="activeProduct()">
+          <app-showcase-product-card [product]="activeProduct()!" [isMobile]="true"></app-showcase-product-card>
+        </div>
+      </div>
     </div>
 
   </div>

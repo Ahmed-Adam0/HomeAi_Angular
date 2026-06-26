@@ -233,4 +233,22 @@ export class VendorProductService {
     console.groupEnd();
     return this.http.put<IProduct>(url, payload);
   }
+
+  /**
+   * Upload a 3D model file associated with a product.
+   * Targets: POST /api/Products/{productId}/3d-model
+   */
+  upload3DModel(productId: string | number, file: File): Observable<{ product3DModelUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ product3DModelUrl: string }>(`${this.apiUrl}Products/${productId}/3d-model`, formData);
+  }
+
+  /**
+   * Delete the 3D model associated with a product.
+   * Targets: DELETE /api/Products/{productId}/3d-model
+   */
+  delete3DModel(productId: string | number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}Products/${productId}/3d-model`);
+  }
 }

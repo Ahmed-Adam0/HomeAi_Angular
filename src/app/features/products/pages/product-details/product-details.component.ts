@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, signal, computed, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NgIf, NgFor, NgStyle, isPlatformBrowser, SlicePipe } from '@angular/common';
+import { NgIf, NgFor, NgStyle, NgClass, isPlatformBrowser, SlicePipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ProductService } from '../../services/product.service';
 import { FavoritesService } from '../../../favorites/services/favorites.service';
@@ -14,6 +14,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { UiState } from '../../../../core/state/ui.state';
 import { ProductReviewsComponent } from '../../components/product-reviews/product-reviews.component';
+import { ThreeDViewerComponent } from '../../../../shared/components/three-d-viewer/three-d-viewer.component';
 
 interface IConfigOption {
   id: number;
@@ -40,6 +41,7 @@ interface IConfigGroup {
     NgIf,
     NgFor,
     NgStyle,
+    NgClass,
     RouterLink,
     SkeletonLoader,
     CurrencyFormatPipe,
@@ -48,12 +50,30 @@ interface IConfigGroup {
     LocalizedPipe,
     ProductReviewsComponent,
     SlicePipe,
+    ThreeDViewerComponent,
   ],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.css',
 })
 export class ProductDetails implements OnInit, OnDestroy {
   @ViewChild('carouselViewport') carouselViewport?: ElementRef<HTMLElement>;
+  @ViewChild('detailsViewer') detailsViewerComponent?: ThreeDViewerComponent;
+
+  readonly show3DMode = signal<boolean>(false);
+
+  toggle3DMode(): void {
+    this.show3DMode.update(val => !val);
+  }
+
+  triggerAR(event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    if (this.detailsViewerComponent) {
+      this.detailsViewerComponent.triggerAR();
+    } else {
+      console.warn('3D Viewer component is not loaded for AR action.');
+    }
+  }
 
   private productService = inject(ProductService);
   private favoritesService = inject(FavoritesService);
@@ -246,6 +266,7 @@ export class ProductDetails implements OnInit, OnDestroy {
     this.error.set(null);
     this.notFound.set(false);
     this.currentProductId.set(id);
+    this.show3DMode.set(false);
 
     this.productService.getProductById(id).subscribe({
       next: (data) => {
@@ -288,6 +309,7 @@ export class ProductDetails implements OnInit, OnDestroy {
   }
 
   onMouseMove(event: MouseEvent): void {
+    if (this.show3DMode()) return;
     const container = event.currentTarget as HTMLElement;
     const rect = container.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width) * 100;

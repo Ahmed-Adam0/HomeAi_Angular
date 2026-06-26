@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { of, Subject, forkJoin } from 'rxjs';
-import { catchError, switchMap, takeUntil, debounceTime } from 'rxjs/operators';
+import { catchError, switchMap, takeUntil, debounceTime, map } from 'rxjs/operators';
 import { VendorProductService } from '../../services/vendor-product.service';
 import { CategoryService } from '../../../../features/categories/services/category.service';
 import { VendorService } from '../../services/vendor.service';
@@ -83,6 +83,12 @@ export class VendorProductAdd implements OnInit, OnDestroy {
   readonly localPreviews = signal<ILocalPreview[]>([]);
   readonly primaryIndex = signal<number>(0);
   isDragOver = signal<boolean>(false);
+
+  // 3D Model file upload variables
+  readonly selected3DModelFile = signal<File | null>(null);
+  readonly validationError3D = signal<string | null>(null);
+  readonly isUploading3D = signal<boolean>(false);
+  isDragOver3D = signal<boolean>(false);
 
   productForm!: FormGroup;
 
@@ -239,6 +245,145 @@ export class VendorProductAdd implements OnInit, OnDestroy {
             : 'Failed to load product details.'
         );
         this.close.emit();
+      }
+    });
+  }
+
+  // 3D model validation and handlers
+  validateAndSet3DModel(file: File): boolean {
+    this.validationError3D.set(null);
+    const allowedExtensions = ['.glb', '.gltf', '.fbx', '.obj'];
+    const fileName = file.name.toLowerCase();
+    const hasValidExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
+    if (!hasValidExtension) {
+      const isAr = this.translationService.currentLang() === 'ar';
+      this.validationError3D.set(
+        isAr 
+          ? 'امتداد الملف غير مدعوم. يرجى اختيار ملف بامتداد .glb, .gltf, .fbx, أو .obj.'
+          : 'Unsupported file extension. Please select a .glb, .gltf, .fbx, or .obj file.'
+      );
+      return false;
+    }
+    const maxSizeBytes = 20 * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      const isAr = this.translationService.currentLang() === 'ar';
+      this.validationError3D.set(
+        isAr
+          ? 'تجاوز حجم الملف الحد الأقصى (20 ميجابايت).'
+          : 'File size exceeds the 20MB limit.'
+      );
+      return false;
+    }
+    this.selected3DModelFile.set(file);
+    return true;
+  }
+
+  on3DModelSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      if (this.isEditMode()) {
+        this.upload3DModelImmediate(file);
+      } else {
+        this.validateAndSet3DModel(file);
+      }
+      input.value = '';
+    }
+  }
+
+  onDragOver3D(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver3D.set(true);
+  }
+
+  onDragLeave3D(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver3D.set(false);
+  }
+
+  onDrop3D(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver3D.set(false);
+    if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
+      const file = event.dataTransfer.files[0];
+      if (this.isEditMode()) {
+        this.upload3DModelImmediate(file);
+      } else {
+        this.validateAndSet3DModel(file);
+      }
+    }
+  }
+
+  remove3DModelLocal(): void {
+    this.selected3DModelFile.set(null);
+    this.validationError3D.set(null);
+  }
+
+  upload3DModelImmediate(file: File): void {
+    if (!this.validateAndSet3DModel(file)) return;
+    const isAr = this.translationService.currentLang() === 'ar';
+    const prodId = this.productIdInput();
+    if (!prodId) return;
+
+    this.isUploading3D.set(true);
+    this.uiState.showLoader();
+
+    this.vendorProductService.upload3DModel(prodId, file).subscribe({
+      next: (res) => {
+        this.isUploading3D.set(false);
+        this.uiState.hideLoader();
+        this.uiState.showAlert(
+          'success',
+          isAr ? 'تم رفع النموذج ثلاثي الأبعاد بنجاح.' : '3D model uploaded successfully.'
+        );
+        this.remove3DModelLocal();
+        this.loadProduct(prodId);
+      },
+      error: (err) => {
+        console.error('Failed to upload 3D model', err);
+        this.uiState.showAlert(
+          'danger',
+          isAr ? 'فشل رفع النموذج ثلاثي الأبعاد.' : 'Failed to upload 3D model.'
+        );
+        this.isUploading3D.set(false);
+        this.uiState.hideLoader();
+      }
+    });
+  }
+
+  async delete3DModelServer(): Promise<void> {
+    const isAr = this.translationService.currentLang() === 'ar';
+    const confirmed = await this.dialogService.openConfirm({
+      title: isAr ? 'حذف النموذج ثلاثي الأبعاد' : 'Delete 3D Model',
+      message: isAr ? 'هل أنت متأكد من رغبتك في حذف هذا النموذج ثلاثي الأبعاد؟' : 'Are you sure you want to delete this 3D model?',
+      confirmText: isAr ? 'حذف' : 'Delete',
+      cancelText: isAr ? 'إلغاء' : 'Cancel',
+    });
+    if (!confirmed) return;
+
+    const prodId = this.productIdInput();
+    if (!prodId) return;
+
+    this.uiState.showLoader();
+    this.vendorProductService.delete3DModel(prodId).subscribe({
+      next: () => {
+        this.uiState.hideLoader();
+        this.uiState.showAlert(
+          'success',
+          isAr ? 'تم حذف النموذج ثلاثي الأبعاد بنجاح.' : '3D model deleted successfully.'
+        );
+        this.loadProduct(prodId);
+      },
+      error: (err) => {
+        console.error('Failed to delete 3D model', err);
+        this.uiState.showAlert(
+          'danger',
+          isAr ? 'فشل حذف النموذج ثلاثي الأبعاد.' : 'Failed to delete 3D model.'
+        );
+        this.uiState.hideLoader();
       }
     });
   }
@@ -767,18 +912,29 @@ export class VendorProductAdd implements OnInit, OnDestroy {
       switchMap((createdProduct) => {
         const productId = createdProduct.id;
         
-        if (selectedFilesArray.length === 0) {
-          return of({ productId, images: [] });
-        }
-        
-        return this.vendorProductService.uploadImages(productId, selectedFilesArray, this.primaryIndex()).pipe(
-          switchMap((uploadedImages) => {
-            return of({ productId, images: uploadedImages });
+        const uploadImages$ = selectedFilesArray.length > 0
+          ? this.vendorProductService.uploadImages(productId, selectedFilesArray, this.primaryIndex()).pipe(
+              catchError((uploadErr) => {
+                console.error('Failed to upload images, but product created.', uploadErr);
+                throw new Error('image_upload_failed');
+              })
+            )
+          : of([]);
+
+        const modelFile = this.selected3DModelFile();
+        return uploadImages$.pipe(
+          switchMap(() => {
+            if (modelFile) {
+              return this.vendorProductService.upload3DModel(productId, modelFile).pipe(
+                catchError((modelErr) => {
+                  console.error('Failed to upload 3D model, but product created.', modelErr);
+                  throw new Error('3d_upload_failed');
+                })
+              );
+            }
+            return of(null);
           }),
-          catchError((uploadErr) => {
-            console.error('Failed to upload images, but product created.', uploadErr);
-            throw new Error('image_upload_failed');
-          })
+          map(() => createdProduct)
         );
       })
     ).subscribe({
@@ -788,8 +944,8 @@ export class VendorProductAdd implements OnInit, OnDestroy {
         this.uiState.showAlert(
           'success',
           isAr
-            ? 'تم إنشاء المنتج ورفع الصور بنجاح.'
-            : 'Product created and images uploaded successfully.'
+            ? 'تم إنشاء المنتج ورفع الملفات بنجاح.'
+            : 'Product created and files uploaded successfully.'
         );
         this.saved.emit();
         this.navigateToProducts();
@@ -804,6 +960,15 @@ export class VendorProductAdd implements OnInit, OnDestroy {
             isAr
               ? 'تم إنشاء المنتج ولكن فشل رفع الصور. يمكنك المحاولة مجدداً من صفحة التعديل.'
               : 'Product created, but image upload failed. You can retry from the Edit page.'
+          );
+          this.saved.emit();
+          this.navigateToProducts();
+        } else if (err.message === '3d_upload_failed') {
+          this.uiState.showAlert(
+            'warning',
+            isAr
+              ? 'تم إنشاء المنتج وصوره بنجاح. فشل رفع النموذج ثلاثي الأبعاد.'
+              : 'Product and images created successfully. 3D model upload failed.'
           );
           this.saved.emit();
           this.navigateToProducts();

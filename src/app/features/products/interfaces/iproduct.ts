@@ -71,6 +71,7 @@ export interface IProduct {
       priceDelta: number;
     }[];
   }[];
+  product3DModelUrl?: string | null;
 }
 
 export interface IProductImage {

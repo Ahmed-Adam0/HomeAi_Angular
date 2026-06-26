@@ -10,6 +10,7 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
     <div class="viewer-container">
       <model-viewer
         #modelViewer
+        *ngIf="glbUrl && !hasError()"
         [attr.src]="glbUrl"
         ar
         ar-modes="webxr scene-viewer quick-look"
@@ -25,7 +26,16 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
           <span class="loader-text">Loading 3D Model...</span>
         </div>
       </model-viewer>
-      <div class="viewer-instructions" *ngIf="!isLoading()">
+      
+      <!-- Error State visual fallback -->
+      <div class="viewer-error-box" *ngIf="hasError() || !glbUrl">
+        <div class="error-icon">⚠️</div>
+        <span class="error-text">
+          {{ hasError() ? 'Failed to load 3D model' : 'No 3D model source provided' }}
+        </span>
+      </div>
+
+      <div class="viewer-instructions" *ngIf="!isLoading() && !hasError() && glbUrl">
         <span>Drag to rotate | Scroll to zoom</span>
       </div>
     </div>
@@ -78,6 +88,24 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
       font-weight: 500;
       letter-spacing: 0.02em;
     }
+    .viewer-error-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #8c8375;
+      text-align: center;
+      padding: 24px;
+    }
+    .error-icon {
+      font-size: 24px;
+    }
+    .error-text {
+      font-size: 13px;
+      font-family: var(--fm-font-sans, sans-serif);
+      font-weight: 500;
+    }
     .viewer-instructions {
       position: absolute;
       bottom: 8px;
@@ -116,6 +144,7 @@ export class ThreeDViewerComponent implements OnInit, AfterViewInit, OnDestroy, 
   private platformId = inject(PLATFORM_ID);
   
   readonly isLoading = signal<boolean>(true);
+  readonly hasError = signal<boolean>(false);
 
   ngOnInit(): void {}
 
@@ -130,6 +159,7 @@ export class ThreeDViewerComponent implements OnInit, AfterViewInit, OnDestroy, 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['glbUrl']) {
       this.isLoading.set(true);
+      this.hasError.set(false);
     }
   }
 
@@ -137,10 +167,12 @@ export class ThreeDViewerComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   onModelLoad(): void {
     this.isLoading.set(false);
+    this.hasError.set(false);
   }
 
   onModelError(): void {
     this.isLoading.set(false);
+    this.hasError.set(true);
     console.error('Failed to load model-viewer GLB source:', this.glbUrl);
   }
 

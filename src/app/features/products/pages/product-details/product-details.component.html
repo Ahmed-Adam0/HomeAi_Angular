@@ -79,13 +79,51 @@
                  (mousemove)="onMouseMove($event)"
                  (mouseleave)="onMouseLeave()">
               
-              <div class="zoom-image-container-luxury">
+              <!-- Clean Tabs Selector at the top of the gallery box -->
+              <div class="gallery-modes-tabs" *ngIf="product()?.product3DModelUrl">
+                <button 
+                  type="button" 
+                  class="gallery-tab-btn" 
+                  [class.active]="!show3DMode()"
+                  (click)="show3DMode.set(false)"
+                >
+                  <i class="bi bi-images"></i>
+                  <span>{{ translationService.currentLang() === 'ar' ? 'الصور' : 'Photos' }}</span>
+                </button>
+                <button 
+                  type="button" 
+                  class="gallery-tab-btn" 
+                  [class.active]="show3DMode()"
+                  (click)="show3DMode.set(true)"
+                >
+                  <i class="bi bi-box-seam"></i>
+                  <span>{{ translationService.currentLang() === 'ar' ? 'نموذج ثلاثي الأبعاد' : '3D Model' }}</span>
+                </button>
+              </div>
+
+              <div class="zoom-image-container-luxury" *ngIf="!show3DMode()">
                 <img [src]="selectedImage()" 
                      [alt]="product() | localized:'name'" 
                      class="gallery-main-img-luxury" 
                      [class.transitioning]="imageTransitioning()"
                      [ngStyle]="zoomStyle()" />
               </div>
+
+              <!-- Reusable 3D Viewer Integration -->
+              <div class="three-d-viewer-wrap w-100 h-100" [style.display]="show3DMode() ? 'block' : 'none'" *ngIf="product()?.product3DModelUrl">
+                <app-three-d-viewer #detailsViewer [glbUrl]="product()?.product3DModelUrl!"></app-three-d-viewer>
+              </div>
+
+              <!-- Floating "Show in Your Room" AR Camera Button -->
+              <button 
+                *ngIf="product()?.product3DModelUrl"
+                type="button" 
+                class="details-ar-trigger-btn"
+                (click)="triggerAR($event)"
+              >
+                <i class="bi bi-camera"></i>
+                <span>{{ translationService.currentLang() === 'ar' ? 'جرب في غرفتك' : 'Show in Your Room' }}</span>
+              </button>
 
               <!-- Action Buttons Overlay -->
               <button class="favorite-toggle-luxury" 

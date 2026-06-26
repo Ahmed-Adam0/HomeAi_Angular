@@ -1,0 +1,91 @@
+<div class="showcase-card-container" [dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  
+  <!-- 1. Media Section (3D Viewer if exists, else static image) -->
+  <div class="showcase-media-box">
+    
+    <!-- Badges -->
+    <div class="showcase-badges">
+      <span *ngIf="getDiscountPercentage() > 0" class="badge-tag discount-tag">
+        -{{ getDiscountPercentage() }}%
+      </span>
+      <span *ngIf="isHot()" class="badge-tag hot-tag">
+        {{ 'PRODUCT_HOT' | translate }}
+      </span>
+    </div>
+
+    <!-- Favorite Button -->
+    <button 
+      type="button" 
+      class="showcase-fav-btn" 
+      [class.is-fav]="isFavorite()"
+      [disabled]="isTogglingFav()"
+      (click)="toggleFavorite($event)"
+      aria-label="Toggle Wishlist"
+    >
+      <i class="bi" [ngClass]="isFavorite() ? 'bi-heart-fill' : 'bi-heart'"></i>
+    </button>
+
+    <!-- 3D Interactive Viewer -->
+    <div class="showcase-viewer-container" *ngIf="product.product3DModelUrl; else staticImage">
+      <app-three-d-viewer 
+        #viewer 
+        [glbUrl]="product.product3DModelUrl">
+      </app-three-d-viewer>
+
+      <!-- Try AR Floating Button -->
+      <button 
+        type="button" 
+        class="showcase-ar-overlay-btn" 
+        (click)="triggerAR($event)"
+      >
+        <i class="bi bi-camera"></i>
+        <span>{{ translationService.currentLang() === 'ar' ? 'جرب في غرفتك' : 'Show in Your Room' }}</span>
+      </button>
+    </div>
+
+    <!-- Static Image Fallback -->
+    <ng-template #staticImage>
+      <div class="showcase-image-wrap" [routerLink]="['/products', product.id]">
+        <img [src]="product.mainImageUrl" [alt]="product | localized:'name'" class="showcase-static-img" />
+      </div>
+    </ng-template>
+
+  </div>
+
+  <!-- 2. Product Information & Pricing -->
+  <div class="showcase-info-box">
+    
+    <div class="showcase-metadata-row">
+      <span class="showcase-category">{{ product | localized:'categoryName' }}</span>
+      <span class="showcase-brand" *ngIf="product.workshopNameEn">{{ product | localized:'workshopName' }}</span>
+    </div>
+
+    <h4 class="showcase-product-title" [routerLink]="['/products', product.id]">
+      {{ product | localized:'name' }}
+    </h4>
+
+    <div class="showcase-footer-row">
+      <div class="showcase-price-layout">
+        <span class="showcase-current-price" [class.discounted-active]="getDiscountPercentage() > 0">
+          {{ product.price | currencyFormat }}
+        </span>
+        <span *ngIf="getDiscountPercentage() > 0" class="showcase-old-price">
+          {{ getOldPrice() | currencyFormat }}
+        </span>
+      </div>
+
+      <!-- Add to Cart Button -->
+      <button 
+        type="button" 
+        class="showcase-add-cart-btn" 
+        [disabled]="cartService.isProductAdding(product.id)" 
+        (click)="addToCart($event)"
+      >
+        <span *ngIf="cartService.isProductAdding(product.id)" class="spinner-border spinner-border-sm"></span>
+        <i *ngIf="!cartService.isProductAdding(product.id)" class="bi bi-bag-plus"></i>
+      </button>
+    </div>
+
+  </div>
+
+</div>
