@@ -6,7 +6,7 @@
            [class.active]="$index === currentSlideIndex()"
            [class.previous]="$index === previousSlideIndex() && isTransitioning()"
            [class.transitioning]="$index === currentSlideIndex() && isTransitioning()">
-        
+
         <!-- Image Canvas -->
         <div class="slide-media-wrapper">
           <img [src]="slide.image" [alt]="translate(slide.titleKey)" class="slide-image" />
@@ -16,8 +16,8 @@
         <!-- Typography overlay (Left-aligned, minimal, luxury-styled) -->
         <div class="hero-content-wrapper">
           <div class="hero-content">
-            <span class="hero-subtitle">✦ CozyCorner Collection</span>
-            
+            <span class="hero-subtitle">✦ FurniMind Collection</span>
+
             <h1 class="hero-title">
               @for (word of getWords(translate(slide.titleKey)); track $index) {
                 <span class="word-mask">
@@ -51,8 +51,8 @@
   @if (isTransitioning()) {
     <div class="transition-slices-container">
       @for (slice of slices; track slice.index) {
-        <div class="slice-panel" 
-             [style.clip-path]="slice.startClip" 
+        <div class="slice-panel"
+             [style.clip-path]="slice.startClip"
              [attr.data-slice-index]="slice.index">
           <img [src]="slides[previousSlideIndex()].image" class="slice-image-el" />
         </div>

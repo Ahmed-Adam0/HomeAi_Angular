@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FURNIMIND AI - COZYCORNER MODERN HERO SECTION STYLES
+   FURNIMIND AI - FurniMind MODERN HERO SECTION STYLES
    ========================================================================== */
 
 :host {
@@ -435,17 +435,17 @@
     height: 100vh;
     min-height: 550px;
   }
-  
+
   .hero-content-wrapper,
   .hero-floating-categories {
     padding-inline-start: 1.5rem;
     padding-inline-end: 1.5rem;
   }
-  
+
   .hero-indicators-bar {
     display: none; /* Hide side dots on small screens for layout space */
   }
-  
+
   .hero-title {
     line-height: 1.15;
   }
