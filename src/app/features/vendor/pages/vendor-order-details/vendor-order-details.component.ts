@@ -52,6 +52,7 @@ export class VendorOrderDetails implements OnInit {
   protected readonly VendorOrderStatus = VendorOrderStatus;
 
   readonly order = signal<IVendorOrder | null>(null);
+  readonly remainingBalanceDetails = signal<any | null>(null);
   readonly loading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
   readonly selectedStatus = signal<VendorOrderStatus | null>(null);
@@ -294,6 +295,7 @@ export class VendorOrderDetails implements OnInit {
           this.order.set(orderData);
           this.selectedStatus.set(orderData.status);
           this.loading.set(false);
+          this.loadRemainingBalance(id);
         },
         error: (err) => {
           console.error('Failed to load vendor order details:', err);
@@ -301,6 +303,17 @@ export class VendorOrderDetails implements OnInit {
           this.loading.set(false);
         },
       });
+  }
+
+  private loadRemainingBalance(id: string): void {
+    this.vendorService.getVendorOrderRemainingBalance(id).subscribe({
+      next: (breakdown) => {
+        this.remainingBalanceDetails.set(breakdown);
+      },
+      error: (err) => {
+        console.error('Failed to load vendor order remaining balance:', err);
+      }
+    });
   }
 
   onStatusSelection(event: Event): void {
@@ -408,7 +421,30 @@ export class VendorOrderDetails implements OnInit {
         },
         error: (err) => {
           console.error('Failed to propose delivery date:', err);
-          this.uiState.showAlert('danger', err.message || this.translationService.translate('VENDOR.ORDER_DETAILS.PROPOSE_DATE_ERROR'));
+          let errorMsg = '';
+          if (err && err.error) {
+            if (typeof err.error === 'string') {
+              errorMsg = err.error;
+            } else if (err.error.message) {
+              errorMsg = err.error.message;
+            } else if (err.error.errors) {
+              const messages: string[] = [];
+              for (const key in err.error.errors) {
+                if (Array.isArray(err.error.errors[key])) {
+                  messages.push(...err.error.errors[key]);
+                } else {
+                  messages.push(err.error.errors[key]);
+                }
+              }
+              if (messages.length > 0) {
+                errorMsg = messages.join(' ');
+              }
+            }
+          }
+          if (!errorMsg) {
+            errorMsg = err.message || this.translationService.translate('VENDOR.ORDER_DETAILS.PROPOSE_DATE_ERROR');
+          }
+          this.uiState.showAlert('danger', errorMsg);
           this.isProposingDate.set(false);
         }
       });

@@ -64,7 +64,7 @@ export class OrdersFacade {
         orderNumber: o.orderNumber,
         createdAt: o.createdAt,
         totalAmount: o.totalAmount,
-        orderStatus: o.status,
+        orderStatus: this.displayStatusFor(o),
         paymentStatus: o.paymentStatus,
       }));
   });
@@ -272,6 +272,37 @@ export class OrdersFacade {
       .subscribe();
   }
 
+  normalizeStatus(val: string | undefined | null): OrderStatus {
+    if (!val) return 'pending';
+    const lower = val.toLowerCase();
+    if (lower === 'awaitingcustomerapproval' || lower === 'awaiting_customer_approval') return 'awaiting_customer_approval';
+    if (lower === 'pendingpayment' || lower === 'pending_payment') return 'pending_payment';
+    if (lower === 'confirmed') return 'confirmed';
+    if (lower === 'inprogress' || lower === 'in progress' || lower === 'in_progress' || lower === 'processing') return 'in_progress';
+    if (lower === 'shipped' || lower === 'ready') return 'shipped';
+    if (lower === 'delivered' || lower === 'completed') return 'delivered';
+    if (lower === 'cancelled') return 'cancelled';
+    if (lower === 'refunded') return 'refunded';
+    if (lower === 'returned') return 'returned';
+    return 'pending';
+  }
+
+  displayStatusFor(order: IOrder): OrderStatus {
+    const status = order.status;
+    const history = order.statusHistory;
+    const isTerminalNegative = status === 'cancelled' || status === 'refunded' || status === 'returned';
+
+    if (isTerminalNegative) {
+      if (history?.oldStatus) {
+        return this.normalizeStatus(history.oldStatus);
+      }
+      return 'pending';
+    } else if (history?.newStatus) {
+      return this.normalizeStatus(history.newStatus);
+    }
+    return this.normalizeStatus(status);
+  }
+
   /**
    * Generates step view models for the status timeline component.
    */
@@ -283,8 +314,6 @@ export class OrdersFacade {
     // Sequence of steps shown in the timeline
     const coreSequence: OrderStatus[] = [
       'pending',
-      'awaiting_customer_approval',
-      'pending_payment',
       'confirmed',
       'in_progress',
       'shipped',
@@ -297,38 +326,13 @@ export class OrdersFacade {
     }
 
     // Determine the base status for normal steps completion mapping
-    let baseStatus: OrderStatus = status;
-    if (isTerminalNegative) {
-      if (history?.oldStatus) {
-        const mappedOld = history.oldStatus.toLowerCase();
-        baseStatus = (
-          mappedOld === 'awaitingcustomerapproval' || mappedOld === 'awaiting_customer_approval'
-            ? 'awaiting_customer_approval'
-            : mappedOld === 'pendingpayment' || mappedOld === 'pending_payment'
-            ? 'pending_payment'
-            : mappedOld === 'confirmed'
-            ? 'confirmed'
-            : mappedOld === 'inprogress' || mappedOld === 'in progress' || mappedOld === 'in_progress' || mappedOld === 'processing'
-            ? 'in_progress'
-            : mappedOld === 'shipped' || mappedOld === 'ready'
-            ? 'shipped'
-            : mappedOld === 'delivered' || mappedOld === 'completed'
-            ? 'delivered'
-            : 'pending'
-        ) as OrderStatus;
-      } else {
-        baseStatus = 'pending';
-      }
-    }
+    let baseStatusKey = this.displayStatusFor(order);
 
-    // Map base status to one of the core sequence steps for indexing
-    let baseStatusKey: OrderStatus = baseStatus;
-    if (baseStatus === 'processing') {
-      baseStatusKey = 'in_progress';
-    } else if (baseStatus === 'ready') {
-      baseStatusKey = 'shipped';
-    } else if (baseStatus === 'completed') {
-      baseStatusKey = 'delivered';
+
+
+    // Map the removed intermediate statuses to 'pending' for the visual timeline
+    if (baseStatusKey === 'awaiting_customer_approval' || baseStatusKey === 'pending_payment') {
+      baseStatusKey = 'pending';
     }
 
     const baseActiveIndex = coreSequence.indexOf(baseStatusKey);

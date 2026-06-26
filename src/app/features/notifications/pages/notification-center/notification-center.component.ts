@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, finalize } from 'rxjs';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { NotificationTitlePipe, NotificationMessagePipe } from '../../../../shared/pipes/notification-translation.pipe';
 import { NotificationService } from '../../services/notification.service';
 import { NotificationHubService } from '../../services/notification-hub.service';
 import { NotificationsMappedResult } from '../../data-access/mappers/notification.mapper';
@@ -29,7 +30,7 @@ export interface PaginationMeta {
 @Component({
   selector: 'app-notification-center-page',
   standalone: true,
-  imports: [DatePipe, TranslatePipe],
+  imports: [DatePipe, TranslatePipe, NotificationTitlePipe, NotificationMessagePipe],
   templateUrl: './notification-center.component.html',
   styleUrl: './notification-center.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

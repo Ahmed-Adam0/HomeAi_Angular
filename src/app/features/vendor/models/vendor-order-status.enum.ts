@@ -37,8 +37,8 @@ export function mapToOrderStatusPayload(status: VendorOrderStatus): OrderStatus 
 export const ALLOWED_TRANSITIONS: Record<VendorOrderStatus, readonly VendorOrderStatus[]> = {
   [VendorOrderStatus.Pending]: [VendorOrderStatus.AwaitingCustomerApproval, VendorOrderStatus.Cancelled],
   [VendorOrderStatus.AwaitingCustomerApproval]: [VendorOrderStatus.PendingPayment, VendorOrderStatus.Cancelled],
-  [VendorOrderStatus.PendingPayment]: [VendorOrderStatus.Confirmed, VendorOrderStatus.Cancelled],
-  [VendorOrderStatus.Confirmed]: [VendorOrderStatus.InProgress, VendorOrderStatus.Cancelled],
+  [VendorOrderStatus.PendingPayment]: [VendorOrderStatus.Confirmed],
+  [VendorOrderStatus.Confirmed]: [VendorOrderStatus.InProgress],
   [VendorOrderStatus.InProgress]: [VendorOrderStatus.Shipped],
   [VendorOrderStatus.Shipped]: [VendorOrderStatus.Delivered],
   [VendorOrderStatus.Delivered]: [],

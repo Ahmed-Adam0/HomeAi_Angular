@@ -57,6 +57,25 @@ export class PaymentService {
     ).pipe(map((res) => unwrap<IInitiateMasterOrderPaymentResponse>(res)));
   }
 
+  initiateVendorOrderPayment(payload: { vendorOrderId: number }): Observable<{ paymentUrl: string }> {
+    return this.http.post<{ paymentUrl: string }>(
+      `${environment.apiUrl}${API_URLS.PAYMENTS.INITIATE_VENDORORDER}`,
+      payload
+    ).pipe(map((res) => unwrap<{ paymentUrl: string }>(res)));
+  }
+
+  getMasterOrderRemainingBalance(masterOrderId: number | string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}${API_URLS.PAYMENTS.MASTERORDER_REMAINING_BALANCE(masterOrderId)}`
+    ).pipe(map((res) => unwrap<any>(res)));
+  }
+
+  getVendorOrderRemainingBalance(vendorOrderId: number | string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}${API_URLS.PAYMENTS.VENDORORDER_REMAINING_BALANCE(vendorOrderId)}`
+    ).pipe(map((res) => unwrap<any>(res)));
+  }
+
   processPayment(transactionId: string): Observable<{ success: boolean; message: string }> {
     return of({ success: true, message: 'Payment authorized successfully.' });
   }

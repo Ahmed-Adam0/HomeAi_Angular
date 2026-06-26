@@ -89,19 +89,26 @@
         </div>
 
         <!-- Badge metadata row -->
-        <div class="d-flex flex-wrap gap-2.5 mt-3 pt-3 border-top border-light">
-          <app-status-badge [label]="order()!.paymentStatus | statusTranslation:'payment'"
-            [tone]="paymentStatusTone(order()!.paymentStatus)" size="md" />
-          <app-status-badge [label]="order()!.status | statusTranslation:'order'"
-            [tone]="orderStatusTone(order()!.status)" size="md" />
-          @if (order()!.status === 'delivered') {
-            <button class="btn-share-badge badge-md animate-fade-in" (click)="onShareTransformation()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="me-1 inline-icon">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
-              <span>{{ 'ORDERS_SHARE_TRANSFORMATION' | translate }}</span>
-            </button>
+        <div class="d-flex flex-wrap align-items-center gap-3 mt-3 pt-3 border-top border-light">
+          <div class="d-flex align-items-center gap-2">
+            <span class="text-muted small fw-semibold">{{ 'ORDER_DETAILS_PAYMENT_STATUS' | translate }}:</span>
+            <app-status-badge [label]="calculatedPaymentStatus() | statusTranslation:'payment'"
+              [tone]="facade.paymentStatusTone(calculatedPaymentStatus())" size="md" />
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="text-muted small fw-semibold">{{ 'ORDER_DETAILS_ORDER_STATUS' | translate }}:</span>
+            <app-status-badge [label]="facade.displayStatusFor(order()!) | statusTranslation:'order'"
+              [tone]="facade.orderStatusTone(facade.displayStatusFor(order()!))" size="md" />
+          </div>
+          @if (facade.displayStatusFor(order()!) === 'delivered') {
+          <button class="btn-share-badge badge-md animate-fade-in" (click)="onShareTransformation()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor"
+              stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="me-1 inline-icon">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+              <circle cx="12" cy="13" r="4" />
+            </svg>
+            <span>{{ 'ORDERS_SHARE_TRANSFORMATION' | translate }}</span>
+          </button>
           }
           @if (order()!.trackingNumber) {
           <div
@@ -144,7 +151,8 @@
           </app-button>
           }
 
-          @if (order()!.status !== 'cancelled' && order()!.status !== 'refunded' && order()!.status !== 'returned' && order()!.status !== 'delivered' && order()!.status !== 'completed') {
+          @if (order()!.status !== 'cancelled' && order()!.status !== 'refunded' && order()!.status !== 'returned' &&
+          order()!.status !== 'delivered' && order()!.status !== 'completed') {
           <app-button class="cancel-btn-premium" variant="danger" size="md" [disabled]="!facade.canModifyOrder()"
             [isLoading]="facade.isCancelling()" (clicked)="onCancel()">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -168,38 +176,44 @@
         <div class="d-flex align-items-center gap-3 flex-wrap flex-md-nowrap">
           <!-- Left Icon Box -->
           <div class="status-activity-icon-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
           </div>
-          
+
           <!-- Content Box -->
           <div class="flex-grow-1 min-w-0">
             <div class="status-activity-label text-muted small fw-bold text-uppercase tracking-wider mb-2">
               {{ 'ORDER_DETAILS_LATEST_STATUS' | translate }}
             </div>
-            
+
             <div class="status-activity-flow d-flex align-items-center flex-wrap gap-2.5">
               @if (history.oldStatus) {
-                <span class="status-activity-text text-secondary">{{ 'ORDER_DETAILS_TRANSITIONED_FROM' | translate }}</span>
-                <app-status-badge [label]="history.oldStatus | statusTranslation:'order'" tone="neutral" size="sm" />
-                
-                <span class="status-activity-arrow">
-                  <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </span>
-                
-                <span class="status-activity-text text-secondary">{{ 'ORDER_DETAILS_TRANSITIONED_TO' | translate }}</span>
+              <span class="status-activity-text text-secondary">{{ 'ORDER_DETAILS_TRANSITIONED_FROM' | translate
+                }}</span>
+              <app-status-badge [label]="history.oldStatus | statusTranslation:'order'" tone="neutral" size="sm" />
+
+              <span class="status-activity-arrow">
+                <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+
+              <span class="status-activity-text text-secondary">{{ 'ORDER_DETAILS_TRANSITIONED_TO' | translate }}</span>
               } @else {
-                <span class="status-activity-text text-secondary">{{ 'ORDER_DETAILS_STATUS_UPDATED_TO' | translate }}</span>
+              <span class="status-activity-text text-secondary">{{ 'ORDER_DETAILS_STATUS_UPDATED_TO' | translate
+                }}</span>
               }
-              
-              <app-status-badge [label]="history.newStatus | statusTranslation:'order'" [tone]="historyStatusTone(history.newStatus)" size="sm" />
+
+              <app-status-badge [label]="history.newStatus | statusTranslation:'order'"
+                [tone]="historyStatusTone(history.newStatus)" size="sm" />
             </div>
           </div>
-          
+
           <!-- Right Date/Time -->
           <div class="status-activity-time text-md-end text-start mt-2 mt-md-0 ps-md-4">
             <span class="d-block text-muted small mb-0.5">{{ 'ORDER_DETAILS_TRANSITIONED_ON' | translate }}</span>
@@ -208,14 +222,15 @@
         </div>
       </div>
       }
-      @if (order()?.status === 'delivered') {
+      @if (facade.displayStatusFor(order()!) === 'delivered') {
       <div class="share-transformation-cta-card card-premium mt-4 p-4 animate-fade-in text-center text-md-start">
         <div class="d-flex flex-column flex-md-row align-items-center gap-4">
           <!-- Celebration Graphic Icon -->
           <div class="celebration-icon-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="sparkle-icon">
-              <path d="M12 3v1m0 16v1M3 12h1m16 0h1m-2.2-7.8l-.7.7m-12.1 11.4l-.7.7m13.5 0l-.7-.7M5.6 5.6l-.7.7"/>
-              <path d="M12 8l1.5 2.5L16 12l-2.5 1.5L12 16l-1.5-2.5L8 12l2.5-1.5z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="sparkle-icon">
+              <path d="M12 3v1m0 16v1M3 12h1m16 0h1m-2.2-7.8l-.7.7m-12.1 11.4l-.7.7m13.5 0l-.7-.7M5.6 5.6l-.7.7" />
+              <path d="M12 8l1.5 2.5L16 12l-2.5 1.5L12 16l-1.5-2.5L8 12l2.5-1.5z" />
             </svg>
           </div>
           <!-- Message text -->
@@ -230,9 +245,10 @@
           <!-- Action Button -->
           <div class="flex-shrink-0">
             <button class="btn-share-transformation" (click)="onShareTransformation()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 inline-icon">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 inline-icon">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
               </svg>
               {{ 'ORDER_DETAILS_SHARE_TRANSFORMATION_BTN' | translate }}
             </button>
@@ -259,8 +275,8 @@
                   <h4 class="fw-bold text-dark fs-5 mb-0">
                     {{ 'VENDOR_ORDER' | translate }} #{{ vo.id }}
                   </h4>
-                  <app-status-badge [label]="vo.status | statusTranslation:'order'"
-                    [tone]="orderStatusTone(vo.status)" size="sm" />
+                  <app-status-badge [label]="vo.status | statusTranslation:'order'" [tone]="orderStatusTone(vo.status)"
+                    size="sm" />
                 </div>
                 @if (vo.items[0]?.workshopNameEn) {
                 <p class="text-muted small mb-0 font-medium">
@@ -344,6 +360,55 @@
               </div>
               }
             </div>
+
+            <!-- Milestones Breakdown for this vendor order -->
+            @if (remainingBalanceDetails(); as breakdown) {
+            @if (getMilestonesForVendorOrder(vo); as voMilestones) {
+            @if (voMilestones.length > 0) {
+            <div class="vo-milestones-breakdown mt-4 pt-3 border-top border-light">
+              <h5 class="small fw-bold text-uppercase text-secondary tracking-wider mb-3">
+                {{ 'ORDER_DETAILS_PAYMENT_MILESTONES' | translate }}
+              </h5>
+              <div class="d-flex flex-column gap-2">
+                @for (m of voMilestones; track m.milestoneId) {
+                <div class="d-flex align-items-center justify-content-between p-3 rounded border"
+                  style="border-radius: 12px; background: rgba(184, 147, 92, 0.02); border-color: rgba(184, 147, 92, 0.1) !important;">
+                  <div class="d-flex align-items-center gap-2.5">
+                    <span class="milestone-dot" [class.paid]="m.isPaid" [class.due]="isMilestoneDue(vo, m)"
+                      style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"
+                      [style.background-color]="m.isPaid ? '#22c55e' : (isMilestoneDue(vo, m) ? '#f59e0b' : '#cbd5e1')">
+                    </span>
+                    <div>
+                      <span class="small fw-bold text-dark">
+                        {{ 'MILESTONE_STATUS_' + (m.milestoneStatus | uppercase) | translate }}
+                      </span>
+                      @if (m.isPaid) {
+                      <span class="text-success font-mono font-xs ms-2 small">
+                        ✓ Paid ({{ m.paidAt | date: 'dd/MM/yyyy' }})
+                      </span>
+                      } @else if (isMilestoneDue(vo, m)) {
+                      <span class="text-warning font-mono font-xs ms-2 small">
+                        ⚠ Due
+                      </span>
+                      }
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center gap-3">
+                    <span class="small fw-bold text-dark">{{ m.amount | currencyFormat }}</span>
+                    @if (isMilestoneDue(vo, m)) {
+                    <app-button variant="primary" size="sm" [disabled]="isInitiatingVendorPayment()[vo.id]"
+                      [isLoading]="isInitiatingVendorPayment()[vo.id]" (clicked)="onPayVendorOrderMilestone(vo.id)">
+                      {{ 'PAY_NOW' | translate }}
+                    </app-button>
+                    }
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+            }
+            }
+            }
           </div>
           }
           } @else {
@@ -387,7 +452,8 @@
 
             <div class="details-kv p-4">
               <div class="details-kv-row d-flex justify-content-between align-items-center py-2.5">
-                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_PAYMENT_METHOD' | translate }}</span>
+                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_PAYMENT_METHOD' | translate
+                  }}</span>
                 <span class="details-v text-dark fw-bold">
                   {{ 'PAYMENT_METHOD_' + (order()!.paymentMethod.split(' ').join('_') | uppercase) | translate }}
                 </span>
@@ -395,35 +461,70 @@
 
               <div
                 class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
-                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_PAYMENT_STATUS' | translate }}</span>
+                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_PAYMENT_STATUS' | translate
+                  }}</span>
                 <div class="details-v">
-                  <app-status-badge [label]="order()!.paymentStatus | statusTranslation:'payment'"
-                    [tone]="paymentStatusTone(order()!.paymentStatus)" size="sm" />
+                  <app-status-badge [label]="calculatedPaymentStatus() | statusTranslation:'payment'"
+                    [tone]="facade.paymentStatusTone(calculatedPaymentStatus())" size="sm" />
                 </div>
               </div>
 
               @if (hasPendingPaymentOrders()) {
-                <div class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
-                  <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_PAID' | translate }}</span>
-                  <span class="details-v text-dark fw-bold font-sans">{{ amountPaid() | currencyFormat }}</span>
-                </div>
-                <div class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
-                  <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_TO_PAY' | translate }}</span>
-                  <span class="details-v text-gradient-gold fw-bold font-sans fs-5">{{ pendingPaymentTotal() | currencyFormat }}</span>
-                </div>
+              @if (activeVendorOrdersTotal() > 0) {
+              <div
+                class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
+                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_TOTAL' | translate }}</span>
+                <span class="details-v text-dark fw-bold font-sans">{{ activeVendorOrdersTotal() | currencyFormat
+                  }}</span>
+              </div>
+              }
+              <div
+                class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
+                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_PAID' | translate }}</span>
+                <span class="details-v text-dark fw-bold font-sans">{{ amountPaid() | currencyFormat }}</span>
+              </div>
+              @if (amountToPay() > 0) {
+              <div
+                class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
+                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_TO_PAY' | translate
+                  }}</span>
+                <span class="details-v text-gradient-gold fw-bold font-sans fs-5">{{ amountToPay() | currencyFormat
+                  }}</span>
+              </div>
+              }
               } @else if (order()!.paymentStatus === 'refunded') {
-                <div class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
-                  <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_REFUNDED' | translate }}</span>
-                  <span class="details-v text-danger fw-bold font-sans">{{ order()!.totalAmount | currencyFormat }}</span>
-                </div>
+              <div
+                class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
+                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_REFUNDED' | translate
+                  }}</span>
+                <span class="details-v text-danger fw-bold font-sans">{{ order()!.totalAmount | currencyFormat }}</span>
+              </div>
               } @else {
-                <div class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
-                  <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_PAID' | translate }}</span>
-                  <span class="details-v text-dark fw-bold font-sans">{{ amountPaid() | currencyFormat }}</span>
-                </div>
+              @if (activeVendorOrdersTotal() > 0) {
+              <div
+                class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
+                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_TOTAL' | translate }}</span>
+                <span class="details-v text-dark fw-bold font-sans">{{ activeVendorOrdersTotal() | currencyFormat
+                  }}</span>
+              </div>
+              }
+              <div
+                class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
+                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_PAID' | translate }}</span>
+                <span class="details-v text-dark fw-bold font-sans">{{ amountPaid() | currencyFormat }}</span>
+              </div>
+              @if (amountToPay() > 0) {
+              <div
+                class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
+                <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_TO_PAY' | translate
+                  }}</span>
+                <span class="details-v text-gradient-gold fw-bold font-sans fs-5">{{ amountToPay() | currencyFormat
+                  }}</span>
+              </div>
+              }
               }
 
-              @if (hasPendingPaymentOrders()) {
+              @if (amountToPay() > 0) {
               <div class="border-top border-light mt-3 pt-3">
                 <app-button variant="primary" size="lg" class="w-100 d-block" [isLoading]="isInitiatingPayment()"
                   [disabled]="isInitiatingPayment()" (clicked)="onPayApprovedOrders()">
@@ -499,7 +600,9 @@
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
               </button>
-              <input type="number" formControlName="quantity" class="qty-input" min="1" max="99" readonly (keydown)="$event.preventDefault()" (paste)="$event.preventDefault()" (drop)="$event.preventDefault()" (wheel)="$event.preventDefault()" appAutoDir />
+              <input type="number" formControlName="quantity" class="qty-input" min="1" max="99" readonly
+                (keydown)="$event.preventDefault()" (paste)="$event.preventDefault()" (drop)="$event.preventDefault()"
+                (wheel)="$event.preventDefault()" appAutoDir />
               <button type="button" class="qty-btn qty-btn-plus" (click)="adjustQuantity(i, 1)"
                 [disabled]="(item.value.quantity ?? 0) >= 99" aria-label="Increase quantity">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -534,4 +637,4 @@
     </app-modal>
 
   </div>
-</div>
+</div>
