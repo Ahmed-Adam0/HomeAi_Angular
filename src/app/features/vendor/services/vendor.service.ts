@@ -69,6 +69,12 @@ export class VendorService {
       .pipe(map(mapVendorOrderDetails));
   }
 
+  getVendorOrderRemainingBalance(vendorOrderId: number | string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}payments/vendororder/${vendorOrderId}/remaining-balance`
+    );
+  }
+
 
   updateOrderStatus(orderId: number, status: OrderStatus): Observable<StatusUpdateResponse> {
     const requestBody = { newStatus: status };

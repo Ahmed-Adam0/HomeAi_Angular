@@ -47,6 +47,9 @@ export const API_URLS = {
     PAYMOB_WEBHOOK: 'payments/paymob/webhook',
     PAYMOB_CALLBACK: 'payments/paymob/callback',
     INITIATE_MASTERORDER: 'payments/paymob/initiate-masterorder',
+    INITIATE_VENDORORDER: 'payments/paymob/initiate-vendororder',
+    MASTERORDER_REMAINING_BALANCE: (masterOrderId: number | string) => `payments/masterorder/${masterOrderId}/remaining-balance`,
+    VENDORORDER_REMAINING_BALANCE: (vendorOrderId: number | string) => `payments/vendororder/${vendorOrderId}/remaining-balance`,
   },
   AI: {
     RECOMMEND: 'ai/recommend',

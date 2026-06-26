@@ -118,13 +118,13 @@
                   @if (!notification.isRead) {
                     <span class="notification-card__unread-dot" aria-hidden="true"></span>
                   }
-                  {{ notification.title }}
+                  {{ notification.title | notificationTitle }}
                 </h3>
                 <time class="notification-card__time">
                   {{ notification.createdAt | date:'medium' }}
                 </time>
               </div>
-              <p class="notification-card__message">{{ notification.message }}</p>
+              <p class="notification-card__message">{{ notification.message | notificationMessage:notification.title }}</p>
             </div>
             @if (!notification.isRead) {
               <div class="notification-card__actions" (click)="$event.stopPropagation()">
