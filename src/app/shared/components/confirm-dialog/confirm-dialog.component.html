@@ -1,6 +1,19 @@
-@if (visible()) {
-  <div class="confirm-overlay" (click)="onBackdropClick()">
-    <div class="confirm-card" [class.confirm-danger]="variant() === 'danger'" [class.confirm-warning]="variant() === 'warning'" [class.confirm-info]="variant() === 'info'" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+@if (showOverlay()) {
+  <div
+    class="confirm-overlay"
+    [class.confirm-overlay-closing]="closing()"
+    (click)="onBackdropClick()"
+  >
+    <div
+      class="confirm-card"
+      [class.confirm-danger]="variant() === 'danger'"
+      [class.confirm-warning]="variant() === 'warning'"
+      [class.confirm-info]="variant() === 'info'"
+      [class.confirm-card-closing]="closing()"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+    >
       <div class="confirm-icon-wrapper">
         @switch (variant()) {
           @case ('danger') {

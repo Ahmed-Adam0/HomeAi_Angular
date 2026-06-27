@@ -551,14 +551,4 @@
   @if (isUpdatingStatus()) {
     <app-loading-spinner [overlay]="true" message="Updating order status..."></app-loading-spinner>
   }
-
-  <app-confirm-dialog
-    [visible]="isConfirmDialogVisible()"
-    [title]="'VENDOR.ORDER_DETAILS.UPDATE_STATUS_CONFIRM_TITLE' | translate"
-    [message]="confirmDialogMessage()"
-    [confirmText]="'VENDOR.ORDER_DETAILS.UPDATE_STATUS' | translate"
-    [cancelText]="'COMMON.CANCEL' | translate"
-    (confirm)="confirmStatusUpdate()"
-    (cancel)="closeConfirmDialog()"
-  ></app-confirm-dialog>
 </main>

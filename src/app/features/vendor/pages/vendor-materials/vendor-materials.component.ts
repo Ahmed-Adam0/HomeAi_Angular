@@ -8,14 +8,14 @@ import { UiState } from '../../../../core/state/ui.state';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
-import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { DialogService } from '../../../../shared/services/dialog.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vendor-materials',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyFormatPipe, LocalizedPipe, ConfirmDialog, DragDropModule],
+  imports: [CommonModule, FormsModule, CurrencyFormatPipe, LocalizedPipe, DragDropModule],
   templateUrl: './vendor-materials.component.html',
   styleUrl: './vendor-materials.component.css'
 })
@@ -23,6 +23,7 @@ export class VendorMaterials implements OnInit {
   private vendorService = inject(VendorService);
   private authService = inject(AuthService);
   private uiState = inject(UiState);
+  private dialogService = inject(DialogService);
   readonly translationService = inject(TranslationService);
 
   readonly materials = signal<any[]>([]);
@@ -63,13 +64,7 @@ export class VendorMaterials implements OnInit {
   newOptionPriceDelta = 0;
   submittingOption = false;
 
-  // Custom Confirm Dialog state
-  readonly showDeleteDialog = signal<boolean>(false);
-  readonly dialogTitle = signal<string>('');
-  readonly dialogMessage = signal<string>('');
-  readonly dialogConfirmText = signal<string>('');
-  readonly dialogCancelText = signal<string>('');
-  private deleteCallback: (() => void) | null = null;
+
 
   // Material Group Editing
   readonly editingGroupId = signal<number | null>(null);
@@ -129,29 +124,17 @@ export class VendorMaterials implements OnInit {
     });
   }
 
-  openConfirmDialog(title: string, message: string, confirmText: string, cancelText: string, callback: () => void): void {
-    this.dialogTitle.set(title);
-    this.dialogMessage.set(message);
-    this.dialogConfirmText.set(confirmText);
-    this.dialogCancelText.set(cancelText);
-    this.deleteCallback = callback;
-    this.showDeleteDialog.set(true);
-  }
-
-  onConfirmDialog(): void {
-    if (this.deleteCallback) {
-      this.deleteCallback();
+  async openConfirmDialog(title: string, message: string, confirmText: string, cancelText: string, callback: () => void): Promise<void> {
+    const confirmed = await this.dialogService.openConfirm({
+      title,
+      message,
+      confirmText,
+      cancelText,
+      variant: 'danger'
+    });
+    if (confirmed) {
+      callback();
     }
-    this.closeConfirmDialog();
-  }
-
-  onCancelDialog(): void {
-    this.closeConfirmDialog();
-  }
-
-  private closeConfirmDialog(): void {
-    this.showDeleteDialog.set(false);
-    this.deleteCallback = null;
   }
 
   deleteMaterial(groupId: number): void {

@@ -6,7 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
-import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { DialogService } from '../../../../shared/services/dialog.service';
 import { OrderStatusBadge } from '../../components';
 import { IVendorOrder } from '../../interfaces';
 import { VendorOrderStatus, ALLOWED_TRANSITIONS, isValidTransition, OrderStatus, mapToOrderStatusPayload } from '../../models/vendor-order-status.enum';
@@ -29,7 +29,6 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pip
     OrderStatusBadge,
     TranslatePipe,
     CurrencyFormatPipe,
-    ConfirmDialog,
     Button,
     AlertComponent,
     EmptyStateComponent,
@@ -48,6 +47,7 @@ export class VendorOrderDetails implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly uiState = inject(UiState);
   private readonly translationService = inject(TranslationService);
+  private readonly dialogService = inject(DialogService);
 
   protected readonly VendorOrderStatus = VendorOrderStatus;
 
@@ -58,7 +58,6 @@ export class VendorOrderDetails implements OnInit {
   readonly selectedStatus = signal<VendorOrderStatus | null>(null);
   readonly isUpdatingStatus = signal<boolean>(false);
   readonly statusUpdateError = signal<string | null>(null);
-  readonly isConfirmDialogVisible = signal(false);
   readonly isProposingDate = signal<boolean>(false);
   readonly proposedDate = signal<Date | null>(null);
 
@@ -325,12 +324,22 @@ export class VendorOrderDetails implements OnInit {
     this.statusUpdateError.set(null);
   }
 
-  openStatusUpdateConfirmation(): void {
+  async openStatusUpdateConfirmation(): Promise<void> {
     if (this.isUpdateButtonDisabled()) {
       return;
     }
 
-    this.isConfirmDialogVisible.set(true);
+    const confirmed = await this.dialogService.openConfirm({
+      title: this.translationService.translate('VENDOR.ORDER_DETAILS.UPDATE_STATUS_CONFIRM_TITLE'),
+      message: this.confirmDialogMessage(),
+      confirmText: this.translationService.translate('VENDOR.ORDER_DETAILS.UPDATE_STATUS'),
+      cancelText: this.translationService.translate('COMMON.CANCEL'),
+      variant: 'warning',
+    });
+
+    if (confirmed) {
+      this.confirmStatusUpdate();
+    }
   }
 
   confirmStatusUpdate(): void {
@@ -350,7 +359,6 @@ export class VendorOrderDetails implements OnInit {
       return;
     }
 
-    this.isConfirmDialogVisible.set(false);
     this.statusUpdateError.set(null);
     this.isUpdatingStatus.set(true);
 
@@ -396,10 +404,6 @@ export class VendorOrderDetails implements OnInit {
           this.isUpdatingStatus.set(false);
         },
       });
-  }
-
-  closeConfirmDialog(): void {
-    this.isConfirmDialogVisible.set(false);
   }
 
   submitProposedDate(): void {

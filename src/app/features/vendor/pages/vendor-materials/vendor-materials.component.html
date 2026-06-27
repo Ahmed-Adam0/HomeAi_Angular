@@ -610,17 +610,6 @@
     </div>
   </div>
 
-  <!-- Custom Delete Confirmation Dialog Component -->
-  <app-confirm-dialog
-    [visible]="showDeleteDialog()"
-    [title]="dialogTitle()"
-    [message]="dialogMessage()"
-    [confirmText]="dialogConfirmText()"
-    [cancelText]="dialogCancelText()"
-    (confirm)="onConfirmDialog()"
-    (cancel)="onCancelDialog()"
-  ></app-confirm-dialog>
-
   <!-- 4. ADD OPTION MODAL -->
   <div class="modal-backdrop-luxury animate-fade-in" *ngIf="addingOptionGroupId() !== null" (click)="cancelAddOption()">
     <div class="modal-card-luxury animate-slide-up" (click)="$event.stopPropagation()">

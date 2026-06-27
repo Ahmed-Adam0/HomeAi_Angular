@@ -1,16 +1,32 @@
+/* Ensure the host element doesn't interfere with fixed positioning */
+:host {
+  display: contents;
+}
+
+/* ── Overlay ─────────────────────────────────────── */
 .confirm-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(4px);
-  z-index: 9999;
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 99999;
   padding: 16px;
   overflow: hidden;
+  animation: confirmOverlayIn 0.25s ease-out forwards;
 }
 
+.confirm-overlay-closing {
+  animation: confirmOverlayOut 0.2s ease-in forwards;
+}
+
+/* ── Card ────────────────────────────────────────── */
 .confirm-card {
   width: 100%;
   max-width: 400px;
@@ -18,13 +34,18 @@
   border-radius: var(--border-radius-lg, 16px);
   padding: 32px;
   text-align: center;
-  box-shadow: var(--fm-shadow-xl);
+  box-shadow: var(--fm-shadow-xl, 0 20px 60px rgba(0, 0, 0, 0.3));
   animation: confirmScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  border: 1px solid var(--fm-border-medium);
+  border: 1px solid var(--fm-border-medium, rgba(0,0,0,0.08));
   max-height: calc(100vh - 32px);
   overflow-y: auto;
 }
 
+.confirm-card-closing {
+  animation: confirmScaleOut 0.2s ease-in forwards;
+}
+
+/* ── Icon ────────────────────────────────────────── */
 .confirm-icon-wrapper {
   display: inline-flex;
   align-items: center;
@@ -46,12 +67,13 @@
 }
 
 .confirm-info .confirm-icon-wrapper {
-  background: var(--fm-color-primary-soft);
-  color: var(--fm-color-primary-500);
+  background: var(--fm-color-primary-soft, rgba(59, 130, 246, 0.1));
+  color: var(--fm-color-primary-500, #3b82f6);
 }
 
+/* ── Typography ──────────────────────────────────── */
 .confirm-title {
-  font-family: var(--fm-font-display);
+  font-family: var(--fm-font-display, inherit);
   font-size: 18px;
   font-weight: 700;
   color: var(--fm-text-heading, #1e293b);
@@ -60,13 +82,14 @@
 }
 
 .confirm-message {
-  font-family: var(--fm-font-sans);
+  font-family: var(--fm-font-sans, inherit);
   font-size: 14px;
   color: var(--fm-text-body, #64748b);
   line-height: 1.5;
   margin: 0 0 24px;
 }
 
+/* ── Actions ─────────────────────────────────────── */
 .confirm-actions {
   display: flex;
   gap: 12px;
@@ -96,7 +119,7 @@
 .confirm-btn-cancel {
   background: var(--fm-color-neutral-100, #f1f5f9);
   color: var(--fm-color-neutral-700, #475569);
-  border: 1px solid var(--fm-border-medium);
+  border: 1px solid var(--fm-border-medium, rgba(0,0,0,0.08));
 }
 
 .confirm-btn-cancel:hover {
@@ -140,6 +163,7 @@
   box-shadow: var(--fm-shadow-hover);
 }
 
+/* ── Responsive ──────────────────────────────────── */
 @media (max-width: 575px) {
   .confirm-card {
     padding: 24px 20px;
@@ -175,6 +199,29 @@
   }
 }
 
+/* ── Animations ──────────────────────────────────── */
+
+/* Open: overlay fade in */
+@keyframes confirmOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Close: overlay fade out */
+@keyframes confirmOverlayOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Open: card scale + fade in */
 @keyframes confirmScaleIn {
   from {
     opacity: 0;
@@ -183,5 +230,17 @@
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+}
+
+/* Close: card scale + fade out */
+@keyframes confirmScaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
   }
 }
