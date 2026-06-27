@@ -1,0 +1,12 @@
+.app-content-wrapper {
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+.app-content--loading {
+  visibility: hidden;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}

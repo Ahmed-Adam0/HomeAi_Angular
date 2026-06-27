@@ -27,6 +27,7 @@ import { NotificationService } from '../../../notifications/services/notificatio
 import { ProductCacheService } from '../../../../core/services/product-cache.service';
 import { IProduct } from '../../../products/interfaces/iproduct';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
+import { LoadingService } from '../../../../core/services/loading.service';
 
 @Component({
   selector: 'app-profile',
@@ -56,6 +57,7 @@ export class Profile implements AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly productCacheService = inject(ProductCacheService);
   private readonly favoritesService = inject(FavoritesService);
+  private readonly loadingService = inject(LoadingService);
 
   readonly profile = signal<IProfile | null>(null);
   readonly loading = signal(true);
@@ -280,6 +282,7 @@ export class Profile implements AfterViewInit, OnDestroy {
   }
 
   private async loadProfile(): Promise<void> {
+    const done = this.loadingService.addInitTask();
     this.loading.set(true);
     try {
       const profile = await firstValueFrom(this.profileService.getProfile());
@@ -387,6 +390,7 @@ export class Profile implements AfterViewInit, OnDestroy {
       this.uiState.showAlert('danger', errorMessage);
     } finally {
       this.loading.set(false);
+      done();
     }
   }
 

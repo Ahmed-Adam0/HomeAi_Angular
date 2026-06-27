@@ -15,6 +15,7 @@ import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { UiState } from '../../../../core/state/ui.state';
 import { ProductReviewsComponent } from '../../components/product-reviews/product-reviews.component';
 import { ThreeDViewerComponent } from '../../../../shared/components/three-d-viewer/three-d-viewer.component';
+import { LoadingService } from '../../../../core/services/loading.service';
 
 interface IConfigOption {
   id: number;
@@ -83,6 +84,7 @@ export class ProductDetails implements OnInit, OnDestroy {
   readonly translationService = inject(TranslationService);
   private uiState = inject(UiState);
   private platformId = inject(PLATFORM_ID);
+  private loadingService = inject(LoadingService);
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -261,6 +263,7 @@ export class ProductDetails implements OnInit, OnDestroy {
   }
 
   loadProduct(id: string): void {
+    const done = this.loadingService.addInitTask();
     if (this.isBrowser) window.scrollTo(0, 0);
     this.isLoading.set(true);
     this.error.set(null);
@@ -274,6 +277,7 @@ export class ProductDetails implements OnInit, OnDestroy {
         if (!data) { 
           this.notFound.set(true); 
           this.isLoading.set(false); 
+          done();
           return; 
         }
         this.product.set(data);
@@ -284,11 +288,13 @@ export class ProductDetails implements OnInit, OnDestroy {
 
         this.loadRelatedProducts(data);
         this.isLoading.set(false);
+        done();
       },
       error: (err) => {
         if (err.status === 404) this.notFound.set(true);
         else this.error.set('Failed to load product');
         this.isLoading.set(false);
+        done();
       },
     });
   }

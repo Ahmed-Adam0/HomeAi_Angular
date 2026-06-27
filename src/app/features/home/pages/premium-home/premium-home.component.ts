@@ -9,6 +9,7 @@ import { IProduct } from '../../../products/interfaces/iproduct';
 import { CartService } from '../../../cart/services/cart.service';
 import { FavoritesService } from '../../../favorites/services/favorites.service';
 import { UiState } from '../../../../core/state/ui.state';
+import { LoadingService } from '../../../../core/services/loading.service';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Subscription } from 'rxjs';
@@ -31,6 +32,7 @@ export class PremiumHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private uiState = inject(UiState);
   private el = inject(ElementRef);
   private platformId = inject(PLATFORM_ID);
+  private loadingService = inject(LoadingService);
 
   readonly categories = signal<ICategory[]>([]);
   readonly isLoading = signal(true);
@@ -67,21 +69,25 @@ export class PremiumHomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private loadCategories(): void {
+    const done = this.loadingService.addInitTask();
     this.isLoading.set(true);
     this.error.set(null);
     this.categoriesSub = this.categoryService.getCategories().subscribe({
       next: (data) => {
         this.categories.set(data || []);
         this.isLoading.set(false);
+        done();
       },
       error: (err) => {
         this.error.set(err?.message || 'Failed to load categories');
         this.isLoading.set(false);
+        done();
       }
     });
   }
 
   private loadProducts(): void {
+    const done = this.loadingService.addInitTask();
     this.isProductsLoading.set(true);
     this.productsError.set(null);
     this.productsSub = this.productService.getProducts({ page: 1, limit: 50 }).subscribe({
@@ -97,10 +103,12 @@ export class PremiumHomeComponent implements OnInit, AfterViewInit, OnDestroy {
             });
           }
         });
+        done();
       },
       error: (err) => {
         this.productsError.set(err?.message || 'Failed to load products');
         this.isProductsLoading.set(false);
+        done();
       }
     });
   }

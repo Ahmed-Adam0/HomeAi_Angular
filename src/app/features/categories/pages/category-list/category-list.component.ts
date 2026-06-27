@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader.component';
 import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
+import { LoadingService } from '../../../../core/services/loading.service';
 
 @Component({
   selector: 'app-category-list-page',
@@ -16,16 +17,26 @@ import { LazyImageDirective } from '../../../../shared/directives/lazy-image.dir
 export class CategoryListComponent implements OnInit {
   private categoryService = inject(CategoryService);
   readonly translationService = inject(TranslationService);
+  private loadingService = inject(LoadingService);
 
   readonly categories = signal<ICategory[]>([]);
   readonly isLoading = signal<boolean>(true);
 
   ngOnInit(): void {
+    const done = this.loadingService.addInitTask();
     this.isLoading.set(true);
     setTimeout(() => {
-      this.categoryService.getCategories().subscribe((data) => {
-        this.categories.set(data);
-        this.isLoading.set(false);
+      this.categoryService.getCategories().subscribe({
+        next: (data) => {
+          this.categories.set(data);
+          this.isLoading.set(false);
+          done();
+        },
+        error: (err) => {
+          console.error('Failed to load categories', err);
+          this.isLoading.set(false);
+          done();
+        }
       });
     }, 450);
   }

@@ -6,6 +6,7 @@ import { OrdersApiService } from './orders-api.service';
 import { ProductCacheService } from '../../../core/services/product-cache.service';
 import { IOrder, IOrderItem, OrderStatus } from '../interfaces';
 import { StatusBadgeTone } from '../../../shared/components/status-badge/status-badge.component';
+import { LoadingService } from '../../../core/services/loading.service';
 
 export type PaymentStatus = IOrder['paymentStatus'];
 
@@ -29,6 +30,7 @@ export class OrdersFacade {
   private api = inject(OrdersApiService);
   private productCache = inject(ProductCacheService);
   private destroyRef = inject(DestroyRef);
+  private loadingService = inject(LoadingService);
 
   readonly orders = signal<IOrder[] | null>(null);
   readonly selectedOrder = signal<IOrder | null>(null);
@@ -82,6 +84,7 @@ export class OrdersFacade {
    * Fetches user's orders from the backend API.
    */
   loadOrders(): void {
+    const done = this.loadingService.addInitTask();
     this.isLoadingList.set(true);
     this.listErrorKey.set(null);
 
@@ -92,7 +95,10 @@ export class OrdersFacade {
           this.listErrorKey.set('ORDERS_ERROR_LOAD_LIST');
           return of([] as IOrder[]);
         }),
-        finalize(() => this.isLoadingList.set(false)),
+        finalize(() => {
+          this.isLoadingList.set(false);
+          done();
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((orders) => this.orders.set(orders));
@@ -165,6 +171,7 @@ export class OrdersFacade {
   }
 
   loadOrderDetails(id: string): void {
+    const done = this.loadingService.addInitTask();
     this.isLoadingDetails.set(true);
     this.detailsErrorKey.set(null);
 
@@ -176,7 +183,10 @@ export class OrdersFacade {
           this.detailsErrorKey.set('ORDERS_ERROR_LOAD_DETAILS');
           return of(null);
         }),
-        finalize(() => this.isLoadingDetails.set(false)),
+        finalize(() => {
+          this.isLoadingDetails.set(false);
+          done();
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({

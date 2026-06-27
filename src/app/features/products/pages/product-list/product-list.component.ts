@@ -18,6 +18,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { CustomDropdownComponent } from '../../../../shared/components/custom-dropdown/custom-dropdown.component';
+import { LoadingService } from '../../../../core/services/loading.service';
 
 @Component({
   selector: 'app-product-list',
@@ -49,6 +50,7 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
   private el = inject(ElementRef);
   private renderer = inject(Renderer2);
   private platformId = inject(PLATFORM_ID);
+  private loadingService = inject(LoadingService);
 
   // States
   readonly products = signal<IProduct[]>([]);
@@ -228,6 +230,7 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadCatalog(): void {
+    const done = this.loadingService.addInitTask();
     this.isLoading.set(true);
     this.hasError.set(false);
     
@@ -249,6 +252,7 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
         if (res.data.length === 0) {
           this.products.set([]);
           this.isLoading.set(false);
+          done();
           return;
         }
 
@@ -256,10 +260,12 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
           next: (enriched: IProduct[]) => {
             this.products.set(enriched);
             this.isLoading.set(false);
+            done();
           },
           error: () => {
             this.products.set(res.data);
             this.isLoading.set(false);
+            done();
           }
         });
       },
@@ -269,6 +275,7 @@ export class ProductList implements OnInit, OnDestroy, AfterViewInit {
         this.totalCount.set(0);
         this.hasError.set(true);
         this.isLoading.set(false);
+        done();
       }
     });
   }

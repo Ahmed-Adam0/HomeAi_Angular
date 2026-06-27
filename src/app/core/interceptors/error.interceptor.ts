@@ -3,10 +3,12 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ErrorHandlerService } from '../services/error-handler.service';
 import { AuthService } from '../../features/auth/services/auth.service';
+import { LoadingService } from '../services/loading.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const errorHandlerService = inject(ErrorHandlerService);
   const authService = inject(AuthService);
+  const loadingService = inject(LoadingService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -22,8 +24,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       // We skip delegating to errorHandlerService to prevent duplicate or generic toast notifications.
       const isAuthStatus = error.status === 401 || error.status === 403;
       const wasLoggedIn = authService.isLoggedIn();
+      
+      // Suppress the global error toast notification during initial loading/init tasks
+      const isAppLoading = loadingService.isLoading();
 
-      if (!(isAuthStatus && wasLoggedIn)) {
+      if (!(isAuthStatus && wasLoggedIn) && !isAppLoading) {
         // Delegate global handling, mapping, and display to the dedicated service
         errorHandlerService.handleError(error);
       }

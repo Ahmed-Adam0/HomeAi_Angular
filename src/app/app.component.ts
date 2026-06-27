@@ -5,6 +5,7 @@ import { QuickViewModalComponent } from './features/products/components/quick-vi
 import { DeliverySuccessModalComponent } from './core/components/delivery-success-modal/delivery-success-modal.component';
 import { CartService } from './features/cart/services/cart.service';
 import { DeliveryCelebrationService } from './core/services/delivery-celebration.service';
+import { LoadingService } from './core/services/loading.service';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ import { DeliveryCelebrationService } from './core/services/delivery-celebration
 export class App {
   private readonly cartService = inject(CartService);
   private readonly deliveryCelebration = inject(DeliveryCelebrationService);
+  protected readonly loadingService = inject(LoadingService);
 
   constructor() {
     this.cartService.resetUiState();
