@@ -1,23 +1,817 @@
-.error-container {
-  background: radial-gradient(circle at top right, #fdfbf7, #f5f7fa);
+/* ==========================================
+   FURNIMIND AI - Premium 404 Page Styles
+   Awwwards & Apple Keynote design language.
+   ========================================== */
+
+/* 1. Base Wrapper Configuration */
+.not-found-wrapper {
+  --mouse-x: 0;
+  --mouse-y: 0;
+  --gold-accent: #b8935c;
+  --gold-glow: rgba(184, 147, 92, 0.25);
+  --gold-light: rgba(184, 147, 92, 0.12);
+  --bg-dark: #0a0807;
+  --text-cashmere: #f4f2ee;
+  --text-muted-cashmere: #b3ab9d;
+
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  color: var(--text-cashmere);
+  overflow: hidden;
+  font-family: var(--fm-font-sans, 'Inter', sans-serif);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.error-card {
-  max-width: 500px;
-  animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+/* 2. Responsive Container Limits */
+.max-container-width {
+  max-width: 1200px;
 }
 
-.error-code {
-  font-size: 7rem;
-  font-weight: 900;
-  background: linear-gradient(135deg, #111 0%, #444 100%);
+/* 3. Ambient Background Layers */
+.background-ambient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Moving Aurora Gradients */
+.aurora {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.15;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+.aurora-1 {
+  top: -20%;
+  right: -10%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, var(--gold-accent) 0%, transparent 70%);
+  animation: aurora-float-1 25s ease-in-out infinite alternate;
+}
+
+.aurora-2 {
+  bottom: -15%;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, #8a683d 0%, transparent 70%);
+  animation: aurora-float-2 30s ease-in-out infinite alternate;
+}
+
+.aurora-3 {
+  top: 30%;
+  left: 40%;
+  width: 40%;
+  height: 40%;
+  background: radial-gradient(circle, #3e38ff 0%, transparent 70%);
+  opacity: 0.08;
+  animation: aurora-float-3 20s ease-in-out infinite alternate;
+}
+
+.glow-radial-base {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 65% 50%, rgba(184, 147, 92, 0.06) 0%, transparent 60%);
+  z-index: 2;
+  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Film Grain Noise Effect */
+.noise-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.025;
+  background-image: radial-gradient(#ffffff 33%, transparent 33%);
+  background-size: 3px 3px;
+  z-index: 3;
+}
+
+/* 4. AI Hologram & Futuristic Grid */
+.ai-hologram-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hologram-grid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(184, 147, 92, 0.03) 1px, transparent 1px),
+    linear-gradient(to top, rgba(184, 147, 92, 0.03) 1px, transparent 1px);
+  mask-image: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
+  transform: perspective(500px) rotateX(60deg);
+  transform-origin: bottom center;
+  opacity: 0.7;
+}
+
+.scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 14, 0) 50%, 
+    rgba(184, 147, 92, 0.05) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 10;
+  opacity: 0.3;
+}
+
+.pulse-wave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgba(184, 147, 92, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.wave-1 {
+  width: 600px;
+  height: 600px;
+  animation: pulse-wave-expand 8s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+.wave-2 {
+  width: 1000px;
+  height: 1000px;
+  animation: pulse-wave-expand 8s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+  animation-delay: 4s;
+}
+
+/* 5. Floating Particles */
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: var(--gold-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--gold-accent);
+  opacity: 0;
+  animation: particle-rise 12s linear infinite;
+  will-change: transform, opacity;
+}
+
+.p-1 { left: 15%; top: 80%; animation-duration: 14s; animation-delay: 0s; }
+.p-2 { left: 35%; top: 75%; animation-duration: 11s; animation-delay: 2s; }
+.p-3 { left: 55%; top: 90%; animation-duration: 16s; animation-delay: 1s; }
+.p-4 { left: 75%; top: 85%; animation-duration: 12s; animation-delay: 4s; }
+.p-5 { left: 25%; top: 60%; animation-duration: 10s; animation-delay: 3s; }
+.p-6 { left: 85%; top: 50%; animation-duration: 13s; animation-delay: 5s; }
+.p-7 { left: 45%; top: 45%; animation-duration: 15s; animation-delay: 0.5s; }
+.p-8 { left: 65%; top: 65%; animation-duration: 9s;  animation-delay: 6s; }
+
+/* 6. Left Column Elements */
+.text-section {
+  z-index: 10;
+  position: relative;
+  animation: fade-up-entrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.brand-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 14px;
+  border-radius: var(--fm-radius-pill, 9999px);
+  backdrop-filter: blur(10px);
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--gold-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--gold-accent);
+  animation: dot-glow-pulse 2s infinite;
+}
+
+.tag-text {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--text-muted-cashmere);
+  text-transform: uppercase;
+}
+
+.headline {
+  font-family: var(--fm-font-display, serif);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #b8935c 50%, #8a683d 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  line-height: 1;
-  letter-spacing: -0.05em;
+  background-clip: text;
 }
 
-@keyframes slideIn {
+.description {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-muted-cashmere);
+  max-width: 440px;
+}
+
+/* Premium Glass Buttons */
+.button-group {
+  opacity: 0;
+  animation: fade-up-entrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.4s;
+}
+
+.btn-premium {
+  position: relative;
+  padding: 14px 28px;
+  border-radius: var(--fm-radius-pill, 9999px);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  overflow: hidden;
+  transition: var(--fm-transition-button-hover);
+  z-index: 1;
+}
+
+.btn-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+  position: relative;
+}
+
+.btn-icon {
+  transition: transform var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+}
+
+.btn-primary-glass {
+  background: rgba(184, 147, 92, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(184, 147, 92, 0.3);
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 4px 24px rgba(184, 147, 92, 0.05),
+    inset 0 1px 0px rgba(255, 255, 255, 0.15);
+}
+
+.btn-primary-glass:hover {
+  background: rgba(184, 147, 92, 0.22);
+  border-color: rgba(184, 147, 92, 0.5);
+  box-shadow: 
+    0 12px 32px rgba(184, 147, 92, 0.2),
+    inset 0 1px 0px rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn-primary-glass:hover .btn-icon {
+  transform: translateX(-4px);
+}
+
+.btn-secondary-glass {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-cashmere);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0px rgba(255, 255, 255, 0.05);
+}
+
+.btn-secondary-glass:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+.btn-secondary-glass:hover .btn-icon {
+  transform: translateX(4px);
+}
+
+.btn-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(184, 147, 92, 0.35) 0%, transparent 65%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s var(--fm-ease-smooth);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.btn-primary-glass:hover .btn-glow {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Keyboard accessibility outline */
+.btn-premium:focus-visible {
+  outline: 2px solid var(--gold-accent);
+  outline-offset: 4px;
+}
+
+/* 7. Showroom Visual Scene Column */
+.scene-section {
+  z-index: 5;
+  height: 550px;
+  perspective: 1000px;
+}
+
+.showroom-scene-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+  max-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade-in-entrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 8. Parallax and Floating Setup */
+.parallax-layer {
+  position: absolute;
+  will-change: transform;
+}
+
+/* 9. Glassmorphic 404 Digits */
+.glass-digits-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  z-index: 4;
+  pointer-events: none;
+  /* Driven by --mouse-x/y in CSS */
+  transform: translate3d(
+    calc(var(--mouse-x) * 20px),
+    calc(var(--mouse-y) * 20px),
+    0
+  );
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  animation: float-slow-breathing 8s ease-in-out infinite alternate;
+}
+
+.digit {
+  font-family: var(--fm-font-display, serif);
+  font-size: clamp(6.5rem, 15vw, 11rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  color: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.08) 0%, 
+    rgba(255, 255, 255, 0.01) 100%
+  );
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-radius: var(--fm-radius-xl, 24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0 25px 15px 25px;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0px rgba(255, 255, 255, 0.15);
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+  position: relative;
+  transition: text-shadow 0.6s ease;
+}
+
+.digit::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--fm-radius-xl, 24px);
+  background: linear-gradient(
+    135deg,
+    rgba(184, 147, 92, 0.2) 0%,
+    transparent 50%,
+    rgba(184, 147, 92, 0.1) 100%
+  );
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.digit-separator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+}
+
+.separator-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(184, 147, 92, 0.3) 50%,
+    transparent
+  );
+}
+
+/* 10. Floor Base Grid */
+.room-floor-grid {
+  position: absolute;
+  bottom: 0px;
+  width: 450px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(184, 147, 92, 0.08) 0%, transparent 70%);
+  border: 1px solid rgba(184, 147, 92, 0.1);
+  transform: rotateX(65deg) translateZ(-40px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.grid-radial-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 20px 20px;
+  background-image: radial-gradient(rgba(184, 147, 92, 0.2) 1px, transparent 1.5px);
+  mask-image: radial-gradient(circle, black 40%, transparent 90%);
+}
+
+/* 11. Volumetric Light Beam & Ambient Glow (Easter Egg) */
+.volumetric-light-beam {
+  position: absolute;
+  top: 15px; /* Offset from shade head */
+  left: 205px;
+  width: 250px;
+  height: 480px;
+  background: linear-gradient(
+    to bottom,
+    rgba(245, 158, 11, 0.35) 0%,
+    rgba(184, 147, 92, 0.1) 30%,
+    rgba(184, 147, 92, 0.01) 70%,
+    transparent 100%
+  );
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  /* Set clip path of cone */
+  mask-image: linear-gradient(to bottom, white 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, white 0%, transparent 100%);
+  transform-origin: top center;
+  transform: rotate(-15deg) scaleX(0.7) translate3d(0,0,0);
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(12px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.volumetric-light-beam.visible {
+  opacity: 1;
+  transform: rotate(-15deg) scaleX(1) translate3d(0,0,0);
+  animation: volumetric-shimmer 6s ease-in-out infinite alternate;
+}
+
+.lamp-ambient-glow {
+  position: absolute;
+  bottom: 30px;
+  left: 70px;
+  width: 280px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(245, 158, 11, 0.18) 0%, transparent 70%);
+  filter: blur(10px);
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lamp-ambient-glow.glowing {
+  opacity: 1;
+}
+
+/* 12. Furniture Items Positioning & Animating */
+.floating-furniture {
+  position: absolute;
+  cursor: pointer;
+  outline: none;
+  z-index: 6;
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.4s var(--fm-ease-smooth);
+}
+
+.floating-furniture:hover {
+  color: #ffffff;
+}
+
+.furniture-svg {
+  display: block;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
+  transition: filter 0.4s var(--fm-ease-smooth);
+}
+
+.floating-furniture:hover .furniture-svg {
+  filter: 
+    drop-shadow(0 15px 25px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 10px rgba(184, 147, 92, 0.3));
+}
+
+/* Glow ring behind furniture items */
+.furniture-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(184, 147, 92, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s var(--fm-ease-smooth);
+  pointer-events: none;
+}
+
+.floating-furniture:hover .furniture-glow {
+  opacity: 1;
+}
+
+/* Hologram ring on click / interactive states */
+.hologram-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1.5px solid var(--gold-accent);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.2);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.8s var(--fm-ease-smooth), opacity 0.8s var(--fm-ease-smooth);
+}
+
+.floating-furniture:active .hologram-ring {
+  transform: translate(-50%, -50%) scale(1.3);
+  opacity: 1;
+  transition: 0s;
+}
+
+/* Tooltip Interactive Hints */
+.tooltip-hint {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-accent);
+  background: rgba(18, 16, 14, 0.85);
+  border: 1px solid rgba(184, 147, 92, 0.3);
+  padding: 3px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 0.3s var(--fm-ease-smooth), transform 0.3s var(--fm-ease-smooth);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.floating-furniture:hover .tooltip-hint {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Item Specific Coordinates & Parallax Translations */
+
+/* A. Floor Lamp */
+.item-lamp {
+  top: 40px;
+  right: 110px;
+  width: 90px;
+  height: 180px;
+  transform: translate3d(
+    calc(var(--mouse-x) * -25px),
+    calc(var(--mouse-y) * -25px),
+    0
+  );
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s;
+  animation: float-lamp 7s ease-in-out infinite alternate;
+}
+
+.item-lamp .lamp-rays {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.lamp-active .item-lamp {
+  color: #ffffff;
+  filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.2));
+}
+
+.lamp-active .item-lamp .lamp-rays {
+  opacity: 1;
+}
+
+.lamp-active .item-lamp .lamp-bulb {
+  fill: #fffbeb;
+  filter: drop-shadow(0 0 8px #f59e0b);
+}
+
+/* B. Lounge Chair */
+.item-chair {
+  bottom: 80px;
+  left: 20px;
+  width: 95px;
+  height: 95px;
+  transform: translate3d(
+    calc(var(--mouse-x) * 35px),
+    calc(var(--mouse-y) * 35px),
+    0
+  );
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s;
+  animation: float-chair 8s ease-in-out infinite alternate;
+}
+
+/* C. Luxury Sofa */
+.item-sofa {
+  bottom: 110px;
+  right: 10px;
+  width: 140px;
+  height: 90px;
+  transform: translate3d(
+    calc(var(--mouse-x) * 15px),
+    calc(var(--mouse-y) * 15px),
+    0
+  );
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s;
+  animation: float-sofa 9.5s ease-in-out infinite alternate;
+}
+
+/* D. Coffee Table */
+.item-table {
+  bottom: 35px;
+  right: 170px;
+  width: 110px;
+  height: 75px;
+  transform: translate3d(
+    calc(var(--mouse-x) * 45px),
+    calc(var(--mouse-y) * 45px),
+    0
+  );
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s;
+  animation: float-table 6.5s ease-in-out infinite alternate;
+}
+
+.item-table.hover-active {
+  color: var(--gold-accent);
+}
+
+/* E. Decorative Shelf */
+.item-shelf {
+  top: 90px;
+  left: 50px;
+  width: 110px;
+  height: 70px;
+  transform: translate3d(
+    calc(var(--mouse-x) * 10px),
+    calc(var(--mouse-y) * 10px),
+    0
+  );
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), color 0.4s;
+  animation: float-shelf 11s ease-in-out infinite alternate;
+}
+
+/* 13. Interactive Easter Egg Animations */
+
+/* Chair Spin Animation */
+.spin-animation {
+  animation: spin-egg 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* Sofa Float Animation */
+.bounce-animation {
+  animation: float-bounce-egg 1.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* Shelf Item Flip Animation */
+.flip-animation {
+  animation: shelf-flip-egg 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* 14. Keyboard Focus States */
+.floating-furniture:focus-visible {
+  outline: 2px solid var(--gold-accent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* 15. Outer Vignette */
+.screen-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 12;
+}
+
+/* ==========================================
+   16. CSS KEYFRAME ANIMATIONS (GPU Optimised)
+   ========================================== */
+
+@keyframes aurora-float-1 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.12; }
+  100% { transform: translate(80px, -60px) scale(1.1) rotate(45deg); opacity: 0.18; }
+}
+
+@keyframes aurora-float-2 {
+  0% { transform: translate(0, 0) scale(1.1) rotate(0deg); opacity: 0.08; }
+  100% { transform: translate(-70px, 90px) scale(0.9) rotate(-35deg); opacity: 0.15; }
+}
+
+@keyframes aurora-float-3 {
+  0% { transform: translate(0, 0) scale(0.9) rotate(0deg); opacity: 0.05; }
+  100% { transform: translate(-40px, -50px) scale(1.1) rotate(60deg); opacity: 0.1; }
+}
+
+@keyframes dot-glow-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 8px var(--gold-accent); }
+  50% { transform: scale(1.3); opacity: 0.6; box-shadow: 0 0 15px var(--gold-accent); }
+}
+
+@keyframes pulse-wave-expand {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.3; }
+  100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+}
+
+@keyframes particle-rise {
+  0% { transform: translateY(120px) scale(0.8); opacity: 0; }
+  20% { opacity: 0.45; }
+  80% { opacity: 0.45; }
+  100% { transform: translateY(-350px) scale(0.5); opacity: 0; }
+}
+
+@keyframes volumetric-shimmer {
+  0%, 100% { opacity: 0.95; transform: rotate(-15deg) scaleX(1); }
+  50% { opacity: 0.8; transform: rotate(-14deg) scaleX(1.03); }
+}
+
+/* Stagger & Fade-up Entrance */
+@keyframes fade-up-entrance {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -27,3 +821,282 @@
     transform: translateY(0);
   }
 }
+
+@keyframes fade-in-entrance {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Slow Room Floating Animations */
+@keyframes float-slow-breathing {
+  0% { transform: translate3d(calc(var(--mouse-x) * 20px), calc(var(--mouse-y) * 20px - 10px), 0) rotate(-1deg); }
+  100% { transform: translate3d(calc(var(--mouse-x) * 20px), calc(var(--mouse-y) * 20px + 10px), 0) rotate(1deg); }
+}
+
+@keyframes float-lamp {
+  0% { transform: translate3d(calc(var(--mouse-x) * -25px), calc(var(--mouse-y) * -25px - 6px), 0) rotate(-0.5deg); }
+  100% { transform: translate3d(calc(var(--mouse-x) * -25px), calc(var(--mouse-y) * -25px + 6px), 0) rotate(0.5deg); }
+}
+
+@keyframes float-chair {
+  0% { transform: translate3d(calc(var(--mouse-x) * 35px), calc(var(--mouse-y) * 35px + 8px), 0) rotate(2deg); }
+  100% { transform: translate3d(calc(var(--mouse-x) * 35px), calc(var(--mouse-y) * 35px - 8px), 0) rotate(-2deg); }
+}
+
+@keyframes float-sofa {
+  0% { transform: translate3d(calc(var(--mouse-x) * 15px), calc(var(--mouse-y) * 15px - 5px), 0) rotate(-1.2deg); }
+  100% { transform: translate3d(calc(var(--mouse-x) * 15px), calc(var(--mouse-y) * 15px + 5px), 0) rotate(1.2deg); }
+}
+
+@keyframes float-table {
+  0% { transform: translate3d(calc(var(--mouse-x) * 45px), calc(var(--mouse-y) * 45px + 4px), 0) rotate(-1.5deg); }
+  100% { transform: translate3d(calc(var(--mouse-x) * 45px), calc(var(--mouse-y) * 45px - 4px), 0) rotate(1.5deg); }
+}
+
+@keyframes float-shelf {
+  0% { transform: translate3d(calc(var(--mouse-x) * 10px), calc(var(--mouse-y) * 10px - 8px), 0) rotate(0.5deg); }
+  100% { transform: translate3d(calc(var(--mouse-x) * 10px), calc(var(--mouse-y) * 10px + 8px), 0) rotate(-0.5deg); }
+}
+
+/* Easter Egg Keyframes */
+@keyframes spin-egg {
+  0% { transform: translate3d(calc(var(--mouse-x) * 35px), calc(var(--mouse-y) * 35px), 0) rotate(0deg) scale(1); }
+  50% { transform: translate3d(calc(var(--mouse-x) * 35px), calc(var(--mouse-y) * 35px - 15px), 0) rotate(180deg) scale(1.1); color: var(--gold-accent); }
+  100% { transform: translate3d(calc(var(--mouse-x) * 35px), calc(var(--mouse-y) * 35px), 0) rotate(360deg) scale(1); }
+}
+
+@keyframes float-bounce-egg {
+  0% { transform: translate3d(calc(var(--mouse-x) * 15px), calc(var(--mouse-y) * 15px), 0) translateY(0); }
+  35% { transform: translate3d(calc(var(--mouse-x) * 15px), calc(var(--mouse-y) * 15px), 0) translateY(-25px); color: var(--gold-accent); }
+  65% { transform: translate3d(calc(var(--mouse-x) * 15px), calc(var(--mouse-y) * 15px), 0) translateY(8px); }
+  100% { transform: translate3d(calc(var(--mouse-x) * 15px), calc(var(--mouse-y) * 15px), 0) translateY(0); }
+}
+
+@keyframes shelf-flip-egg {
+  0% { transform: translate3d(calc(var(--mouse-x) * 10px), calc(var(--mouse-y) * 10px), 0) scaleY(1); }
+  50% { transform: translate3d(calc(var(--mouse-x) * 10px), calc(var(--mouse-y) * 10px), 0) scaleY(-1); color: var(--gold-accent); }
+  100% { transform: translate3d(calc(var(--mouse-x) * 10px), calc(var(--mouse-y) * 10px), 0) scaleY(1); }
+}
+
+
+/* ==========================================
+   17. ACCESSIBILITY & REDUCED MOTION
+   ========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora,
+  .particle,
+  .pulse-wave,
+  .btn-glow,
+  .volumetric-light-beam.visible {
+    animation: none !important;
+  }
+  
+  .glass-digits-container,
+  .item-lamp,
+  .item-chair,
+  .item-sofa,
+  .item-table,
+  .item-shelf {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .text-section,
+  .button-group,
+  .showroom-scene-wrapper {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .volumetric-light-beam.visible {
+    opacity: 0.6 !important;
+    transform: rotate(-15deg) scaleX(0.9) translate3d(0,0,0) !important;
+  }
+}
+
+/* ==========================================
+   18. RESPONSIVE DESIGN & MEDIA QUERIES
+   ========================================== */
+
+@media (max-width: 991.98px) {
+  .not-found-wrapper {
+    padding-top: 60px;
+    padding-bottom: 60px;
+    overflow-y: auto;
+  }
+
+  .max-container-width {
+    max-width: 600px;
+  }
+
+  .text-section {
+    align-items: center !important;
+    text-align: center !important;
+    order: 2;
+  }
+
+  .brand-tag {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .headline {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .description {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2rem !important;
+  }
+
+  .scene-section {
+    order: 1;
+    height: 400px;
+    margin-bottom: 20px;
+  }
+
+  .showroom-scene-wrapper {
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .glass-digits-container {
+    gap: 8px;
+  }
+
+  .digit {
+    padding: 0 15px 8px 15px;
+    border-radius: var(--fm-radius-lg, 16px);
+  }
+
+  .digit::after {
+    border-radius: var(--fm-radius-lg, 16px);
+  }
+
+  .digit-separator {
+    height: 50px;
+  }
+
+  .separator-line {
+    height: 40px;
+  }
+
+  /* Scale and reposition furniture in small viewports */
+  .floating-furniture {
+    transform: scale(0.8) !important;
+  }
+
+  .item-lamp {
+    top: 20px;
+    right: 70px;
+  }
+
+  .volumetric-light-beam {
+    top: -5px;
+    left: 170px;
+    height: 380px;
+    width: 200px;
+  }
+
+  .lamp-ambient-glow {
+    bottom: 40px;
+    left: 30px;
+    width: 220px;
+  }
+
+  .item-chair {
+    bottom: 50px;
+    left: 0px;
+  }
+
+  .item-sofa {
+    bottom: 80px;
+    right: -10px;
+    width: 120px;
+  }
+
+  .item-table {
+    bottom: 20px;
+    right: 120px;
+    width: 90px;
+  }
+
+  .item-shelf {
+    top: 50px;
+    left: 10px;
+    width: 90px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .button-group {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .btn-premium {
+    width: 100%;
+  }
+
+  .scene-section {
+    height: 320px;
+  }
+
+  .showroom-scene-wrapper {
+    max-width: 320px;
+    max-height: 320px;
+  }
+
+  .digit {
+    font-size: 5rem;
+  }
+
+  .item-lamp {
+    top: 10px;
+    right: 40px;
+  }
+
+  .volumetric-light-beam {
+    top: -15px;
+    left: 135px;
+    height: 300px;
+    width: 160px;
+  }
+
+  .lamp-ambient-glow {
+    bottom: 30px;
+    left: 20px;
+    width: 160px;
+  }
+
+  .item-chair {
+    bottom: 30px;
+    left: -10px;
+    width: 70px;
+    height: 70px;
+  }
+
+  .item-sofa {
+    bottom: 60px;
+    right: -15px;
+    width: 100px;
+    height: 70px;
+  }
+
+  .item-table {
+    bottom: 10px;
+    right: 90px;
+    width: 75px;
+  }
+
+  .item-shelf {
+    top: 30px;
+    left: -10px;
+    width: 80px;
+  }
+}
+
