@@ -94,16 +94,17 @@ describe('ProductDetails', () => {
     expect(component.finalPrice()).toBe(5000); // base price only
   });
 
-  it('should block adding to cart when options are not selected and show warning', () => {
+  it('should allow adding to cart without selecting any options', () => {
     component.addToCart();
-    expect(cartServiceSpy.addToCart).not.toHaveBeenCalled();
-    expect(uiStateSpy.showAlert).toHaveBeenCalledWith('warning', 'Please select color.');
-    expect(component.validationErrors()['attr-1']).toBe(true);
+    expect(cartServiceSpy.addToCart).toHaveBeenCalledWith(
+      jasmine.objectContaining({ id: 1 }),
+      1,
+      []
+    );
   });
 
-  it('should allow adding to cart after option is selected', () => {
+  it('should send selected option IDs when options are chosen', () => {
     component.selectOption('attr-1', 11);
-    expect(component.validationErrors()['attr-1']).toBeUndefined();
     expect(component.finalPrice()).toBe(5200); // 5000 + 200
 
     component.addToCart();
