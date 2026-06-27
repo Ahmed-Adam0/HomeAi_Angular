@@ -1,6 +1,7 @@
-import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, signal, inject, PLATFORM_ID, Injector } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslationService } from '../../shared/i18n/translation.service';
+import { NotificationService } from '../../shared/services/notification.service';
 
 export interface AlertAction {
   label: string;
@@ -19,6 +20,7 @@ export interface AlertData {
 export class UiState {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly translationService = inject(TranslationService);
+  private readonly injector = inject(Injector);
   private alertTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Global loading overlay signal
@@ -43,25 +45,22 @@ export class UiState {
   }
 
   showAlert(type: AlertData['type'], message: string, action?: AlertAction): void {
-    const translatedMessage = this.translationService.translate(message);
-    this.activeAlert.set(action ? { type, message: translatedMessage, action } : { type, message: translatedMessage });
-
-    if (isPlatformBrowser(this.platformId)) {
-      if (this.alertTimeout) {
-        clearTimeout(this.alertTimeout);
-      }
-      this.alertTimeout = setTimeout(() => {
-        this.activeAlert.set(null);
-        this.alertTimeout = null;
-      }, 2700);
+    const notificationService = this.injector.get(NotificationService);
+    if (type === 'danger') {
+      notificationService.error(message, action, 'UiState');
+    } else if (type === 'success') {
+      notificationService.success(message, action, 'UiState');
+    } else if (type === 'warning') {
+      notificationService.warning(message, action, 'UiState');
+    } else {
+      notificationService.info(message, action, 'UiState');
     }
   }
 
   dismissAlert(): void {
-    if (this.alertTimeout) {
-      clearTimeout(this.alertTimeout);
-      this.alertTimeout = null;
-    }
+    const notificationService = this.injector.get(NotificationService);
+    // Since we route activeAlerts to NotificationService, we dismiss any notification in that queue or we can clear all.
+    // However, since activeAlert is kept null, this is a fallback.
     this.activeAlert.set(null);
   }
 }

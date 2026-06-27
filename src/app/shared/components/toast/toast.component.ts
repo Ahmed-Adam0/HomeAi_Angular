@@ -40,6 +40,19 @@ import { AlertComponent } from '../alert/alert.component';
       from { opacity: 0; transform: translateX(100%); }
       to { opacity: 1; transform: translateX(0); }
     }
+    :host-context([dir="rtl"]) .toast-stack,
+    :host-context(.rtl-layout) .toast-stack {
+      right: auto;
+      left: 16px;
+    }
+    :host-context([dir="rtl"]) .toast-item,
+    :host-context(.rtl-layout) .toast-item {
+      animation: toastSlideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes toastSlideInLeft {
+      from { opacity: 0; transform: translateX(-100%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
   `],
 })
 export class ToastContainer {
