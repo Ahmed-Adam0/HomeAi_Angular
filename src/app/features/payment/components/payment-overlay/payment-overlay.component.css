@@ -1,0 +1,315 @@
+/* Backdrop overlay using luxury wenge dimming and backdrop-blur */
+.payment-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(18, 16, 14, 0.65);
+  backdrop-filter: blur(12px) saturate(130%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500; /* Extremely high to sit on top of navbars and widgets */
+  padding: var(--fm-space-16);
+  box-sizing: border-box;
+  animation: overlayFadeIn 0.35s var(--fm-ease-smooth) forwards;
+}
+
+/* Centered modal container with responsive sizing */
+.payment-overlay-container {
+  width: 100%;
+  max-width: 680px;
+  height: 100%;
+  max-height: 820px;
+  background: #ffffff;
+  border-radius: var(--fm-radius-lg);
+  box-shadow: var(--fm-shadow-xl);
+  border: 1px solid rgba(184, 147, 92, 0.15); /* Subtle gold border */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  animation: modalScaleUp 0.4s var(--fm-ease-smooth) forwards;
+}
+
+/* Mobile responsive scaling */
+@media (max-width: 768px) {
+  .payment-overlay-backdrop {
+    padding: var(--fm-space-8);
+  }
+  .payment-overlay-container {
+    max-height: 100%;
+    border-radius: var(--fm-radius-md);
+  }
+}
+
+/* Modal Header */
+.payment-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--fm-space-16) var(--fm-space-24);
+  border-bottom: 1px solid var(--fm-border-medium);
+  background: #ffffff;
+}
+
+.payment-header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--fm-space-12);
+  font-family: var(--fm-font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--fm-text-heading);
+}
+
+.payment-header-title i {
+  color: var(--fm-color-primary-500); /* Gold lock icon */
+  font-size: 1.25rem;
+}
+
+.btn-close-overlay {
+  background: transparent;
+  border: none;
+  color: var(--fm-text-muted);
+  cursor: pointer;
+  padding: var(--fm-space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  transition: var(--fm-transition-fast);
+}
+
+.btn-close-overlay:hover {
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-color-danger-500);
+  transform: rotate(90deg);
+}
+
+/* Modal Body */
+.payment-overlay-body {
+  flex: 1;
+  position: relative;
+  background: var(--fm-color-neutral-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+/* The Paymob iFrame */
+.payment-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  opacity: 0;
+  display: block;
+  background: transparent;
+  transition: opacity 0.4s var(--fm-ease-smooth);
+}
+
+.payment-iframe.loaded {
+  opacity: 1;
+}
+
+/* Spinner/Loading State wrapper */
+.payment-loading-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--fm-space-16);
+  z-index: 2;
+  text-align: center;
+  padding: var(--fm-space-24);
+}
+
+.payment-spinner {
+  width: 54px;
+  height: 54px;
+  border: 3.5px solid var(--fm-border-medium);
+  border-top-color: var(--fm-color-primary-500);
+  border-radius: 50%;
+  animation: paymentSpin 0.9s linear infinite;
+}
+
+.payment-loading-text {
+  font-family: var(--fm-font-sans);
+  font-size: 0.95rem;
+  color: var(--fm-text-muted);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Cancel Confirmation Overlay */
+.payment-cancel-confirmation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(18, 16, 14, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: var(--fm-space-24);
+  box-sizing: border-box;
+}
+
+.confirmation-card {
+  background: #ffffff;
+  border-radius: var(--fm-radius-md);
+  box-shadow: var(--fm-shadow-lg);
+  border: 1px solid var(--fm-border-medium);
+  max-width: 420px;
+  width: 100%;
+  padding: var(--fm-space-32) !important;
+  box-sizing: border-box;
+  animation: confirmScaleUp 0.35s var(--fm-ease-bounce) forwards;
+}
+
+.confirmation-icon {
+  font-size: 2.75rem;
+  color: var(--fm-color-danger-500);
+  animation: pulseWarning 2s infinite;
+}
+
+.confirmation-title {
+  font-family: var(--fm-font-sans);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--fm-text-heading);
+  line-height: 1.5;
+}
+
+.btn-confirm-cancel {
+  flex: 1;
+  background-color: var(--fm-color-danger-500);
+  color: #ffffff;
+  border: 1px solid var(--fm-color-danger-600);
+  padding: var(--fm-space-12) var(--fm-space-16);
+  border-radius: var(--fm-radius-pill);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: var(--fm-transition-fast);
+}
+
+.btn-confirm-cancel:hover {
+  background-color: var(--fm-color-danger-600);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(173, 92, 81, 0.25);
+}
+
+.btn-dismiss-cancel {
+  flex: 1;
+  background-color: var(--fm-color-neutral-100);
+  color: var(--fm-text-body);
+  border: 1px solid var(--fm-border-medium);
+  padding: var(--fm-space-12) var(--fm-space-16);
+  border-radius: var(--fm-radius-pill);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: var(--fm-transition-fast);
+}
+
+.btn-dismiss-cancel:hover {
+  background-color: var(--fm-color-neutral-200);
+  color: var(--fm-text-heading);
+  transform: translateY(-1.5px);
+}
+
+/* Modal Footer */
+.payment-overlay-footer {
+  display: flex;
+  justify-content: center;
+  padding: var(--fm-space-16);
+  border-top: 1px solid var(--fm-border-medium);
+  background: #ffffff;
+}
+
+.btn-cancel-payment {
+  background: transparent;
+  border: 1px solid var(--fm-border-medium);
+  color: var(--fm-text-muted);
+  padding: var(--fm-space-10) var(--fm-space-24);
+  border-radius: var(--fm-radius-pill);
+  font-family: var(--fm-font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--fm-space-8);
+  transition: var(--fm-transition-button-hover);
+}
+
+.btn-cancel-payment:hover {
+  background-color: var(--fm-color-danger-50);
+  color: var(--fm-color-danger-500);
+  border-color: var(--fm-color-danger-100);
+  transform: translateY(-1px);
+}
+
+/* Keyframes Animations */
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes confirmScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.93) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes paymentSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseWarning {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

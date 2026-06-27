@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { IPaymentIntent, IPaymentMethod, PaymentProvider } from '../interfaces/ipayment';
 import { IPaymobPaymentRequest, IPaymobPaymentResponse } from '../interfaces';
@@ -21,6 +21,43 @@ export interface IInitiateMasterOrderPaymentResponse {
 })
 export class PaymentService {
   private http = inject(HttpClient);
+
+  // Payment Overlay State
+  readonly isOverlayVisible = signal<boolean>(false);
+  readonly paymentUrl = signal<string | null>(null);
+  readonly orderId = signal<number | null>(null);
+  readonly isIframeLoading = signal<boolean>(true);
+
+  private paymentResult$ = new Subject<{ success: boolean; orderId: number }>();
+
+  startPaymentFlow(paymentUrl: string, orderId: number): Observable<{ success: boolean; orderId: number }> {
+    this.paymentUrl.set(paymentUrl);
+    this.orderId.set(orderId);
+    this.isIframeLoading.set(true);
+    this.isOverlayVisible.set(true);
+
+    // Recreate subject for clean state handling per payment attempt
+    this.paymentResult$ = new Subject<{ success: boolean; orderId: number }>();
+    return this.paymentResult$.asObservable();
+  }
+
+  completePayment(success: boolean): void {
+    const currentOrderId = this.orderId() || 0;
+    this.isOverlayVisible.set(false);
+    this.paymentUrl.set(null);
+    this.orderId.set(null);
+    this.paymentResult$.next({ success, orderId: currentOrderId });
+    this.paymentResult$.complete();
+  }
+
+  cancelPayment(): void {
+    const currentOrderId = this.orderId() || 0;
+    this.isOverlayVisible.set(false);
+    this.paymentUrl.set(null);
+    this.orderId.set(null);
+    this.paymentResult$.next({ success: false, orderId: currentOrderId });
+    this.paymentResult$.complete();
+  }
 
   readonly paymentMethods = signal<IPaymentMethod[]>([
     { id: 'str_card', name: 'Credit/Debit Card (Stripe)', provider: 'stripe', icon: '💳', enabled: true },

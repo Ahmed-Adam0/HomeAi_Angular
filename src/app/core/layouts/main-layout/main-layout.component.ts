@@ -11,10 +11,11 @@ import { ToastContainer } from '../../../shared/components/toast/toast.component
 import { ChatbotWidget } from '../../../shared/components/chatbot-widget/chatbot-widget.component';
 import { ScrollToTop } from '../../../shared/components/scroll-to-top/scroll-to-top.component';
 import { CartSuccessModalComponent } from '../../../features/cart/components/cart-success-modal/cart-success-modal.component';
+import { PaymentOverlayComponent } from '../../../features/payment/components/payment-overlay/payment-overlay.component';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [RouterOutlet, Navbar, Footer, RtlDirective, AlertComponent, AuthRequiredDialogComponent, ConfirmDialogContainer, ToastContainer, ChatbotWidget, ScrollToTop, CartSuccessModalComponent],
+  imports: [RouterOutlet, Navbar, Footer, RtlDirective, AlertComponent, AuthRequiredDialogComponent, ConfirmDialogContainer, ToastContainer, ChatbotWidget, ScrollToTop, CartSuccessModalComponent, PaymentOverlayComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })

@@ -197,10 +197,27 @@ export class OrderDetails {
     this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: true }));
     this.paymentService.initiateVendorOrderPayment({ vendorOrderId: Number(vendorOrderId) }).subscribe({
       next: (res) => {
-        this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
         if (res && res.paymentUrl) {
-          window.location.href = res.paymentUrl;
+          this.paymentService.startPaymentFlow(res.paymentUrl, Number(this.order()?.id || 0)).subscribe({
+            next: (paymentRes) => {
+              this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
+              if (paymentRes.success) {
+                this.uiState.showAlert('success', this.translationService.translate('ORDER_DETAILS_PAYMENT_SUCCESS') || 'Payment completed successfully');
+                const currentId = this.order()?.id;
+                if (currentId) {
+                  this.loadRemainingBalance(currentId);
+                  this.facade.loadOrderDetails(currentId);
+                }
+              } else {
+                this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_FAILED') || 'Payment was unsuccessful or cancelled');
+              }
+            },
+            error: () => {
+              this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
+            }
+          });
         } else {
+          this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
           this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
         }
       },
@@ -256,10 +273,24 @@ export class OrderDetails {
     this.isInitiatingPayment.set(true);
     this.paymentService.initiateMasterOrderPayment(payload).subscribe({
       next: (res) => {
-        this.isInitiatingPayment.set(false);
         if (res && res.paymentUrl) {
-          window.location.href = res.paymentUrl;
+          this.paymentService.startPaymentFlow(res.paymentUrl, Number(orderData.id)).subscribe({
+            next: (paymentRes) => {
+              this.isInitiatingPayment.set(false);
+              if (paymentRes.success) {
+                this.uiState.showAlert('success', this.translationService.translate('ORDER_DETAILS_PAYMENT_SUCCESS') || 'Payment completed successfully');
+                this.loadRemainingBalance(orderData.id);
+                this.facade.loadOrderDetails(orderData.id);
+              } else {
+                this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_FAILED') || 'Payment was unsuccessful or cancelled');
+              }
+            },
+            error: () => {
+              this.isInitiatingPayment.set(false);
+            }
+          });
         } else {
+          this.isInitiatingPayment.set(false);
           this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
         }
       },

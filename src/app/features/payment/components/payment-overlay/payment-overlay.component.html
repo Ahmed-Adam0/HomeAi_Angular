@@ -1,0 +1,71 @@
+@if (isVisible()) {
+  <div class="payment-overlay-backdrop" (click)="requestCancel()">
+    <div class="payment-overlay-container" (click)="$event.stopPropagation()">
+      
+      <!-- Modal Header -->
+      <header class="payment-overlay-header">
+        <div class="payment-header-title">
+          <i class="bi bi-shield-lock-fill"></i>
+          <span>{{ 'PAYMENT_OVERLAY_TITLE' | translate }}</span>
+        </div>
+        <button type="button" class="btn-close-overlay" (click)="requestCancel()" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </header>
+
+      <!-- Modal Body -->
+      <div class="payment-overlay-body">
+        
+        <!-- Loading State -->
+        @if (isIframeLoading()) {
+          <div class="payment-loading-wrapper">
+            <div class="payment-spinner"></div>
+            <p class="payment-loading-text">{{ 'PAYMENT_OVERLAY_LOADING' | translate }}</p>
+          </div>
+        }
+
+        <!-- The Paymob iFrame -->
+        @if (sanitizedUrl()) {
+          <iframe
+            [src]="sanitizedUrl()"
+            (load)="onIframeLoad($event)"
+            class="payment-iframe"
+            [class.loaded]="!isIframeLoading()"
+            allow="payment"
+            title="Paymob Payment Gateway">
+          </iframe>
+        }
+
+        <!-- Cancel Confirmation Overlay -->
+        @if (showCancelConfirmation()) {
+          <div class="payment-cancel-confirmation">
+            <div class="confirmation-card text-center p-4">
+              <div class="confirmation-icon mb-3">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+              </div>
+              <h4 class="confirmation-title mb-2">{{ 'PAYMENT_OVERLAY_CANCEL_CONFIRM' | translate }}</h4>
+              <div class="confirmation-actions d-flex gap-3 justify-content-center mt-4">
+                <button type="button" class="btn-confirm-cancel" (click)="confirmCancel()">
+                  {{ 'PAYMENT_OVERLAY_YES_CANCEL' | translate }}
+                </button>
+                <button type="button" class="btn-dismiss-cancel" (click)="dismissCancel()">
+                  {{ 'PAYMENT_OVERLAY_NO_BACK' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+
+      </div>
+
+      <!-- Modal Footer -->
+      <footer class="payment-overlay-footer">
+        <button type="button" class="btn-cancel-payment" (click)="requestCancel()">
+          <i class="bi bi-x-circle"></i>
+          <span>{{ 'PAYMENT_OVERLAY_CANCEL' | translate }}</span>
+        </button>
+      </footer>
+
+    </div>
+  </div>
+}

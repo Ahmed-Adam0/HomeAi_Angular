@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CheckoutService, ICheckoutPayload, ICheckoutResult } from '../../services/checkout.service';
 import { CartService } from '../../../cart/services/cart.service';
 import { ProfileService } from '../../../profile/services/profile.service';
+import { PaymentService } from '../../../payment/services/payment.service';
 import { IProfile } from '../../../profile/interfaces/iprofile';
 import { IAddressDto } from '../../../profile/interfaces/iaddress.dto';
 import { phoneValidator } from '../../../../shared/validators/phone.validator';
@@ -16,7 +17,7 @@ import { AutoDirectionDirective } from '../../../../shared/directives/auto-direc
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { UiState } from '../../../../core/state/ui.state';
 import { LOCAL_STORAGE_KEYS } from '../../../../core/constants';
-import { EMPTY, defer, from, Subject } from 'rxjs';
+import { EMPTY, defer, from, Subject, of } from 'rxjs';
 import { catchError, exhaustMap, finalize, switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -35,6 +36,7 @@ export class CheckoutFormComponent implements OnInit {
   private uiState = inject(UiState);
   private router = inject(Router);
   private profileService = inject(ProfileService);
+  private paymentService = inject(PaymentService);
 
   readonly currentLang = this.translationService.currentLang;
   readonly cartItems = this.cartService.items;
@@ -426,21 +428,36 @@ export class CheckoutFormComponent implements OnInit {
 
           return this.checkoutService.submitCheckout(orderPayload);
         }),
-        tap((res: ICheckoutResult) => {
+        switchMap((res: ICheckoutResult) => {
           if (res.success) {
             if (!res.profileAddressSaved) {
               this.uiState.showAlert('warning', this.translationService.translate('CHECKOUT_PROFILE_ADDRESS_WARNING'));
             }
-            this.cartService.clearCart();
-            localStorage.removeItem(LOCAL_STORAGE_KEYS.CART);
             if (res.paymentUrl) {
-              window.location.href = res.paymentUrl;
+              // Open the secure Paymob Hosted iFrame and await results
+              return this.paymentService.startPaymentFlow(res.paymentUrl, res.orderId).pipe(
+                tap((paymentRes) => {
+                  if (paymentRes.success) {
+                    this.cartService.clearCart();
+                    localStorage.removeItem(LOCAL_STORAGE_KEYS.CART);
+                    this.uiState.showAlert('success', this.translationService.translate('CHECKOUT_SUCCESS_ORDER_PLACED') || 'Your order has been placed successfully!');
+                    this.router.navigate(['/payment/success'], { queryParams: { success: 'true', merchant_order_id: paymentRes.orderId } });
+                  } else {
+                    this.uiState.showAlert('danger', this.translationService.translate('PAYMENT_OVERLAY_CANCELLED') || 'Payment was cancelled or failed. You can modify details and try again.');
+                  }
+                })
+              );
             } else {
+              // Standard checkout without redirect
+              this.cartService.clearCart();
+              localStorage.removeItem(LOCAL_STORAGE_KEYS.CART);
               this.uiState.showAlert('success', this.translationService.translate('CHECKOUT_SUCCESS_ORDER_PLACED'));
               this.router.navigate(['/orders', res.orderId]);
+              return of(res);
             }
           } else {
             this.uiState.showAlert('danger', this.translationService.translate('CHECKOUT_ERROR_PAYMENT_INIT'));
+            return EMPTY;
           }
         }),
         catchError((err: HttpErrorResponse | Error) => {
