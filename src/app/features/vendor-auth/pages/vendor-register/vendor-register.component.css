@@ -5,7 +5,7 @@
   width: 100%;
   min-height: 100vh;
   font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
-  background: #ffffff;
+  background-color: var(--color-surface);
 }
 
 ::ng-deep html,
@@ -18,7 +18,7 @@
   grid-template-columns: 1fr 1fr;
   width: 100%;
   min-height: 100vh;
-  background: #ffffff;
+  background-color: var(--color-surface);
   animation: auth-page-enter 0.72s ease-out both;
 }
 
@@ -43,7 +43,7 @@
   justify-content: center;
   min-height: 100vh;
   padding: clamp(48px, 6vh, 72px) 24px;
-  background: #ffffff;
+  background-color: var(--color-surface);
   box-sizing: border-box;
 }
 
@@ -179,7 +179,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   border-color: #795c4b;
-  background: #ffffff;
+  background-color: var(--color-surface);
   box-shadow: 0 0 0 3px rgba(121, 92, 75, 0.1);
 }
 

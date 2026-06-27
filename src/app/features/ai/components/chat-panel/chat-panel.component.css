@@ -1,11 +1,11 @@
 .chat-container {
-  background: #ffffff;
-  border-right: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--fm-color-neutral-200, var(--color-border));
   height: 100%;
 }
 
 .chat-header {
-  background: #ffffff;
+  background-color: var(--color-surface);
   min-height: 70px;
 }
 
@@ -71,10 +71,10 @@
 }
 
 .ai-bubble {
-  background: #ffffff;
+  background-color: var(--color-surface);
   color: var(--fm-color-neutral-800, #38332c);
   border-top-left-radius: 4px;
-  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
 }
 
 /* Specific styling matching the brown bubble from the design image */
@@ -85,8 +85,8 @@
 }
 
 .typing-bubble {
-  background: #ffffff;
-  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  background-color: var(--color-surface);
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
   border-top-left-radius: 4px;
   padding: 12px 16px;
 }
@@ -117,18 +117,18 @@
 }
 
 .chat-input-bar {
-  border-top: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  border-top: 1px solid var(--fm-color-neutral-200, var(--color-border));
 }
 
 .input-wrapper {
   background: var(--fm-color-neutral-50, #faf9f6);
-  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  border: 1px solid var(--fm-color-neutral-300, var(--color-border));
   transition: var(--fm-transition-fast);
 }
 
 .input-wrapper:focus-within {
   border-color: var(--fm-color-primary-500, #b8935c);
-  background: #ffffff;
+  background-color: var(--color-surface);
   box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.1);
 }
 

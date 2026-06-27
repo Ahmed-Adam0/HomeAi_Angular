@@ -818,7 +818,7 @@
 .premium-date-picker-wrapper:focus-within:not(.disabled) {
   border-color: var(--fm-input-focus-border, var(--fm-color-primary-500, #b8935c));
   box-shadow: 0 0 0 4px var(--fm-input-focus-ring, rgba(184, 147, 92, 0.08));
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 }
 
 /* Disabled state */

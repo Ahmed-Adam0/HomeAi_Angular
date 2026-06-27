@@ -143,7 +143,7 @@
 
 .stat-card__trend--neutral {
   background: var(--fm-color-neutral-100, #f4f2ee);
-  border-color: var(--fm-color-neutral-200, #e8e4dc);
+  border-color: var(--fm-color-neutral-200, var(--color-border));
   color: var(--color-text-secondary);
 }
 

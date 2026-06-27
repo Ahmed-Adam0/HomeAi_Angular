@@ -30,11 +30,20 @@ import { CartService } from '../../../features/cart/services/cart.service';
 import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
 import { NotificationBellComponent } from '../../../features/notifications/components/notification-bell/notification-bell.component';
 import { IFavoriteItem } from '../../../features/favorites/interfaces/ifavorite-item';
-
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TranslatePipe, LocalizedPipe, CurrencyFormatPipe, NotificationBellComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    TranslatePipe,
+    LocalizedPipe,
+    CurrencyFormatPipe,
+    NotificationBellComponent,
+    ThemeToggleComponent
+  ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })

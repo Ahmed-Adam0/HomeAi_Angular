@@ -264,7 +264,7 @@
 /* ── Single card ── */
 
 .order-card {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08));
   border-radius: var(--fm-radius-lg, 16px);
   box-shadow: 0 1px 3px rgba(31, 28, 24, 0.02);

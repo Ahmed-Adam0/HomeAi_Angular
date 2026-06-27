@@ -1,355 +1,334 @@
-<div class="checkout-page-container py-5" appRtl>
+<div class="checkout-page" appRtl>
   <div class="container">
-    <header class="checkout-header text-center mb-5">
-      <h1 class="checkout-title display-5 fw-bold mb-2">{{ 'CHECKOUT_TITLE' | translate }}</h1>
-      <div class="checkout-divider mx-auto"></div>
+    <header class="checkout-header">
+      <h1 class="checkout-title">{{ 'CHECKOUT_TITLE' | translate }}</h1>
+      <div class="checkout-divider"></div>
     </header>
 
-    <div class="row justify-content-center g-4 lg-g-5">
+    <div class="checkout-layout">
       <!-- Left Column: Checkout Forms -->
-      <div class="col-lg-7">
-        <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="checkout-form-flow d-flex flex-column gap-4">
+      <div class="checkout-main">
+        <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="checkout-form-flow">
 
-          <!-- Section 1: Shipping & Contact Information -->
-          <section class="checkout-card bg-white p-4 p-md-5">
-            <div class="section-title-group d-flex align-items-center gap-3 mb-4">
+          <!-- Section 1: Contact Information -->
+          <section class="checkout-card">
+            <div class="section-title-group">
               <div class="section-number">1</div>
-              <h3 class="section-heading h4 fw-bold mb-0 text-dark">{{ 'CHECKOUT_BILLING_INFO' | translate }}</h3>
+              <h3 class="section-heading">{{ 'CHECKOUT_BILLING_INFO' | translate }}</h3>
             </div>
 
-            <!-- Contact Information Fields (Always Visible) -->
-            <div class="row g-3">
+            <div class="form-grid">
               <!-- First Name -->
-              <div class="col-md-6">
-                <div class="form-group-custom">
-                  <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_FIRST_NAME' | translate }}</label>
-                  <input type="text" formControlName="firstName" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'الاسم الأول' : 'First Name'" appAutoDir>
-                  @if (checkoutForm.get('firstName')?.touched && checkoutForm.get('firstName')?.errors?.['required']) {
-                    <div class="text-danger-custom small mt-1">
-                      {{ currentLang() === 'ar' ? 'الاسم الأول مطلوب.' : 'First name is required.' }}
-                    </div>
-                  }
-                  @if (checkoutForm.get('firstName')?.touched && checkoutForm.get('firstName')?.errors?.['minlength']) {
-                    <div class="text-danger-custom small mt-1">
-                      {{ currentLang() === 'ar' ? 'يجب أن يكون الاسم حرفين على الأقل.' : 'First name must be at least 2 characters.' }}
-                    </div>
-                  }
-                </div>
+              <div class="form-group">
+                <label class="form-label">{{ 'CHECKOUT_FIRST_NAME' | translate }}</label>
+                <input type="text" formControlName="firstName" class="form-input" [placeholder]="currentLang() === 'ar' ? 'الاسم الأول' : 'First Name'" appAutoDir>
+                @if (checkoutForm.get('firstName')?.touched && checkoutForm.get('firstName')?.errors?.['required']) {
+                  <div class="form-error">
+                    {{ currentLang() === 'ar' ? 'الاسم الأول مطلوب.' : 'First name is required.' }}
+                  </div>
+                }
+                @if (checkoutForm.get('firstName')?.touched && checkoutForm.get('firstName')?.errors?.['minlength']) {
+                  <div class="form-error">
+                    {{ currentLang() === 'ar' ? 'يجب أن يكون الاسم حرفين على الأقل.' : 'First name must be at least 2 characters.' }}
+                  </div>
+                }
               </div>
 
               <!-- Last Name -->
-              <div class="col-md-6">
-                <div class="form-group-custom">
-                  <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_LAST_NAME' | translate }}</label>
-                  <input type="text" formControlName="lastName" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'اسم العائلة' : 'Last Name'" appAutoDir>
-                  @if (checkoutForm.get('lastName')?.touched && checkoutForm.get('lastName')?.errors?.['required']) {
-                    <div class="text-danger-custom small mt-1">
-                      {{ currentLang() === 'ar' ? 'اسم العائلة مطلوب.' : 'Last name is required.' }}
-                    </div>
-                  }
-                  @if (checkoutForm.get('lastName')?.touched && checkoutForm.get('lastName')?.errors?.['minlength']) {
-                    <div class="text-danger-custom small mt-1">
-                      {{ currentLang() === 'ar' ? 'يجب أن يكون اسم العائلة حرفين على الأقل.' : 'Last name must be at least 2 characters.' }}
-                    </div>
-                  }
-                </div>
+              <div class="form-group">
+                <label class="form-label">{{ 'CHECKOUT_LAST_NAME' | translate }}</label>
+                <input type="text" formControlName="lastName" class="form-input" [placeholder]="currentLang() === 'ar' ? 'اسم العائلة' : 'Last Name'" appAutoDir>
+                @if (checkoutForm.get('lastName')?.touched && checkoutForm.get('lastName')?.errors?.['required']) {
+                  <div class="form-error">
+                    {{ currentLang() === 'ar' ? 'اسم العائلة مطلوب.' : 'Last name is required.' }}
+                  </div>
+                }
+                @if (checkoutForm.get('lastName')?.touched && checkoutForm.get('lastName')?.errors?.['minlength']) {
+                  <div class="form-error">
+                    {{ currentLang() === 'ar' ? 'يجب أن يكون اسم العائلة حرفين على الأقل.' : 'Last name must be at least 2 characters.' }}
+                  </div>
+                }
               </div>
 
-              <!-- Email Address -->
-              <div class="col-md-6">
-                <div class="form-group-custom">
-                  <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_EMAIL' | translate }}</label>
-                  <input type="email" formControlName="email" class="form-control-custom" placeholder="email@example.com" appAutoDir>
-                  @if (checkoutForm.get('email')?.touched) {
-                    @if (checkoutForm.get('email')?.errors?.['required']) {
-                      <div class="text-danger-custom small mt-1">
-                        {{ currentLang() === 'ar' ? 'البريد الإلكتروني مطلوب.' : 'Email is required.' }}
-                      </div>
-                    } @else if (checkoutForm.get('email')?.errors?.['email']) {
-                      <div class="text-danger-custom small mt-1">
-                        {{ currentLang() === 'ar' ? 'يرجى إدخال بريد إلكتروني صالح.' : 'Please enter a valid email.' }}
-                      </div>
-                    }
+              <!-- Email -->
+              <div class="form-group">
+                <label class="form-label">{{ 'CHECKOUT_EMAIL' | translate }}</label>
+                <input type="email" formControlName="email" class="form-input" placeholder="email@example.com" appAutoDir>
+                @if (checkoutForm.get('email')?.touched) {
+                  @if (checkoutForm.get('email')?.errors?.['required']) {
+                    <div class="form-error">
+                      {{ currentLang() === 'ar' ? 'البريد الإلكتروني مطلوب.' : 'Email is required.' }}
+                    </div>
+                  } @else if (checkoutForm.get('email')?.errors?.['email']) {
+                    <div class="form-error">
+                      {{ currentLang() === 'ar' ? 'يرجى إدخال بريد إلكتروني صالح.' : 'Please enter a valid email.' }}
+                    </div>
                   }
-                </div>
+                }
               </div>
 
-              <!-- Phone Number -->
-              <div class="col-md-6">
-                <div class="form-group-custom">
-                  <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_PHONE' | translate }}</label>
-                  <input type="text" formControlName="phone" class="form-control-custom" placeholder="+1234567890" appAutoDir>
-                  @if (checkoutForm.get('phone')?.touched) {
-                    @if (checkoutForm.get('phone')?.errors?.['required']) {
-                      <div class="text-danger-custom small mt-1">
-                        {{ currentLang() === 'ar' ? 'رقم الهاتف مطلوب.' : 'Phone number is required.' }}
-                      </div>
-                    } @else if (checkoutForm.get('phone')?.errors?.['invalidPhone']) {
-                      <div class="text-danger-custom small mt-1">
-                        {{ currentLang() === 'ar' ? 'رقم الهاتف غير صالح (يجب أن يكون من 10 إلى 15 رقماً).' : 'Invalid phone format (must be 10-15 digits).' }}
-                      </div>
-                    }
+              <!-- Phone -->
+              <div class="form-group">
+                <label class="form-label">{{ 'CHECKOUT_PHONE' | translate }}</label>
+                <input type="text" formControlName="phone" class="form-input" placeholder="+1234567890" appAutoDir>
+                @if (checkoutForm.get('phone')?.touched) {
+                  @if (checkoutForm.get('phone')?.errors?.['required']) {
+                    <div class="form-error">
+                      {{ currentLang() === 'ar' ? 'رقم الهاتف مطلوب.' : 'Phone number is required.' }}
+                    </div>
+                  } @else if (checkoutForm.get('phone')?.errors?.['invalidPhone']) {
+                    <div class="form-error">
+                      {{ currentLang() === 'ar' ? 'رقم الهاتف غير صالح (يجب أن يكون من 10 إلى 15 رقماً).' : 'Invalid phone format (must be 10-15 digits).' }}
+                    </div>
                   }
-                </div>
+                }
               </div>
             </div>
+          </section>
 
-            <!-- Shipping Address Selection / Addition Section -->
-            <div class="address-selection-section">
-              <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-                <h4 class="h5 mb-0 fw-bold text-dark">{{ 'CHECKOUT_SAVED_ADDRESSES' | translate }}</h4>
+          <!-- Section 2: Delivery Address -->
+          <section class="checkout-card">
+            <div class="section-title-group">
+              <div class="section-number">2</div>
+              <div class="section-title-row">
+                <h3 class="section-heading">{{ 'CHECKOUT_SAVED_ADDRESSES' | translate }}</h3>
                 @if (savedAddresses().length > 0 && !showAddAddressForm()) {
-                  <button type="button" class="btn btn-sm btn-add-address-trigger d-flex align-items-center gap-2 rounded-pill px-3" (click)="toggleAddAddressForm()">
-                    <i class="bi bi-plus-lg"></i>
+                  <button type="button" class="btn-add-address" (click)="toggleAddAddressForm()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     {{ 'CHECKOUT_ADD_NEW_ADDRESS' | translate }}
                   </button>
                 }
               </div>
-
-              <!-- Empty State: No addresses saved -->
-              @if (savedAddresses().length === 0 && !showAddAddressForm()) {
-                <div class="empty-address-state mb-4">
-                  <div class="empty-address-icon">
-                    <i class="bi bi-geo-alt"></i>
-                  </div>
-                  <p class="text-muted mb-0">{{ 'CHECKOUT_NO_SAVED_ADDRESSES' | translate }}</p>
-                </div>
-              }
-
-              <!-- Address Cards Grid -->
-              @if (savedAddresses().length > 0 && !showAddAddressForm()) {
-                <div class="row g-3 mb-4">
-                  @for (address of savedAddresses(); track address.id) {
-                    <div class="col-md-6">
-                      <div class="address-option-card" [class.selected]="selectedAddressId() === address.id" (click)="selectAddress(address)">
-                        <div class="address-select-dot"></div>
-                        
-                        <div class="address-card-header">
-                          <span class="address-label text-truncate" style="max-width: 80%;">
-                            <i class="bi bi-geo-alt-fill text-primary-gold me-1"></i>
-                            {{ address.label || ('PROFILE.ADDRESS' | translate) }}
-                          </span>
-                          @if (address.primary) {
-                            <span class="address-default-badge">{{ 'CHECKOUT_DEFAULT' | translate }}</span>
-                          }
-                        </div>
-                        
-                        <div class="address-card-body">
-                          <div class="text-truncate font-semibold">{{ address.addressLine1 }}</div>
-                          @if (address.addressLine2) {
-                            <div class="text-truncate">{{ address.addressLine2 }}</div>
-                          }
-                          @if (address.area) {
-                            <div class="text-truncate">{{ address.area }}</div>
-                          }
-                          <div class="text-truncate">{{ address.city }}<span *ngIf="address.postalCode">, {{ address.postalCode }}</span></div>
-                          <div class="text-uppercase fw-bold text-primary-gold mt-1" style="font-size: 11px;">{{ address.country }}</div>
-                          @if (address.notes) {
-                            <div class="text-truncate mt-1 text-muted small" style="font-style: italic;">
-                              <i class="bi bi-info-circle me-1"></i>{{ address.notes }}
-                            </div>
-                          }
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </div>
-              }
-
-              <!-- Inline Add Address Form -->
-              @if (showAddAddressForm()) {
-                <div class="inline-address-form-container border p-4 rounded-4 bg-white mb-3" [formGroup]="newAddressForm">
-                  <h4 class="inline-form-heading h6 text-dark font-bold mb-3">
-                    {{ 'CHECKOUT_ADD_NEW_ADDRESS' | translate }}
-                  </h4>
-                  
-                  <div class="row g-3">
-                    <!-- Address Label -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_LABEL' | translate }}</label>
-                        <input type="text" formControlName="label" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'مثال: المنزل، العمل' : 'e.g. Home, Work'" appAutoDir>
-                      </div>
-                    </div>
-
-                    <!-- Building Number -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_BUILDING_NUMBER' | translate }} *</label>
-                        <input type="text" formControlName="buildingNumber" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم المبنى' : 'Building Number'" appAutoDir>
-                        @if (newAddressForm.get('buildingNumber')?.touched && newAddressForm.get('buildingNumber')?.errors?.['required']) {
-                          <div class="text-danger-custom small mt-1">
-                            {{ currentLang() === 'ar' ? 'رقم المبنى مطلوب.' : 'Building number is required.' }}
-                          </div>
-                        }
-                      </div>
-                    </div>
-
-                    <!-- Street -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_STREET' | translate }} *</label>
-                        <input type="text" formControlName="street" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'الشارع' : 'Street'" appAutoDir>
-                        @if (newAddressForm.get('street')?.touched && newAddressForm.get('street')?.errors?.['required']) {
-                          <div class="text-danger-custom small mt-1">
-                            {{ currentLang() === 'ar' ? 'اسم الشارع مطلوب.' : 'Street name is required.' }}
-                          </div>
-                        }
-                      </div>
-                    </div>
-
-                    <!-- Area -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_AREA' | translate }} *</label>
-                        <input type="text" formControlName="area" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'المنطقة' : 'Area'" appAutoDir>
-                        @if (newAddressForm.get('area')?.touched && newAddressForm.get('area')?.errors?.['required']) {
-                          <div class="text-danger-custom small mt-1">
-                            {{ currentLang() === 'ar' ? 'المنطقة مطلوبة.' : 'Area is required.' }}
-                          </div>
-                        }
-                      </div>
-                    </div>
-
-                    <!-- City -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_CITY' | translate }} *</label>
-                        <input type="text" formControlName="city" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'المدينة' : 'City'" appAutoDir>
-                        @if (newAddressForm.get('city')?.touched && newAddressForm.get('city')?.errors?.['required']) {
-                          <div class="text-danger-custom small mt-1">
-                            {{ currentLang() === 'ar' ? 'المدينة مطلوبة.' : 'City is required.' }}
-                          </div>
-                        }
-                      </div>
-                    </div>
-
-                    <!-- Country -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_COUNTRY' | translate }} *</label>
-                        <input type="text" formControlName="country" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'البلد' : 'Country'" appAutoDir>
-                        @if (newAddressForm.get('country')?.touched && newAddressForm.get('country')?.errors?.['required']) {
-                          <div class="text-danger-custom small mt-1">
-                            {{ currentLang() === 'ar' ? 'البلد مطلوب.' : 'Country is required.' }}
-                          </div>
-                        }
-                      </div>
-                    </div>
-
-                    <!-- Address Line 1 (Full Street Address - Auto Synced) -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS1' | translate }} ({{ currentLang() === 'ar' ? 'تلقائي' : 'Auto' }})</label>
-                        <input type="text" formControlName="addressLine1" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم المبنى والشارع' : 'Street Address'" appAutoDir readonly>
-                      </div>
-                    </div>
-
-                    <!-- Address Line 2 -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS2' | translate }}</label>
-                        <input type="text" formControlName="addressLine2" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'رقم الشقة، الجناح، إلخ (اختياري)' : 'Apartment, suite, etc. (optional)'" appAutoDir>
-                      </div>
-                    </div>
-
-                    <!-- Postal Code -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ZIP' | translate }}</label>
-                        <input type="text" formControlName="postalCode" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'الرمز البريدي (اختياري)' : 'Postal Code (optional)'" appAutoDir>
-                      </div>
-                    </div>
-
-                    <!-- Address Notes -->
-                    <div class="col-12 col-md-6">
-                      <div class="form-group-custom">
-                        <label class="form-label-custom fw-semibold">{{ 'CHECKOUT_ADDRESS_NOTES' | translate }}</label>
-                        <input type="text" formControlName="notes" class="form-control-custom" [placeholder]="currentLang() === 'ar' ? 'مثال: الطابق الثاني، شقة 5' : 'e.g. 2nd floor, apt 5'" appAutoDir>
-                      </div>
-                    </div>
-
-                    <!-- Set As Default Switch -->
-                    <div class="col-12 d-flex align-items-center">
-                      <div class="form-check form-switch pt-2">
-                        <input id="checkout-primary-address" type="checkbox" formControlName="primary" class="form-check-input cursor-pointer">
-                        <label for="checkout-primary-address" class="form-check-label fw-bold text-dark small cursor-pointer ms-2">
-                          {{ 'PROFILE.SET_DEFAULT' | translate }}
-                        </label>
-                      </div>
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="col-12 d-flex justify-content-end gap-3 mt-4 pt-3 border-top flex-wrap">
-                      @if (savedAddresses().length > 0) {
-                        <button type="button" class="btn btn-sm btn-cancel-address rounded-pill px-3" (click)="cancelAddAddress()">
-                          {{ 'PROFILE.CANCEL_ADDRESS' | translate }}
-                        </button>
-                      }
-                      <button type="button" class="btn btn-sm btn-save-address rounded-pill px-4" [disabled]="newAddressForm.invalid || addressSaving()" (click)="onSaveNewAddress()">
-                        @if (addressSaving()) {
-                          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                          <span>{{ 'CHECKOUT_SUBMITTING' | translate }}</span>
-                        } @else {
-                          <span>{{ 'PROFILE.SAVE_ADDRESS' | translate }}</span>
-                        }
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              }
             </div>
+
+            <!-- Empty State -->
+            @if (savedAddresses().length === 0 && !showAddAddressForm()) {
+              <div class="empty-address-state">
+                <div class="empty-address-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
+                <p class="empty-address-text">{{ 'CHECKOUT_NO_SAVED_ADDRESSES' | translate }}</p>
+              </div>
+            }
+
+            <!-- Address Cards Grid -->
+            @if (savedAddresses().length > 0 && !showAddAddressForm()) {
+              <div class="address-grid">
+                @for (address of visibleAddresses(); track address.id) {
+                  <div class="address-card" [class.selected]="selectedAddressId() === address.id" (click)="selectAddress(address)">
+                    <div class="address-card-dot"></div>
+
+                    <div class="address-card-header">
+                      <span class="address-label">
+                        {{ address.label || ('PROFILE.ADDRESS' | translate) }}
+                      </span>
+                      @if (address.primary) {
+                        <span class="address-badge">{{ 'CHECKOUT_DEFAULT' | translate }}</span>
+                      }
+                    </div>
+
+                    <div class="address-card-body">
+                      <div class="address-line-primary">{{ address.addressLine1 }}</div>
+                      @if (address.addressLine2) {
+                        <div class="address-line">{{ address.addressLine2 }}</div>
+                      }
+                      @if (address.area) {
+                        <div class="address-line">{{ address.area }}</div>
+                      }
+                      <div class="address-line">{{ address.city }}<span *ngIf="address.postalCode">, {{ address.postalCode }}</span></div>
+                      <div class="address-country">{{ address.country }}</div>
+                      @if (address.notes) {
+                        <div class="address-note">
+                          <i class="bi bi-info-circle"></i> {{ address.notes }}
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <!-- Show More / Less Button -->
+              @if (savedAddresses().length > 4) {
+                <button type="button" class="btn-show-more" (click)="toggleShowAllAddresses()">
+                  @if (showAllAddresses()) {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                    {{ currentLang() === 'ar' ? 'عرض أقل' : 'Show Less' }}
+                  } @else {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    {{ currentLang() === 'ar' ? 'عرض الكل' : 'View All' }} ({{ savedAddresses().length }})
+                  }
+                </button>
+              }
+            }
+
+            <!-- Inline Add Address Form -->
+            @if (showAddAddressForm()) {
+              <div class="add-address-form" [formGroup]="newAddressForm">
+                <h4 class="add-address-heading">
+                  {{ 'CHECKOUT_ADD_NEW_ADDRESS' | translate }}
+                </h4>
+
+                <div class="form-grid">
+                  <!-- Address Label -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_LABEL' | translate }}</label>
+                    <input type="text" formControlName="label" class="form-input" [placeholder]="currentLang() === 'ar' ? 'مثال: المنزل، العمل' : 'e.g. Home, Work'" appAutoDir>
+                  </div>
+
+                  <!-- Building Number -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_BUILDING_NUMBER' | translate }} *</label>
+                    <input type="text" formControlName="buildingNumber" class="form-input" [placeholder]="currentLang() === 'ar' ? 'رقم المبنى' : 'Building Number'" appAutoDir>
+                    @if (newAddressForm.get('buildingNumber')?.touched && newAddressForm.get('buildingNumber')?.errors?.['required']) {
+                      <div class="form-error">
+                        {{ currentLang() === 'ar' ? 'رقم المبنى مطلوب.' : 'Building number is required.' }}
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Street -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_STREET' | translate }} *</label>
+                    <input type="text" formControlName="street" class="form-input" [placeholder]="currentLang() === 'ar' ? 'الشارع' : 'Street'" appAutoDir>
+                    @if (newAddressForm.get('street')?.touched && newAddressForm.get('street')?.errors?.['required']) {
+                      <div class="form-error">
+                        {{ currentLang() === 'ar' ? 'اسم الشارع مطلوب.' : 'Street name is required.' }}
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Area -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_AREA' | translate }} *</label>
+                    <input type="text" formControlName="area" class="form-input" [placeholder]="currentLang() === 'ar' ? 'المنطقة' : 'Area'" appAutoDir>
+                    @if (newAddressForm.get('area')?.touched && newAddressForm.get('area')?.errors?.['required']) {
+                      <div class="form-error">
+                        {{ currentLang() === 'ar' ? 'المنطقة مطلوبة.' : 'Area is required.' }}
+                      </div>
+                    }
+                  </div>
+
+                  <!-- City -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_CITY' | translate }} *</label>
+                    <input type="text" formControlName="city" class="form-input" [placeholder]="currentLang() === 'ar' ? 'المدينة' : 'City'" appAutoDir>
+                    @if (newAddressForm.get('city')?.touched && newAddressForm.get('city')?.errors?.['required']) {
+                      <div class="form-error">
+                        {{ currentLang() === 'ar' ? 'المدينة مطلوبة.' : 'City is required.' }}
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Country -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_COUNTRY' | translate }} *</label>
+                    <input type="text" formControlName="country" class="form-input" [placeholder]="currentLang() === 'ar' ? 'البلد' : 'Country'" appAutoDir>
+                    @if (newAddressForm.get('country')?.touched && newAddressForm.get('country')?.errors?.['required']) {
+                      <div class="form-error">
+                        {{ currentLang() === 'ar' ? 'البلد مطلوب.' : 'Country is required.' }}
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Address Line 1 (Auto) -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_ADDRESS1' | translate }} ({{ currentLang() === 'ar' ? 'تلقائي' : 'Auto' }})</label>
+                    <input type="text" formControlName="addressLine1" class="form-input form-input-readonly" [placeholder]="currentLang() === 'ar' ? 'رقم المبنى والشارع' : 'Street Address'" appAutoDir readonly>
+                  </div>
+
+                  <!-- Address Line 2 -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_ADDRESS2' | translate }}</label>
+                    <input type="text" formControlName="addressLine2" class="form-input" [placeholder]="currentLang() === 'ar' ? 'رقم الشقة، الجناح، إلخ (اختياري)' : 'Apartment, suite, etc. (optional)'" appAutoDir>
+                  </div>
+
+                  <!-- Postal Code -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_ZIP' | translate }}</label>
+                    <input type="text" formControlName="postalCode" class="form-input" [placeholder]="currentLang() === 'ar' ? 'الرمز البريدي (اختياري)' : 'Postal Code (optional)'" appAutoDir>
+                  </div>
+
+                  <!-- Address Notes -->
+                  <div class="form-group">
+                    <label class="form-label">{{ 'CHECKOUT_ADDRESS_NOTES' | translate }}</label>
+                    <input type="text" formControlName="notes" class="form-input" [placeholder]="currentLang() === 'ar' ? 'مثال: الطابق الثاني، شقة 5' : 'e.g. 2nd floor, apt 5'" appAutoDir>
+                  </div>
+                </div>
+
+                <!-- Set As Default Switch -->
+                <div class="form-switch-row">
+                  <input id="checkout-primary-address" type="checkbox" formControlName="primary" class="form-switch-input">
+                  <label for="checkout-primary-address" class="form-switch-label">
+                    {{ 'PROFILE.SET_DEFAULT' | translate }}
+                  </label>
+                </div>
+
+                <!-- Actions -->
+                <div class="add-address-actions">
+                  @if (savedAddresses().length > 0) {
+                    <button type="button" class="btn-cancel" (click)="cancelAddAddress()">
+                      {{ 'PROFILE.CANCEL_ADDRESS' | translate }}
+                    </button>
+                  }
+                  <button type="button" class="btn-save" [disabled]="newAddressForm.invalid || addressSaving()" (click)="onSaveNewAddress()">
+                    @if (addressSaving()) {
+                      <span class="spinner"></span>
+                      <span>{{ 'CHECKOUT_SUBMITTING' | translate }}</span>
+                    } @else {
+                      <span>{{ 'PROFILE.SAVE_ADDRESS' | translate }}</span>
+                    }
+                  </button>
+                </div>
+              </div>
+            }
           </section>
 
-          <!-- Section 2: Payment Method -->
-          <section class="checkout-card bg-white p-4 p-md-5">
-            <div class="section-title-group d-flex align-items-center gap-3 mb-4">
-              <div class="section-number">2</div>
-              <h3 class="section-heading h4 fw-bold mb-0 text-dark">{{ 'CHECKOUT_PAYMENT_METHOD' | translate }}</h3>
+          <!-- Section 3: Payment Method -->
+          <section class="checkout-card">
+            <div class="section-title-group">
+              <div class="section-number">3</div>
+              <h3 class="section-heading">{{ 'CHECKOUT_PAYMENT_METHOD' | translate }}</h3>
             </div>
 
-            <div class="payment-options-grid d-flex flex-column gap-3">
-              <!-- Paymob Card -->
-              <label class="selection-card cursor-pointer" [class.active]="checkoutForm.get('paymentProvider')?.value === 'paymob'">
-                <input type="radio" formControlName="paymentProvider" value="paymob" class="d-none">
-                <div class="selection-card-content d-flex align-items-center justify-content-between w-100">
-                  <div class="d-flex align-items-center gap-3">
-                    <span class="selection-radio-dot"></span>
-                    <div class="payment-icon d-flex align-items-center justify-content-center rounded-3 bg-light">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-wallet"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                    </div>
-                    <span class="selection-card-title fw-bold text-dark">{{ 'CHECKOUT_GATEWAY_PAYMOB' | translate }}</span>
+            <div class="payment-options">
+              <label class="payment-card" [class.active]="checkoutForm.get('paymentProvider')?.value === 'paymob'">
+                <input type="radio" formControlName="paymentProvider" value="paymob" class="sr-only">
+                <div class="payment-card-content">
+                  <span class="payment-radio-dot"></span>
+                  <div class="payment-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                   </div>
+                  <span class="payment-card-title">{{ 'CHECKOUT_GATEWAY_PAYMOB' | translate }}</span>
                 </div>
               </label>
             </div>
           </section>
 
-          <section class="checkout-card bg-white p-4 p-md-5">
-            <div class="section-title-group d-flex align-items-center gap-3 mb-4">
-              <div class="section-number">3</div>
-              <h3 class="section-heading h4 fw-bold mb-0 text-dark">{{ 'CHECKOUT_ORDER_NOTES_TITLE' | translate }}</h3>
+          <!-- Section 4: Order Notes -->
+          <section class="checkout-card">
+            <div class="section-title-group">
+              <div class="section-number">4</div>
+              <h3 class="section-heading">{{ 'CHECKOUT_ORDER_NOTES_TITLE' | translate }}</h3>
             </div>
 
-            <div class="form-group-custom">
-              <label class="form-label-custom fw-semibold" for="orderNotes">{{ 'CHECKOUT_ORDER_NOTES_TITLE' | translate }}</label>
+            <div class="notes-group">
               <textarea
                 id="orderNotes"
                 formControlName="orderNotes"
-                rows="5"
-                class="form-control-custom checkout-notes-textarea"
+                rows="3"
+                class="form-textarea"
                 [placeholder]="currentLang() === 'ar' ? 'اكتب ملاحظات إضافية للطلب...' : 'Write any special instructions for your order...'"
                 appAutoDir></textarea>
 
-              <div class="notes-meta d-flex align-items-center justify-content-between gap-3 mt-2 flex-wrap">
-                <span class="text-muted small">{{ 'CHECKOUT_ORDER_NOTES_HELP' | translate }}</span>
-                <span class="small" [class.text-danger-custom]="orderNotesControl.value.length >= 280">
-                  {{ orderNotesControl.value.length }}/300 {{ 'CHECKOUT_CHAR_COUNT' | translate }}
+              <div class="notes-footer">
+                <span class="notes-help">{{ 'CHECKOUT_ORDER_NOTES_HELP' | translate }}</span>
+                <span class="notes-counter" [class.danger]="orderNotesControl.value.length >= 280">
+                  {{ orderNotesControl.value.length }}/300
                 </span>
               </div>
 
               @if (checkoutForm.get('orderNotes')?.touched && checkoutForm.get('orderNotes')?.errors?.['maxlength']) {
-                <div class="text-danger-custom small mt-2">
+                <div class="form-error">
                   {{ 'CHECKOUT_ORDER_NOTES_MAX' | translate }}
                 </div>
               }
@@ -358,88 +337,77 @@
         </form>
       </div>
 
-      <!-- Right Column: Sticky Order Summary Card -->
-      <div class="col-lg-4">
-        <aside class="checkout-summary-card bg-white p-4 p-md-5 sticky-lg-top">
-          <h4 class="summary-heading fw-bold mb-4 pb-2 border-bottom text-dark">
+      <!-- Right Column: Sticky Order Summary -->
+      <div class="checkout-sidebar">
+        <aside class="summary-card">
+          <div class="summary-accent"></div>
+          <h4 class="summary-heading">
             {{ 'CHECKOUT_ORDER_SUMMARY' | translate }}
           </h4>
 
           @if (!cartEmpty()) {
-            <!-- Product list -->
-            <div class="summary-products-list mb-4 overflow-y-auto" style="max-height: 280px;">
+            <!-- Product List -->
+            <div class="summary-products">
               @for (item of cartItems(); track item.id) {
-                <div class="summary-product-item d-flex align-items-center gap-3 py-3 border-bottom">
-                  <div class="product-img-wrapper position-relativeflex-shrink-0">
-                    <img [src]="item.productImage || 'assets/images/image-placeholder.svg'" [alt]="currentLang() === 'ar' ? item.productNameAr : item.productNameEn" class="product-thumbnail-img rounded-3">
-                    <span class="product-qty-badge position-absolute translate-middle rounded-circle bg-dark text-white d-flex align-items-center justify-content-center">
-                      {{ item.quantity }}
-                    </span>
+                <div class="summary-product">
+                  <div class="product-thumb-wrapper">
+                    <img [src]="item.productImage || 'assets/images/image-placeholder.svg'" [alt]="currentLang() === 'ar' ? item.productNameAr : item.productNameEn" class="product-thumb">
+                    <span class="product-qty">{{ item.quantity }}</span>
                   </div>
-                  <div class="product-info flex-grow-1 min-w-0">
-                    <h6 class="product-name text-truncate mb-0 fw-semibold text-dark">
+                  <div class="product-info">
+                    <h6 class="product-name">
                       {{ currentLang() === 'ar' ? item.productNameAr : item.productNameEn }}
                     </h6>
-                    <span class="product-unit-price text-muted small d-block">
-                      {{ item.price | currencyFormat }}
-                    </span>
+                    <span class="product-price">{{ item.price | currencyFormat }}</span>
                   </div>
-                  <div class="product-row-total fw-bold text-dark">
-                    {{ item.subtotal | currencyFormat }}
-                  </div>
+                  <div class="product-total">{{ item.subtotal | currencyFormat }}</div>
                 </div>
               }
             </div>
 
             <!-- Summary Totals -->
-            <div class="summary-totals-grid d-flex flex-column gap-2 mb-4">
-              <div class="d-flex justify-content-between align-items-center text-muted">
+            <div class="summary-totals">
+              <div class="summary-row">
                 <span>{{ 'CHECKOUT_ITEMS' | translate }}</span>
-                <span class="fw-semibold text-dark">{{ cartSummary().totalQuantity }}</span>
+                <span class="summary-value">{{ cartSummary().totalQuantity }}</span>
               </div>
-
-              <div class="d-flex justify-content-between align-items-center text-muted">
+              <div class="summary-row">
                 <span>{{ 'CHECKOUT_SUBTOTAL' | translate }}</span>
-                <span class="fw-semibold text-dark">{{ cartSummary().subtotal | currencyFormat }}</span>
+                <span class="summary-value">{{ cartSummary().subtotal | currencyFormat }}</span>
               </div>
-
               @if (cartSummary().discount > 0) {
-                <div class="d-flex justify-content-between align-items-center discount-row py-1 rounded">
-                  <span class="text-success">{{ 'CHECKOUT_DISCOUNT' | translate }}</span>
-                  <span class="fw-bold text-success">-{{ cartSummary().discount | currencyFormat }}</span>
+                <div class="summary-row discount-row">
+                  <span>{{ 'CHECKOUT_DISCOUNT' | translate }}</span>
+                  <span class="discount-value">-{{ cartSummary().discount | currencyFormat }}</span>
                 </div>
               }
-
-              <div class="summary-total-divider my-2"></div>
-
-              <div class="d-flex justify-content-between align-items-center grand-total-row">
-                <span class="fw-bold text-dark fs-5">{{ 'CHECKOUT_TOTAL' | translate }}</span>
-                <span class="fw-bold text-primary-gold fs-4">{{ cartSummary().total | currencyFormat }}</span>
+              <div class="summary-divider"></div>
+              <div class="summary-row total-row">
+                <span>{{ 'CHECKOUT_TOTAL' | translate }}</span>
+                <span class="total-value">{{ cartSummary().total | currencyFormat }}</span>
               </div>
             </div>
 
-            <!-- CTA Submit -->
-            <div class="checkout-cta-area">
-              <button type="submit" [disabled]="submitting || checkoutForm.invalid || !selectedAddressId()" (click)="onSubmit()" class="btn-checkout w-100 py-3 rounded-pill fw-bold fs-5 shadow-sm d-flex align-items-center justify-content-center gap-2">
+            <!-- CTA -->
+            <div class="summary-cta">
+              <button type="submit" [disabled]="submitting || checkoutForm.invalid || !selectedAddressId()" (click)="onSubmit()" class="btn-checkout">
                 @if (submitting) {
-                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span class="spinner"></span>
                   <span>{{ 'CHECKOUT_SUBMITTING' | translate }}</span>
                 } @else {
                   <span>{{ 'CHECKOUT_PROCEED_TO_PAYMENT' | translate }}</span>
                 }
               </button>
 
-              <div class="secure-badge d-flex align-items-center justify-content-center gap-2 mt-3 text-muted small">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lock-icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              <div class="secure-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 <span>{{ 'CHECKOUT_SECURE_HELP' | translate }}</span>
               </div>
             </div>
           } @else {
-            <div class="empty-cart-summary py-5 text-center">
-              <div class="empty-cart-icon mb-3 text-muted">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-              </div>
-              <p class="text-muted mb-0">{{ 'CHECKOUT_EMPTY_CART_MESSAGE' | translate }}</p>
+            <div class="empty-cart">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              <p>{{ 'CHECKOUT_EMPTY_CART_MESSAGE' | translate }}</p>
             </div>
           }
         </aside>

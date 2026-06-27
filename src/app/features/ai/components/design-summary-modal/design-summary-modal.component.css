@@ -12,8 +12,8 @@
 .modal-card {
   width: 95%;
   max-width: 850px;
-  background: #ffffff;
-  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  background-color: var(--color-surface);
+  border: 1px solid var(--fm-color-neutral-300, var(--color-border));
   max-height: 85vh;
   display: flex;
   flex-direction: column;
@@ -43,7 +43,7 @@
   width: 100%;
   aspect-ratio: 16 / 11;
   background-color: var(--fm-color-neutral-200, #e8e4dc);
-  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  border: 1px solid var(--fm-color-neutral-300, var(--color-border));
   border-radius: var(--fm-radius-md, 12px);
 }
 
@@ -82,8 +82,8 @@
 }
 
 .item-card {
-  background: #ffffff; /* pure white inside list */
-  border: 1px solid var(--fm-color-neutral-200, #e8e4dc) !important;
+  background-color: var(--color-surface); /* pure white inside list */
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border)) !important;
   border-radius: var(--fm-radius-md, 12px) !important;
   transition: var(--fm-transition-fast);
 }
@@ -96,7 +96,7 @@
 .item-img-box {
   width: 70px;
   height: 70px;
-  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
   border-radius: var(--fm-radius-sm, 8px);
 }
 

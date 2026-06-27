@@ -494,7 +494,7 @@
   position: relative;
   width: 100%;
   height: 60px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   border: 1px solid var(--fm-color-neutral-300);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -710,7 +710,7 @@ app-custom-dropdown {
   width: 20px;
   left: 3px;
   bottom: 3px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 50%;
   transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
@@ -724,7 +724,7 @@ app-custom-dropdown {
 
 /* Swatches layouts (Apple style Swatches) */
 .studio-material-group-box {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: 16px;
   padding: 24px;
@@ -750,7 +750,7 @@ app-custom-dropdown {
   gap: 16px;
 }
 .swatch-tile-card {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: 12px;
   padding: 16px;
@@ -778,7 +778,7 @@ app-custom-dropdown {
   font-size: 0.72rem;
   font-weight: bold;
   color: var(--fm-color-primary-600);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -827,7 +827,7 @@ app-custom-dropdown {
   border-radius: 6px;
   outline: none;
   font-weight: 700;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   color: var(--fm-color-neutral-900);
 }
 [dir="rtl"] .override-input-control {
@@ -925,7 +925,7 @@ app-custom-dropdown {
   border: 1px solid var(--fm-color-neutral-200);
   overflow: hidden;
   box-shadow: var(--fm-shadow-xs);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   transition: all 0.25s ease;
 }
 .preview-card-wrapper.preview-primary-outline {
@@ -971,7 +971,7 @@ app-custom-dropdown {
   height: 32px;
   border-radius: 50%;
   border: none;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   color: var(--fm-color-neutral-800);
   display: flex;
   align-items: center;
@@ -995,7 +995,7 @@ app-custom-dropdown {
 
 /* Quality Checklists & Specs table */
 .quality-review-checklist {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: 16px;
   padding: 24px;
@@ -1042,7 +1042,7 @@ app-custom-dropdown {
 }
 
 .tech-specs-card {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: 16px;
   padding: 24px;
@@ -1122,7 +1122,7 @@ app-custom-dropdown {
 
 /* Brochure card mockup */
 .brochure-card-showcase {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 24px;
   overflow: hidden;
   border: 1px solid rgba(31, 28, 24, 0.05);
@@ -1230,7 +1230,7 @@ app-custom-dropdown {
 /* 4. FIXED FROSTED GLASS STUDIO PUBLISH BAR */
 .frosted-studio-publish-bar {
   flex-shrink: 0;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-top: 1px solid var(--fm-color-neutral-200);
   padding: 16px 24px;
   z-index: 10;
@@ -1342,7 +1342,7 @@ app-custom-dropdown {
 
 .btn-close-studio:hover {
   background: rgba(31, 28, 24, 0.1);
-  color: #1f1c18;
+  color: var(--color-text);
   transform: scale(1.05);
 }
 
@@ -1367,13 +1367,13 @@ app-custom-dropdown {
 }
 
 .current-3d-model-card {
-  background-color: #faf9f6;
-  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  background-color: var(--color-background);
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
   transition: all 0.2s ease;
 }
 
 .current-3d-model-card:hover {
-  border-color: var(--fm-color-neutral-300, #d9d3c7);
+  border-color: var(--fm-color-neutral-300, var(--color-border));
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
 }
 
@@ -1410,7 +1410,7 @@ app-custom-dropdown {
 
 .btn-outline-studio {
   background-color: transparent;
-  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  border: 1px solid var(--fm-color-neutral-300, var(--color-border));
   color: var(--fm-color-neutral-700, #544d43);
   transition: all 0.2s ease;
 }
@@ -1435,7 +1435,7 @@ app-custom-dropdown {
 
 .studio-dropzone-box--3d {
   background-color: var(--fm-color-neutral-50, #fdfdfd);
-  border: 2px dashed var(--fm-color-neutral-300, #d9d3c7);
+  border: 2px dashed var(--fm-color-neutral-300, var(--color-border));
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

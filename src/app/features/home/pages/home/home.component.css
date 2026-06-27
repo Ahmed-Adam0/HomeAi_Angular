@@ -87,7 +87,7 @@
 /* Scoped override for the featured products section */
 
 :host ::ng-deep .featured-section {
-  background-color: #FAF7F2 !important; /* Premium Warm Ivory Background */
+  background-color: var(--color-background) !important; /* Premium Warm Ivory Background */
   border-top: 1px solid rgba(184, 147, 92, 0.08) !important;
   border-bottom: 1px solid rgba(184, 147, 92, 0.08) !important;
   padding-top: 5.5rem !important;
@@ -116,7 +116,7 @@
 
 /* Scoped Upgrade for Homepage Product Cards */
 :host ::ng-deep .featured-section .product-card {
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
   border: 1px solid rgba(184, 147, 92, 0.08) !important;
   border-radius: 24px !important; /* Premium softened corner cards */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01) !important;

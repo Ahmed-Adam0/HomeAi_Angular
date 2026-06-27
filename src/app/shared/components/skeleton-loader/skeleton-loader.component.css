@@ -18,15 +18,15 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.light-theme .fm-skeleton-card,
-:host-context(.light-theme) .fm-skeleton-card {
-  background: rgba(0, 0, 0, 0.01);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+:host-context([data-theme="light"]) .fm-skeleton-card,
+html[data-theme="light"] .fm-skeleton-card {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 /* General helper layouts */
 .order-row-mock {
-  background: rgba(255, 255, 255, 0.01);
+  background: rgba(var(--color-text-rgb), 0.02);
   border-radius: 8px;
 }
 
@@ -35,12 +35,12 @@
 }
 
 .chart-shimmer-mesh {
-  border-left: 2px solid rgba(0,0,0,0.02);
+  border-left: 2px solid rgba(var(--color-text-rgb), 0.03);
 }
 
 .activity-stat-box {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(var(--color-text-rgb), 0.02);
+  border: 1px solid var(--color-border);
 }
 
 /* Grid wrappers to support correct cards alignment on mobile vs desktop */
@@ -58,10 +58,10 @@
 
 /* Timeline specific spacing */
 .skeleton-line {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(var(--color-text-rgb), 0.05);
 }
 
-.light-theme .skeleton-line,
-:host-context(.light-theme) .skeleton-line {
-  background-color: rgba(0, 0, 0, 0.03);
+:host-context([data-theme="light"]) .skeleton-line,
+html[data-theme="light"] .skeleton-line {
+  background-color: rgba(0, 0, 0, 0.04);
 }

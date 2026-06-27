@@ -4,7 +4,7 @@
 
 /* Page background */
 .favorites-page {
-  background-color: #FAF7F2;
+  background-color: var(--color-background);
   min-height: 100vh;
 }
 
@@ -113,7 +113,7 @@
    Skeleton Loaders
    ========================================================================== */
 .fav-card-skeleton {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid rgba(184, 147, 92, 0.06);
 }
 
@@ -143,7 +143,7 @@
    Favorite Cards
    ========================================================================== */
 .fav-card {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid rgba(184, 147, 92, 0.08);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
@@ -254,7 +254,7 @@
    Empty State
    ========================================================================== */
 .empty-state {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid rgba(184, 147, 92, 0.08);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
@@ -289,7 +289,7 @@
    Sidebar Cards
    ========================================================================== */
 .sidebar-card {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid rgba(184, 147, 92, 0.1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }

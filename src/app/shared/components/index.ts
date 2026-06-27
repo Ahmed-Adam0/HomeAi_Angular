@@ -18,3 +18,4 @@ export * from './status-badge/status-badge.component';
 export * from './toast/toast.component';
 export * from './confirm-dialog/confirm-dialog-container.component';
 export * from './custom-dropdown/custom-dropdown.component';
+export * from './theme-toggle/theme-toggle.component';

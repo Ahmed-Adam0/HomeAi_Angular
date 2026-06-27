@@ -1,50 +1,80 @@
+/* ==========================================================================
+   FURNIMIND AI - Shipping Info Card CSS
+   ========================================================================== */
+
 :host {
   display: block;
 }
 
 .details-card-header {
   padding: var(--fm-space-20) var(--fm-space-24);
+  background: linear-gradient(180deg, var(--fm-color-neutral-50) 0%, var(--fm-surface-card) 100%);
+  border-bottom: 1px solid var(--fm-border-medium);
+}
+
+.details-card-title {
+  font-family: var(--fm-font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fm-text-heading);
+  font-size: 1.1rem;
+}
+
+.shipping-info-body {
+  padding: var(--fm-space-20) var(--fm-space-24);
+}
+
+.shipping-row {
+  transition: transform var(--fm-transition-fast);
 }
 
 .shipping-icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  background: rgba(184, 147, 92, 0.06);
+  width: 36px;
+  height: 36px;
+  background: var(--fm-color-primary-soft);
   border-radius: var(--fm-radius-md);
   color: var(--fm-color-primary-500);
   flex-shrink: 0;
-  border: 1px solid rgba(184, 147, 92, 0.12);
-  transition: all var(--fm-transition-medium);
+  border: 1px solid rgba(184, 147, 92, 0.18);
+  transition: all var(--fm-transition-duration-normal) var(--fm-ease-smooth);
 }
 
 .shipping-row:hover .shipping-icon-container {
-  background: rgba(184, 147, 92, 0.1);
+  background: rgba(184, 147, 92, 0.18);
   transform: translateY(-1px);
+  color: var(--fm-color-primary-600);
+  box-shadow: var(--fm-shadow-xs);
 }
 
 .carrier-chip {
-  background: linear-gradient(135deg, rgba(184, 147, 92, 0.15) 0%, rgba(184, 147, 92, 0.05) 100%);
+  background: var(--fm-color-primary-soft);
   border: 1px solid rgba(184, 147, 92, 0.25);
-  color: var(--fm-color-primary-700);
-  font-size: 11px;
+  color: var(--fm-color-primary-600);
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.05em;
   display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--fm-radius-sm);
 }
 
 .tracking-badge {
-  font-size: 13px;
+  font-size: 0.8rem;
   font-weight: 600;
-  background: var(--fm-color-neutral-50);
+  background: var(--fm-color-neutral-100);
+  color: var(--fm-text-heading);
   border: 1px solid var(--fm-border-medium);
-  padding: 2px 8px;
+  padding: 3px 10px;
+  border-radius: var(--fm-radius-sm);
+  font-family: var(--fm-font-mono);
 }
 
 .btn-copy-tracking {
   opacity: 0.6;
+  color: var(--fm-color-primary-500);
   transition: opacity var(--fm-transition-fast), transform var(--fm-transition-fast);
 }
 
@@ -65,10 +95,36 @@
 .shipping-label {
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: var(--fm-text-muted);
 }
 
 .shipping-value {
-  font-size: 14px;
+  font-size: 0.9rem;
+  color: var(--fm-text-heading);
 }
 
+/* Override bootstrap helper classes to be theme-aware and WCAG-compliant */
+.text-dark {
+  color: var(--fm-text-heading) !important;
+}
+
+.text-secondary {
+  color: var(--fm-text-body) !important;
+}
+
+.text-muted {
+  color: var(--fm-text-muted) !important;
+}
+
+.text-primary {
+  color: var(--fm-color-primary-500) !important;
+}
+
+.bg-light {
+  background-color: var(--fm-color-neutral-100) !important;
+}
+
+.border-light {
+  border-color: var(--fm-border-medium) !important;
+}
 

@@ -4,7 +4,7 @@
 }
 
 .card-review {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08));
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }

@@ -259,7 +259,7 @@
 
 /* ── Order Summary Card ── */
 .order-summary-card {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-border-medium);
   border-radius: var(--fm-radius-lg);
   padding: var(--fm-space-24);
@@ -486,7 +486,7 @@
   padding: var(--fm-space-24) var(--fm-space-12);
   text-align: center;
   cursor: pointer;
-  background: #ffffff;
+  background-color: var(--color-surface);
   height: 180px;
   display: flex;
   flex-direction: column;
@@ -601,7 +601,7 @@
 }
 
 .btn-preview-action.replace {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   color: var(--fm-text-body);
 }
 
@@ -685,7 +685,7 @@
   font-size: 0.92rem;
   font-weight: 700;
   color: var(--fm-color-primary-600);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1.5px dashed var(--fm-color-primary-300);
   border-radius: var(--fm-radius-pill);
   cursor: pointer;
@@ -799,7 +799,7 @@
 .comparison-column-preview {
   flex: 1;
   position: relative;
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-border-medium);
   border-radius: var(--fm-radius-md);
   padding: var(--fm-space-12);
@@ -1041,7 +1041,7 @@
   cursor: pointer;
   transition: all var(--fm-transition-duration-normal) var(--fm-ease-smooth);
   border: 1px solid var(--fm-border-medium);
-  background: #ffffff;
+  background-color: var(--color-surface);
   color: var(--fm-text-body);
 }
 
@@ -1198,7 +1198,7 @@
   font-size: 0.92rem;
   font-weight: 700;
   color: var(--fm-text-body);
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-border-medium);
   border-radius: var(--fm-radius-pill);
   cursor: pointer;

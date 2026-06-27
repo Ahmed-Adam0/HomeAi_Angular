@@ -155,7 +155,7 @@
 }
 
 .view-mode-toggle button.active {
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
   color: var(--fm-color-primary-500) !important;
   box-shadow: var(--fm-shadow-sm) !important;
 }
@@ -173,7 +173,7 @@
 }
 
 .btn-filter:hover {
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
   border-color: var(--fm-color-primary-400) !important;
   color: var(--fm-color-primary-600) !important;
   transform: translateY(-1px);
@@ -255,7 +255,7 @@
 .sidebar-search-input:focus {
   border-color: var(--fm-color-primary-500) !important;
   box-shadow: 0 0 0 3px var(--fm-input-focus-ring) !important;
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
 }
 
 /* Accordion sections styling */
@@ -341,7 +341,7 @@
 .input-group:focus-within {
   border-color: var(--fm-color-primary-400) !important;
   box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.06) !important;
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
 }
 
 .input-group-text {
@@ -452,7 +452,7 @@
   width: 320px;
   max-width: 85vw;
   z-index: var(--fm-z-modal) !important;
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
   transition: transform 0.45s var(--fm-ease-smooth) !important;
   box-shadow: var(--fm-shadow-xl) !important;
 }
@@ -478,17 +478,17 @@
 }
 
 .drawer-header {
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
   border-bottom: 1px solid var(--fm-color-neutral-100) !important;
 }
 
 .drawer-body {
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
   overflow-y: auto !important;
 }
 
 .drawer-footer {
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
   border-top: 1px solid var(--fm-color-neutral-100) !important;
 }
 

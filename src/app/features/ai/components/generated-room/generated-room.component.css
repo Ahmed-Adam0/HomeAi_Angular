@@ -8,7 +8,7 @@
   width: 100%;
   aspect-ratio: 16 / 10;
   background: var(--fm-color-neutral-200, #e8e4dc);
-  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  border: 1px solid var(--fm-color-neutral-300, var(--color-border));
 }
 
 .room-image {
@@ -26,7 +26,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   color: var(--fm-color-neutral-900, #1f1c18);
   border: 7px solid rgba(255, 255, 255, 0.35);
   background-clip: padding-box;

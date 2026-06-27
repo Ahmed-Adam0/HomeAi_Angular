@@ -12,8 +12,8 @@
 .modal-card {
   width: 95%;
   max-width: 850px;
-  background: #ffffff;
-  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  background-color: var(--color-surface);
+  border: 1px solid var(--fm-color-neutral-300, var(--color-border));
   max-height: 88vh;
   display: flex;
   flex-direction: column;
@@ -44,7 +44,7 @@
   width: 100%;
   aspect-ratio: 16 / 11;
   background-color: var(--fm-color-neutral-200, #e8e4dc);
-  border: 1px solid var(--fm-color-neutral-300, #d9d3c7);
+  border: 1px solid var(--fm-color-neutral-300, var(--color-border));
   border-radius: var(--fm-radius-md, 12px);
 }
 
@@ -74,9 +74,9 @@
 
 /* Right choices styling */
 .action-choice-card {
-  border: 1px solid var(--fm-color-neutral-300, #d9d3c7) !important;
+  border: 1px solid var(--fm-color-neutral-300, var(--color-border)) !important;
   transition: var(--fm-transition-fast);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: var(--fm-radius-md, 12px);
 }
 
@@ -91,7 +91,7 @@
 /* Make choice cards highlight matching style */
 .action-choice-card:first-child {
   border-color: #c8a87b !important; /* light gold/bronze preset */
-  background: #fbfbf9;
+  background-color: var(--color-card-hover);
 }
 
 .action-choice-card:first-child:hover {
@@ -113,7 +113,7 @@
 
 .action-choice-card:nth-child(2) .choice-icon-box {
   background-color: var(--fm-color-neutral-100, #f4f2ee);
-  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
 }
 
 /* Recommendations styling */
@@ -125,8 +125,8 @@
 
 .rec-card {
   width: 180px;
-  background: #ffffff;
-  border: 1px solid var(--fm-color-neutral-200, #e8e4dc) !important;
+  background-color: var(--color-surface);
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border)) !important;
   border-radius: var(--fm-radius-md, 12px) !important;
   transition: var(--fm-transition-fast);
 }
@@ -158,7 +158,7 @@
 .rec-img-box {
   width: 100%;
   height: 110px;
-  border-bottom: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  border-bottom: 1px solid var(--fm-color-neutral-200, var(--color-border));
 }
 
 .btn-add-rec {

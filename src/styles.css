@@ -8,6 +8,10 @@
 @import './styles/components/datepicker.css';
 
 
+body {
+  background-color: var(--fm-surface-bg) !important;
+}
+
 /* Body scroll lock when modal is open */
 body.modal-open {
   overflow: hidden !important;
@@ -113,5 +117,44 @@ body.modal-open .vendor-content {
 /* ---------- Firefox ---------- */
 * {
   scrollbar-width: none;
+}
+
+/* ==========================================================================
+   ENTERPRISE THEME SYSTEM OVERRIDES
+   ========================================================================== */
+
+/* Controlled transition strategy */
+html.theme-ready body,
+html.theme-ready header,
+html.theme-ready footer,
+html.theme-ready nav,
+html.theme-ready main,
+html.theme-ready section,
+html.theme-ready div,
+html.theme-ready p,
+html.theme-ready span,
+html.theme-ready a,
+html.theme-ready button,
+html.theme-ready input,
+html.theme-ready select,
+html.theme-ready textarea,
+html.theme-ready svg,
+html.theme-ready path,
+html.theme-ready circle,
+html.theme-ready rect {
+  transition: 
+    background-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    fill 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Premium selection highlight color matching current theme */
+::selection {
+  background-color: var(--color-selection) !important;
+  color: var(--fm-text-inverted) !important;
 }
 

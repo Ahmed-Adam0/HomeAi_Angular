@@ -5,8 +5,25 @@
   <title>FurniMind AI - Premium Furniture Marketplace</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F8F6F2" id="meta-theme-color">
   <link rel="icon" type="image/svg+xml" href="assets/icons/logo.png">
   <link rel="alternate icon" type="image/x-icon" href="logo.png">
+  
+  <!-- Inline blocker script to resolve active theme and set data-theme synchronously -->
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('fm_theme');
+        if (!theme) {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +42,10 @@
     <style>
       body {
         margin: 0;
-        background-color: #09090b;
+        background-color: #faf9f6;
+      }
+      html[data-theme="dark"] body {
+        background-color: #12100e;
       }
       .pre-bootstrap-loader {
         position: fixed;
@@ -34,8 +54,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #09090b;
+        background-color: #faf9f6;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      html[data-theme="dark"] .pre-bootstrap-loader {
+        background-color: #12100e;
       }
       .loader-content {
         display: flex;
@@ -53,8 +76,11 @@
         font-weight: 500;
         letter-spacing: 0.15em;
         text-transform: uppercase;
-        color: #d4af37;
+        color: #b8935c;
         opacity: 0.8;
+      }
+      html[data-theme="dark"] .loader-brand {
+        color: #c8a87b;
       }
       @keyframes pulse-scale {
         0%, 100% {

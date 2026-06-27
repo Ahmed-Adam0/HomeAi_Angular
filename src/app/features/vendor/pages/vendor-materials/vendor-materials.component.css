@@ -49,7 +49,7 @@
    2. TOOLBAR & CONTROLS
    ========================================== */
 .vendor-materials__toolbar {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: var(--fm-radius-md);
   box-shadow: var(--fm-shadow-xs);
@@ -70,7 +70,7 @@
 }
 
 .toolbar-search-input:focus {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-color: var(--fm-color-neutral-400);
   box-shadow: 0 0 0 3px rgba(31, 28, 24, 0.05);
 }
@@ -152,7 +152,7 @@
 
 /* Secondary Button */
 .btn-secondary-saas {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   color: var(--fm-color-neutral-700);
   font-weight: 600;
@@ -190,7 +190,7 @@
 
 /* Cancel Button for Modals */
 .btn-cancel-saas {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   color: var(--fm-color-neutral-600);
   font-weight: 600;
@@ -214,7 +214,7 @@
 }
 
 .material-item-card {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: var(--fm-radius-md);
   box-shadow: var(--fm-shadow-xs);
@@ -230,7 +230,7 @@
 
 /* Card Header */
 .card-header-premium {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   user-select: none;
   transition: background-color var(--fm-transition-duration-fast) var(--fm-ease-smooth);
   border-top-left-radius: calc(var(--fm-radius-md) - 1px);
@@ -328,7 +328,7 @@
 /* Card Body Content */
 .card-body-premium {
   border-top: 1px solid var(--fm-color-neutral-200);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .options-section-label {
@@ -360,7 +360,7 @@
 }
 
 .option-row-card:hover {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-color: var(--fm-color-neutral-300) !important;
   box-shadow: var(--fm-shadow-sm);
   transform: translateY(-1.5px);
@@ -451,7 +451,7 @@
 }
 
 .btn-row-action {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   color: var(--fm-color-neutral-600);
   font-weight: 600;
@@ -549,7 +549,7 @@
 }
 
 .modal-card-luxury {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: var(--fm-radius-md) !important;
   box-shadow: var(--fm-shadow-xl) !important;
@@ -564,7 +564,7 @@
 .modal-header-luxury {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--fm-color-neutral-200);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .modal-title-saas {
@@ -617,7 +617,7 @@
 }
 
 .form-control-saas {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: var(--fm-radius-sm);
   color: var(--fm-color-neutral-900);
@@ -637,7 +637,7 @@
    ========================================== */
 .empty-state-card {
   border: 1px dashed var(--fm-color-neutral-300);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: var(--fm-radius-md);
   box-shadow: var(--fm-shadow-xs);
 }
@@ -655,7 +655,7 @@
 
 /* Skeleton Loading State Styles */
 .skeleton-card {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: var(--fm-radius-md);
   height: 180px;
@@ -763,7 +763,7 @@
 /* CDK drag preview (the card floating with mouse) */
 .cdk-drag-preview {
   box-sizing: border-box;
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
   border: 1px solid var(--fm-color-neutral-300) !important;
   border-radius: var(--fm-radius-md);
   box-shadow: var(--fm-shadow-lg) !important;
@@ -826,7 +826,7 @@
   min-width: 180px;
   padding: 0.25rem 0;
   margin-top: 0.25rem;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: var(--fm-radius-sm);
   box-shadow: var(--fm-shadow-md);
@@ -842,7 +842,7 @@
 }
 
 .dropdown-menu-custom {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: none;
 }
 
@@ -883,7 +883,7 @@
   z-index: 110; /* Higher than parent panel */
   display: none;
   min-width: 170px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200);
   margin-left: 2px;
   box-shadow: var(--fm-shadow-md);
@@ -932,7 +932,7 @@
   border-radius: 4px !important;
   border: 1.5px solid var(--fm-color-neutral-300);
   cursor: pointer;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   transition: var(--fm-transition-fast);
   margin-top: 0;
 }
@@ -950,7 +950,7 @@
   z-index: 50; /* Stacks above hovered cards but below dropdowns */
   width: 90%;
   max-width: 600px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-200) !important;
   box-shadow: 0 10px 30px rgba(31, 28, 24, 0.12), var(--fm-shadow-lg) !important; /* Premium richer floating shadow */
   display: flex;

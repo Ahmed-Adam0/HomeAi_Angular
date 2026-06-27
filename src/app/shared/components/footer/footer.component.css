@@ -3,14 +3,14 @@
 }
 
 .site-footer {
-  --footer-bg: var(--fm-color-neutral-950);
-  --footer-surface: var(--fm-color-neutral-800);
-  --footer-text: var(--fm-text-inverted);
-  --footer-muted: var(--fm-color-neutral-500);
+  --footer-bg: var(--color-background);
+  --footer-surface: var(--color-surface);
+  --footer-text: var(--color-text);
+  --footer-muted: var(--color-text-muted);
   --footer-accent: var(--fm-color-primary-500);
-  --footer-accent-hover: var(--fm-color-primary-400);
-  --footer-border: rgba(255, 255, 255, 0.08);
-  --footer-icon-bg: var(--fm-color-neutral-800);
+  --footer-accent-hover: var(--fm-color-primary-600);
+  --footer-border: var(--color-border);
+  --footer-icon-bg: var(--color-card-hover);
 
   position: relative;
   background-color: var(--footer-bg);
@@ -54,7 +54,7 @@
   background: linear-gradient(
     90deg,
     var(--footer-icon-bg) 0%,
-    var(--fm-color-neutral-700) 50%,
+    var(--footer-surface) 50%,
     var(--footer-icon-bg) 100%
   );
   background-size: 200% 100%;
@@ -91,7 +91,7 @@
 .footer-category-svg {
   width: 22px;
   height: 22px;
-  stroke: var(--fm-color-neutral-300);
+  stroke: var(--footer-text);
   transition: var(--fm-transition-smooth);
 }
 
@@ -103,7 +103,7 @@
 
 .footer-category-icon i {
   font-size: 1.15rem;
-  color: var(--fm-color-neutral-300);
+  color: var(--footer-text);
   transition: var(--fm-transition-smooth);
 }
 
@@ -285,7 +285,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--fm-color-neutral-300);
+  color: var(--footer-text);
   line-height: 1;
   transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -313,7 +313,7 @@
 }
 
 .footer-payment-badge:hover::after {
-  color: var(--fm-color-neutral-100);
+  color: var(--footer-text);
 }
 
 .footer-social {

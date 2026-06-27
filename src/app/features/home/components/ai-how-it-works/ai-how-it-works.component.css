@@ -1,5 +1,5 @@
 .ai-feature-section {
-  background-color: #FAF7F2; /* Cohesive Warm Ivory background */
+  background-color: var(--color-background); /* Cohesive Warm Ivory background */
   overflow: hidden;
   border-bottom: 1px solid rgba(184, 147, 92, 0.08) !important;
 }
@@ -35,7 +35,7 @@
 }
 
 .editorial-description {
-  color: #64748b !important;
+  color: var(--color-text-muted) !important;
   line-height: 1.65 !important;
   font-size: clamp(0.92rem, 1.8vw, 1rem) !important;
 }
@@ -145,7 +145,7 @@
 }
 
 .text-secondary-color {
-  color: #64748b !important;
+  color: var(--color-text-muted) !important;
 }
 
 /* Premium buttons - Sleek Editorial Aesthetic */

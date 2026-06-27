@@ -22,7 +22,7 @@
   max-width: 680px;
   height: 100%;
   max-height: 820px;
-  background: #ffffff;
+  background-color: var(--color-surface);
   border-radius: var(--fm-radius-lg);
   box-shadow: var(--fm-shadow-xl);
   border: 1px solid rgba(184, 147, 92, 0.15); /* Subtle gold border */
@@ -51,7 +51,7 @@
   justify-content: space-between;
   padding: var(--fm-space-16) var(--fm-space-24);
   border-bottom: 1px solid var(--fm-border-medium);
-  background: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .payment-header-title {
@@ -166,7 +166,7 @@
 }
 
 .confirmation-card {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border-radius: var(--fm-radius-md);
   box-shadow: var(--fm-shadow-lg);
   border: 1px solid var(--fm-border-medium);
@@ -235,7 +235,7 @@
   justify-content: center;
   padding: var(--fm-space-16);
   border-top: 1px solid var(--fm-border-medium);
-  background: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .btn-cancel-payment {

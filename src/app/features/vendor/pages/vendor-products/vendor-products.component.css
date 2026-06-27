@@ -235,7 +235,7 @@
 
 .custom-input:focus {
   border-color: var(--fm-color-primary-500);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   box-shadow: 0 0 0 4px var(--fm-input-focus-ring);
   outline: 0;
 }
@@ -319,7 +319,7 @@
 }
 
 .toggle-btn.active {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   color: var(--fm-color-primary-500);
   box-shadow: var(--fm-shadow-sm);
 }
@@ -426,7 +426,7 @@
 .overlay-btn {
   width: 42px;
   height: 42px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border: none;
   border-radius: var(--fm-radius-circle);
   color: var(--fm-text-heading);
@@ -714,7 +714,7 @@
   height: 32px;
   border-radius: var(--fm-radius-circle);
   border: 1px solid var(--fm-border-medium);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   color: var(--fm-text-muted);
   display: flex;
   align-items: center;
@@ -1027,7 +1027,7 @@
   width: 600px;
   max-width: 100vw;
   height: 100vh;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   box-shadow: var(--fm-shadow-xl);
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1053,7 +1053,7 @@
   align-items: center;
   padding: var(--fm-space-20) var(--fm-space-24);
   border-bottom: 1px solid var(--fm-border-medium);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .drawer-header-left {
@@ -1100,7 +1100,7 @@
   padding: var(--fm-space-24);
   overflow-y: auto;
   flex-grow: 1;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 }
 
 /* Gallery Section */
@@ -1346,7 +1346,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .footer-primary-actions {

@@ -3,3 +3,4 @@ export * from './debounce-click.directive';
 export * from './rtl.directive';
 export * from './auto-direction.directive';
 export * from './click-outside.directive';
+export * from './theme.directive';

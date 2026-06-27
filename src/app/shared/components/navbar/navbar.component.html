@@ -1,28 +1,28 @@
 <!-- Fixed Header Container (scroll-up/show, scroll-down/hide) -->
 <div class="header-fixed" [class.header-hidden]="isHeaderHidden()">
   <!-- Top Black Bar -->
-  <div class="top-bar py-2 text-white bg-dark-custom">
+  <div class="top-bar py-2">
     <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
       <!-- Social Links -->
       <div class="social-links d-flex gap-3">
-        <a href="https://facebook.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+        <a href="https://facebook.com" target="_blank" class="opacity-75 hover-opacity-100"
           aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-        <a href="https://instagram.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+        <a href="https://instagram.com" target="_blank" class="opacity-75 hover-opacity-100"
           aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-        <a href="https://twitter.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+        <a href="https://twitter.com" target="_blank" class="opacity-75 hover-opacity-100"
           aria-label="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
-        <a href="https://linkedin.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+        <a href="https://linkedin.com" target="_blank" class="opacity-75 hover-opacity-100"
           aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-        <a href="https://youtube.com" target="_blank" class="text-white opacity-75 hover-opacity-100"
+        <a href="https://youtube.com" target="_blank" class="opacity-75 hover-opacity-100"
           aria-label="YouTube"><i class="bi bi-youtube"></i></a>
       </div>
 
       <!-- Utility Links & Dropdowns -->
       <div class="utility-links d-flex align-items-center gap-3">
-        <a routerLink="/about" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{
+        <a routerLink="/about" class="opacity-75 hover-opacity-100 text-decoration-none fs-7">{{
           'NAV_ABOUT_US' | translate }}</a>
         <span class="bar-separator">•</span>
-        <a routerLink="/contact" class="text-white opacity-75 hover-opacity-100 text-decoration-none fs-7">{{
+        <a routerLink="/contact" class="opacity-75 hover-opacity-100 text-decoration-none fs-7">{{
           'NAV_CONTACT_US' | translate }}</a>
         <span class="bar-separator">•</span>
 
@@ -30,14 +30,14 @@
         <div class="dropdown-wrapper" (mouseenter)="openLanguageDropdown()"
           (mouseleave)="closeLanguageDropdownWithDelay()">
           <button
-            class="dropdown-trigger text-white bg-transparent border-0 opacity-75 hover-opacity-100 fs-7 p-0 d-flex align-items-center gap-1"
+            class="dropdown-trigger bg-transparent border-0 opacity-75 hover-opacity-100 fs-7 p-0 d-flex align-items-center gap-1"
             (click)="toggleLanguageDropdown($event)">
             <span>{{ selectedLanguage().label }}</span>
             <i class="bi bi-chevron-down fs-8"></i>
           </button>
           <div class="dropdown-panel dropdown-panel--language" [class.open]="isLanguageDropdownOpen()"
             (mouseenter)="cancelLanguageDropdownClose()" (mouseleave)="closeLanguageDropdownWithDelay()">
-            <ul class="dropdown-menu-custom py-1 shadow bg-white rounded list-unstyled m-0">
+            <ul class="dropdown-menu-custom py-1 shadow rounded list-unstyled m-0">
               @for (lang of languages(); track lang.code) {
               <li>
                 <button
@@ -86,7 +86,7 @@
         }
 
         <!-- Wishlist -->
-        <a [routerLink]="navRoutes.FAVORITES" class="action-btn text-dark text-decoration-none position-relative"
+        <a [routerLink]="navRoutes.FAVORITES" class="action-btn text-decoration-none position-relative"
           aria-label="Wishlist">
           <i class="bi bi-heart fs-5"></i>
           @if (favoritesCount() > 0) {
@@ -100,7 +100,7 @@
         <div class="dropdown-wrapper cart-wrapper" (mouseenter)="openCartDropdown()"
           (mouseleave)="closeCartDropdownWithDelay()">
           <!-- Unify cart icon trigger -->
-          <a [routerLink]="navRoutes.CART" class="action-btn text-dark text-decoration-none position-relative d-flex"
+          <a [routerLink]="navRoutes.CART" class="action-btn text-decoration-none position-relative d-flex"
             aria-label="Shopping Cart" (click)="toggleCartDropdown($event)">
             <i class="bi bi-bag fs-5"></i>
             @if (cartCount() > 0) {
@@ -198,6 +198,8 @@
             </div>
           </div>
         </div>
+
+        <app-theme-toggle></app-theme-toggle>
 
         <div class="auth-section position-relative">
           <div class="auth-authenticated" [class.d-none]="!authService.isLoggedIn()">
@@ -301,7 +303,7 @@
 </div>
 
 <!-- Mobile Navigation Drawer -->
-<div class="mobile-drawer position-fixed top-0 bottom-0 start-0 shadow-lg bg-white z-5 d-flex flex-column"
+<div class="mobile-drawer position-fixed top-0 bottom-0 start-0 shadow-lg z-5 d-flex flex-column"
   [class.show]="isMobileMenuOpen()">
   <!-- Drawer Header -->
   <div class="drawer-header d-flex align-items-center justify-content-between p-3 border-bottom">
@@ -309,7 +311,7 @@
       <img src="assets/icons/logo.png" alt="FurniMind AI" style="height: 30px; width: auto;" />
     </div>
     <button class="btn-close-custom border-0 bg-transparent p-0" (click)="toggleMobileMenu()" aria-label="Close Drawer">
-      <i class="bi bi-x-lg fs-4 text-dark"></i>
+      <i class="bi bi-x-lg fs-4"></i>
     </button>
   </div>
 
@@ -317,31 +319,29 @@
   <div class="drawer-body flex-grow-1 overflow-y-auto p-3">
     <!-- Navigation Links -->
     <div class="mobile-nav-list d-flex flex-column gap-1">
-
       <!-- Products -->
       <a routerLink="/products"
-        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold d-flex align-items-center gap-2 fs-6"
         (click)="selectMainLink('Products')">
         <i class="bi bi-grid-fill text-gold fs-7"></i>
         <span>{{ 'NAV_PRODUCTS' | translate }}</span>
       </a>
 
-      <!-- AI Accent -->
-      <a routerLink="/rooms"
-        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+      <!-- AI Chat -->
+      <a routerLink="/ai-chat"
+        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold d-flex align-items-center gap-2 fs-6"
         (click)="selectMainLink('AI Accent')">
-        <i class="bi bi-magic text-gold fs-7"></i>
-        <span>{{ 'NAV_ROOMS' | translate }}</span>
+        <i class="bi bi-stars text-gold fs-7"></i>
+        <span>{{ 'NAV_AI_ACCENT' | translate }}</span>
       </a>
 
       <!-- Inspirations -->
       <a routerLink="/inspirations"
-        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold text-dark d-flex align-items-center gap-2 fs-6"
+        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold d-flex align-items-center gap-2 fs-6"
         (click)="selectMainLink('Inspirations')">
-        <i class="bi bi-lightbulb-fill fs-7"></i>
+        <i class="bi bi-compass-fill text-gold fs-7"></i>
         <span>{{ 'NAV_INSPIRATIONS' | translate }}</span>
       </a>
-
     </div>
 
     <!-- Divider -->
@@ -373,6 +373,15 @@
       </div>
     </div>
 
+    <!-- Theme Selection inside drawer -->
+    <div class="mobile-selectors bg-light-cream p-3 rounded mb-4">
+      <label class="fs-9 text-uppercase tracking-wider text-muted fw-bold d-block mb-2">{{ 'THEME' | translate }}</label>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="fs-7 fw-semibold">Toggle Theme</span>
+        <app-theme-toggle></app-theme-toggle>
+      </div>
+    </div>
+
     <!-- Authentication in Mobile Drawer -->
     <div class="mobile-auth-drawer border-top pt-3">
       <div class="mobile-auth-authenticated" [class.d-none]="!authService.isLoggedIn()">
@@ -388,25 +397,25 @@
             </span>
           </div>
           <div>
-            <span class="d-block fw-bold text-dark fs-7">{{ authService.currentUser()?.name }}</span>
+            <span class="d-block fw-bold fs-7">{{ authService.currentUser()?.name }}</span>
             <span class="d-block text-muted fs-9">{{ authService.currentUser()?.tier }}</span>
           </div>
         </div>
         <div class="d-flex flex-column gap-2">
           <a routerLink="/profile"
-            class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
+            class="text-decoration-none fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
             (click)="toggleMobileMenu()">
             <i class="bi bi-person text-gold fs-6"></i>
             <span>{{ 'NAV_MY_PROFILE' | translate }}</span>
           </a>
           <a routerLink="/orders"
-            class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
+            class="text-decoration-none fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
             (click)="toggleMobileMenu()">
             <i class="bi bi-receipt text-gold fs-6"></i>
             <span>{{ 'NAV_MY_ORDERS' | translate }}</span>
           </a>
           <a routerLink="/ai-chat"
-            class="text-decoration-none text-dark fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
+            class="text-decoration-none fs-7 py-1.5 px-1 d-flex align-items-center gap-2"
             (click)="toggleMobileMenu()">
             <i class="bi bi-magic text-gold fs-6"></i>
             <span class="fw-semibold">{{ 'NAV_SAVED_SPACES' | translate }}</span>
@@ -439,11 +448,11 @@
 
   <!-- Drawer Footer -->
   <div class="drawer-footer p-3 border-top d-flex gap-3 justify-content-center">
-    <a href="https://facebook.com" class="text-dark opacity-70"><i class="bi bi-facebook fs-5"></i></a>
-    <a href="https://instagram.com" class="text-dark opacity-70"><i class="bi bi-instagram fs-5"></i></a>
-    <a href="https://twitter.com" class="text-dark opacity-70"><i class="bi bi-twitter-x"></i></a>
-    <a href="https://linkedin.com" class="text-dark opacity-70"><i class="bi bi-linkedin fs-5"></i></a>
-    <a href="https://youtube.com" class="text-dark opacity-70"><i class="bi bi-youtube fs-5"></i></a>
+    <a href="https://facebook.com" class="opacity-70"><i class="bi bi-facebook fs-5"></i></a>
+    <a href="https://instagram.com" class="opacity-70"><i class="bi bi-instagram fs-5"></i></a>
+    <a href="https://twitter.com" class="opacity-70"><i class="bi bi-twitter-x"></i></a>
+    <a href="https://linkedin.com" class="opacity-70"><i class="bi bi-linkedin fs-5"></i></a>
+    <a href="https://youtube.com" class="opacity-70"><i class="bi bi-youtube fs-5"></i></a>
   </div>
 </div>
 

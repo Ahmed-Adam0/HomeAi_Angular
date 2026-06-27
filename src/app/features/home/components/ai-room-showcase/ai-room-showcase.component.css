@@ -54,7 +54,7 @@
   aspect-ratio: 16 / 9; /* Cinematic aspect ratio */
   border-radius: 28px;
   overflow: hidden;
-  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
   background-color: var(--fm-color-neutral-100, #f4f2ee);
 }
 
@@ -209,7 +209,7 @@
 }
 
 .slider-nav-arrow:hover {
-  background: #ffffff;
+  background-color: var(--color-surface);
   color: var(--fm-color-primary-500, #b8935c);
   transform: translateY(-50%) scale(1.05);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
@@ -345,7 +345,7 @@
 .hotspot-dot {
   width: 8px;
   height: 8px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 50%;
   position: absolute;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
@@ -395,7 +395,7 @@
 .floating-product-card {
   position: absolute;
   width: 290px;
-  background: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 20px;
   border: 1px solid rgba(0, 0, 0, 0.05);
   padding: 12px;
@@ -445,8 +445,8 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid var(--fm-color-neutral-200, #e8e4dc);
-  background: #ffffff;
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
+  background-color: var(--color-surface);
   color: var(--fm-color-neutral-600, #70675a);
   display: flex;
   align-items: center;
@@ -466,7 +466,7 @@
 .close-card-btn:hover {
   background: var(--fm-color-neutral-100, #f4f2ee);
   color: var(--fm-color-neutral-900, #1f1c18);
-  border-color: var(--fm-color-neutral-300, #d9d3c7);
+  border-color: var(--fm-color-neutral-300, var(--color-border));
 }
 
 .popup-card-content {
@@ -531,7 +531,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background: #ffffff;
+  background-color: var(--color-surface);
   border-top-left-radius: 28px;
   border-top-right-radius: 28px;
   padding: 24px 20px;

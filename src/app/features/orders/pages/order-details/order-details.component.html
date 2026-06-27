@@ -267,8 +267,7 @@
           @if (order()?.vendorOrders; as vOrders) {
           @if (vOrders.length > 0) {
           @for (vo of vOrders; track vo.id) {
-          <div class="vendor-order-group card-premium mb-4 p-4 border border-light-medium animate-fade-in"
-            style="background: var(--card-bg, #ffffff); border-radius: 16px;">
+          <div class="vendor-order-group card-premium mb-4 p-4 animate-fade-in">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 border-bottom pb-3 mb-3">
               <div>
                 <div class="d-flex align-items-center gap-2 mb-1">
@@ -326,8 +325,7 @@
               @for (item of vo.items; track item.productId) {
               <div class="details-item-row py-3 d-flex align-items-center justify-content-between gap-3">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="details-item-img-wrapper"
-                    style="width: 64px; height: 64px; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: #f8f9fa;">
+                  <div class="details-item-img-wrapper">
                     <img class="w-100 h-100 object-fit-cover"
                       [appLazyImage]="item.productImage || 'assets/images/image-placeholder.svg'"
                       [alt]="item | localized:'productName'" loading="lazy"
@@ -374,9 +372,11 @@
                 <div class="d-flex align-items-center justify-content-between p-3 rounded border"
                   style="border-radius: 12px; background: rgba(184, 147, 92, 0.02); border-color: rgba(184, 147, 92, 0.1) !important;">
                   <div class="d-flex align-items-center gap-2.5">
-                    <span class="milestone-dot" [class.paid]="m.isPaid" [class.due]="isMilestoneDue(vo, m)"
-                      style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"
-                      [style.background-color]="m.isPaid ? '#22c55e' : (isMilestoneDue(vo, m) ? '#f59e0b' : '#cbd5e1')">
+                    <span class="milestone-dot"
+                      [class.is-paid]="m.isPaid"
+                      [class.is-due]="isMilestoneDue(vo, m)"
+                      [class.is-pending]="!m.isPaid && !isMilestoneDue(vo, m)"
+                      style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;">
                     </span>
                     <div>
                       <span class="small fw-bold text-dark">

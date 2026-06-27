@@ -1,9 +1,20 @@
+/* ==========================================================================
+   FURNIMIND AI - Premium Luxury Stepper Timeline CSS
+   ========================================================================== */
+
 .fm-timeline-container {
   display: block;
   background: var(--fm-surface-card);
   border: 1px solid var(--fm-border-medium);
   border-radius: var(--fm-radius-xl);
   padding: var(--fm-space-24) var(--fm-space-32);
+  box-shadow: var(--fm-shadow-sm);
+  transition: var(--fm-transition-card-hover);
+}
+
+.fm-timeline-container:hover {
+  border-color: rgba(184, 147, 92, 0.25);
+  box-shadow: var(--fm-shadow-md);
 }
 
 .fm-timeline-stepper {
@@ -25,8 +36,8 @@
 }
 
 .fm-timeline-icon-box {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   border-radius: var(--fm-radius-circle);
   background: var(--fm-color-neutral-100);
   color: var(--fm-color-neutral-400);
@@ -35,7 +46,15 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: all var(--fm-transition-medium);
+  transition: all var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+}
+
+.step-icon {
+  transition: transform var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+}
+
+.fm-timeline-node:hover .step-icon {
+  transform: scale(1.1);
 }
 
 .fm-timeline-text {
@@ -43,62 +62,90 @@
 }
 
 .fm-timeline-label {
+  font-family: var(--fm-font-sans);
   font-weight: 700;
-  color: var(--fm-color-neutral-800);
-  font-size: 13px;
+  color: var(--fm-text-heading);
+  font-size: 0.85rem;
+  letter-spacing: -0.01em;
 }
 
 .fm-timeline-status-desc {
-  font-size: 11px;
-  margin-top: 2px;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  color: var(--fm-text-muted);
+  line-height: 1.4;
 }
 
 /* Stepper Connector Lines */
 .fm-timeline-connector {
   position: absolute;
   top: 22px;
-  left: calc(50% + 22px);
-  right: calc(-50% + 22px);
-  height: 3px;
+  left: calc(50% + 23px);
+  right: calc(-50% + 23px);
+  height: 2px;
   background: var(--fm-border-medium);
   z-index: -1;
-  transition: background-color var(--fm-transition-medium);
+  transition: background-color var(--fm-transition-duration-normal) var(--fm-ease-smooth);
 }
 
-/* Active and Completed States */
+/* Completed State - Premium Success Olive/Sage */
 .fm-timeline-node.is-complete .fm-timeline-icon-box {
-  background: rgba(16, 185, 129, 0.06);
+  background: var(--fm-color-success-50);
   border-color: var(--fm-color-success-500);
-  color: var(--fm-color-success-600);
+  color: var(--fm-color-success-500);
+  box-shadow: 0 0 0 3px rgba(101, 126, 93, 0.05);
 }
 
+/* Active State - Luxury Gold with micro-pulse shadow */
 .fm-timeline-node.is-active .fm-timeline-icon-box {
-  background: rgba(184, 147, 92, 0.08);
+  background: var(--fm-color-primary-50);
   border-color: var(--fm-color-primary-500);
   color: var(--fm-color-primary-500);
-  box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.15);
+  box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.2);
+  animation: pulseGlow 2.5s infinite var(--fm-ease-in-out);
+}
+
+.fm-timeline-node.is-active .fm-timeline-label {
+  color: var(--fm-color-primary-600);
 }
 
 .is-active-line {
   background: var(--fm-color-success-500) !important;
 }
 
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0 0px rgba(184, 147, 92, 0.25);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(184, 147, 92, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0px rgba(184, 147, 92, 0);
+  }
+}
+
 /* Cancelled State Styles */
 .is-cancelled .fm-timeline-connector {
-  background: rgba(239, 68, 68, 0.15) !important;
+  background: rgba(173, 92, 81, 0.15) !important;
 }
 
 .fm-timeline-node.is-cancelled .fm-timeline-icon-box {
   background: var(--fm-color-neutral-100);
-  border-color: var(--fm-border-medium);
+  border-color: var(--fm-border-strong);
   color: var(--fm-color-neutral-400);
 }
 
+/* Terminal Negative (Cancelled/Refunded) */
 .danger-box {
-  background: rgba(239, 68, 68, 0.06) !important;
+  background: var(--fm-color-danger-50) !important;
   border-color: var(--fm-color-danger-500) !important;
-  color: var(--fm-color-danger-600) !important;
-  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+  color: var(--fm-color-danger-500) !important;
+  box-shadow: 0 0 0 4px rgba(173, 92, 81, 0.15);
+}
+
+.text-danger {
+  color: var(--fm-color-danger-500) !important;
 }
 
 /* Mobile Layout - Vertical Stepper */
@@ -106,8 +153,8 @@
   .fm-timeline-stepper {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--fm-space-32);
-    padding-left: var(--fm-space-16);
+    gap: var(--fm-space-24);
+    padding-left: var(--fm-space-8);
   }
 
   .fm-timeline-node {
@@ -125,11 +172,11 @@
 
   .fm-timeline-connector {
     position: absolute;
-    top: 44px;
-    left: 20px;
-    bottom: -32px;
+    top: 46px;
+    left: 22px;
+    bottom: -24px;
     right: auto;
-    width: 3px;
+    width: 2px;
     height: auto;
   }
 }
@@ -147,15 +194,15 @@
 
 [dir="rtl"] .fm-timeline-connector,
 .fm-timeline-container[dir="rtl"] .fm-timeline-connector {
-  left: calc(-50% + 22px);
-  right: calc(50% + 22px);
+  left: calc(-50% + 23px);
+  right: calc(50% + 23px);
 }
 
 @media (max-width: 768px) {
   [dir="rtl"] .fm-timeline-stepper,
   .fm-timeline-container[dir="rtl"] .fm-timeline-stepper {
     padding-left: 0;
-    padding-right: var(--fm-space-16);
+    padding-right: var(--fm-space-8);
   }
 
   [dir="rtl"] .fm-timeline-node,
@@ -167,12 +214,36 @@
   [dir="rtl"] .fm-timeline-connector,
   .fm-timeline-container[dir="rtl"] .fm-timeline-connector {
     left: auto;
-    right: 20px;
-    top: 44px;
-    bottom: -32px;
+    right: 22px;
+    top: 46px;
+    bottom: -24px;
     height: auto;
-    width: 3px;
+    width: 2px;
   }
 }
 
+/* Override bootstrap helper classes to be theme-aware and WCAG-compliant */
+.text-dark {
+  color: var(--fm-text-heading) !important;
+}
+
+.text-secondary {
+  color: var(--fm-text-body) !important;
+}
+
+.text-muted {
+  color: var(--fm-text-muted) !important;
+}
+
+.text-primary {
+  color: var(--fm-color-primary-500) !important;
+}
+
+.bg-light {
+  background-color: var(--fm-color-neutral-100) !important;
+}
+
+.border-light {
+  border-color: var(--fm-border-medium) !important;
+}
 

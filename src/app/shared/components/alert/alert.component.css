@@ -76,14 +76,11 @@
 
 .alert-overlay {
   animation: slideInRight 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px) saturate(1.1);
-  -webkit-backdrop-filter: blur(16px) saturate(1.1);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.05),
-    0 4px 8px rgba(0, 0, 0, 0.02),
-    0 0 0 1px rgba(0, 0, 0, 0.02);
+  background: var(--fm-glass-bg);
+  backdrop-filter: var(--fm-glass-blur);
+  -webkit-backdrop-filter: var(--fm-glass-blur);
+  border: 1px solid var(--fm-glass-border);
+  box-shadow: var(--fm-glass-shadow);
   min-width: 320px;
   max-width: 420px;
   min-height: 52px;
@@ -92,10 +89,7 @@
 }
 
 .alert-overlay:hover {
-  box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.07),
-    0 6px 12px rgba(0, 0, 0, 0.03),
-    0 0 0 1px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--fm-shadow-hover);
   transform: translateY(-1px);
 }
 
@@ -110,6 +104,11 @@
   background: rgba(0, 0, 0, 0.03);
   border: 1px solid rgba(0, 0, 0, 0.04);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html[data-theme="dark"] .alert-overlay .alert-icon-wrapper {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .alert-overlay:hover .alert-icon-wrapper {
@@ -153,6 +152,10 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
+html[data-theme="dark"] .alert-overlay .alert-close:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .alert-overlay .close-svg {
   width: 18px;
   height: 18px;
@@ -163,21 +166,21 @@
 
 /* Success */
 .alert-success.alert-inline {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #166534;
+  background: var(--fm-color-success-50);
+  border: 1px solid var(--fm-color-success-100);
+  color: var(--fm-color-success-600);
 }
 
 .alert-success.alert-overlay {
-  background: linear-gradient(135deg, #f4f7f3, rgba(244, 247, 243, 0.7));
-  border: 1px solid rgba(101, 126, 93, 0.15);
-  color: #4a5f44;
-  border-left: 3px solid #657e5d;
+  background: var(--fm-color-success-50);
+  border: 1px solid var(--fm-color-success-100);
+  color: var(--fm-color-success-600);
+  border-left: 3px solid var(--fm-color-success-500);
 }
 
 [dir="rtl"] .alert-success.alert-overlay {
   border-left: none;
-  border-right: 3px solid #657e5d;
+  border-right: 3px solid var(--fm-color-success-500);
 }
 
 .alert-success .alert-icon-wrapper {
@@ -185,7 +188,7 @@
 }
 
 .alert-success.alert-inline .alert-icon-wrapper {
-  color: #16a34a;
+  color: var(--fm-color-success-500);
 }
 
 .alert-success.alert-overlay .alert-icon-wrapper {
@@ -195,25 +198,25 @@
 
 /* Danger */
 .alert-danger.alert-inline {
-  background: #fff1f2;
-  border: 1px solid #f0b6b6;
-  color: #dc2626;
+  background: var(--fm-color-danger-50);
+  border: 1px solid var(--fm-color-danger-100);
+  color: var(--fm-color-danger-600);
 }
 
 .alert-danger.alert-overlay {
-  background: linear-gradient(135deg, #fbf5f4, rgba(251, 245, 244, 0.7));
-  border: 1px solid rgba(173, 92, 81, 0.15);
-  color: #87443a;
-  border-left: 3px solid #ad5c51;
+  background: var(--fm-color-danger-50);
+  border: 1px solid var(--fm-color-danger-100);
+  color: var(--fm-color-danger-600);
+  border-left: 3px solid var(--fm-color-danger-500);
 }
 
 [dir="rtl"] .alert-danger.alert-overlay {
   border-left: none;
-  border-right: 3px solid #ad5c51;
+  border-right: 3px solid var(--fm-color-danger-500);
 }
 
 .alert-danger.alert-inline .alert-icon-wrapper {
-  color: #dc2626;
+  color: var(--fm-color-danger-500);
 }
 
 .alert-danger.alert-overlay .alert-icon-wrapper {
@@ -223,25 +226,25 @@
 
 /* Warning */
 .alert-warning.alert-inline {
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  color: #b45309;
+  background: var(--fm-color-warning-50);
+  border: 1px solid var(--fm-color-warning-100);
+  color: var(--fm-color-warning-600);
 }
 
 .alert-warning.alert-overlay {
-  background: linear-gradient(135deg, #faf6f0, rgba(250, 246, 240, 0.7));
-  border: 1px solid rgba(176, 129, 73, 0.15);
-  color: #8c6333;
-  border-left: 3px solid #b08149;
+  background: var(--fm-color-warning-50);
+  border: 1px solid var(--fm-color-warning-100);
+  color: var(--fm-color-warning-600);
+  border-left: 3px solid var(--fm-color-warning-500);
 }
 
 [dir="rtl"] .alert-warning.alert-overlay {
   border-left: none;
-  border-right: 3px solid #b08149;
+  border-right: 3px solid var(--fm-color-warning-500);
 }
 
 .alert-warning.alert-inline .alert-icon-wrapper {
-  color: #d97706;
+  color: var(--fm-color-warning-500);
 }
 
 .alert-warning.alert-overlay .alert-icon-wrapper {
@@ -251,25 +254,25 @@
 
 /* Info */
 .alert-info.alert-inline {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1d4ed8;
+  background: var(--fm-color-info-50);
+  border: 1px solid var(--fm-color-info-100);
+  color: var(--fm-color-info-600);
 }
 
 .alert-info.alert-overlay {
-  background: linear-gradient(135deg, #f3f6f8, rgba(243, 246, 248, 0.7));
-  border: 1px solid rgba(92, 127, 147, 0.15);
-  color: #446072;
-  border-left: 3px solid #5c7f93;
+  background: var(--fm-color-info-50);
+  border: 1px solid var(--fm-color-info-100);
+  color: var(--fm-color-info-600);
+  border-left: 3px solid var(--fm-color-info-500);
 }
 
 [dir="rtl"] .alert-info.alert-overlay {
   border-left: none;
-  border-right: 3px solid #5c7f93;
+  border-right: 3px solid var(--fm-color-info-500);
 }
 
 .alert-info.alert-inline .alert-icon-wrapper {
-  color: #2563eb;
+  color: var(--fm-color-info-500);
 }
 
 .alert-info.alert-overlay .alert-icon-wrapper {
@@ -293,38 +296,38 @@
 }
 
 .alert-success .alert-action {
-  color: #657e5d;
+  color: var(--fm-color-success-500);
 }
 
 .alert-success .alert-action:hover {
-  color: #4a5f44;
+  color: var(--fm-color-success-600);
   gap: 0.55rem;
 }
 
 .alert-danger .alert-action {
-  color: #ad5c51;
+  color: var(--fm-color-danger-500);
 }
 
 .alert-danger .alert-action:hover {
-  color: #87443a;
+  color: var(--fm-color-danger-600);
   gap: 0.55rem;
 }
 
 .alert-warning .alert-action {
-  color: #b08149;
+  color: var(--fm-color-warning-500);
 }
 
 .alert-warning .alert-action:hover {
-  color: #8c6333;
+  color: var(--fm-color-warning-600);
   gap: 0.55rem;
 }
 
 .alert-info .alert-action {
-  color: #5c7f93;
+  color: var(--fm-color-info-500);
 }
 
 .alert-info .alert-action:hover {
-  color: #446072;
+  color: var(--fm-color-info-600);
   gap: 0.55rem;
 }
 

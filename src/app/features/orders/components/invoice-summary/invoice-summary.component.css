@@ -1,39 +1,70 @@
+/* ==========================================================================
+   FURNIMIND AI - Invoice Summary Card CSS
+   ========================================================================== */
+
 :host {
   display: block;
 }
 
 .details-card-header {
   padding: var(--fm-space-20) var(--fm-space-24);
+  background: linear-gradient(180deg, var(--fm-color-neutral-50) 0%, var(--fm-surface-card) 100%);
+  border-bottom: 1px solid var(--fm-border-medium);
+}
+
+.details-card-title {
+  font-family: var(--fm-font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fm-text-heading);
+  font-size: 1.1rem;
 }
 
 .invoice-row {
-  font-size: 14px;
+  font-size: 0.9rem;
+  color: var(--fm-text-body);
+}
+
+.invoice-label {
+  color: var(--fm-text-body);
+}
+
+.invoice-value {
+  color: var(--fm-text-heading);
 }
 
 .discount-row {
   color: var(--fm-color-success-600) !important;
-  background: rgba(16, 185, 129, 0.04);
+  background: var(--fm-color-success-50);
   padding: 6px 12px;
   border-radius: var(--fm-radius-md);
   margin-block: 4px;
-  border: 1px solid rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(101, 126, 93, 0.15);
+}
+
+.discount-row .invoice-label,
+.discount-row .invoice-value {
+  color: var(--fm-color-success-600) !important;
 }
 
 .grand-total-container {
-  background: linear-gradient(180deg, rgba(250, 249, 246, 0.6) 0%, rgba(255, 255, 255, 0.95) 100%);
+  background: linear-gradient(180deg, var(--fm-color-neutral-50) 0%, var(--fm-surface-card) 100%);
   border: 1px solid var(--fm-border-medium);
   box-shadow: var(--fm-shadow-xs);
   padding: 14px 18px;
   border-radius: var(--fm-radius-lg);
+  margin-top: 12px;
 }
 
 .grand-total-label {
-  font-size: 16px;
+  font-size: 1rem;
   letter-spacing: -0.01em;
+  color: var(--fm-text-heading);
 }
 
 .grand-total-value {
-  font-size: 20px;
+  font-family: var(--fm-font-display);
+  font-size: 1.35rem;
   letter-spacing: -0.02em;
 }
 
@@ -44,4 +75,28 @@
   display: inline-block;
 }
 
+/* Override bootstrap helper classes to be theme-aware and WCAG-compliant */
+.text-dark {
+  color: var(--fm-text-heading) !important;
+}
+
+.text-secondary {
+  color: var(--fm-text-body) !important;
+}
+
+.text-muted {
+  color: var(--fm-text-muted) !important;
+}
+
+.text-primary {
+  color: var(--fm-color-primary-500) !important;
+}
+
+.bg-light {
+  background-color: var(--fm-color-neutral-100) !important;
+}
+
+.border-light {
+  border-color: var(--fm-border-medium) !important;
+}
 

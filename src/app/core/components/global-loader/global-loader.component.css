@@ -187,15 +187,15 @@
 }
 
 /* Adaptive styles for Light/Dark Theme overrides */
-:host-context(.light-theme) .particle {
+:host-context([data-theme="light"]) .particle {
   background-color: #aa7c11; /* slightly deeper gold for contrast in light theme */
 }
 
-:host-context(.light-theme) .fm-loader-scanner-track {
+:host-context([data-theme="light"]) .fm-loader-scanner-track {
   background: rgba(170, 124, 17, 0.12);
 }
 
-:host-context(.light-theme) .fm-loader-scanner-glow {
+:host-context([data-theme="light"]) .fm-loader-scanner-glow {
   background: linear-gradient(
     90deg,
     rgba(170, 124, 17, 0) 0%,

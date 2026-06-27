@@ -6,7 +6,7 @@
 
 .chat-sidebar-section {
   width: 380px;
-  border-right: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  border-right: 1px solid var(--fm-color-neutral-200, var(--color-border));
   height: 100%;
 }
 
@@ -18,7 +18,7 @@
 .product-sidebar-section {
   width: 380px;
   height: 100%;
-  border-left: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+  border-left: 1px solid var(--fm-color-neutral-200, var(--color-border));
   animation: slide-in var(--fm-transition-duration-normal, 300ms) var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
@@ -46,7 +46,7 @@
     height: 500px;
     border-right: none;
     border-left: none;
-    border-bottom: 1px solid var(--fm-color-neutral-200, #e8e4dc);
+    border-bottom: 1px solid var(--fm-color-neutral-200, var(--color-border));
   }
   
   .product-sidebar-section {
@@ -57,7 +57,7 @@
     max-width: 400px;
     height: 100vh;
     z-index: 1010;
-    border-left: 1px solid var(--fm-color-neutral-200, #e8e4dc);
-    box-shadow: -4px 0 24px rgba(29, 27, 24, 0.15);
+    border-left: 1px solid var(--fm-color-neutral-200, var(--color-border));
+    box-shadow: -4px 0 24px var(--color-shadow);
   }
 }

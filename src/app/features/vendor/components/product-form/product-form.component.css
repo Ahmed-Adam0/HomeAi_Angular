@@ -14,14 +14,14 @@
 
 .form-control, .form-select {
   border: 1px solid rgba(31, 28, 24, 0.15);
-  background-color: #faf9f6;
+  background-color: var(--color-background);
   color: var(--primary-color, #1f1c18);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .form-control:focus, .form-select:focus {
   border-color: #b8935c;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.15);
   outline: 0;
 }

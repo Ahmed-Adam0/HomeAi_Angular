@@ -16,9 +16,91 @@
   --font-sans: var(--fm-font-sans);
 
   /* ==========================================
-     2. COLOR SYSTEM
+     2. BORDERS & RADIUS SYSTEM (Layout-only)
      ========================================== */
+  /* Border Radius Scale (Minimal & Smooth) */
+  --fm-radius-xs: 4px;
+  --fm-radius-sm: 8px;
+  --fm-radius-md: 12px;
+  --fm-radius-lg: 16px;
+  --fm-radius-xl: 24px;
+  --fm-radius-2xl: 32px;
+  --fm-radius-pill: 9999px;
+  --fm-radius-circle: 50%;
 
+  /* Legacy & Compatibility mappings */
+  --border-radius-sm: var(--fm-radius-sm);
+  --border-radius-md: var(--fm-radius-md);
+  --border-radius-lg: var(--fm-radius-lg);
+
+  /* ==========================================
+     3. SPACING SYSTEM (4px base grid)
+     ========================================== */
+  --fm-space-4: 4px;
+  --fm-space-8: 8px;
+  --fm-space-12: 12px;
+  --fm-space-16: 16px;
+  --fm-space-20: 20px;
+  --fm-space-24: 24px;
+  --fm-space-32: 32px;
+  --fm-space-40: 40px;
+  --fm-space-48: 48px;
+  --fm-space-64: 64px;
+  --fm-space-80: 80px;
+  --fm-space-96: 96px;
+
+  /* ==========================================
+     4. TRANSITION & ANIMATION SYSTEM
+     ========================================== */
+  --fm-transition-duration-fast: 150ms;
+  --fm-transition-duration-normal: 300ms;
+  --fm-transition-duration-slow: 450ms;
+
+  /* Sophisticated Cubic Beziers (Apple, Framer, Stripe inspired) */
+  --fm-ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);     /* Apple-standard ease-out */
+  --fm-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* Natural overshoot */
+  --fm-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);    /* Symmetrical smooth */
+
+  /* High-level Preset Transitions */
+  --fm-transition-smooth: all var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+  --fm-transition-fast: all var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+
+  --fm-transition-button-hover:
+    background-color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
+    color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
+    border-color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
+    transform var(--fm-transition-duration-fast) var(--fm-ease-smooth),
+    box-shadow var(--fm-transition-duration-fast) var(--fm-ease-smooth);
+
+  --fm-transition-card-hover:
+    transform var(--fm-transition-duration-normal) var(--fm-ease-smooth),
+    box-shadow var(--fm-transition-duration-normal) var(--fm-ease-smooth),
+    border-color var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+
+  --fm-transition-modal:
+    transform var(--fm-transition-duration-slow) var(--fm-ease-smooth),
+    opacity var(--fm-transition-duration-slow) var(--fm-ease-smooth);
+
+  /* Legacy & Compatibility mappings */
+  --transition-smooth: var(--fm-transition-smooth);
+
+  /* ==========================================
+     5. Z-INDEX SYSTEM (Robust Layering)
+     ========================================== */
+  --fm-z-minus: -10;
+  --fm-z-normal: 1;
+  --fm-z-dropdown: 1000;
+  --fm-z-navbar: 1010;
+  --fm-z-overlay: 1020;
+  --fm-z-modal: 1030;
+  --fm-z-toast: 1040;
+  --fm-z-tooltip: 1050;
+}
+
+/* ==========================================
+   6. LIGHT THEME PALETTE & TOKENS (Default)
+   ========================================== */
+:root, html[data-theme="light"] {
   /* Primary Luxury Warm Gold Palette */
   --fm-color-primary-50: #faf6f0;   /* Extremely soft ivory gold background */
   --fm-color-primary-100: #f4eae0;  /* Soft linen gold */
@@ -89,48 +171,13 @@
   --primary-color: var(--fm-color-primary-500);
   --secondary-color: var(--fm-color-neutral-500);
 
-  /* ==========================================
-     3. BORDERS & RADIUS SYSTEM
-     ========================================== */
+  /* Borders & Focus */
   --fm-border-subtle: rgba(31, 28, 24, 0.04);
   --fm-border-medium: rgba(31, 28, 24, 0.08);
   --fm-border-strong: rgba(31, 28, 24, 0.15);
   --fm-border-focus: var(--fm-color-primary-500);
 
-  /* Border Radius Scale (Minimal & Smooth) */
-  --fm-radius-xs: 4px;
-  --fm-radius-sm: 8px;
-  --fm-radius-md: 12px;
-  --fm-radius-lg: 16px;
-  --fm-radius-xl: 24px;
-  --fm-radius-2xl: 32px;
-  --fm-radius-pill: 9999px;
-  --fm-radius-circle: 50%;
-
-  /* Legacy & Compatibility mappings */
-  --border-radius-sm: var(--fm-radius-sm);
-  --border-radius-md: var(--fm-radius-md);
-  --border-radius-lg: var(--fm-radius-lg);
-
-  /* ==========================================
-     4. SPACING SYSTEM (4px base grid)
-     ========================================== */
-  --fm-space-4: 4px;
-  --fm-space-8: 8px;
-  --fm-space-12: 12px;
-  --fm-space-16: 16px;
-  --fm-space-20: 20px;
-  --fm-space-24: 24px;
-  --fm-space-32: 32px;
-  --fm-space-40: 40px;
-  --fm-space-48: 48px;
-  --fm-space-64: 64px;
-  --fm-space-80: 80px;
-  --fm-space-96: 96px;
-
-  /* ==========================================
-     5. SURFACE & GLASSMORPHISM SYSTEM
-     ========================================== */
+  /* Surfaces & Glassmorphism */
   --fm-surface-bg: var(--fm-color-neutral-50);
   --fm-surface-card: #ffffff;
   --fm-surface-elevated: #ffffff;
@@ -154,90 +201,215 @@
   --bg-light: var(--fm-surface-bg);
   --bg-white: var(--fm-surface-card);
 
-  /* ==========================================
-     6. SHADOW SYSTEM (Multi-layered Premium Shadows)
-     ========================================== */
-  /* Extra subtle border-like shadow */
+  /* Shadow System (Multi-layered Premium Shadows) */
   --fm-shadow-xs: 0 1px 2px 0 rgba(29, 27, 24, 0.015);
-
-  /* Apple & Vercel soft elevation */
   --fm-shadow-sm:
     0 1px 1px rgba(29, 27, 24, 0.01),
     0 2px 4px rgba(29, 27, 24, 0.015);
-
-  /* Linear Card Shadow */
   --fm-shadow-md:
     0 2px 4px rgba(29, 27, 24, 0.01),
     0 8px 16px rgba(29, 27, 24, 0.02);
-
-  /* Premium Box Large Shadow with soft amber-gold depth */
   --fm-shadow-lg:
     0 4px 8px rgba(29, 27, 24, 0.01),
     0 16px 32px rgba(184, 147, 92, 0.03),
     0 24px 48px rgba(29, 27, 24, 0.015);
-
-  /* Extremely soft immersive shadow for Modals & Overlays */
   --fm-shadow-xl:
     0 12px 24px rgba(29, 27, 24, 0.02),
     0 24px 48px rgba(184, 147, 92, 0.04),
     0 32px 64px rgba(29, 27, 24, 0.02);
-
-  /* Floating UI / Dialogues */
   --fm-shadow-floating:
     0 0 1px rgba(29, 27, 24, 0.06),
     0 4px 12px rgba(29, 27, 24, 0.03),
     0 20px 40px rgba(184, 147, 92, 0.05);
-
-  /* Dynamic Elevating States with subtle gold hover glow */
   --fm-shadow-hover:
     0 8px 24px rgba(29, 27, 24, 0.02),
     0 20px 48px rgba(184, 147, 92, 0.06),
     0 1px 2px rgba(184, 147, 92, 0.15);
 
   /* ==========================================
-     7. TRANSITION & ANIMATION SYSTEM
+     7. ELEVATION DESIGN TOKENS (Light)
      ========================================== */
-  --fm-transition-duration-fast: 150ms;
-  --fm-transition-duration-normal: 300ms;
-  --fm-transition-duration-slow: 450ms;
+  --surface-0: var(--fm-color-neutral-50);
+  --surface-1: #ffffff;
+  --surface-2: var(--fm-color-neutral-100);
+  --surface-3: var(--fm-color-neutral-200);
 
-  /* Sophisticated Cubic Beziers (Apple, Framer, Stripe inspired) */
-  --fm-ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);     /* Apple-standard ease-out */
-  --fm-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* Natural overshoot */
-  --fm-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);    /* Symmetrical smooth */
-
-  /* High-level Preset Transitions */
-  --fm-transition-smooth: all var(--fm-transition-duration-normal) var(--fm-ease-smooth);
-  --fm-transition-fast: all var(--fm-transition-duration-fast) var(--fm-ease-smooth);
-
-  --fm-transition-button-hover:
-    background-color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
-    color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
-    border-color var(--fm-transition-duration-fast) var(--fm-ease-smooth),
-    transform var(--fm-transition-duration-fast) var(--fm-ease-smooth),
-    box-shadow var(--fm-transition-duration-fast) var(--fm-ease-smooth);
-
-  --fm-transition-card-hover:
-    transform var(--fm-transition-duration-normal) var(--fm-ease-smooth),
-    box-shadow var(--fm-transition-duration-normal) var(--fm-ease-smooth),
-    border-color var(--fm-transition-duration-normal) var(--fm-ease-smooth);
-
-  --fm-transition-modal:
-    transform var(--fm-transition-duration-slow) var(--fm-ease-smooth),
-    opacity var(--fm-transition-duration-slow) var(--fm-ease-smooth);
-
-  /* Legacy & Compatibility mappings */
-  --transition-smooth: var(--fm-transition-smooth);
+  --shadow-sm: var(--fm-shadow-sm);
+  --shadow-md: var(--fm-shadow-md);
+  --shadow-lg: var(--fm-shadow-lg);
 
   /* ==========================================
-     8. Z-INDEX SYSTEM (Robust Layering)
+     8. SEMANTIC THEME VARIABLES (Light)
      ========================================== */
-  --fm-z-minus: -10;
-  --fm-z-normal: 1;
-  --fm-z-dropdown: 1000;
-  --fm-z-navbar: 1010;
-  --fm-z-overlay: 1020;
-  --fm-z-modal: 1030;
-  --fm-z-toast: 1040;
-  --fm-z-tooltip: 1050;
+  --color-background: var(--surface-0);
+  --color-surface: var(--surface-1);
+  --color-card: var(--surface-1);
+  --color-card-hover: var(--surface-2);
+  --color-border: var(--fm-border-medium);
+  --color-primary: var(--fm-color-primary-500);
+  --color-primary-hover: var(--fm-color-primary-600);
+  --color-secondary: var(--fm-color-neutral-500);
+  --color-text: var(--fm-text-body);
+  --color-text-muted: var(--fm-text-muted);
+  --color-heading: var(--fm-text-heading);
+  --color-success: var(--fm-color-success-500);
+  --color-warning: var(--fm-color-warning-500);
+  --color-danger: var(--fm-color-danger-500);
+  --color-shadow: var(--fm-shadow-md);
+  --color-navbar: var(--fm-surface-navbar);
+  --color-footer: var(--surface-0);
+  --color-input: var(--surface-1);
+  --color-input-border: var(--fm-border-medium);
+  --color-input-placeholder: var(--fm-text-disabled);
+  --color-overlay: var(--fm-surface-overlay);
+  --color-scrollbar: rgba(0, 0, 0, 0.15);
+  --color-selection: var(--fm-color-primary-light);
+}
+
+/* ==========================================
+   9. DARK THEME PALETTE & TOKENS (Override)
+   ========================================== */
+html[data-theme="dark"] {
+  /* Primary Warm Gold Palette - Adjusted for Dark Mode Contrast */
+  --fm-color-primary-50: #1a1714;
+  --fm-color-primary-100: #2d261f;
+  --fm-color-primary-200: #4a3e31;
+  --fm-color-primary-300: #6b5843;
+  --fm-color-primary-400: #8f7457;
+  --fm-color-primary-500: #c8a87b;  /* Brighter luxury gold for deep background contrast */
+  --fm-color-primary-600: #d7be9f;  /* Signature Gold Hover */
+  --fm-color-primary-700: #e6d6c3;
+  --fm-color-primary-800: #f4eae0;
+  --fm-color-primary-900: #faf6f0;
+
+  /* Primary Scalable Palette Extensions (Dark) */
+  --fm-color-primary-hover: var(--fm-color-primary-600);
+  --fm-color-primary-active: var(--fm-color-primary-700);
+  --fm-color-primary-light: var(--fm-color-primary-100);
+  --fm-color-primary-soft: rgba(200, 168, 123, 0.15);
+  --fm-color-primary-subtle: rgba(200, 168, 123, 0.05);
+  --fm-color-primary-glow: rgba(200, 168, 123, 0.35);
+
+  /* Inverted Neutral Scale (Deep Charcoal/Espresso Undertones) */
+  --fm-color-neutral-50: #12100e;   /* Deepest charcoal wenge body background */
+  --fm-color-neutral-100: #1c1916;  /* Card surface - elevated */
+  --fm-color-neutral-200: #25211e;  /* Input/interactive surface - more elevated */
+  --fm-color-neutral-300: #332d29;  /* borders */
+  --fm-color-neutral-400: #5c5349;  /* Disables/placeholders */
+  --fm-color-neutral-500: #8c8375;  /* Taupe metadata (midpoint remains stable) */
+  --fm-color-neutral-600: #b3ab9d;  /* Muted stone / readable subheaders */
+  --fm-color-neutral-700: #d9d3c7;  /* Soft travertine body text */
+  --fm-color-neutral-800: #e8e4dc;  /* Warm limestone keylines */
+  --fm-color-neutral-900: #f4f2ee;  /* Cashmere silk headings */
+  --fm-color-neutral-950: #faf9f6;  /* Absolute light white contrast */
+
+  /* Semantic Palette (Adapted for Dark Mode Contrast) */
+  --fm-color-success-50: #192017;
+  --fm-color-success-100: #243021;
+  --fm-color-success-500: #7ba171;
+  --fm-color-success-600: #93bd88;
+
+  --fm-color-danger-50: #251816;
+  --fm-color-danger-100: #36211e;
+  --fm-color-danger-500: #d2796e;
+  --fm-color-danger-600: #eb948a;
+
+  --fm-color-warning-50: #231d16;
+  --fm-color-warning-100: #33281c;
+  --fm-color-warning-500: #d59f5f;
+  --fm-color-warning-600: #ecc28b;
+
+  --fm-color-info-50: #171d22;
+  --fm-color-info-100: #212930;
+  --fm-color-info-500: #719eb7;
+  --fm-color-info-600: #8dbad5;
+
+  /* Text Color Intentions (Dark) */
+  --fm-text-heading: var(--fm-color-neutral-900);
+  --fm-text-body: var(--fm-color-neutral-700);
+  --fm-text-muted: var(--fm-color-neutral-500);
+  --fm-text-disabled: var(--fm-color-neutral-400);
+  --fm-text-inverted: #12100e;   /* Inverted text becomes dark wenge */
+  --fm-text-brand: var(--fm-color-primary-500);
+
+  /* Legacy & Compatibility mappings */
+  --primary-color: var(--fm-color-primary-500);
+  --secondary-color: var(--fm-color-neutral-500);
+
+  /* Borders & Focus (Dark) */
+  --fm-border-subtle: rgba(255, 255, 255, 0.04);
+  --fm-border-medium: rgba(255, 255, 255, 0.08);
+  --fm-border-strong: rgba(255, 255, 255, 0.15);
+  --fm-border-focus: var(--fm-color-primary-500);
+
+  /* Surfaces & Glassmorphism (Dark) */
+  --fm-surface-bg: var(--fm-color-neutral-50);
+  --fm-surface-card: var(--fm-color-neutral-100);
+  --fm-surface-elevated: var(--fm-color-neutral-200);
+  --fm-surface-navbar: rgba(18, 16, 14, 0.85);
+  --fm-surface-modal: var(--fm-color-neutral-100);
+  --fm-surface-overlay: rgba(0, 0, 0, 0.7);
+
+  --fm-input-bg: #171412;
+  --fm-input-border: var(--fm-border-medium);
+  --fm-input-focus-border: var(--fm-color-primary-500);
+  --fm-input-focus-ring: rgba(200, 168, 123, 0.12);
+
+  /* Glassmorphism (Dark) */
+  --fm-glass-bg: rgba(18, 16, 14, 0.8);
+  --fm-glass-border: rgba(200, 168, 123, 0.15);
+  --fm-glass-blur: blur(20px) saturate(190%);
+  --fm-glass-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+
+  /* Legacy & Compatibility mappings */
+  --bg-light: var(--fm-surface-bg);
+  --bg-white: var(--fm-surface-card);
+
+  /* Shadows (Dark - Deeper, more intense for visual distinction on dark backgrounds) */
+  --fm-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --fm-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --fm-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4), 0 12px 24px rgba(0, 0, 0, 0.3);
+  --fm-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4), 0 24px 48px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(200, 168, 123, 0.05);
+  --fm-shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.5), 0 24px 48px rgba(0, 0, 0, 0.5), 0 32px 64px rgba(0, 0, 0, 0.4);
+  --fm-shadow-floating: 0 0 1px rgba(0, 0, 0, 0.8), 0 4px 12px rgba(0, 0, 0, 0.5), 0 20px 40px rgba(0, 0, 0, 0.4);
+  --fm-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4), 0 20px 48px rgba(200, 168, 123, 0.1), 0 1px 2px rgba(200, 168, 123, 0.3);
+
+  /* ==========================================
+     10. ELEVATION DESIGN TOKENS (Dark)
+     ========================================== */
+  --surface-0: var(--fm-color-neutral-50);
+  --surface-1: var(--fm-color-neutral-100);
+  --surface-2: var(--fm-color-neutral-200);
+  --surface-3: var(--fm-color-neutral-300);
+
+  --shadow-sm: var(--fm-shadow-sm);
+  --shadow-md: var(--fm-shadow-md);
+  --shadow-lg: var(--fm-shadow-lg);
+
+  /* ==========================================
+     11. SEMANTIC THEME VARIABLES (Dark)
+     ========================================== */
+  --color-background: var(--surface-0);
+  --color-surface: var(--surface-1);
+  --color-card: var(--surface-1);
+  --color-card-hover: var(--surface-2);
+  --color-border: var(--fm-border-medium);
+  --color-primary: var(--fm-color-primary-500);
+  --color-primary-hover: var(--fm-color-primary-600);
+  --color-secondary: var(--fm-color-neutral-500);
+  --color-text: var(--fm-text-body);
+  --color-text-muted: var(--fm-text-muted);
+  --color-heading: var(--fm-text-heading);
+  --color-success: var(--fm-color-success-500);
+  --color-warning: var(--fm-color-warning-500);
+  --color-danger: var(--fm-color-danger-500);
+  --color-shadow: var(--fm-shadow-md);
+  --color-navbar: var(--fm-surface-navbar);
+  --color-footer: var(--surface-0);
+  --color-input: var(--surface-1);
+  --color-input-border: var(--fm-border-medium);
+  --color-input-placeholder: var(--fm-text-disabled);
+  --color-overlay: var(--fm-surface-overlay);
+  --color-scrollbar: rgba(255, 255, 255, 0.15);
+  --color-selection: var(--fm-color-primary-light);
 }

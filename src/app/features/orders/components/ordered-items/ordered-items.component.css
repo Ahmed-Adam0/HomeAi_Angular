@@ -1,13 +1,30 @@
+/* ==========================================================================
+   FURNIMIND AI - Ordered Items Component CSS
+   ========================================================================== */
+
 :host {
   display: block;
 }
 
 .details-card-header {
   padding: var(--fm-space-20) var(--fm-space-24);
+  background: linear-gradient(180deg, var(--fm-color-neutral-50) 0%, var(--fm-surface-card) 100%);
+  border-bottom: 1px solid var(--fm-border-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.details-card-title {
+  font-family: var(--fm-font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fm-text-heading);
+  font-size: 1.1rem;
 }
 
 .details-items {
-  padding: 8px 24px 24px;
+  padding: var(--fm-space-12) var(--fm-space-24) var(--fm-space-24);
 }
 
 .details-item-row {
@@ -26,10 +43,10 @@
   flex-shrink: 0;
   width: 64px;
   height: 64px;
-  border-radius: var(--fm-radius-lg);
+  border-radius: var(--fm-radius-md);
   overflow: hidden;
   border: 1px solid var(--fm-border-medium);
-  background: var(--fm-color-neutral-50);
+  background: var(--fm-color-neutral-100);
 }
 
 .details-item-img {
@@ -40,20 +57,23 @@
 }
 
 .details-item-name {
+  font-family: var(--fm-font-sans);
   font-weight: 700;
-  color: var(--fm-color-neutral-900);
-  font-size: 15px;
+  color: var(--fm-text-heading);
+  font-size: 0.95rem;
 }
 
 .details-item-meta {
-  font-size: 12px;
+  font-size: 0.8rem;
   margin-top: 4px;
+  color: var(--fm-text-muted);
 }
 
 .details-item-price {
-  font-weight: 800;
-  color: var(--fm-color-neutral-900);
-  font-size: 16px;
+  font-family: var(--fm-font-display);
+  font-weight: 700;
+  color: var(--fm-text-heading);
+  font-size: 1.05rem;
 }
 
 .details-items-empty {
@@ -62,19 +82,20 @@
   justify-content: center;
   align-items: center;
   min-height: 240px;
+  padding: var(--fm-space-24);
 }
 
 .empty-state-dashed-box {
   width: 100%;
   border: 2px dashed var(--fm-border-medium);
   border-radius: var(--fm-radius-xl);
-  background: rgba(250, 249, 246, 0.2);
-  transition: all var(--fm-transition-medium);
+  background: var(--fm-color-neutral-50);
+  transition: var(--fm-transition-card-hover);
 }
 
 .empty-state-dashed-box:hover {
   border-color: var(--fm-color-primary-300);
-  background: rgba(250, 249, 246, 0.4);
+  background: var(--fm-color-neutral-100);
   transform: scale(1.005);
 }
 
@@ -84,10 +105,44 @@
   justify-content: center;
   width: 72px;
   height: 72px;
-  background: rgba(184, 147, 92, 0.08);
+  background: var(--fm-color-primary-soft);
   border-radius: var(--fm-radius-circle);
   color: var(--fm-color-primary-500);
   box-shadow: 0 4px 10px rgba(184, 147, 92, 0.05);
 }
 
+.badge {
+  background-color: var(--fm-color-neutral-100) !important;
+  color: var(--fm-text-body) !important;
+  border: 1px solid var(--fm-border-medium) !important;
+}
+
+.badge .fw-semibold {
+  color: var(--fm-text-heading) !important;
+}
+
+/* Override bootstrap helper classes to be theme-aware and WCAG-compliant */
+.text-dark {
+  color: var(--fm-text-heading) !important;
+}
+
+.text-secondary {
+  color: var(--fm-text-body) !important;
+}
+
+.text-muted {
+  color: var(--fm-text-muted) !important;
+}
+
+.text-primary {
+  color: var(--fm-color-primary-500) !important;
+}
+
+.bg-light {
+  background-color: var(--fm-color-neutral-100) !important;
+}
+
+.border-light {
+  border-color: var(--fm-border-medium) !important;
+}
 

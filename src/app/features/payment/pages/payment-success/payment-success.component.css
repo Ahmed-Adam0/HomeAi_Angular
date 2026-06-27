@@ -142,7 +142,7 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: #ffffff;
+  background-color: var(--color-surface);
   box-shadow: var(--fm-shadow-md);
   border: 1px solid rgba(184, 147, 92, 0.1);
   display: flex;
@@ -378,8 +378,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #ffffff;
-  border: 2px solid var(--fm-color-neutral-200, #e8e4dc);
+  background-color: var(--color-surface);
+  border: 2px solid var(--fm-color-neutral-200, var(--color-border));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -449,7 +449,7 @@
 /* Active State */
 .timeline-step.active .step-marker {
   border-color: var(--fm-color-primary-500, #b8935c);
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   box-shadow: 0 0 0 4px var(--fm-color-primary-soft, rgba(184, 147, 92, 0.12));
 }
 
@@ -511,7 +511,7 @@
 .fallback-spinner {
   width: 48px;
   height: 48px;
-  border: 3px solid var(--fm-color-neutral-200, #e8e4dc);
+  border: 3px solid var(--fm-color-neutral-200, var(--color-border));
   border-top-color: var(--fm-color-primary-500, #b8935c);
   border-radius: 50%;
   animation: spinnerRotate 0.8s linear infinite;

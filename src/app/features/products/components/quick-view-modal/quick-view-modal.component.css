@@ -20,7 +20,7 @@
 }
 
 .qv-modal {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 28px;
   max-width: 1000px;
   width: 100%;
@@ -459,7 +459,7 @@
 }
 
 .qv-material-option-badge {
-  background-color: #faf9f6 !important;
+  background-color: var(--color-background) !important;
   border: 1px solid rgba(184, 147, 92, 0.15) !important;
   color: #4a4a4a !important;
   font-size: 0.75rem !important;

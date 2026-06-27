@@ -750,7 +750,7 @@
 }
 
 .card-stat-card {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08)) !important;
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
@@ -777,7 +777,7 @@
 }
 
 .quick-action-link:hover {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border-color: rgba(184, 147, 92, 0.25) !important;
   box-shadow: 0 10px 25px rgba(31, 28, 24, 0.05) !important;
   transform: translateY(-4px);
@@ -909,7 +909,7 @@
 }
 
 .btn-segment.active {
-  background-color: #ffffff !important;
+  background-color: var(--color-surface) !important;
   color: var(--fm-color-primary-500, #b8935c) !important;
   box-shadow: 0 2px 8px rgba(31, 28, 24, 0.06) !important;
 }
@@ -985,7 +985,7 @@
 }
 
 .empty-chart-badge {
-  background: #ffffff;
+  background-color: var(--color-surface);
   border: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08)) !important;
   box-shadow: 0 4px 15px rgba(31, 28, 24, 0.03);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;

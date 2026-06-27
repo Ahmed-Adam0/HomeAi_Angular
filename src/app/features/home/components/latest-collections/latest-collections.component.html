@@ -3,7 +3,7 @@
     <!-- Header Section (always exists) -->
     <div class="latest-collections-header d-flex justify-content-between align-items-center mb-4">
       <div class="header-left">
-        <h2 class="section-title text-dark fw-bold mb-0">
+        <h2 class="section-title fw-bold mb-0">
           {{ 'LATEST_COLLECTIONS_TITLE' | translate }}
         </h2>
       </div>
@@ -65,7 +65,7 @@
               <svg class="error-icon mb-3 text-danger" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <h4 class="fw-bold text-dark mb-2">{{ 'LOAD_ERROR_TITLE' | translate }}</h4>
+              <h4 class="fw-bold mb-2" style="color: var(--color-heading);">{{ 'LOAD_ERROR_TITLE' | translate }}</h4>
               <p class="text-secondary mb-4">{{ 'LOAD_ERROR_MSG' | translate }}</p>
               <button (click)="retryFetch()" class="btn btn-premium btn-md px-4 shadow-sm">
                 {{ 'RETRY' | translate }}
@@ -80,7 +80,7 @@
               <svg class="empty-icon mb-3 text-muted" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
-              <h4 class="fw-bold text-dark mb-2">{{ 'NO_PRODUCTS_FOUND' | translate }}</h4>
+              <h4 class="fw-bold mb-2" style="color: var(--color-heading);">{{ 'NO_PRODUCTS_FOUND' | translate }}</h4>
               <p class="text-secondary mb-0">{{ 'NO_PRODUCTS_DESC' | translate }}</p>
             </div>
           </div>
@@ -169,7 +169,7 @@
                     <span class="brand-name text-uppercase fw-semibold text-muted d-block text-truncate mb-1">
                       {{ product ? (product | localized:'workshopName') || 'FurniMind' : 'FurniMind' }}
                     </span>
-                    <h3 class="product-name text-dark fw-bold mb-3 text-truncate">
+                    <h3 class="product-name fw-bold mb-3 text-truncate">
                       {{ product ? (product | localized:'name') : '' }}
                     </h3>
 

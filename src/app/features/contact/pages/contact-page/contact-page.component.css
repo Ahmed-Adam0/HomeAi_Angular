@@ -11,7 +11,7 @@
   --ccream: #faf7f2;
   --ccream-dark: #f0ebe0;
   --cwhite: #ffffff;
-  --cborder: var(--fm-color-neutral-200, #e5dfd8);
+  --cborder: var(--fm-color-neutral-200, var(--color-border));
   --ctext: var(--fm-color-neutral-700, #4a4540);
   --ctext-light: var(--fm-color-neutral-500, #8a857f);
   --cdanger: #dc3545;

@@ -5,14 +5,14 @@
   width: 100%;
   min-height: 100vh;
   font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
-  background: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .auth-wrapper {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  background: #ffffff;
+  background-color: var(--color-surface);
   animation: authPageEnter 0.6s ease-out both;
 }
 
@@ -40,7 +40,7 @@
   align-items: center;
   justify-content: center;
   padding: 60px 24px;
-  background: #ffffff;
+  background-color: var(--color-surface);
   box-sizing: border-box;
 }
 
@@ -174,7 +174,7 @@
 
 .form-group input:focus {
   border-color: #795c4b;
-  background: #ffffff;
+  background-color: var(--color-surface);
   box-shadow: 0 0 0 3px rgba(121, 92, 75, 0.1);
 }
 

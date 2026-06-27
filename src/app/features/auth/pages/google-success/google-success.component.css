@@ -14,7 +14,7 @@
   display: flex;
   width: 100%;
   min-height: 100vh;
-  background: #ffffff;
+  background-color: var(--color-surface);
 }
 
 .google-success-mirror {
@@ -30,7 +30,7 @@
   align-items: center;
   justify-content: center;
   padding: 60px 24px;
-  background: #ffffff;
+  background-color: var(--color-surface);
   box-sizing: border-box;
 }
 

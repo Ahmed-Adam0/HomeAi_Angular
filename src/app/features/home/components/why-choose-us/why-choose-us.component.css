@@ -1,6 +1,6 @@
 /* Premium trust section styling */
 .why-choose-section {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   padding: 6.5rem 0;
   width: 100%;
   overflow: hidden;

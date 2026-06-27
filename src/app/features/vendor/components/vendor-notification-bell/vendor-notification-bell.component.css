@@ -19,7 +19,7 @@
   background: none;
   border: none;
   border-radius: 50%;
-  color: #1e1513;
+  color: var(--color-text);
   font-size: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -78,8 +78,8 @@
 
 /* Dropdown base */
 .notification-dropdown {
-  background: #fff;
-  border: 1px solid #e5dfda;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
@@ -181,7 +181,7 @@
 .notification-dropdown__title {
   font-size: 15px;
   font-weight: 700;
-  color: #1e1513;
+  color: var(--color-text);
   margin: 0;
 }
 
@@ -351,7 +351,7 @@
 .notification-item__title {
   font-size: 13px;
   font-weight: 600;
-  color: #1e1513;
+  color: var(--color-text);
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -369,7 +369,7 @@
 .notification-item__message {
   margin: 0;
   font-size: 12px;
-  color: #796e65;
+  color: var(--color-text-muted);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;

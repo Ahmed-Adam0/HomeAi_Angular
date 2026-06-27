@@ -126,7 +126,7 @@
 
 .notification-type--secondary {
   background: var(--fm-color-neutral-100, #f4f2ee);
-  border-color: var(--fm-color-neutral-200, #e8e4dc);
+  border-color: var(--fm-color-neutral-200, var(--color-border));
   color: var(--fm-color-neutral-700, #544d43);
 }
 

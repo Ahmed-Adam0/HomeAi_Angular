@@ -51,6 +51,11 @@ export class CheckoutFormComponent implements OnInit {
   readonly selectedAddressId = signal<string | null>(null);
   readonly showAddAddressForm = signal<boolean>(false);
   readonly addressSaving = signal<boolean>(false);
+  readonly showAllAddresses = signal<boolean>(false);
+  readonly visibleAddresses = computed(() => {
+    const all = this.savedAddresses();
+    return this.showAllAddresses() ? all : all.slice(0, 4);
+  });
 
   readonly cartSummary = computed(() => {
     const totals = this.cartTotals();
@@ -245,6 +250,10 @@ export class CheckoutFormComponent implements OnInit {
     } else {
       this.showAddAddressForm.set(true);
     }
+  }
+
+  toggleShowAllAddresses(): void {
+    this.showAllAddresses.update(v => !v);
   }
 
   cancelAddAddress(): void {

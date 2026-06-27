@@ -6,7 +6,7 @@
   border-style: dashed !important;
   border-width: 2px !important;
   border-color: rgba(31, 28, 24, 0.15) !important;
-  background-color: #faf9f6 !important;
+  background-color: var(--color-background) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
