@@ -462,6 +462,26 @@
   transform: translateY(-1px);
 }
 
+.validation-error-msg {
+  color: var(--fm-color-danger-600, #ad5c51);
+  font-weight: 600;
+  font-size: 12px;
+  animation: scaleIn 0.25s var(--fm-ease-smooth) both;
+}
+
+.text-error-highlight {
+  color: var(--fm-color-danger-600, #ad5c51) !important;
+}
+
+.configurator-group-luxury.has-error .configurator-option-btn {
+  border-color: var(--fm-color-danger-200, #f5e4e1);
+}
+
+.configurator-group-luxury.has-error .configurator-option-btn:hover {
+  border-color: var(--fm-color-danger-500, #ad5c51);
+  background: var(--fm-color-danger-50, #fbf5f4);
+}
+
 .option-visual-content {
   display: flex;
   align-items: center;

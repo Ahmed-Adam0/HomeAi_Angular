@@ -112,6 +112,7 @@ export class ProductDetails implements OnInit, OnDestroy {
   });
 
   readonly selectedOptions = signal<Record<string, number>>({});
+  readonly validationErrors = signal<Record<string, boolean>>({});
 
   readonly configGroups = computed<IConfigGroup[]>(() => {
     const prod = this.product();
@@ -267,6 +268,7 @@ export class ProductDetails implements OnInit, OnDestroy {
     this.notFound.set(false);
     this.currentProductId.set(id);
     this.show3DMode.set(false);
+    this.validationErrors.set({});
 
     this.productService.getProductById(id).subscribe({
       next: (data) => {
@@ -278,14 +280,7 @@ export class ProductDetails implements OnInit, OnDestroy {
         this.product.set(data);
         this.selectedImage.set(data.mainImageUrl || '');
 
-        const initial: Record<string, number> = {};
-        const groups = this.configGroups();
-        for (const g of groups) {
-          if (g.options?.length) {
-            initial[g.id] = g.options[0].id;
-          }
-        }
-        this.selectedOptions.set(initial);
+        this.selectedOptions.set({});
         this.quantity.set(1);
 
         this.loadRelatedProducts(data);
@@ -329,6 +324,11 @@ export class ProductDetails implements OnInit, OnDestroy {
 
   selectOption(groupId: string, optionId: number): void {
     this.selectedOptions.update(prev => ({ ...prev, [groupId]: optionId }));
+    this.validationErrors.update(prev => {
+      const next = { ...prev };
+      delete next[groupId];
+      return next;
+    });
     this.triggerPriceAnimation();
   }
 
@@ -370,6 +370,35 @@ export class ProductDetails implements OnInit, OnDestroy {
   addToCart(): void {
     const prod = this.product();
     if (!prod || this.cartService.isProductAdding(prod.id)) return;
+
+    // Validate that all option groups have a selection
+    const missing: Record<string, boolean> = {};
+    let hasError = false;
+    for (const group of this.configGroups()) {
+      if (this.selectedOptions()[group.id] === undefined) {
+        missing[group.id] = true;
+        hasError = true;
+      }
+    }
+    this.validationErrors.set(missing);
+
+    if (hasError) {
+      const isAr = this.translationService.currentLang() === 'ar';
+      const firstMissingGroup = this.configGroups().find(g => missing[g.id]);
+      const optionName = firstMissingGroup
+        ? (isAr 
+            ? (firstMissingGroup.nameAr || firstMissingGroup.nameEn || firstMissingGroup.name) 
+            : (firstMissingGroup.nameEn || firstMissingGroup.nameAr || firstMissingGroup.name))
+        : '';
+      
+      const message = isAr
+        ? `يرجى تحديد ${optionName || 'جميع الخيارات'}.`
+        : `Please select ${optionName ? optionName.toLowerCase() : 'all options'}.`;
+
+      this.uiState.showAlert('warning', message);
+      return;
+    }
+
     this.cartService.addToCart(prod, this.quantity(), Object.values(this.selectedOptions()));
   }
 

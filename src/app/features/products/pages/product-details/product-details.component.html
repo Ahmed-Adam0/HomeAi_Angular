@@ -201,10 +201,13 @@
               {{ translationService.currentLang() === 'ar' ? 'قم بتخصيص خامات وتفاصيل منتجك' : 'Customize Your Product' }}
             </h3>
 
-            <div class="configurator-group-luxury" *ngFor="let group of configGroups(); trackBy: trackById">
+            <div class="configurator-group-luxury" *ngFor="let group of configGroups(); trackBy: trackById" [class.has-error]="validationErrors()[group.id]">
               <div class="configurator-group-meta">
-                <span class="configurator-group-label">{{ group | localized:'name' }}</span>
-                <span class="configurator-selected-value" *ngIf="selectedOptions()[group.id] as selectedId">
+                <span class="configurator-group-label" [class.text-error-highlight]="validationErrors()[group.id]">{{ group | localized:'name' }}</span>
+                <span class="configurator-selected-value validation-error-msg" *ngIf="validationErrors()[group.id]">
+                  {{ translationService.currentLang() === 'ar' ? 'يرجى الاختيار *' : 'Please select *' }}
+                </span>
+                <span class="configurator-selected-value" *ngIf="!validationErrors()[group.id] && selectedOptions()[group.id] as selectedId">
                   {{ getSelectedOptionValue(group, selectedId) }}
                 </span>
               </div>
