@@ -323,7 +323,18 @@ export class ProductDetails implements OnInit, OnDestroy {
   }
 
   selectOption(groupId: string, optionId: number): void {
-    this.selectedOptions.update(prev => ({ ...prev, [groupId]: optionId }));
+    const isAlreadySelected = this.selectedOptions()[groupId] === optionId;
+
+    this.selectedOptions.update(prev => {
+      const next = { ...prev };
+      if (isAlreadySelected) {
+        delete next[groupId];
+      } else {
+        next[groupId] = optionId;
+      }
+      return next;
+    });
+
     this.validationErrors.update(prev => {
       const next = { ...prev };
       delete next[groupId];
