@@ -1,4 +1,4 @@
-<div class="fm-timeline-container" [class.is-cancelled]="isCancelled()">
+<div class="fm-timeline-container" [class.is-cancelled]="isCancelled()" [attr.dir]="isRtl() ? 'rtl' : 'ltr'">
   <div class="fm-timeline-stepper">
     @for (s of stepClass(); track s.key; let idx = $index; let last = $last) {
       <div class="fm-timeline-node" [ngClass]="s.cls">

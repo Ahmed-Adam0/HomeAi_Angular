@@ -135,28 +135,43 @@
 }
 
 /* RTL Layout support */
-[dir="rtl"] .fm-timeline-stepper {
+[dir="rtl"] .fm-timeline-stepper,
+.fm-timeline-container[dir="rtl"] .fm-timeline-stepper {
   direction: rtl;
 }
 
-[dir="rtl"] .fm-timeline-node {
-  text-align: right;
+[dir="rtl"] .fm-timeline-node,
+.fm-timeline-container[dir="rtl"] .fm-timeline-node {
+  text-align: center;
+}
+
+[dir="rtl"] .fm-timeline-connector,
+.fm-timeline-container[dir="rtl"] .fm-timeline-connector {
+  left: calc(-50% + 22px);
+  right: calc(50% + 22px);
 }
 
 @media (max-width: 768px) {
-  [dir="rtl"] .fm-timeline-stepper {
+  [dir="rtl"] .fm-timeline-stepper,
+  .fm-timeline-container[dir="rtl"] .fm-timeline-stepper {
     padding-left: 0;
     padding-right: var(--fm-space-16);
   }
 
-  [dir="rtl"] .fm-timeline-node {
+  [dir="rtl"] .fm-timeline-node,
+  .fm-timeline-container[dir="rtl"] .fm-timeline-node {
     flex-direction: row;
     text-align: right;
   }
 
-  [dir="rtl"] .fm-timeline-connector {
+  [dir="rtl"] .fm-timeline-connector,
+  .fm-timeline-container[dir="rtl"] .fm-timeline-connector {
     left: auto;
     right: 20px;
+    top: 44px;
+    bottom: -32px;
+    height: auto;
+    width: 3px;
   }
 }
 

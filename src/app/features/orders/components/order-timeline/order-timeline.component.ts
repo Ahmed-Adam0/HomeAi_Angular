@@ -1,9 +1,10 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, inject } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { StatusTranslationPipe } from '../../../../shared/pipes/status-translation.pipe';
 import { TimelineStepVm } from '../../data-access/orders.facade';
 import { OrderStatus } from '../../interfaces';
+import { TranslationService } from '../../../../shared/i18n/translation.service';
 
 @Component({
   selector: 'app-order-timeline',
@@ -13,8 +14,20 @@ import { OrderStatus } from '../../interfaces';
   styleUrl: './order-timeline.component.css',
 })
 export class OrderTimelineComponent {
+  private readonly translationService = inject(TranslationService);
+
   readonly steps = input.required<TimelineStepVm[]>();
   readonly status = input<OrderStatus | null>(null);
+
+  readonly isRtl = computed(() => {
+    if (this.translationService.currentLang() === 'ar') {
+      return true;
+    }
+    if (typeof document !== 'undefined') {
+      return document.documentElement.getAttribute('dir') === 'rtl' || document.dir === 'rtl';
+    }
+    return false;
+  });
 
   readonly isCancelled = computed(() => {
     const s = this.status();
