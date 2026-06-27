@@ -29,7 +29,7 @@
                   <th class="text-muted fw-semibold">{{ 'ORDERS_COL_DATE' | translate }}</th>
                   <th class="text-muted fw-semibold">{{ 'ORDERS_COL_TOTAL' | translate }}</th>
                   <th class="text-muted fw-semibold">{{ 'ORDERS_COL_PAYMENT' | translate }}</th>
-                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_STATUS' | translate }}</th>
+                  <th class="text-muted fw-semibold" style="padding-inline-start: 2.5rem;">{{ 'ORDERS_COL_STATUS' | translate }}</th>
                   <th class="text-muted fw-semibold text-end">{{ 'ORDERS_COL_ACTION' | translate }}</th>
                 </tr>
               </thead>
@@ -51,7 +51,7 @@
                         size="sm"
                       />
                     </td>
-                    <td>
+                    <td style="padding-inline-start: 2.5rem;">
                       <div class="d-flex align-items-center gap-2">
                         <app-status-badge
                           [label]="o.orderStatus | statusTranslation:'order'"

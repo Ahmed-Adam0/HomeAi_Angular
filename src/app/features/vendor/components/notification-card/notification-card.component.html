@@ -50,7 +50,7 @@
         @if (isUnread()) {
           <span class="notification-card__unread-dot" aria-hidden="true"></span>
         }
-        {{ notification().title }}
+        {{ notification().title | notificationTitle }}
       </h3>
       <time
         class="notification-card__time"
@@ -60,7 +60,7 @@
       </time>
     </div>
 
-    <p class="notification-card__message">{{ notification().message }}</p>
+    <p class="notification-card__message">{{ notification().message | notificationMessage:notification().title }}</p>
   </div>
 
   @if (isUnread()) {

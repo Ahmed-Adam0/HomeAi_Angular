@@ -6,12 +6,13 @@ import {
   output,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { NotificationTitlePipe, NotificationMessagePipe } from '../../../../shared/pipes/notification-translation.pipe';
 import { IVendorNotificationItem } from '../../interfaces';
 
 @Component({
   selector: 'app-notification-card',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, NotificationTitlePipe, NotificationMessagePipe],
   templateUrl: './notification-card.component.html',
   styleUrl: './notification-card.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

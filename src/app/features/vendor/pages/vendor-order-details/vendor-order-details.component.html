@@ -469,6 +469,41 @@
               </div>
             </div>
 
+            <!-- ◉ PAYMENT MILESTONES ─────────────────────────────────── -->
+            @if (remainingBalanceDetails(); as breakdown) {
+              @if (breakdown.milestones && breakdown.milestones.length > 0) {
+                <div class="vod-financials-panel mt-4">
+                  <div class="vod-financials-title">{{ 'VENDOR.ORDER_DETAILS.PAYMENT_MILESTONES' | translate }}</div>
+                  <div class="vod-financials-rows">
+                    @for (m of breakdown.milestones; track m.milestoneId) {
+                      <div class="vod-fin-row" style="padding: 8px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="milestone-dot" 
+                                style="width: 7px; height: 7px; border-radius: 50%; display: inline-block;"
+                                [style.background-color]="m.isPaid ? '#22c55e' : '#cbd5e1'"></span>
+                          <span class="small fw-semibold">
+                            {{ 'MILESTONE_STATUS_' + (m.milestoneStatus | uppercase) | translate }}
+                          </span>
+                        </div>
+                        <span class="small fw-bold" [class.text-success]="m.isPaid" [class.text-muted]="!m.isPaid">
+                          {{ m.amount | currencyFormat }}
+                          @if (m.isPaid) {
+                            <span class="small font-sans" style="font-size: 0.7rem; display: block; text-align: right;">(Paid)</span>
+                          } @else {
+                            <span class="small font-sans" style="font-size: 0.7rem; display: block; text-align: right;">(Unpaid)</span>
+                          }
+                        </span>
+                      </div>
+                    }
+                  </div>
+                  <div class="vod-fin-total" style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(0,0,0,0.1);">
+                    <span>Remaining Balance</span>
+                    <span class="vod-fin-total-value text-gradient-gold">{{ breakdown.remainingBalance | currencyFormat }}</span>
+                  </div>
+                </div>
+              }
+            }
+
             <!-- ◉ BILLING INFO ───────────────────────────────────────── -->
             <div class="vod-meta-panel">
               <div class="vod-meta-row">

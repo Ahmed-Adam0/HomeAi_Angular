@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, effect } from '@angular/core';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -85,33 +85,146 @@ export class OrderDetails {
   readonly isRejectDialogVisible = signal(false);
   readonly selectedVendorOrderId = signal<string | null>(null);
   readonly isInitiatingPayment = signal(false);
+  readonly isInitiatingVendorPayment = signal<Record<string, boolean>>({});
 
+  readonly remainingBalanceDetails = signal<any | null>(null);
+  readonly isLoadingBreakdown = signal<boolean>(false);
 
   readonly hasPendingPaymentOrders = computed(() => {
-    const vOrders = this.order()?.vendorOrders ?? [];
-    return vOrders.some(vo => vo.status === 'pending_payment');
+    return this.pendingPaymentTotal() > 0 || this.activeVendorOrdersTotal() > 0;
   });
 
+  private normalizeStatus(value: string | undefined | null): string {
+    if (!value) return '';
+    return value
+      .replace(/([a-z])([A-Z])/g, '$1_$2')
+      .replace(/[\s_-]+/g, '_')
+      .toLowerCase();
+  }
+
   readonly pendingPaymentTotal = computed(() => {
+    const breakdown = this.remainingBalanceDetails();
+    if (!breakdown || !breakdown.milestones) return 0;
+
+    const vOrders = this.order()?.vendorOrders ?? [];
+    return breakdown.milestones
+      .filter((m: any) => {
+        if (m.isPaid) return false;
+        const vo = vOrders.find(o => o.id === m.vendorOrderId.toString());
+        if (!vo) return false;
+        return this.normalizeStatus(m.milestoneStatus) === vo.status &&
+          (vo.status === 'pending_payment' || vo.status === 'shipped' || vo.status === 'delivered');
+      })
+      .reduce((sum: number, m: any) => sum + m.amount, 0);
+  });
+
+  /** Active vendor-order statuses — normalized snake_case versions of the
+   *  backend enum, covering Confirmed → Delivered.
+   *  normalizeStatus() converts e.g. "Confirmed" → "confirmed" */
+  private readonly ACTIVE_VO_STATUSES = new Set([
+    'confirmed',                  // Confirmed
+    'in_progress',                // InProgress
+    'pending_payment',            // PendingPayment
+    'shipped',                    // Shipped
+    'delivered',                  // Delivered
+  ]);
+
+  readonly activeVendorOrdersTotal = computed(() => {
     const vOrders = this.order()?.vendorOrders ?? [];
     return vOrders
-      .filter(vo => vo.status === 'pending_payment')
-      .reduce((sum, vo) => sum + vo.totalPrice, 0);
+      .filter(vo => this.ACTIVE_VO_STATUSES.has(this.normalizeStatus(vo.status)))
+      .reduce((sum, vo) => sum + (vo.totalPrice ?? 0), 0);
   });
 
   readonly amountPaid = computed(() => {
+    const breakdown = this.remainingBalanceDetails();
+    if (breakdown) {
+      return breakdown.totalPrice - breakdown.remainingBalance;
+    }
     const data = this.order();
     if (!data) return 0;
-    if (this.hasPendingPaymentOrders()) {
-      return Math.max(0, data.totalAmount - this.pendingPaymentTotal());
-    }
     return data.paymentStatus === 'paid' ? data.totalAmount : 0;
+  });
+
+  /** Amount to Pay is the difference between active orders total and amount paid. */
+  readonly amountToPay = computed(() => {
+    return Math.max(0, this.activeVendorOrdersTotal() - this.amountPaid());
+  });
+
+  readonly calculatedPaymentStatus = computed(() => {
+    const total = this.activeVendorOrdersTotal();
+    const paid = this.amountPaid();
+    
+    // Fall back to backend status if no active totals to compare against
+    if (total === 0) {
+      return this.order()?.paymentStatus || 'pending';
+    }
+    
+    if (paid >= total) {
+      return 'paid';
+    }
+    if (paid === 0) {
+      return 'unpaid';
+    }
+    return 'pending'; // Partial payment
   });
 
   editForm: FormGroup | null = null;
 
   constructor() {
     this.facade.connectDetailsRoute(this.route);
+
+    effect(() => {
+      const orderData = this.order();
+      if (orderData && orderData.id) {
+        this.loadRemainingBalance(orderData.id);
+      }
+    });
+  }
+
+  loadRemainingBalance(orderId: string | number): void {
+    this.paymentService.getMasterOrderRemainingBalance(orderId).subscribe({
+      next: (breakdown) => {
+        this.remainingBalanceDetails.set(breakdown);
+      },
+      error: (err) => {
+        console.error('Failed to load payment breakdown:', err);
+      }
+    });
+  }
+
+  onPayVendorOrderMilestone(vendorOrderId: string): void {
+    this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: true }));
+    this.paymentService.initiateVendorOrderPayment({ vendorOrderId: Number(vendorOrderId) }).subscribe({
+      next: (res) => {
+        this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
+        if (res && res.paymentUrl) {
+          window.location.href = res.paymentUrl;
+        } else {
+          this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
+        }
+      },
+      error: (err) => {
+        this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
+        console.error('Failed to initiate vendor order payment:', err);
+        this.uiState.showAlert('danger', err.error?.message || this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
+      }
+    });
+  }
+
+  getMilestonesForVendorOrder(vo: any): any[] {
+    const breakdown = this.remainingBalanceDetails();
+    if (!breakdown || !breakdown.milestones) return [];
+    return breakdown.milestones.filter((m: any) => {
+      if (m.vendorOrderId.toString() !== vo.id?.toString()) return false;
+      return m.isPaid || this.isMilestoneDue(vo, m);
+    });
+  }
+
+  isMilestoneDue(vo: any, milestone: any): boolean {
+    if (milestone.isPaid) return false;
+    return this.normalizeStatus(milestone.milestoneStatus) === vo.status &&
+      (vo.status === 'pending_payment' || vo.status === 'shipped' || vo.status === 'delivered');
   }
 
   onShareTransformation(): void {
@@ -127,8 +240,7 @@ export class OrderDetails {
     const orderData = this.order();
     if (!orderData) return;
 
-    const hasPendingPaymentOrders = this.hasPendingPaymentOrders();
-    if (!hasPendingPaymentOrders) {
+    if (this.amountToPay() <= 0) {
       this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_NO_APPROVED_ORDERS_ERROR'));
       return;
     }
@@ -211,7 +323,7 @@ export class OrderDetails {
     console.log('[EditOrder] onSaveEdit triggered');
     console.log('[EditOrder] Form validity:', this.editForm?.valid);
     console.log('[EditOrder] Form values:', this.editForm?.getRawValue());
-    
+
     if (this.editForm && !this.editForm.valid) {
       console.log('[EditOrder] Form validation errors:');
       const itemsArray = this.editItemsArray;
@@ -235,7 +347,7 @@ export class OrderDetails {
 
     const orderId = this.order()!.id;
     console.log('[EditOrder] Order ID:', orderId);
-    
+
     const raw = this.editForm.getRawValue() as { items: { productId: number; quantity: number; productName: string; productNameEn: string; productNameAr: string; price: number; productImage: string }[] };
     const items = raw.items.map((item) => ({
       productId: item.productId,
@@ -377,14 +489,14 @@ export class OrderDetails {
 
   historyStatusTone(statusStr: string): StatusBadgeTone {
     const raw = (statusStr ?? '').toLowerCase();
-    const status: OrderStatus = 
+    const status: OrderStatus =
       raw === 'inprogress' || raw === 'in progress' || raw === 'in_progress'
         ? 'in_progress'
         : raw === 'awaitingcustomerapproval' || raw === 'awaiting_customer_approval'
-        ? 'awaiting_customer_approval'
-        : raw === 'pendingpayment' || raw === 'pending_payment'
-        ? 'pending_payment'
-        : raw as OrderStatus;
+          ? 'awaiting_customer_approval'
+          : raw === 'pendingpayment' || raw === 'pending_payment'
+            ? 'pending_payment'
+            : raw as OrderStatus;
     return this.facade.orderStatusTone(status);
   }
 }
