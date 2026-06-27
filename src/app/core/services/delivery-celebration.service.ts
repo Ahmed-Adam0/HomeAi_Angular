@@ -100,16 +100,32 @@ export class DeliveryCelebrationService {
   checkOrders(orders: IOrder[]): void {
     if (!this.isBrowser) return;
 
+    console.log('[DeliveryCelebration] checkOrders called with orders count:', orders.length);
+
     // Don't interrupt if a modal is already showing
-    if (this.isModalVisible()) return;
+    if (this.isModalVisible()) {
+      console.log('[DeliveryCelebration] checkOrders: Modal is already visible. Returning.');
+      return;
+    }
 
     for (const order of orders) {
-      if (order.status !== 'delivered') continue;
-
       const orderId = order.id;
       const modalKey = `delivery_modal_shown_${orderId}`;
+      const hasKey = localStorage.getItem(modalKey);
 
-      if (localStorage.getItem(modalKey)) continue;
+      console.log(`[DeliveryCelebration] Checking Order #${order.orderNumber} (ID: ${orderId}), status: "${order.status}", modalKey: "${modalKey}", hasKeyInLocalStorage:`, hasKey);
+
+      if (order.status !== 'delivered') {
+        console.log(`[DeliveryCelebration] Skipping Order #${order.orderNumber}: status is not 'delivered'`);
+        continue;
+      }
+
+      if (hasKey) {
+        console.log(`[DeliveryCelebration] Skipping Order #${order.orderNumber}: already shown (flag exists)`);
+        continue;
+      }
+
+      console.log(`[DeliveryCelebration] Found un-shown delivered order — showing modal for Order #${order.orderNumber}`);
 
       // Found an un-shown delivered order — show the modal
       this.deliveredOrderId.set(orderId);
