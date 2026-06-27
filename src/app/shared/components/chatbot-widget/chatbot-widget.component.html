@@ -15,7 +15,8 @@
 
 <!-- Chat Panel -->
 @if (isOpen()) {
-  <div class="chatbot-panel">
+  <div class="chatbot-overlay" (click)="closeChat()"></div>
+  <div class="chatbot-panel" (appClickOutside)="closeChat()">
     <!-- Header -->
     <div class="chatbot-header">
       <div class="chatbot-header-info">

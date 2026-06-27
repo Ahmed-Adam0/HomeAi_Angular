@@ -125,6 +125,18 @@
 }
 
 /* =========================
+   Overlay / Backdrop
+   ========================= */
+.chatbot-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  /* Transparent on desktop — just captures clicks */
+  background: transparent;
+  cursor: default;
+}
+
+/* =========================
    Panel
    ========================= */
 .chatbot-panel {
@@ -966,6 +978,16 @@
   .chatbot-fab svg {
     width: 20px;
     height: 20px;
+  }
+
+  .chatbot-overlay {
+    background: rgba(0, 0, 0, 0.35);
+    animation: overlay-fade-in 300ms ease both;
+  }
+
+  @keyframes overlay-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   .chatbot-panel {

@@ -17,10 +17,11 @@ import { AuthService } from '../../../features/auth/services/auth.service';
 import { ChatMessage } from '../../../features/ai/interfaces/chat-message.interface';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 
 @Component({
   selector: 'app-chatbot-widget',
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, ClickOutsideDirective],
   templateUrl: './chatbot-widget.component.html',
   styleUrl: './chatbot-widget.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
