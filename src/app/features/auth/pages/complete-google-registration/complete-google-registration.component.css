@@ -67,13 +67,13 @@
 .form-header h1 {
   font-size: 26px;
   font-weight: 700;
-  color: #795c4b; 
+  color: var(--color-heading);
   margin: 0 0 8px 0;
 }
 
 .form-header p {
   font-size: 14.5px;
-  color: #52525b; 
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -82,10 +82,10 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  background: #f4eee1;
+  background: var(--color-input);
   padding: 16px;
   border-radius: 12px;
-  border: 1.5px solid #eae3d2;
+  border: 1.5px solid var(--color-border);
   margin-bottom: 24px;
 }
 
@@ -101,7 +101,7 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid var(--fm-color-primary-100, #f4eae0);
+  border: 1.5px solid var(--fm-color-primary-100);
   display: block;
 }
 
@@ -113,10 +113,10 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  background-color: var(--fm-color-primary-50, #faf6f0);
-  color: var(--fm-color-primary-600, #a37e4c);
+  background-color: var(--fm-color-primary-50);
+  color: var(--fm-color-primary-600);
   font-size: 0.95rem;
-  border: 1.5px solid var(--fm-color-primary-100, #f4eae0);
+  border: 1.5px solid var(--fm-color-primary-100);
 }
 
 .profile-info {
@@ -127,13 +127,13 @@
 .profile-name {
   font-size: 16px;
   font-weight: 700;
-  color: #795c4b;
+  color: var(--color-heading);
   margin: 0;
 }
 
 .profile-email {
   font-size: 13.5px;
-  color: #52525b;
+  color: var(--color-text-muted);
   margin: 4px 0 0 0;
 }
 
@@ -145,7 +145,7 @@
 .form-group label {
   font-size: 14px;
   font-weight: 600;
-  color: #795c4b; 
+  color: var(--color-heading);
   margin-bottom: 8px;
   display: block;
 }
@@ -159,7 +159,7 @@
 .input-icon {
   position: absolute;
   right: 14px;
-  color: #795c4b; 
+  color: var(--color-text-muted);
   display: flex;
   opacity: 0.7;
 }
@@ -173,12 +173,12 @@
   width: 100%;
   height: 48px;
   padding: 0 46px 0 16px;
-  border: 1.5px solid #eae3d2; 
+  border: 1.5px solid var(--color-input-border);
   border-radius: 10px;
   font-size: 15px;
   font-family: inherit;
-  color: #0f0f0f;
-  background: #f4eee1; 
+  color: var(--color-text);
+  background: var(--color-input);
   outline: none;
   box-sizing: border-box;
   text-align: right;
@@ -204,9 +204,9 @@
 }
 
 .form-group input:focus {
-  border-color: #795c4b;
+  border-color: var(--fm-border-focus);
   background-color: var(--color-surface);
-  box-shadow: 0 0 0 3px rgba(121, 92, 75, 0.1);
+  box-shadow: 0 0 0 3px var(--fm-input-focus-ring);
 }
 
 /* Disabled Input Overrides */
@@ -215,25 +215,25 @@
 }
 
 .form-group input.disabled-input {
-  background: #eae3d2;
-  border-color: #eae3d2;
-  color: #7f7a70;
+  background: var(--color-border);
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
 .form-group input.disabled-input:focus {
   box-shadow: none;
-  border-color: #eae3d2;
+  border-color: var(--color-border);
 }
 
 .form-group input.is-invalid {
-  border-color: #dc2626;
-  background: #fff8f8;
+  border-color: var(--color-danger);
+  background: var(--fm-color-danger-50);
 }
 
 .error-msg {
   font-size: 12.5px;
-  color: #dc2626;
+  color: var(--color-danger);
   margin-top: 6px;
 }
 
@@ -241,8 +241,8 @@
 .btn-submit {
   width: 100%;
   height: 50px;
-  background: #795c4b;
-  color: #ffffff;
+  background: var(--color-primary);
+  color: var(--fm-text-inverted);
   border: none;
   border-radius: 10px;
   font-size: 15px;
@@ -253,7 +253,7 @@
   justify-content: center;
   margin-top: 12px;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(121, 92, 75, 0.15);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-submit span {
@@ -269,7 +269,7 @@
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: #0f172a;
+  background: var(--color-primary-hover);
 }
 
 .btn-submit:hover:not(:disabled) svg.submit-arrow {
@@ -281,7 +281,7 @@
 }
 
 .btn-submit:disabled {
-  background: #d1d5db;
+  background: var(--color-input-placeholder);
   cursor: not-allowed;
 }
 
@@ -289,7 +289,7 @@
   width: 100%;
   background: transparent;
   border: none;
-  color: #795c4b;
+  color: var(--color-primary);
   font-size: 14.5px;
   font-weight: 500;
   padding: 12px;
@@ -309,16 +309,16 @@
 .error-panel {
   text-align: center;
   padding: 32px 16px;
-  background: #fff8f8;
-  border: 1.5px solid #fee2e2;
+  background: var(--fm-color-danger-50);
+  border: 1.5px solid var(--fm-color-danger-100);
   border-radius: 16px;
 }
 
 .error-icon-wrapper {
   width: 68px;
   height: 68px;
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--fm-color-danger-100);
+  color: var(--color-danger);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -333,14 +333,14 @@
 
 .error-panel h2 {
   font-size: 20px;
-  color: #dc2626;
+  color: var(--color-danger);
   margin: 0 0 12px 0;
   font-weight: 700;
 }
 
 .error-description {
   font-size: 14.5px;
-  color: #52525b;
+  color: var(--color-text-muted);
   line-height: 1.6;
   margin-bottom: 24px;
 }
@@ -350,8 +350,8 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #dc2626;
-  color: #ffffff;
+  background: var(--color-danger);
+  color: var(--fm-text-inverted);
   border: none;
   border-radius: 10px;
   font-size: 14.5px;
@@ -361,7 +361,7 @@
 }
 
 .btn-back:hover {
-  background: #b91c1c;
+  background: var(--fm-color-danger-600);
 }
 
 .arrow-back {
@@ -379,7 +379,7 @@
   align-items: center;
   justify-content: center;
   padding: 48px;
-  background: linear-gradient(135deg, #eaddca 0%, #eae3d2 50%, #f4eee1 100%);
+  background: linear-gradient(135deg, var(--fm-color-primary-100) 0%, var(--surface-1) 50%, var(--fm-color-primary-200) 100%);
 }
 
 .visual-content {
@@ -391,32 +391,32 @@
 .visual-icon {
   width: 90px;
   height: 90px;
-  background: #795c4b;
+  background: var(--color-primary);
   border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 24px auto;
-  box-shadow: 0 16px 32px rgba(121, 92, 75, 0.25);
+  box-shadow: var(--shadow-lg);
   animation: float 4s ease-in-out infinite;
 }
 
 .visual-icon svg {
   width: 42px;
   height: 42px;
-  stroke: #ffffff;
+  stroke: var(--fm-text-inverted);
 }
 
 .visual-content h2 {
   font-size: 28px;
   font-weight: 700;
-  color: #0f0f0f;
+  color: var(--color-heading);
   margin: 0 0 12px 0;
 }
 
 .visual-subtitle {
   font-size: 15px;
-  color: #52525b;
+  color: var(--color-text-muted);
   line-height: 1.6;
   margin: 0;
   direction: rtl;
@@ -463,7 +463,7 @@
 }
 
 .inline-error {
-  color: #dc2626;
+  color: var(--color-danger);
   font-size: 13px;
   font-weight: 500;
   margin-bottom: 16px;
@@ -478,7 +478,7 @@
   width: 18px;
   height: 18px;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #ffffff;
+  border-top-color: var(--fm-text-inverted);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
   display: inline-block;
