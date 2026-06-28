@@ -928,7 +928,7 @@
 
 .related-slider-luxury {
   position: relative;
-  margin: 0 -12px;
+  margin: 0 -48px; /* Negative margin to match the viewport side padding */
 }
 
 .slider-viewport-luxury {
@@ -936,7 +936,7 @@
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding: var(--fm-space-16, 16px) var(--fm-space-12, 12px);
+  padding: var(--fm-space-16, 16px) 48px; /* High side padding for buttons */
   scrollbar-width: none; /* Hide scrollbars */
 }
 
@@ -961,47 +961,80 @@
   transform: translateY(-8px);
 }
 
-/* Glassmorphic Navigation Arrows */
+/* Glassmorphic Redesigned Navigation Arrows */
 .carousel-nav-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
+  width: 36px; /* Reduced size */
+  height: 36px; /* Reduced size */
   border-radius: var(--fm-radius-circle, 50%);
-  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--fm-border-medium);
+  background: var(--fm-glass-bg);
   backdrop-filter: var(--fm-glass-blur);
+  -webkit-backdrop-filter: var(--fm-glass-blur);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--fm-color-neutral-800, #38332c);
-  transition: all var(--fm-transition-duration-fast, 150ms) var(--fm-ease-smooth);
+  color: var(--fm-text-body);
+  transition: opacity 250ms var(--fm-ease-smooth),
+              visibility 250ms var(--fm-ease-smooth),
+              transform 200ms var(--fm-ease-smooth),
+              background-color 200ms var(--fm-ease-smooth),
+              border-color 200ms var(--fm-ease-smooth),
+              color 200ms var(--fm-ease-smooth);
   z-index: 10;
-  box-shadow: var(--fm-shadow-sm);
+  box-shadow: var(--fm-glass-shadow), var(--fm-shadow-sm);
 }
 
-.carousel-nav-btn:hover {
-  background-color: var(--color-surface);
-  color: var(--fm-color-primary-500, #b8935c);
-  border-color: var(--fm-color-primary-300, #d7be9f);
-  transform: translateY(-50%) scale(1.05);
+.carousel-nav-btn svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 200ms var(--fm-ease-smooth);
+}
+
+.carousel-nav-btn:hover:not(:disabled) {
+  background-color: var(--fm-color-neutral-800);
+  border-color: var(--fm-color-neutral-800);
+  color: var(--fm-text-inverted);
+  transform: translateY(-50%) scale(1.08);
   box-shadow: var(--fm-shadow-md);
 }
 
+.carousel-nav-btn:active:not(:disabled) {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-nav-btn:disabled {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .prev-btn {
-  left: -22px;
+  left: 8px; /* Safe inside padding, outside product cards */
 }
 
 .next-btn {
-  right: -22px;
+  right: 8px; /* Safe inside padding, outside product cards */
 }
 
-/* Hide navigation buttons on mobile devices */
-@media (max-width: 768px) {
+/* RTL Support */
+[dir="rtl"] .carousel-nav-btn svg {
+  transform: scaleX(-1);
+}
+
+/* Hide navigation buttons on mobile devices and reduce container bleed */
+@media (max-width: 576px) {
   .carousel-nav-btn {
     display: none;
+  }
+  .related-slider-luxury {
+    margin: 0 -16px;
+  }
+  .slider-viewport-luxury {
+    padding: var(--fm-space-16, 16px) 16px;
   }
 }
 

@@ -57,7 +57,39 @@ interface IConfigGroup {
   styleUrl: './product-details.component.css',
 })
 export class ProductDetails implements OnInit, OnDestroy {
-  @ViewChild('carouselViewport') carouselViewport?: ElementRef<HTMLElement>;
+  carouselViewport?: ElementRef<HTMLElement>;
+  @ViewChild('carouselViewport') set carouselViewportRef(ref: ElementRef<HTMLElement> | undefined) {
+    if (ref) {
+      this.carouselViewport = ref;
+      const el = ref.nativeElement;
+      const checkScroll = () => {
+        const isRtl = this.translationService.currentLang() === 'ar';
+        const scrollLeft = Math.abs(el.scrollLeft);
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        
+        if (isRtl) {
+          this.canScrollLeft.set(scrollLeft < maxScroll - 5);
+          this.canScrollRight.set(scrollLeft > 5);
+        } else {
+          this.canScrollLeft.set(scrollLeft > 5);
+          this.canScrollRight.set(scrollLeft < maxScroll - 5);
+        }
+      };
+      
+      el.addEventListener('scroll', checkScroll, { passive: true });
+      setTimeout(checkScroll, 100);
+      
+      if (typeof ResizeObserver !== 'undefined') {
+        const resizeObserver = new ResizeObserver(() => {
+          checkScroll();
+        });
+        resizeObserver.observe(el);
+      }
+    }
+  }
+
+  readonly canScrollLeft = signal(false);
+  readonly canScrollRight = signal(true);
   @ViewChild('detailsViewer') detailsViewerComponent?: ThreeDViewerComponent;
 
   readonly show3DMode = signal<boolean>(false);

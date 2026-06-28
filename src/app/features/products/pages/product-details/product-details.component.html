@@ -358,7 +358,7 @@
         
         <div class="related-slider-luxury">
           <!-- Navigation Arrows -->
-          <button class="carousel-nav-btn prev-btn" (click)="scrollCarousel('left')" [attr.aria-label]="'Previous items'">
+          <button class="carousel-nav-btn prev-btn" (click)="scrollCarousel('left')" [attr.aria-label]="'Previous items'" [disabled]="!canScrollLeft()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
@@ -372,7 +372,7 @@
             </div>
           </div>
 
-          <button class="carousel-nav-btn next-btn" (click)="scrollCarousel('right')" [attr.aria-label]="'Next items'">
+          <button class="carousel-nav-btn next-btn" (click)="scrollCarousel('right')" [attr.aria-label]="'Next items'" [disabled]="!canScrollRight()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
             </svg>

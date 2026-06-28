@@ -1,11 +1,202 @@
 <button 
-  class="theme-toggle-btn" 
-  (click)="toggleTheme()" 
+  class="story-switch" 
+  [class.story-switch--dark]="themeService.isDarkSignal()"
+  [class.story-switch--hovered]="isHovered()"
+  [class.story-switch--pressed]="isPressed()"
+  [class.story-switch--sliding]="isSliding()"
+  [class.story-switch--to-dark]="isChangingToDark()"
+  [class.story-switch--to-light]="isChangingToLight()"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+  (mousemove)="onMouseMove($event)"
+  (mousedown)="onMouseDown($event)"
+  (mouseup)="onMouseUp()"
+  (click)="onToggleTheme($event)" 
+  (keydown)="onKeyDown($event)"
+  role="switch"
+  [attr.aria-checked]="themeService.isDarkSignal()"
   aria-label="Toggle active theme mode"
   [title]="themeService.isDarkSignal() ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+  [style.transform]="parallaxTransform()"
 >
-  <div class="icon-wrapper">
-    <i class="bi bi-sun icon-sun"></i>
-    <i class="bi bi-moon-stars icon-moon"></i>
+  <!-- Background Sky Container -->
+  <div class="sky-background">
+    <!-- Sky Gradients (Crossfaded for Day / Sunset / Twilight / Night transitions) -->
+    <div class="sky-gradient sky-gradient--day"></div>
+    <div class="sky-gradient sky-gradient--sunset"></div>
+    <div class="sky-gradient sky-gradient--twilight"></div>
+    <div class="sky-gradient sky-gradient--night"></div>
+    
+    <!-- Cosmic Nebula Glow Overlay (night mode only) -->
+    <div class="nebula-overlay"></div>
+    
+    <!-- Twinkling Stars (night mode only) -->
+    <div class="stars-container" [style.transform]="spaceParallaxTransform()">
+      <span class="star star--1"></span>
+      <span class="star star--2"></span>
+      <span class="star star--3"></span>
+      <span class="star star--4"></span>
+      <span class="star star--5"></span>
+      <span class="star star--6"></span>
+      <span class="star star--7"></span>
+      <span class="star star--8"></span>
+      <span class="star star--9"></span>
+    </div>
+    
+    <!-- Shooting Star (night mode only) -->
+    <div class="shooting-star"></div>
+    
+    <!-- Tiny Cosmic Planets (night mode only) -->
+    <div class="planets-container" [style.transform]="spaceParallaxTransform()">
+      <!-- SATURN (with ring) -->
+      <div class="planet planet--saturn">
+        <svg viewBox="0 0 30 20" fill="none" class="saturn-svg">
+          <defs>
+            <radialGradient id="saturn-grad" cx="30%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#ffe8bc" />
+              <stop offset="60%" stop-color="#f4a261" />
+              <stop offset="100%" stop-color="#e76f51" />
+            </radialGradient>
+          </defs>
+          <ellipse cx="15" cy="10" rx="11" ry="2.2" fill="#d4a373" opacity="0.5" transform="rotate(-15 15 10)" />
+          <circle cx="15" cy="10" r="5.2" fill="url(#saturn-grad)" />
+          <path d="M 5 11.5 C 8 12, 20 9.2, 25 8.2" stroke="#ffe8bc" stroke-width="1.4" stroke-linecap="round" transform="rotate(-15 15 10)" />
+        </svg>
+      </div>
+      <!-- MARS -->
+      <div class="planet planet--mars">
+        <svg viewBox="0 0 16 16" fill="none" class="mars-svg">
+          <defs>
+            <radialGradient id="mars-grad" cx="35%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#ffa085" />
+              <stop offset="70%" stop-color="#e11d48" />
+              <stop offset="100%" stop-color="#9f1239" />
+            </radialGradient>
+          </defs>
+          <circle cx="8" cy="8" r="3.2" fill="url(#mars-grad)" />
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Ambient Floating Particles (night mode only) -->
+    <div class="particles-container">
+      <span class="particle particle--1"></span>
+      <span class="particle particle--2"></span>
+      <span class="particle particle--3"></span>
+      <span class="particle particle--4"></span>
+      <span class="particle particle--5"></span>
+      <span class="particle particle--6"></span>
+    </div>
+    
+    <!-- Tiny Flying Birds (day mode only) -->
+    <div class="birds-container">
+      <div class="bird bird--1">
+        <svg viewBox="0 0 20 10" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M 0,5 Q 5,0 10,5 Q 15,0 20,5" />
+        </svg>
+      </div>
+      <div class="bird bird--2">
+        <svg viewBox="0 0 20 10" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M 0,5 Q 5,0 10,5 Q 15,0 20,5" />
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Floating Clouds at Different Depths (day mode only) -->
+    <div class="clouds-container" [style.transform]="cloudParallaxTransform()">
+      <!-- Back Cloud (Semi-translucent, slower parallax depth) -->
+      <div class="cloud cloud--back cloud--1">
+        <svg viewBox="0 0 100 60" fill="currentColor">
+          <path d="M 20,40 A 15,15 0 0,1 35,20 A 20,20 0 0,1 70,25 A 15,15 0 0,1 85,45 A 10,10 0 0,1 75,55 L 25,55 A 10,10 0 0,1 20,40 Z" />
+        </svg>
+      </div>
+      <!-- Front Cloud 1 (Fluffy, bright) -->
+      <div class="cloud cloud--front cloud--2">
+        <svg viewBox="0 0 100 60" fill="currentColor">
+          <path d="M 20,40 A 13,13 0 0,1 35,22 A 17,17 0 0,1 68,26 A 13,13 0 0,1 80,45 A 8,8 0 0,1 72,53 L 28,53 A 8,8 0 0,1 20,40 Z" />
+        </svg>
+      </div>
+      <!-- Front Cloud 2 (Smaller fluff) -->
+      <div class="cloud cloud--front cloud--3">
+        <svg viewBox="0 0 100 60" fill="currentColor">
+          <path d="M 20,40 A 10,10 0 0,1 32,24 A 14,14 0 0,1 62,28 A 10,10 0 0,1 72,44 A 6,6 0 0,1 66,50 L 26,50 A 6,6 0 0,1 20,40 Z" />
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Floating Hot Air Balloon (day mode only) -->
+    <div class="balloon-container" [style.transform]="cloudParallaxTransform()">
+      <div class="hot-air-balloon">
+        <svg viewBox="0 0 40 52" fill="none" class="balloon-svg">
+          <!-- Envelope Sections -->
+          <path d="M20 2 C 10 2, 6 12, 6 22 C 6 32, 14 38, 20 40 C 26 38, 34 32, 34 22 C 34 12, 30 2, 20 2 Z" fill="#b8935c" />
+          <path d="M20 2 C 14 2, 11 12, 13 22 C 14 28, 17 36, 20 40 C 23 36, 26 28, 27 22 C 29 12, 26 2, 20 2 Z" fill="#faf6f0" />
+          <path d="M20 2 C 17 2, 16 12, 17 22 C 17.5 28, 18.8 36, 20 40 C 21.2 36, 22.5 28, 23 22 C 24 12, 23 2, 20 2 Z" fill="#c8a87b" />
+          <!-- Basket -->
+          <rect x="18" y="44" width="4" height="3.5" rx="0.5" fill="#8c6333" />
+          <!-- Ropes -->
+          <line x1="17.5" y1="40" x2="18.5" y2="44" stroke="#d7be9f" stroke-width="0.6" />
+          <line x1="22.5" y1="40" x2="21.5" y2="44" stroke="#d7be9f" stroke-width="0.6" />
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Spaceship / Rocket (night mode only) -->
+    <div class="spaceship-container" [style.transform]="spaceParallaxTransform()">
+      <div class="spaceship">
+        <svg viewBox="0 0 40 24" fill="none" class="spaceship-svg">
+          <!-- Jet flame (flickering) -->
+          <path d="M7 12 L1 9 L3 12 L1 15 Z" fill="#f97316" class="rocket-flame" />
+          <path d="M6 12 L3 10 L4 12 L3 14 Z" fill="#facc15" class="rocket-flame-inner" />
+          <!-- Wings -->
+          <path d="M15 8 L10 3 L18 8 Z" fill="#94a3b8" />
+          <path d="M15 16 L10 21 L18 16 Z" fill="#94a3b8" />
+          <!-- Rocket Body -->
+          <path d="M9 12 C 13 8, 25 8, 29 12 C 25 16, 13 16, 9 12 Z" fill="#f8fafc" />
+          <path d="M25 12 C 25 8, 29 12, 29 12 Z" fill="#ef4444" />
+          <!-- Cockpit Window -->
+          <circle cx="18" cy="12" r="2.5" fill="#38bdf8" stroke="#cbd5e1" stroke-width="0.8" />
+        </svg>
+      </div>
+    </div>
   </div>
+  
+  <!-- Toggle Knob (Sun / Moon) -->
+  <div class="story-knob" [style.transform]="knobTransform()">
+    <!-- Ambient dynamic glow -->
+    <div class="knob-glow"></div>
+    
+    <div class="knob-body">
+      <!-- Sun Graphic (visible in Day) -->
+      <div class="sun-element">
+        <div class="sun-core"></div>
+        <!-- Moving Light Rays (fade/rotate on hover) -->
+        <div class="sun-light-rays"></div>
+        <!-- 8 Sun Rays -->
+        <span class="sun-ray sun-ray--1"></span>
+        <span class="sun-ray sun-ray--2"></span>
+        <span class="sun-ray sun-ray--3"></span>
+        <span class="sun-ray sun-ray--4"></span>
+        <span class="sun-ray sun-ray--5"></span>
+        <span class="sun-ray sun-ray--6"></span>
+        <span class="sun-ray sun-ray--7"></span>
+        <span class="sun-ray sun-ray--8"></span>
+      </div>
+      
+      <!-- Moon Graphic (visible in Night) -->
+      <div class="moon-element">
+        <div class="moon-core"></div>
+        <!-- Moon Craters -->
+        <span class="crater crater--1"></span>
+        <span class="crater crater--2"></span>
+        <span class="crater crater--3"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ripple / Light Burst effect container -->
+  <span class="toggle-ripples" *ngIf="rippleActive()">
+    <span class="ripple-ring ripple-ring--1"></span>
+    <span class="ripple-ring ripple-ring--2"></span>
+  </span>
 </button>

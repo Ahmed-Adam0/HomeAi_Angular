@@ -109,33 +109,44 @@
   100% { transform: scale(1.08); }
 }
 
-/* Cinematic Slide Overlay */
+/* Cinematic Slide Overlay — stronger bottom gradient to darken behind the meta panel */
 .slide-art-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.2) 100%);
+  background:
+    linear-gradient(180deg,
+      rgba(0, 0, 0, 0.08) 0%,
+      rgba(0, 0, 0, 0) 40%,
+      rgba(0, 0, 0, 0.35) 85%,
+      rgba(0, 0, 0, 0.55) 100%);
   pointer-events: none;
   z-index: 3;
 }
 
-/* Floating Slide Room Meta Info */
+/* Floating Slide Room Meta Info — high-opacity panel for readability over images */
 .slide-meta-panel {
   position: absolute;
   bottom: 40px;
   left: 40px;
   z-index: 10;
   max-width: 480px;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   padding: 24px 30px;
-  border-radius: 20px;
-  box-shadow: 0 15px 45px rgba(31, 28, 24, 0.08);
+  border-radius: var(--fm-radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
   animation: fade-up-meta 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+html[data-theme="dark"] .slide-meta-panel {
+  background: rgba(18, 16, 14, 0.92);
+  border: 1px solid rgba(200, 168, 123, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 [dir="rtl"] .slide-meta-panel {
@@ -159,29 +170,42 @@
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--fm-color-primary-600, #a37e4c);
-  background: rgba(184, 147, 92, 0.08);
+  color: #8b6f3a;
+  background: rgba(184, 147, 92, 0.12);
   padding: 4px 10px;
-  border-radius: 20px;
+  border-radius: var(--fm-radius-pill);
   margin-bottom: 8px;
   letter-spacing: 0.05em;
+}
+
+html[data-theme="dark"] .slide-room-badge {
+  color: var(--fm-color-primary-500);
+  background: rgba(200, 168, 123, 0.15);
 }
 
 .slide-title-heading {
   font-family: var(--fm-font-display), serif;
   font-size: 24px;
   font-weight: 500;
-  color: var(--fm-color-neutral-900, #1f1c18);
+  color: #1f1c18;
   margin-bottom: 6px;
   letter-spacing: -0.01em;
+}
+
+html[data-theme="dark"] .slide-title-heading {
+  color: #f4f2ee;
 }
 
 .slide-subtitle-desc {
   font-family: var(--fm-font-sans), sans-serif;
   font-size: 13px;
-  color: var(--fm-color-neutral-600, #70675a);
+  color: #5a5348;
   line-height: 1.5;
   margin: 0;
+}
+
+html[data-theme="dark"] .slide-subtitle-desc {
+  color: #b0a99e;
 }
 
 /* ==========================================================================
@@ -192,56 +216,81 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: var(--fm-color-neutral-800, #38332c);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #38332c;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 15;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="dark"] .slider-nav-arrow {
+  background: rgba(18, 16, 14, 0.75);
+  border: 1px solid rgba(200, 168, 123, 0.15);
+  color: #e8e4dd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.slider-nav-arrow svg {
+  width: 18px;
+  height: 18px;
 }
 
 .slider-nav-arrow:hover {
-  background-color: var(--color-surface);
+  background: rgba(255, 255, 255, 0.95);
   color: var(--fm-color-primary-500, #b8935c);
-  transform: translateY(-50%) scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-color: rgba(184, 147, 92, 0.3);
+}
+
+html[data-theme="dark"] .slider-nav-arrow:hover {
+  background: rgba(18, 16, 14, 0.9);
+  color: var(--fm-color-primary-500, #b8935c);
+  border-color: rgba(200, 168, 123, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.slider-nav-arrow:active {
+  transform: translateY(-50%) scale(0.94);
 }
 
 .slider-nav-arrow--prev {
-  left: 24px;
+  left: 20px;
 }
 
 .slider-nav-arrow--next {
-  right: 24px;
+  right: 20px;
 }
 
 /* RTL arrows reversal */
 [dir="rtl"] .slider-nav-arrow--prev {
   left: auto;
-  right: 24px;
+  right: 20px;
   transform: translateY(-50%) rotate(180deg);
 }
 
 [dir="rtl"] .slider-nav-arrow--prev:hover {
-  transform: translateY(-50%) scale(1.05) rotate(180deg);
+  transform: translateY(-50%) scale(1.08) rotate(180deg);
 }
 
 [dir="rtl"] .slider-nav-arrow--next {
   right: auto;
-  left: 24px;
+  left: 20px;
   transform: translateY(-50%) rotate(180deg);
 }
 
 [dir="rtl"] .slider-nav-arrow--next:hover {
-  transform: translateY(-50%) scale(1.05) rotate(180deg);
+  transform: translateY(-50%) scale(1.08) rotate(180deg);
 }
 
 /* ==========================================================================
@@ -256,14 +305,20 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.5);
   padding: 8px 18px;
   border-radius: 40px;
   z-index: 15;
-  box-shadow: 0 10px 30px rgba(31, 28, 24, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="dark"] .slider-utilities-bar {
+  background: rgba(18, 16, 14, 0.8);
+  border: 1px solid rgba(200, 168, 123, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
 .autoplay-toggle-btn {
