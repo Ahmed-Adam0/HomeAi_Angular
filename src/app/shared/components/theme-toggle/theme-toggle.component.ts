@@ -20,25 +20,17 @@ export class ThemeToggleComponent {
   protected readonly themeService = inject(ThemeService);
   private readonly platformId = inject(PLATFORM_ID);
 
-  /* ── Interactive state signals ── */
+  /* ── Interactive states ── */
   protected readonly isHovered = signal(false);
   protected readonly isPressed = signal(false);
   protected readonly isSliding = signal(false);
-  protected readonly rippleActive = signal(false);
   protected readonly prefersReducedMotion = signal(false);
 
-  /* ── Directional sky time-lapse flags ── */
-  protected readonly isChangingToDark = signal(false);
-  protected readonly isChangingToLight = signal(false);
-
-  /* ── Normalised mouse coordinates (-1 … 1) ── */
+  /* ── Mouse tracking for micro 3D tilt ── */
   protected readonly mouseX = signal(0);
   protected readonly mouseY = signal(0);
 
-  /* ── Internal timeout handles ── */
   private slidingTimer: ReturnType<typeof setTimeout> | null = null;
-  private rippleTimer: ReturnType<typeof setTimeout> | null = null;
-  private directionTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     afterNextRender(() => {
@@ -50,9 +42,7 @@ export class ThemeToggleComponent {
     });
   }
 
-  /* ────────────────────────────────────────────
-   *  Hover / pointer tracking
-   * ──────────────────────────────────────────── */
+  /* ── Event handlers ── */
 
   protected onMouseEnter(): void {
     this.isHovered.set(true);
@@ -81,66 +71,44 @@ export class ThemeToggleComponent {
     this.isPressed.set(false);
   }
 
-  /* ────────────────────────────────────────────
-   *  Click / keyboard activation
-   * ──────────────────────────────────────────── */
-
   protected onToggleTheme(event: MouseEvent): void {
-    this.triggerToggle(event.clientX, event.clientY);
+    this.triggerToggle();
   }
 
   protected onKeyDown(event: KeyboardEvent): void {
     if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault();
-      const rect = (event.target as HTMLElement).getBoundingClientRect();
-      this.triggerToggle(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      this.triggerToggle();
     }
   }
 
-  /* ────────────────────────────────────────────
-   *  Computed transforms (signals → CSS strings)
-   * ──────────────────────────────────────────── */
+  /* ── Computed transforms ── */
 
-  /** 3-D perspective tilt for the entire capsule on hover. */
+  /** Hover: Slight lift (translateY(-2px)) and 3D tilt */
   protected readonly parallaxTransform = computed(() => {
     if (!this.isHovered() || this.prefersReducedMotion()) {
-      return 'translate3d(0,0,0) scale3d(1,1,1)';
+      return 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
     }
-    const tx = this.mouseX() * 3;
-    const ty = this.mouseY() * 2;
-    const rx = -this.mouseY() * 6;
-    const ry = this.mouseX() * 6;
-    return `translate3d(${tx}px, ${ty - 2}px, 0) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.04, 1.04, 1.04)`;
-  });
-
-  /** Day-layer parallax (clouds, balloon). */
-  protected readonly cloudParallaxTransform = computed(() => {
-    if (this.prefersReducedMotion()) return 'translate3d(0,0,0)';
-    return `translate3d(${-this.mouseX() * 5}px, ${-this.mouseY() * 2.5}px, 0)`;
-  });
-
-  /** Night-layer parallax (stars, rocket, planets). */
-  protected readonly spaceParallaxTransform = computed(() => {
-    if (this.prefersReducedMotion()) return 'translate3d(0,0,0)';
-    return `translate3d(${-this.mouseX() * 8}px, ${-this.mouseY() * 4}px, 0)`;
+    const rx = -this.mouseY() * 2;
+    const ry = this.mouseX() * 2;
+    return `translate3d(0, -2px, 0) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02, 1.02, 1.02)`;
   });
 
   /**
-   * Knob translation — slides 79 px (140 − 46 − 2 × 5 − border).
-   * Adds a small magnetic hover offset.
+   * Slides the circular floating thumb:
+   * Width 60px − Knob 24px − 2 × 3px padding = 30px travel distance.
+   * Slides to the right (30px) in Light Mode, remains on the left (0px) in Dark Mode.
    */
-  protected readonly knobTransform = computed(() => {
-    const travel = this.themeService.isDarkSignal() ? 79 : 0;
+  protected readonly thumbTransform = computed(() => {
+    const travel = this.themeService.isDarkSignal() ? 0 : 30;
     if (this.prefersReducedMotion()) return `translate3d(${travel}px, 0, 0)`;
-    const hover = this.isHovered() ? this.mouseX() * 3 : 0;
+    const hover = this.isHovered() ? this.mouseX() * 1.2 : 0;
     return `translate3d(${travel + hover}px, 0, 0)`;
   });
 
-  /* ────────────────────────────────────────────
-   *  Private — orchestrate toggle micro-interactions
-   * ──────────────────────────────────────────── */
+  /* ── Private helpers ── */
 
-  private triggerToggle(clientX: number, clientY: number): void {
+  private triggerToggle(): void {
     if (this.isSliding()) return;
 
     if (this.prefersReducedMotion()) {
@@ -148,38 +116,19 @@ export class ThemeToggleComponent {
       return;
     }
 
-    const goingDark = !this.themeService.isDarkSignal();
-
-    // 1. Knob sliding state (elastic squish)
-    this.clearTimer('slidingTimer');
+    this.clearTimer();
     this.isSliding.set(true);
-    this.slidingTimer = setTimeout(() => this.isSliding.set(false), 1200);
+    // Slide duration aligns with the spring transition (400ms)
+    this.slidingTimer = setTimeout(() => this.isSliding.set(false), 450);
 
-    // 2. Directional sky time-lapse flags
-    this.clearTimer('directionTimer');
-    this.isChangingToDark.set(goingDark);
-    this.isChangingToLight.set(!goingDark);
-    this.directionTimer = setTimeout(() => {
-      this.isChangingToDark.set(false);
-      this.isChangingToLight.set(false);
-    }, 1300);
-
-    // 3. Ripple burst
-    this.clearTimer('rippleTimer');
-    this.rippleActive.set(false);
-    requestAnimationFrame(() => {
-      this.rippleActive.set(true);
-      this.rippleTimer = setTimeout(() => this.rippleActive.set(false), 750);
-    });
-
-    // 4. Global theme change with page-wide reveal
-    this.themeService.toggleThemeWithReveal(clientX, clientY);
+    // Global theme transition
+    this.themeService.toggleTheme();
   }
 
-  private clearTimer(key: 'slidingTimer' | 'rippleTimer' | 'directionTimer'): void {
-    if (this[key]) {
-      clearTimeout(this[key]!);
-      this[key] = null;
+  private clearTimer(): void {
+    if (this.slidingTimer) {
+      clearTimeout(this.slidingTimer);
+      this.slidingTimer = null;
     }
   }
 }

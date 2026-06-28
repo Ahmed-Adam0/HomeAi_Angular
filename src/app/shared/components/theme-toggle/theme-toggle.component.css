@@ -1,978 +1,279 @@
+/* ═══════════════════════════════════════════════════════════════
+   PREMIUM LUXURY MINIMALIST THEME TOGGLE (60 × 30 px)
+   Apple / Vercel / Linear inspired aesthetic.
+   No visible border, soft glassmorphism, spring floating thumb,
+   and elegant rotate-on-toggle icon transitions.
+   ═══════════════════════════════════════════════════════════════ */
+
 :host {
   display: inline-flex;
   vertical-align: middle;
   align-items: center;
   justify-content: center;
-  perspective: 1000px;
+  perspective: 400px;
 }
 
-/* Premium 140px Capsule Switch */
-.story-switch {
+/* ══════════════════════════════════════
+   § 1  THE TOGGLE CONTAINER (Pill)
+   ══════════════════════════════════════ */
+.luxury-toggle {
   position: relative;
   display: inline-flex;
   align-items: center;
-  width: 140px;
-  height: 56px;
-  background: transparent;
-  border: 1.5px solid rgba(184, 147, 92, 0.22);
-  cursor: pointer;
-  outline: none;
-  border-radius: 9999px;
-  box-sizing: border-box;
-  overflow: visible; /* Allows glowing rays and halos to bleed out */
+  width: 60px;
+  height: 30px;
   padding: 0;
-  
-  /* Initial travel and coordinate sizing */
-  --story-padding: 5px;
-  --story-knob-size: 46px;
-  --story-travel: 79px; /* (140 - 46 - 2*5) */
-  
-  /* GPU-Accelerated 3D Transforms */
+  margin: 0;
+  background: transparent;
+  border: none; /* No visible border */
+  border-radius: 9999px;
+  outline: none;
+  box-sizing: border-box;
+  overflow: visible;
+  cursor: pointer;
+
+  /* Snappy custom spring curve */
+  --spring-curve: cubic-bezier(0.25, 1, 0.4, 1);
+  --anim-duration: 400ms;
+
+  /* Base transforms & hardware acceleration */
   transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
   transform-style: preserve-3d;
   will-change: transform;
-  
-  /* Smooth organic transition curve */
-  transition: 
-    transform 600ms cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 500ms ease,
-    box-shadow 600ms cubic-bezier(0.16, 1, 0.3, 1);
-    
-  /* Soft elegant shadow */
-  box-shadow: 
-    0 2px 4px rgba(29, 27, 24, 0.03),
-    0 6px 16px rgba(29, 27, 24, 0.04);
+
+  transition:
+    transform var(--anim-duration) var(--spring-curve),
+    box-shadow var(--anim-duration) var(--spring-curve);
 }
 
-/* Elegant Focus Ring */
-.story-switch:focus-visible {
-  box-shadow: 
-    0 0 0 2.5px var(--color-background),
-    0 0 0 5px var(--fm-color-primary-500),
-    0 12px 24px rgba(184, 147, 92, 0.15);
+/* Accessibility Focus Indicator */
+.luxury-toggle:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-background, #faf9f6),
+    0 0 0 4.5px var(--fm-color-primary-500, #b8935c),
+    0 6px 16px rgba(184, 147, 92, 0.15);
 }
 
-/* Hover slightly lifts the switch and expands shadow */
-.story-switch:hover,
-.story-switch--hovered {
-  border-color: rgba(184, 147, 92, 0.45);
-  box-shadow: 
-    0 12px 28px rgba(29, 27, 24, 0.09),
-    0 4px 8px rgba(184, 147, 92, 0.08);
+.luxury-toggle--dark:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--color-background, #0f172a),
+    0 0 0 4.5px var(--fm-color-primary-400, #93c5fd),
+    0 6px 16px rgba(0, 0, 0, 0.45);
 }
 
-.story-switch--dark:hover,
-.story-switch--dark.story-switch--hovered {
-  border-color: rgba(147, 197, 253, 0.4);
-  box-shadow: 
-    0 12px 28px rgba(0, 0, 0, 0.4),
-    0 4px 8px rgba(147, 197, 253, 0.08);
+/* Hover: Slight lift (translateY(-2px)) and larger soft shadow */
+.luxury-toggle:hover,
+.luxury-toggle--hovered {
+  transform: translate3d(0, -2px, 0) scale3d(1.02, 1.02, 1.02);
 }
 
-/* Pressed state shrinks slightly */
-.story-switch:active,
-.story-switch--pressed {
-  transform: translate3d(0, -0.5px, 0) scale3d(0.96, 0.96, 1) !important;
-  box-shadow: 0 3px 8px rgba(29, 27, 24, 0.04);
+/* Press state: Tiny press animation */
+.luxury-toggle:active,
+.luxury-toggle--pressed {
+  transform: translate3d(0, -1px, 0) scale3d(0.96, 0.96, 1) !important;
 }
 
-/* Background Sky with Gradients */
-.sky-background {
+/* ══════════════════════════════════════
+   § 2  THE CONTAINER TRACK (Glassmorphism)
+   ══════════════════════════════════════ */
+.toggle-container {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  overflow: hidden; /* Clips internal parallax layers to track shape */
-  pointer-events: none;
-}
-
-.sky-gradient {
-  position: absolute;
-  inset: 0;
-  will-change: opacity;
-}
-
-.sky-gradient--day {
-  background: linear-gradient(to bottom, #0ea5e9 0%, #38bdf8 45%, #bae6fd 100%);
-  opacity: 1;
-}
-
-.sky-gradient--sunset {
-  background: linear-gradient(to bottom, #d97706 0%, #ea580c 40%, #f97316 75%, #fed7aa 100%);
-  opacity: 0;
-}
-
-.sky-gradient--twilight {
-  background: linear-gradient(to bottom, #312e81 0%, #4338ca 45%, #6366f1 75%, #c084fc 100%);
-  opacity: 0;
-}
-
-.sky-gradient--night {
-  background: linear-gradient(to bottom, #020617 0%, #0f172a 55%, #1e1b4b 100%);
-  opacity: 0;
-}
-
-/* Default day/night state configurations */
-.story-switch--dark .sky-gradient--day {
-  opacity: 0;
-}
-
-.story-switch--dark .sky-gradient--night {
-  opacity: 1;
-}
-
-/* ======================================================
-   DIRECTIONAL SKY TIME-LAPSE CROSSFADES
-   ====================================================== */
-
-/* Day -> Night transitions */
-.story-switch--to-dark .sky-gradient--day {
-  animation: day-to-night-day 1200ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-.story-switch--to-dark .sky-gradient--sunset {
-  animation: day-to-night-sunset 1200ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-.story-switch--to-dark .sky-gradient--twilight {
-  animation: day-to-night-twilight 1200ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-.story-switch--to-dark .sky-gradient--night {
-  animation: day-to-night-night 1200ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-
-@keyframes day-to-night-day {
-  0% { opacity: 1; }
-  35% { opacity: 0; }
-  100% { opacity: 0; }
-}
-@keyframes day-to-night-sunset {
-  0% { opacity: 0; }
-  25% { opacity: 1; }
-  60% { opacity: 0; }
-  100% { opacity: 0; }
-}
-@keyframes day-to-night-twilight {
-  0% { opacity: 0; }
-  45% { opacity: 0; }
-  70% { opacity: 1; }
-  90% { opacity: 0; }
-  100% { opacity: 0; }
-}
-@keyframes day-to-night-night {
-  0% { opacity: 0; }
-  75% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-/* Night -> Day transitions */
-.story-switch--to-light .sky-gradient--night {
-  animation: night-to-day-night 1200ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-.story-switch--to-light .sky-gradient--twilight {
-  animation: night-to-day-twilight 1200ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-.story-switch--to-light .sky-gradient--sunset {
-  animation: night-to-day-sunset 1200ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-.story-switch--to-light .sky-gradient--day {
-  animation: night-to-day-day 1200ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
-
-@keyframes night-to-day-night {
-  0% { opacity: 1; }
-  35% { opacity: 0; }
-  100% { opacity: 0; }
-}
-@keyframes night-to-day-twilight {
-  0% { opacity: 0; }
-  25% { opacity: 1; }
-  60% { opacity: 0; }
-  100% { opacity: 0; }
-}
-@keyframes night-to-day-sunset {
-  0% { opacity: 0; }
-  45% { opacity: 0; }
-  70% { opacity: 1; }
-  90% { opacity: 0; }
-  100% { opacity: 0; }
-}
-@keyframes night-to-day-day {
-  0% { opacity: 0; }
-  75% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-/* Nebula / Deep Space Glow (night mode only) */
-.nebula-overlay {
-  position: absolute;
-  inset: 0;
-  background: 
-    radial-gradient(circle at 75% 20%, rgba(217, 70, 239, 0.35), transparent 45%),
-    radial-gradient(circle at 20% 70%, rgba(99, 102, 241, 0.25), transparent 50%);
-  z-index: 1;
-  opacity: 0;
-  will-change: opacity;
-  transition: opacity 1000ms cubic-bezier(0.25, 1, 0.5, 1);
-  pointer-events: none;
-}
-
-.story-switch--dark .nebula-overlay {
-  opacity: 1;
-}
-
-/* ======================================================
-   DAY LAYERS (Clouds, Hot Air Balloon, Birds)
-   ====================================================== */
-
-.clouds-container {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.cloud {
-  position: absolute;
-  color: rgba(255, 255, 255, 0.9);
-  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.12));
-  will-change: transform, opacity;
-  transition: 
-    transform 1100ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    opacity 800ms cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* Slower back layer cloud */
-.cloud--back {
-  color: rgba(255, 255, 255, 0.5);
-  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.05));
-  z-index: 1;
-}
-
-/* Cloud coordinates */
-.cloud--1 {
-  top: 6px;
-  left: 20px;
-  width: 26px;
-  height: 18px;
-  animation: cloud-floating-back 12s infinite ease-in-out;
-}
-
-.cloud--2 {
-  top: 22px;
-  left: 65px;
-  width: 20px;
-  height: 14px;
-  animation: cloud-floating-front-1 8s infinite ease-in-out;
-}
-
-.cloud--3 {
-  top: 8px;
-  left: 100px;
-  width: 15px;
-  height: 11px;
-  animation: cloud-floating-front-2 10s infinite ease-in-out 1.5s;
-}
-
-/* Cloud Exits when Dark theme triggers */
-.story-switch--dark .cloud--1 {
-  transform: translate3d(-55px, 6px, 0) scale3d(0.5, 0.5, 1);
-  opacity: 0;
-}
-
-.story-switch--dark .cloud--2 {
-  transform: translate3d(55px, -6px, 0) scale3d(0.5, 0.5, 1);
-  opacity: 0;
-}
-
-.story-switch--dark .cloud--3 {
-  transform: translate3d(50px, -3px, 0) scale3d(0.4, 0.4, 1);
-  opacity: 0;
-}
-
-/* Cloud Float keyframes */
-@keyframes cloud-floating-back {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(3px, -1px, 0); }
-}
-
-@keyframes cloud-floating-front-1 {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(2.5px, -2.5px, 0); }
-}
-
-@keyframes cloud-floating-front-2 {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(-2px, -2px, 0); }
-}
-
-/* Hover cloud motion */
-.story-switch:hover .clouds-container,
-.story-switch--hovered .clouds-container {
-  /* Subtle drift reaction to hover */
-  transform: translate3d(-3px, 0px, 0);
-}
-
-/* Hot Air Balloon */
-.balloon-container {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.hot-air-balloon {
-  position: absolute;
-  top: 15px;
-  left: 60px;
-  width: 14px;
-  height: 18px;
-  will-change: transform, opacity;
-  transition: 
-    transform 1100ms cubic-bezier(0.25, 1, 0.5, 1),
-    opacity 850ms ease;
-  animation: balloon-sway 7s infinite ease-in-out;
-}
-
-.story-switch--dark .hot-air-balloon {
-  transform: translate3d(10px, -50px, 0) scale3d(0.3, 0.3, 1) rotate(15deg);
-  opacity: 0;
-}
-
-@keyframes balloon-sway {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  50% { transform: translate3d(-1px, -4px, 0) rotate(2deg); }
-}
-
-/* Hover balloon response */
-.story-switch:hover .balloon-container,
-.story-switch--hovered .balloon-container {
-  transform: translate3d(-2px, -1px, 0);
-}
-
-/* Tiny Birds flying */
-.birds-container {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  transition: opacity 400ms;
-}
-
-.story-switch--dark .birds-container {
-  opacity: 0;
-}
-
-.bird {
-  position: absolute;
-  color: rgba(255, 255, 255, 0.65);
-  width: 7px;
-  height: 4px;
-  opacity: 0;
-}
-
-.bird svg {
-  width: 100%;
-  height: 100%;
-  animation: bird-flap-wings 400ms infinite ease-in-out alternate;
-}
-
-.story-switch:not(.story-switch--dark) .bird--1 {
-  animation: bird-fly-path-1 15s infinite linear 1s;
-}
-
-.story-switch:not(.story-switch--dark) .bird--2 {
-  animation: bird-fly-path-2 20s infinite linear 6s;
-}
-
-@keyframes bird-flap-wings {
-  0% { transform: scaleY(0.2); }
-  100% { transform: scaleY(1); }
-}
-
-@keyframes bird-fly-path-1 {
-  0% { left: -10%; top: 32px; opacity: 0; transform: scale(0.6); }
-  8% { opacity: 0.8; }
-  92% { opacity: 0.8; }
-  100% { left: 110%; top: 12px; opacity: 0; transform: scale(0.6); }
-}
-
-@keyframes bird-fly-path-2 {
-  0% { left: -10%; top: 40px; opacity: 0; transform: scale(0.5); }
-  8% { opacity: 0.6; }
-  92% { opacity: 0.6; }
-  100% { left: 110%; top: 22px; opacity: 0; transform: scale(0.5); }
-}
-
-/* ======================================================
-   NIGHT LAYERS (Stars, Space Planets, Space Rocket, Dust)
-   ====================================================== */
-
-.stars-container {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  opacity: 0;
-  pointer-events: none;
-  transition: 
-    opacity 800ms cubic-bezier(0.25, 1, 0.5, 1),
-    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.story-switch--dark .stars-container {
-  opacity: 1;
-}
-
-.star {
-  position: absolute;
-  background: #ffffff;
-  border-radius: 50%;
-  opacity: 0;
-  box-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
-  transition: opacity 600ms ease;
-}
-
-.story-switch--dark .star {
-  animation: star-twinkling 2.5s infinite ease-in-out;
-}
-
-/* Stagger speeds and coords of stars */
-.star--1 { top: 6px; left: 10px; width: 1.5px; height: 1.5px; animation-delay: 0.1s; }
-.star--2 { top: 14px; left: 22px; width: 1px; height: 1px; animation-delay: 0.9s; }
-.star--3 { top: 8px; left: 36px; width: 2px; height: 2px; animation-delay: 0.4s; }
-.star--4 { top: 24px; left: 45px; width: 1px; height: 1px; animation-delay: 1.9s; }
-.star--5 { top: 7px; left: 54px; width: 1.5px; height: 1.5px; animation-delay: 1.3s; }
-.star--6 { top: 20px; left: 66px; width: 1px; height: 1px; animation-delay: 2.5s; }
-.star--7 { top: 10px; left: 78px; width: 2px; height: 2px; animation-delay: 0.7s; }
-.star--8 { top: 28px; left: 88px; width: 1px; height: 1px; animation-delay: 1.7s; }
-.star--9 { top: 32px; left: 18px; width: 1.2px; height: 1.2px; animation-delay: 2.1s; }
-
-/* Stars fade in staggered */
-.story-switch--dark .star--1 { opacity: 1; transition-delay: 80ms; }
-.story-switch--dark .star--2 { opacity: 0.85; transition-delay: 240ms; }
-.story-switch--dark .star--3 { opacity: 1; transition-delay: 140ms; }
-.story-switch--dark .star--4 { opacity: 0.7; transition-delay: 400ms; }
-.story-switch--dark .star--5 { opacity: 1; transition-delay: 190ms; }
-.story-switch--dark .star--6 { opacity: 0.8; transition-delay: 350ms; }
-.story-switch--dark .star--7 { opacity: 1; transition-delay: 300ms; }
-.story-switch--dark .star--8 { opacity: 0.75; transition-delay: 480ms; }
-.story-switch--dark .star--9 { opacity: 0.9; transition-delay: 550ms; }
-
-@keyframes star-twinkling {
-  0%, 100% { opacity: 0.25; transform: scale3d(0.8, 0.8, 1); }
-  50% { opacity: 1; transform: scale3d(1.4, 1.4, 1); }
-}
-
-/* Hover makes stars twinkle faster */
-.story-switch:hover .stars-container .star,
-.story-switch--hovered .stars-container .star {
-  animation-duration: 1.2s !important;
-}
-
-/* Planets Container */
-.planets-container {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-  transition: 
-    opacity 800ms cubic-bezier(0.25, 1, 0.5, 1) 200ms,
-    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.story-switch--dark .planets-container {
-  opacity: 1;
-}
-
-.planet {
-  position: absolute;
-  will-change: transform;
-}
-
-.planet--saturn {
-  top: 5px;
-  left: 28px;
-  width: 26px;
-  height: 18px;
-  animation: planet-sway 8s infinite ease-in-out;
-}
-
-.planet--mars {
-  top: 30px;
-  left: 72px;
-  width: 10px;
-  height: 10px;
-  animation: planet-sway 6s infinite ease-in-out 1s;
-}
-
-@keyframes planet-sway {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(1.5px, -1.5px, 0); }
-}
-
-/* Hover planets response */
-.story-switch:hover .planets-container,
-.story-switch--hovered .planets-container {
-  transform: translate3d(-3px, -1px, 0);
-}
-
-/* Shooting Star */
-.shooting-star {
-  position: absolute;
-  top: -12px;
-  left: 110px;
-  width: 0;
-  height: 1.5px;
-  background: linear-gradient(90deg, #ffffff, transparent);
-  transform: rotate(-35deg);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.story-switch--dark .shooting-star {
-  animation: shooting-star-glide 8s infinite ease-in-out 3s;
-}
-
-@keyframes shooting-star-glide {
-  0% { top: -12px; left: 110px; width: 0; opacity: 0; }
-  5% { opacity: 1; width: 35px; }
-  10% { top: 40px; left: 35px; width: 0; opacity: 0; }
-  100% { top: 40px; left: 35px; width: 0; opacity: 0; }
-}
-
-/* Space Rocket */
-.spaceship-container {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.spaceship {
-  position: absolute;
-  top: 21px;
-  left: -36px;
-  width: 24px;
-  height: 14px;
-  opacity: 0;
-  will-change: transform, opacity;
-  transition: 
-    transform 1200ms cubic-bezier(0.2, 0.85, 0.3, 1) 300ms,
-    opacity 800ms cubic-bezier(0.25, 1, 0.5, 1) 300ms;
-}
-
-.rocket-flame {
-  animation: flame-flicking 140ms infinite steps(3) alternate;
-}
-.rocket-flame-inner {
-  animation: flame-ficking-inner 90ms infinite steps(2) alternate;
-}
-
-@keyframes flame-flicking {
-  0% { transform: scaleX(0.85); opacity: 0.8; }
-  100% { transform: scaleX(1.3); opacity: 1; }
-}
-@keyframes flame-ficking-inner {
-  0% { transform: scaleX(0.9); opacity: 0.9; }
-  100% { transform: scaleX(1.2); opacity: 1; }
-}
-
-/* Enters and bobs when active */
-.story-switch--dark .spaceship {
-  transform: translate3d(52px, 0, 0); /* Positions it around left: 16px */
-  opacity: 1;
-  animation: spaceship-floating 4.5s infinite ease-in-out 1500ms;
-}
-
-@keyframes spaceship-floating {
-  0%, 100% { transform: translate3d(52px, 0, 0) translateY(0) rotate(0deg); }
-  50% { transform: translate3d(52px, 0, 0) translateY(-2px) rotate(-1.5deg); }
-}
-
-/* Ambient Particles */
-.particles-container {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.particle {
-  position: absolute;
-  width: 2.2px;
-  height: 2.2px;
-  background: rgba(255, 255, 255, 0);
-  border-radius: 50%;
-  pointer-events: none;
-  transition: background 400ms, opacity 400ms, box-shadow 400ms;
-}
-
-.particle--1 { top: 38px; left: 34px; }
-.particle--2 { top: 12px; left: 45px; }
-.particle--3 { top: 34px; left: 74px; }
-.particle--4 { top: 8px; left: 90px; }
-.particle--5 { top: 32px; left: 110px; }
-.particle--6 { top: 14px; left: 120px; }
-
-.story-switch--dark .particle {
-  opacity: 0.15;
-  background: #93c5fd;
-  animation: particle-bobbing 6s infinite ease-in-out;
-}
-
-.story-switch--dark:hover .particle,
-.story-switch--dark.story-switch--hovered .particle {
-  opacity: 0.7;
-  background: #38bdf8;
-  box-shadow: 0 0 3px rgba(56, 189, 248, 0.85);
-}
-
-.particle--1 { animation-delay: 0.2s; }
-.particle--2 { animation-delay: 1.3s; }
-.particle--3 { animation-delay: 0.7s; }
-.particle--4 { animation-delay: 1.8s; }
-.particle--5 { animation-delay: 0.9s; }
-.particle--6 { animation-delay: 2.3s; }
-
-@keyframes particle-bobbing {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(3px, -4px, 0); }
-}
-
-/* ======================================================
-   THE TOGGLE KNOB (Sun / Moon Morphing)
-   ====================================================== */
-
-.story-knob {
-  position: absolute;
-  top: var(--story-padding);
-  left: var(--story-padding);
-  width: var(--story-knob-size);
-  height: var(--story-knob-size);
-  z-index: 10;
-  pointer-events: none;
-  will-change: transform;
-  
-  /* spring transition curve */
-  transition: transform 1000ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Glow halo centering behind the knob */
-.knob-glow {
-  position: absolute;
-  inset: -35%;
-  border-radius: 50%;
-  filter: blur(6px);
-  opacity: 0.5;
-  pointer-events: none;
-  mix-blend-mode: normal;
-  will-change: opacity, background;
-  transition: opacity 300ms ease, background 1000ms ease;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.65) 0%, rgba(245, 158, 11, 0) 70%);
-}
-
-.story-switch--dark .knob-glow {
-  background: radial-gradient(circle, rgba(147, 197, 253, 0.8) 0%, rgba(147, 197, 253, 0) 70%);
-  opacity: 0.6;
-}
-
-/* Boost glow on hover */
-.story-switch:hover .knob-glow,
-.story-switch--hovered .knob-glow {
-  opacity: 0.85;
-}
-
-.story-switch:active .knob-glow,
-.story-switch--pressed .knob-glow {
-  opacity: 0.95;
-}
-
-/* Knob structural container */
-.knob-body {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  position: relative;
-  will-change: transform;
-  transition: transform 1000ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.story-switch--sliding .knob-body {
-  transform: scale3d(1.15, 0.88, 1);
-}
-
-/* 3D Glassmorphic overlay spherical shell */
-.knob-body::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 60%, rgba(0, 0, 0, 0.22) 100%);
-  box-shadow: 
-    inset 0 1.5px 2px rgba(255, 255, 255, 0.5), 
-    inset 0 -1.5px 2px rgba(0, 0, 0, 0.25);
-  pointer-events: none;
-  z-index: 5;
-}
-
-/* Sun Graphic details */
-.sun-element {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  opacity: 1;
-  transform: scale3d(1, 1, 1) rotate(0deg);
-  will-change: transform, opacity;
-  transition: 
-    opacity 800ms cubic-bezier(0.25, 1, 0.5, 1),
-    transform 1000ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.sun-core {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #fffbeb 0%, #fcd34d 30%, #f59e0b 75%, #b45309 100%);
-  box-shadow: 
-    inset 0 1px 1px rgba(255, 255, 255, 0.8),
-    0 2px 6px rgba(180, 83, 9, 0.4);
-  border: 0.5px solid rgba(252, 211, 77, 0.45);
-}
-
-/* Dynamic Light Beams (fade/spin on hover) */
-.sun-light-rays {
-  position: absolute;
-  inset: -35%;
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 400ms ease;
-  background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.18) 0deg 15deg, transparent 15deg 30deg);
-  animation: sun-beams-spin 20s linear infinite;
-  z-index: -1;
-}
-
-@keyframes sun-beams-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.story-switch:hover .sun-light-rays,
-.story-switch--hovered .sun-light-rays {
-  opacity: 1;
-  /* Rotate faster on hover */
-  animation-duration: 9s;
-}
-
-.sun-ray {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 2.2px;
-  height: 6px;
-  background: #f59e0b;
-  border-radius: 99px;
-  transform-origin: 50% 50%;
-  opacity: 0.85;
-  will-change: transform, opacity;
-  transition: 
-    transform 800ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 600ms ease;
-}
-
-/* Radial ray layouts */
-.sun-ray--1 { transform: translate3d(-50%, -50%, 0) rotate(0deg) translateY(-14px); }
-.sun-ray--2 { transform: translate3d(-50%, -50%, 0) rotate(45deg) translateY(-14px); }
-.sun-ray--3 { transform: translate3d(-50%, -50%, 0) rotate(90deg) translateY(-14px); }
-.sun-ray--4 { transform: translate3d(-50%, -50%, 0) rotate(135deg) translateY(-14px); }
-.sun-ray--5 { transform: translate3d(-50%, -50%, 0) rotate(180deg) translateY(-14px); }
-.sun-ray--6 { transform: translate3d(-50%, -50%, 0) rotate(225deg) translateY(-14px); }
-.sun-ray--7 { transform: translate3d(-50%, -50%, 0) rotate(270deg) translateY(-14px); }
-.sun-ray--8 { transform: translate3d(-50%, -50%, 0) rotate(315deg) translateY(-14px); }
-
-/* Hover expands rays */
-.story-switch:hover .sun-ray,
-.story-switch--hovered .sun-ray {
-  height: 8px;
-}
-.story-switch:hover .sun-ray--1, .story-switch--hovered .sun-ray--1 { transform: translate3d(-50%, -50%, 0) rotate(0deg) translateY(-16px); }
-.story-switch:hover .sun-ray--2, .story-switch--hovered .sun-ray--2 { transform: translate3d(-50%, -50%, 0) rotate(45deg) translateY(-16px); }
-.story-switch:hover .sun-ray--3, .story-switch--hovered .sun-ray--3 { transform: translate3d(-50%, -50%, 0) rotate(90deg) translateY(-16px); }
-.story-switch:hover .sun-ray--4, .story-switch--hovered .sun-ray--4 { transform: translate3d(-50%, -50%, 0) rotate(135deg) translateY(-16px); }
-.story-switch:hover .sun-ray--5, .story-switch--hovered .sun-ray--5 { transform: translate3d(-50%, -50%, 0) rotate(180deg) translateY(-16px); }
-.story-switch:hover .sun-ray--6, .story-switch--hovered .sun-ray--6 { transform: translate3d(-50%, -50%, 0) rotate(225deg) translateY(-16px); }
-.story-switch:hover .sun-ray--7, .story-switch--hovered .sun-ray--7 { transform: translate3d(-50%, -50%, 0) rotate(270deg) translateY(-16px); }
-.story-switch:hover .sun-ray--8, .story-switch--hovered .sun-ray--8 { transform: translate3d(-50%, -50%, 0) rotate(315deg) translateY(-16px); }
-
-/* Exit transitions */
-.story-switch--dark .sun-element {
-  opacity: 0;
-  transform: scale3d(0.5, 0.5, 1) rotate(90deg);
-}
-
-.story-switch--dark .sun-ray {
-  opacity: 0;
-  transform: translate3d(-50%, -50%, 0) rotate(0deg) translateY(0) scale3d(0, 0, 1);
-}
-
-/* Moon Element details */
-.moon-element {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  opacity: 0;
-  transform: scale3d(0.5, 0.5, 1) rotate(-90deg);
-  will-change: transform, opacity;
-  transition: 
-    opacity 800ms cubic-bezier(0.25, 1, 0.5, 1),
-    transform 1000ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.moon-core {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f1f5f9 25%, #cbd5e1 55%, #94a3b8 100%);
-  box-shadow: 
-    inset 0 1px 1px rgba(255, 255, 255, 0.4),
-    0 2px 6px rgba(0, 0, 0, 0.25);
-  border: 0.5px solid rgba(255, 255, 255, 0.22);
-  position: relative;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
   overflow: hidden;
-}
-
-.crater {
-  position: absolute;
-  background: rgba(0, 0, 0, 0.08);
-  border-radius: 50%;
-  box-shadow: 
-    inset 0.5px 0.5px 1px rgba(0, 0, 0, 0.15),
-    0.5px 0.5px 0.5px rgba(255, 255, 255, 0.08);
-}
-
-.crater--1 { top: 9px; left: 10px; width: 9px; height: 9px; }
-.crater--2 { top: 26px; left: 12px; width: 6px; height: 6px; }
-.crater--3 { top: 16px; left: 28px; width: 7px; height: 7px; }
-
-/* Moon active entrance */
-.story-switch--dark .moon-element {
-  opacity: 1;
-  transform: scale3d(1, 1, 1) rotate(0deg);
-}
-
-/* ======================================================
-   RIPPLES LIGHT BURST ANIMATIONS
-   ====================================================== */
-
-.toggle-ripples {
-  position: absolute;
-  inset: -20px;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
+
+  /* Light Theme glass style (Ivory/Gold tones) */
+  background: rgba(248, 246, 242, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.4),
+    0 2px 8px rgba(184, 147, 92, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.01);
+
+  transition:
+    background var(--anim-duration) ease,
+    box-shadow var(--anim-duration) ease;
+}
+
+/* Dark Theme glass style (Deep Slate/Charcoal) */
+.luxury-toggle--dark .toggle-container {
+  background: rgba(15, 23, 42, 0.35);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.03),
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* ══════════════════════════════════════
+   § 3  FLOATING GLASS THUMB
+   ══════════════════════════════════════ */
+.floating-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  z-index: 2;
+  will-change: transform;
+  transition: transform var(--anim-duration) var(--spring-curve);
+  pointer-events: none;
+}
+
+/* Lens body */
+.thumb-lens {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  
+  /* Light mode circular thumb */
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 3px 6px rgba(184, 147, 92, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0.5px rgba(255, 255, 255, 0.9);
+
+  will-change: transform;
+  transition:
+    background var(--anim-duration) ease,
+    transform var(--anim-duration) var(--spring-curve),
+    box-shadow var(--anim-duration) ease;
+}
+
+/* Dark mode circular thumb */
+.luxury-toggle--dark .thumb-lens {
+  background: rgba(30, 41, 59, 0.9);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0.5px rgba(255, 255, 255, 0.06);
+}
+
+/* Scale up slightly while moving / sliding */
+.luxury-toggle--sliding .thumb-lens {
+  transform: scale3d(1.08, 1.08, 1);
+}
+
+/* Thumb slightly compresses on click/press */
+.luxury-toggle--pressed .thumb-lens {
+  transform: scale3d(0.92, 0.92, 1);
+}
+
+/* Ambient active thumb glow */
+.thumb-glow {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  filter: blur(4px);
+  opacity: 0.35;
+  transition: opacity var(--anim-duration) ease, background var(--anim-duration) ease;
+  background: radial-gradient(circle, rgba(184, 147, 92, 0.5) 0%, rgba(184, 147, 92, 0) 70%);
+}
+
+.luxury-toggle--dark .thumb-glow {
+  background: radial-gradient(circle, rgba(147, 197, 253, 0.4) 0%, rgba(147, 197, 253, 0) 70%);
+  opacity: 0.25;
+}
+
+/* ══════════════════════════════════════
+   § 4  ICONS AND OUTLINES
+   ══════════════════════════════════════ */
+.icon-wrapper {
+  position: absolute;
+  top: 0;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
+  z-index: 3;
+  
+  /* Inactive states: 35% opacity */
+  opacity: 0.35;
+  will-change: transform, opacity, color;
+  transition:
+    opacity var(--anim-duration) var(--spring-curve),
+    transform var(--anim-duration) var(--spring-curve),
+    color var(--anim-duration) ease;
 }
 
-.ripple-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1.5px solid var(--fm-color-primary-500);
-  opacity: 0;
-  width: 10px;
-  height: 10px;
+.icon-wrapper--moon {
+  left: 0;
+  /* Rotate slightly outwards when inactive */
+  transform: scale(0.88) rotate(15deg);
+  color: #64748b;
 }
 
-.ripple-ring--1 {
-  animation: ripple-wave-1 650ms cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+.icon-wrapper--sun {
+  right: 0;
+  /* Rotate slightly outwards when inactive */
+  transform: scale(0.88) rotate(-15deg);
+  color: #c2a679;
 }
 
-.ripple-ring--2 {
-  animation: ripple-wave-2 650ms cubic-bezier(0.1, 0.8, 0.2, 1) 100ms forwards;
+.icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.2;
 }
 
-@keyframes ripple-wave-1 {
-  0% {
-    width: 10px;
-    height: 10px;
-    opacity: 0.65;
-    border-color: var(--fm-color-primary-500);
-  }
-  100% {
-    width: 140px;
-    height: 140px;
-    opacity: 0;
-    border-color: rgba(184, 147, 92, 0);
-  }
+/* Active Icon Styles (100% opacity, rotated back to 0deg) */
+.icon-wrapper--active {
+  opacity: 1;
+  transform: scale(1.02) rotate(0deg) !important;
 }
 
-@keyframes ripple-wave-2 {
-  0% {
-    width: 10px;
-    height: 10px;
-    opacity: 0.45;
-    border-color: var(--fm-color-primary-400);
-  }
-  100% {
-    width: 160px;
-    height: 160px;
-    opacity: 0;
-    border-color: rgba(184, 147, 92, 0);
-  }
+.icon-wrapper--active.icon-wrapper--sun {
+  color: #b8935c; /* Soft gold */
 }
 
-/* Accessibility: prefers-reduced-motion overrides */
+.icon-wrapper--active.icon-wrapper--moon {
+  color: #93c5fd; /* Soft blue */
+}
+
+/* Outlined icon rotation slide physics */
+.luxury-toggle--sliding .icon-wrapper--active.icon-wrapper--sun .icon {
+  animation: sun-rotate-fade var(--anim-duration) ease;
+}
+
+.luxury-toggle--sliding .icon-wrapper--active.icon-wrapper--moon .icon {
+  animation: moon-rotate-fade var(--anim-duration) ease;
+}
+
+@keyframes sun-rotate-fade {
+  0% { transform: rotate(-25deg) scale(0.85); }
+  100% { transform: rotate(0deg) scale(1.02); }
+}
+
+@keyframes moon-rotate-fade {
+  0% { transform: rotate(25deg) scale(0.85); }
+  100% { transform: rotate(0deg) scale(1.02); }
+}
+
+/* ══════════════════════════════════════
+   § 5  ACCESSIBILITY (prefers-reduced-motion)
+   ══════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
-  .story-switch,
-  .sky-gradient,
-  .cloud,
-  .hot-air-balloon,
-  .bird,
-  .bird svg,
-  .star,
-  .shooting-star,
-  .spaceship,
-  .particle,
-  .story-knob,
-  .knob-glow,
-  .knob-body,
-  .sun-element,
-  .sun-ray,
-  .moon-element,
-  .sun-light-rays,
-  .planet {
-    transition: none !important;
-    transform: none !important;
+  .luxury-toggle,
+  .floating-thumb,
+  .thumb-lens,
+  .thumb-glow,
+  .icon-wrapper,
+  .icon {
     animation: none !important;
+    transition-duration: 0s !important;
   }
-  
-  .story-switch--dark .story-knob {
-    transform: translate3d(var(--story-travel), 0, 0) !important;
+
+  .luxury-toggle--dark .floating-thumb {
+    transform: translate3d(0, 0, 0) !important;
   }
-  
-  .story-switch--dark .sun-element {
-    opacity: 0 !important;
-  }
-  
-  .story-switch--dark .moon-element {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  
-  .birds-container,
-  .clouds-container,
-  .balloon-container,
-  .stars-container,
-  .shooting-star,
-  .spaceship-container,
-  .particles-container,
-  .toggle-ripples,
-  .nebula-overlay,
-  .planets-container {
-    display: none !important;
+
+  .luxury-toggle:not(.luxury-toggle--dark) .floating-thumb {
+    transform: translate3d(30px, 0, 0) !important;
   }
 }
