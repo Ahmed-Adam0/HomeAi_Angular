@@ -25,8 +25,6 @@ export class StatusTranslationPipe implements PipeTransform {
       normalized = 'AWAITING_CUSTOMER_APPROVAL';
     } else if (normalized === 'PENDINGPAYMENT') {
       normalized = 'PENDING_PAYMENT';
-    } else if (normalized === 'READYFORPICKUP') {
-      normalized = 'READY';
     }
 
     const prefix = type === 'order' ? 'ORDERS_STATUS_' : 'ORDERS_PAYMENT_';

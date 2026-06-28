@@ -90,7 +90,7 @@ export class VendorOrderDetails implements OnInit {
     if (!orderData || !orderData.items) return [];
 
     const groups: Record<string, typeof orderData.items> = {};
-    
+
     orderData.items.forEach(item => {
       const vendor = (item as any).vendorName || 'FurniMind Seller';
       if (!groups[vendor]) {
@@ -180,7 +180,7 @@ export class VendorOrderDetails implements OnInit {
     const completedCount = steps.filter(s => s.completed).length;
     const activeCount = steps.filter(s => s.active).length;
     if (completedCount === steps.length) return 100;
-    
+
     const totalIntervals = steps.length - 1;
     let index = 0;
     for (let i = 0; i < steps.length; i++) {
@@ -246,13 +246,74 @@ export class VendorOrderDetails implements OnInit {
       !this.isTerminalStatus(currentStatus);
   });
 
+  /** True when the Down Payment (PendingPayment – 30%) milestone exists and has been paid by the customer */
+  readonly isDownPaymentPaid = computed(() => {
+    const milestones: any[] = this.remainingBalanceDetails()?.milestones ?? [];
+    const m = milestones.find((x: any) => (x.milestoneStatus as string).toLowerCase() === 'pendingpayment');
+    if (!m) return false;
+    return m.isPaid === true;
+  });
+
+  /** Percent and amount for the 1st installment (PendingPayment – 30%) */
+  readonly downPaymentMilestoneInfo = computed(() => {
+    const total = this.order()?.totalAmount ?? 0;
+    const milestones: any[] = this.remainingBalanceDetails()?.milestones ?? [];
+    const m = milestones.find((x: any) => (x.milestoneStatus as string).toLowerCase() === 'pendingpayment');
+    const amount = m?.amount ?? Math.round(total * 0.3 * 100) / 100;
+    const percent = total > 0 ? Math.round((amount / total) * 100) : 30;
+    return { percent, amount };
+  });
+
+  /** True when the Shipped (40%) milestone exists and has been paid by the customer */
+  readonly isShippingMilestonePaid = computed(() => {
+    const milestones: any[] = this.remainingBalanceDetails()?.milestones ?? [];
+    const m = milestones.find((x: any) => (x.milestoneStatus as string).toLowerCase() === 'shipped');
+    if (!m) return false;
+    return m.isPaid === true;
+  });
+
+  /** True when the Delivered (30%) milestone exists and has been paid by the customer */
+  readonly isDeliveryMilestonePaid = computed(() => {
+    const milestones: any[] = this.remainingBalanceDetails()?.milestones ?? [];
+    const m = milestones.find((x: any) => (x.milestoneStatus as string).toLowerCase() === 'delivered');
+    if (!m) return false;
+    return m.isPaid === true;
+  });
+
+  /** Percent and amount for the 2nd installment (Shipped – 40%) */
+  readonly shippingMilestoneInfo = computed(() => {
+    const total = this.order()?.totalAmount ?? 0;
+    const milestones: any[] = this.remainingBalanceDetails()?.milestones ?? [];
+    const m = milestones.find((x: any) => (x.milestoneStatus as string).toLowerCase() === 'shipped');
+    const amount = m?.amount ?? Math.round(total * 0.4 * 100) / 100;
+    const percent = total > 0 ? Math.round((amount / total) * 100) : 40;
+    return { percent, amount };
+  });
+
+  /** Percent and amount for the 3rd installment (Delivered – 30%) */
+  readonly deliveryMilestoneInfo = computed(() => {
+    const total = this.order()?.totalAmount ?? 0;
+    const milestones: any[] = this.remainingBalanceDetails()?.milestones ?? [];
+    const m = milestones.find((x: any) => (x.milestoneStatus as string).toLowerCase() === 'delivered');
+    const amount = m?.amount ?? Math.round(total * 0.3 * 100) / 100;
+    const percent = total > 0 ? Math.round((amount / total) * 100) : 30;
+    return { percent, amount };
+  });
+
   readonly isUpdateButtonDisabled = computed(() => {
     const currentStatus = this.order()?.status;
+    const selected = this.selectedStatus();
+
+    // Prevent manually updating to Delivered if the shipping milestone is unpaid
+    if (selected === VendorOrderStatus.Delivered && !this.isShippingMilestonePaid()) {
+      return true;
+    }
+
     return (
       this.isUpdatingStatus() ||
       !this.order() ||
-      !this.selectedStatus() ||
-      this.selectedStatus() === currentStatus ||
+      !selected ||
+      selected === currentStatus ||
       !this.canModifyStatus()
     );
   });
@@ -412,8 +473,11 @@ export class VendorOrderDetails implements OnInit {
     if (!order || !date || this.isDateInvalid()) return;
 
     this.isProposingDate.set(true);
-    // Convert to ISO String for backend API
-    const isoDate = date.toISOString();
+    // Format to YYYY-MM-DDT00:00:00 to preserve local date and avoid timezone offsets shifting the date
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const isoDate = `${year}-${month}-${day}T00:00:00`;
 
     this.vendorService.proposeDeliveryDate(order.id, isoDate)
       .pipe(takeUntilDestroyed(this.destroyRef))

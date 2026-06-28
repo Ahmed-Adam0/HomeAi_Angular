@@ -242,7 +242,7 @@ export class VendorOrdersService {
       customer,
       items,
       status: rawStatus,
-      paymentStatus: (order.paymentStatus || 'pending').toLowerCase(),
+      paymentStatus: (order.paymentStatus || 'Unpaid').toLowerCase() as any,
       subtotal: Number(order.subtotal || order.totalPrice || 0),
       shippingCost: Number(order.shippingCost || 0),
       taxAmount: Number(order.taxAmount || 0),

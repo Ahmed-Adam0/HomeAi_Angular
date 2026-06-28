@@ -24,7 +24,7 @@ export interface IOrder {
   discountAmount: number;
   totalAmount: number;
   paymentMethod: string;
-  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded' | 'unpaid';
+  paymentStatus: 'Unpaid' | 'PartialPaid' | 'Paid' | 'Failed' | 'Cancelled' | 'pending' | 'paid' | 'failed' | 'refunded' | 'Refunded' | 'unpaid' | 'Partial_Paid' | 'cancelled';
   trackingNumber?: string;
   carrier?: string;
   createdAt: string;
@@ -98,7 +98,7 @@ export interface IBackendOrder {
   taxAmount?: number;
   discountAmount?: number;
   paymentMethod?: string;
-  paymentStatus?: 'pending' | 'paid' | 'failed' | 'refunded';
+  paymentStatus?: 'Unpaid' | 'PartialPaid' | 'Paid' | 'Failed' | 'Cancelled' | 'pending' | 'paid' | 'failed' | 'refunded' | 'Refunded' | 'unpaid' | 'Partial_Paid' | 'cancelled';
   trackingNumber?: string;
   carrier?: string;
   updatedAt?: string | null;

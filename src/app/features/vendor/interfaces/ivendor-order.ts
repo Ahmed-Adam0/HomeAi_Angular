@@ -35,7 +35,7 @@ export interface IVendorOrder {
   customer: IVendorOrderCustomer;
   items: IVendorOrderItem[];
   status: VendorOrderStatus;
-  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  paymentStatus: 'unpaid' | 'partialpaid' | 'paid' | 'failed' | 'cancelled' | 'pending' | 'refunded';
   subtotal: number;
   shippingCost: number;
   taxAmount: number;

@@ -409,14 +409,24 @@ export class OrdersFacade {
    */
   paymentStatusTone(status: PaymentStatus): StatusBadgeTone {
     switch (status) {
+      case 'Paid':
       case 'paid':
         return 'success';
+      case 'PartialPaid':
+      case 'Partial_Paid':
+        return 'info';
       case 'pending':
       case 'unpaid':
+      case 'Unpaid':
         return 'warning';
       case 'failed':
+      case 'Failed':
         return 'danger';
+      case 'Cancelled':
+      case 'cancelled':
+        return 'neutral';
       case 'refunded':
+      case 'Refunded':
         return 'info';
       default:
         return 'neutral';
