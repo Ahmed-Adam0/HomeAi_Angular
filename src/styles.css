@@ -242,3 +242,120 @@ html.theme-transitioning body {
 }
 
 
+
+/* ==========================================================================
+   VENDOR PORTAL GLOBAL BOOTSTRAP OVERRIDES (DARK MODE)
+   ========================================================================== */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .bg-light,
+html[data-theme="dark"] .bg-white {
+  background-color: var(--color-card) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+html[data-theme="dark"] .text-dark {
+  color: var(--color-heading) !important;
+}
+
+html[data-theme="dark"] .text-secondary {
+  color: var(--color-text-muted) !important;
+}
+
+html[data-theme="dark"] .border-light,
+html[data-theme="dark"] .border-light-subtle {
+  border-color: var(--color-border) !important;
+}
+
+html[data-theme="dark"] .bg-dark {
+  background-color: var(--fm-color-neutral-300) !important;
+  color: var(--color-heading) !important;
+}
+
+html[data-theme="dark"] .text-white {
+  color: var(--color-heading) !important;
+}
+
+/* Fix vendor table hover and stripes if they rely on bootstrap colors */
+html[data-theme="dark"] .table-light {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text) !important;
+}
+
+/* Fix text legibility */
+html[data-theme="dark"] .text-muted,
+html[data-theme="dark"] .text-secondary-color {
+  color: var(--color-text-muted) !important;
+}
+
+/* Fix Vendor CTA Banner massive glare by overriding the background-image entirely in dark mode */
+html[data-theme="dark"] .card-cta-banner {
+  background-image: none !important;
+  background-color: var(--color-surface) !important;
+}
+html[data-theme="dark"] .cta-background-decor {
+  display: none !important;
+}
+
+/* Fix white KPI metrics on dark background */
+html[data-theme="dark"] .card-stat-card .h2,
+html[data-theme="dark"] .card-stat-card .h4 {
+  color: var(--color-heading) !important;
+}
+
+/* Fix dark buttons in Dark Mode */
+html[data-theme="dark"] .btn-outline-dark {
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+html[data-theme="dark"] .btn-outline-dark:hover {
+  background-color: var(--color-surface-hover) !important;
+  color: var(--color-heading) !important;
+}
+
+html[data-theme="dark"] .btn-dark {
+  background-color: var(--fm-color-neutral-200) !important;
+  color: var(--color-heading) !important;
+  border-color: var(--color-border) !important;
+}
+
+html[data-theme="dark"] .vendor-notifications,
+html[data-theme="dark"] .vendor-order-details,
+html[data-theme="dark"] .vendor-product-add {
+  --color-surface: var(--fm-color-neutral-100, #1c1916) !important;
+  --color-bg: var(--fm-color-neutral-50, #12100e) !important;
+  --color-text-primary: var(--color-heading) !important;
+  --color-text-secondary: var(--color-text-muted) !important;
+}
+
+html[data-theme="dark"] .vendor-orders,
+html[data-theme="dark"] .orders-table,
+html[data-theme="dark"] .orders-table__card,
+html[data-theme="dark"] .vod-workspace {
+  --color-surface: var(--fm-color-neutral-100, #1c1916) !important;
+  --color-bg: var(--fm-color-neutral-50, #12100e) !important;
+  --color-card: var(--fm-color-neutral-100, #1c1916) !important;
+  --color-text-primary: var(--color-heading) !important;
+  --color-text-secondary: var(--color-text-muted) !important;
+  --vod-bg: #12100e !important;
+  --vod-surface: #1c1916 !important;
+}
+
+html[data-theme="dark"] .orders-table__card,
+html[data-theme="dark"] .vod-workspace .card-premium {
+  background-color: var(--color-surface) !important;
+}
+html[data-theme="dark"] .table {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: var(--color-text) !important;
+  color: var(--color-text) !important;
+}
+html[data-theme="dark"] .table,
+html[data-theme="dark"] .table > :not(caption) > * > * {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: var(--color-text) !important;
+  background-color: transparent !important;
+  color: var(--color-text) !important;
+  border-bottom-color: var(--color-border) !important;
+}

@@ -304,7 +304,7 @@ export class VendorMaterials implements OnInit {
   getGroupType(group: any): { name: string, icon: string, gradient: string } {
     const name = (((group.nameEn || '') + ' ' + (group.nameAr || ''))).toLowerCase();
     if (name.includes('wood') || name.includes('خشب')) {
-      return { name: 'Wood Finish', icon: 'bi-tree-fill', gradient: 'linear-gradient(135deg, #47341d 0%, #b8935c 100%)' };
+      return { name: 'Wood Finish', icon: 'bi-tree-fill', gradient: 'linear-gradient(135deg, #47341d 0%, var(--color-primary) 100%)' };
     }
     if (name.includes('fabric') || name.includes('قماش') || name.includes('upholstery') || name.includes('تنجيد')) {
       return { name: 'Fabric / Textile', icon: 'bi-grid-3x3-gap-fill', gradient: 'linear-gradient(135deg, #4a5f44 0%, #657e5d 100%)' };
@@ -313,10 +313,10 @@ export class VendorMaterials implements OnInit {
       return { name: 'Premium Leather', icon: 'bi-layers-half', gradient: 'linear-gradient(135deg, #6b502e 0%, #c8a87b 100%)' };
     }
     if (name.includes('color') || name.includes('لون') || name.includes('paint') || name.includes('دهان')) {
-      return { name: 'Color Palette', icon: 'bi-paint-bucket', gradient: 'linear-gradient(135deg, #8a683d 0%, #b8935c 100%)' };
+      return { name: 'Color Palette', icon: 'bi-paint-bucket', gradient: 'linear-gradient(135deg, #8a683d 0%, var(--color-primary) 100%)' };
     }
     if (name.includes('metal') || name.includes('معدن') || name.includes('حديد') || name.includes('steel')) {
-      return { name: 'Metal / Steel', icon: 'bi-shield-shaded', gradient: 'linear-gradient(135deg, #1f1c18 0%, #70675a 100%)' };
+      return { name: 'Metal / Steel', icon: 'bi-shield-shaded', gradient: 'linear-gradient(135deg, var(--color-heading) 0%, #70675a 100%)' };
     }
     return { name: 'Custom Option', icon: 'bi-sliders', gradient: 'linear-gradient(135deg, #70675a 0%, #b3ab9d 100%)' };
   }

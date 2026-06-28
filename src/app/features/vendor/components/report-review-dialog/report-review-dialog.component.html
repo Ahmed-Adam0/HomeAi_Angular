@@ -10,7 +10,7 @@
           <i class="bi bi-flag-fill fs-5"></i>
         </div>
         <div>
-          <h4 class="h5 mb-0 fw-extrabold text-dark letter-spacing-tight">
+          <h4 class="h5 mb-0 fw-extrabold  letter-spacing-tight">
             {{ translationService.currentLang() === 'ar' ? 'الإبلاغ عن تقييم غير لائق' : 'Flag Review for Moderation' }}
           </h4>
           <p class="mb-0 text-muted font-xxs mt-0.5">
@@ -28,7 +28,7 @@
       <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
         <!-- Reason selection list -->
         <div class="mb-3">
-          <label for="reason" class="form-label font-xs fw-bold text-dark mb-2">
+          <label for="reason" class="form-label font-xs fw-bold  mb-2">
             {{ translationService.currentLang() === 'ar' ? 'سبب الإبلاغ *' : 'Reason for Reporting *' }}
           </label>
           <div class="select-wrapper position-relative">
@@ -53,7 +53,7 @@
 
         <!-- Notes textarea -->
         <div class="mb-4">
-          <label for="notes" class="form-label font-xs fw-bold text-dark mb-2">
+          <label for="notes" class="form-label font-xs fw-bold  mb-2">
             {{ translationService.currentLang() === 'ar' ? 'ملاحظات إضافية (اختياري)' : 'Additional Notes (Optional)' }}
           </label>
           <textarea

@@ -38,7 +38,7 @@ textarea.premium-input {
 }
 
 .input-container.readonly .premium-input {
-  background-color: rgba(244, 242, 238, 0.3);
+  background-color: var(--color-card-hover);
   border-color: transparent;
   color: var(--fm-color-neutral-700);
   cursor: default;
@@ -114,12 +114,12 @@ textarea.premium-input {
 .vendor-image-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.40);
+  background: var(--color-background-muted);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   opacity: 0;
   cursor: pointer;
-  color: #fff;
+  color: var(--color-surface);
   border-radius: inherit;
   transition: opacity var(--fm-transition-duration-fast) var(--fm-ease-smooth);
 }
@@ -185,7 +185,7 @@ textarea.premium-input {
   gap: 0.3rem;
   font-size: 0.7rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-surface);
   background: var(--fm-color-primary-600);
   border: none;
   border-radius: 999px;

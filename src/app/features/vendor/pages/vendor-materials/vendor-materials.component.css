@@ -129,7 +129,7 @@
 .btn-primary-saas {
   background-color: var(--fm-color-neutral-900);
   border: 1px solid var(--fm-color-neutral-900);
-  color: #ffffff !important;
+  color: var(--color-surface) !important;
   font-weight: 600;
   font-size: 0.82rem;
   border-radius: var(--fm-radius-sm);
@@ -503,7 +503,7 @@
   height: 52px;
   border-radius: 50%;
   background-color: var(--fm-color-neutral-900);
-  color: #ffffff;
+  color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-850);
   box-shadow: var(--fm-shadow-lg);
   display: flex;
@@ -538,7 +538,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(31, 28, 24, 0.25);
+  background-color: var(--color-card-hover);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 1090 !important;

@@ -3,14 +3,14 @@
    ======================================================================== */
 
 .vendor-revenue-dashboard {
-  --color-bg: var(--fm-color-neutral-50, #faf9f6);
+  --color-bg: var(--fm-color-neutral-50, var(--color-surface));
   --color-surface: var(--fm-color-neutral-100, #f4f2ee);
-  --color-border: var(--fm-border-medium, rgba(31, 28, 24, 0.08));
+  --color-border: var(--fm-border-medium, var(--color-border));
   --color-border-hover: rgba(184, 147, 92, 0.22);
-  --color-text-primary: var(--fm-color-neutral-900, #1f1c18);
+  --color-text-primary: var(--color-text);
   --color-text-secondary: var(--fm-color-neutral-600, #70675a);
   --color-text-muted: var(--fm-color-neutral-500, #8c8375);
-  --color-gold: #b8935c;
+  --color-gold: var(--color-primary);
   --color-gold-soft: rgba(184, 147, 92, 0.12);
   --color-gold-subtle: rgba(184, 147, 92, 0.06);
   --color-gold-glow: rgba(184, 147, 92, 0.2);
@@ -22,7 +22,6 @@
   --shadow-card: 0 1px 2px rgba(31, 28, 24, 0.04), 0 8px 24px rgba(31, 28, 24, 0.06);
   --shadow-hover: 0 2px 4px rgba(31, 28, 24, 0.04), 0 16px 40px rgba(31, 28, 24, 0.1);
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-
   padding: 32px;
   max-width: 1440px;
   margin: 0 auto;
@@ -31,6 +30,14 @@
     var(--color-bg);
   min-height: 100%;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+:host-context(html[data-theme="dark"]) .vendor-revenue-dashboard {
+  --color-bg: var(--fm-color-neutral-50, #12100e);
+  --color-surface: var(--fm-color-neutral-100, #1c1916);
+  --color-text-primary: var(--color-heading);
+  --color-text-secondary: var(--fm-text-muted);
+  --color-text-muted: var(--fm-color-neutral-500);
 }
 
 /* ========================================================================
@@ -88,7 +95,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.88) 0%, rgba(250, 249, 246, 0.72) 100%);
+  background: linear-gradient(145deg, var(--color-surface) 0%, var(--color-card-hover) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
@@ -167,14 +174,14 @@
 
 .vendor-revenue-dashboard__filter-chip--active {
   background: var(--color-gold);
-  color: #ffffff;
+  color: var(--color-surface);
   border-color: var(--color-gold);
 }
 
 .vendor-revenue-dashboard__filter-chip--active:hover {
   background: #a37e4c;
   border-color: #a37e4c;
-  color: #ffffff;
+  color: var(--color-surface);
 }
 
 .vendor-revenue-dashboard__filter-custom {
@@ -233,7 +240,7 @@
 
 .vendor-revenue-dashboard__btn--apply {
   background: var(--color-gold);
-  color: #ffffff;
+  color: var(--color-surface);
 }
 
 .vendor-revenue-dashboard__btn--apply:hover:not(:disabled) {
@@ -256,7 +263,7 @@
 
 .vendor-revenue-dashboard__btn--primary {
   background: var(--color-gold);
-  color: #ffffff;
+  color: var(--color-surface);
 }
 
 .vendor-revenue-dashboard__btn--primary:hover {
@@ -293,9 +300,9 @@
   gap: 8px;
   padding: 20px;
   background: linear-gradient(145deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(250, 249, 246, 0.9) 55%,
-    rgba(250, 246, 240, 0.85) 100%
+    var(--color-surface) 0%,
+    var(--color-card-hover) 55%,
+    var(--color-card-hover) 100%
   );
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -557,8 +564,8 @@
   text-align: center;
   padding: 48px 32px;
   background: linear-gradient(145deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(250, 249, 246, 0.8) 100%
+    var(--color-surface) 0%,
+    var(--color-card-hover) 100%
   );
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);

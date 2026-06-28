@@ -72,7 +72,7 @@
 
 .btn-primary-custom {
   background-color: var(--fm-color-neutral-900);
-  color: #ffffff;
+  color: var(--color-surface);
   border: 1px solid var(--fm-color-neutral-900);
   border-radius: var(--fm-radius-pill);
   padding: 10px 24px;
@@ -442,13 +442,13 @@
 
 .overlay-btn:hover {
   background-color: var(--fm-color-primary-500);
-  color: #ffffff;
+  color: var(--color-surface);
   transform: scale(1.1);
 }
 
 .overlay-btn.delete-btn:hover {
   background-color: var(--fm-color-danger-500);
-  color: #ffffff;
+  color: var(--color-surface);
 }
 
 /* Card content */
@@ -732,7 +732,7 @@
 
 .icon-action-btn.edit:hover {
   background-color: var(--fm-color-neutral-900);
-  color: #ffffff;
+  color: var(--color-surface);
   border-color: var(--fm-color-neutral-900);
 }
 
@@ -1387,7 +1387,7 @@
 
 .btn-danger-custom:hover {
   background-color: var(--fm-color-danger-500);
-  color: #ffffff;
+  color: var(--color-surface);
   border-color: var(--fm-color-danger-500);
   box-shadow: 0 4px 12px rgba(173, 92, 81, 0.2);
 }
@@ -1426,7 +1426,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(31, 28, 24, 0.5);
+  background-color: var(--color-card-hover);
   backdrop-filter: blur(8px);
   z-index: 99999;
   display: flex;

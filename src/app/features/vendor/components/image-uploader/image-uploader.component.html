@@ -1,5 +1,5 @@
-<div class="image-uploader-wrapper bg-white p-4 rounded-4 shadow-sm" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
-  <h4 class="h6 text-dark fw-bold mb-3 d-flex align-items-center gap-2">
+<div class="image-uploader-wrapper  p-4 rounded-4 shadow-sm" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  <h4 class="h6  fw-bold mb-3 d-flex align-items-center gap-2">
     <i class="bi bi-images text-gold fs-5"></i>
     {{ translationService.currentLang() === 'ar' ? 'معرض صور المنتج' : 'Product Image Gallery' }}
   </h4>
@@ -23,10 +23,10 @@
   </div>
 
   <!-- Local Previews Queue (Images selected but NOT uploaded yet) -->
-  <div *ngIf="localPreviews().length > 0" class="local-previews-section mb-4 p-3 rounded-4 border border-warning-subtle" style="background-color: rgba(253, 126, 20, 0.02)">
+  <div *ngIf="localPreviews().length > 0" class="local-previews-section mb-4 p-3 rounded-4 border border-warning-subtle" style="background-color: var(--fm-color-warning-soft)">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <span class="fs-7 fw-bold text-dark d-flex align-items-center gap-2">
-        <span class="badge bg-warning text-dark rounded-circle" style="width: 20px; height: 20px; padding: 2px 0 0 0; font-size: 0.7rem;">
+      <span class="fs-7 fw-bold  d-flex align-items-center gap-2">
+        <span class="badge bg-warning  rounded-circle" style="width: 20px; height: 20px; padding: 2px 0 0 0; font-size: 0.7rem;">
           {{ localPreviews().length }}
         </span>
         {{ translationService.currentLang() === 'ar' ? 'صور جديدة بانتظار الرفع' : 'New Images Pending Upload' }}
@@ -85,7 +85,7 @@
 
   <!-- Existing Uploaded Images Gallery -->
   <div *ngIf="productId" class="existing-gallery-section">
-    <span class="fs-7 fw-bold text-dark d-block mb-3">
+    <span class="fs-7 fw-bold  d-block mb-3">
       {{ translationService.currentLang() === 'ar' ? 'الصور المرفوعة حالياً' : 'Currently Uploaded Images' }}
       <span class="text-muted fw-normal ms-1 fs-8">({{ existingImages.length }})</span>
     </span>
@@ -125,7 +125,7 @@
           </div>
 
           <!-- Cover Setter Row -->
-          <div class="card-body p-2 text-center bg-white border-top border-light mt-auto">
+          <div class="card-body p-2 text-center  border-top border-light mt-auto">
             <button
               *ngIf="!image.isPrimary"
               type="button"

@@ -240,7 +240,7 @@ export class RevenueDashboard implements OnInit {
 
   /* ---------- Charts ---------- */
 
-  private readonly palette = ['#b8935c', '#657e5d', '#5c7f93', '#ad5c51', '#b08149', '#8B5CF6', '#EC4899'];
+  private readonly palette = [getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(), '#657e5d', '#5c7f93', '#ad5c51', '#b08149', '#8B5CF6', '#EC4899'];
 
   readonly lineChartData = computed(() => {
     const d = this.data();
@@ -263,13 +263,13 @@ export class RevenueDashboard implements OnInit {
         },
         fill: true,
         tension: 0.45,
-        pointBackgroundColor: '#ffffff',
+        pointBackgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() : 'var(--color-heading)',
         pointBorderColor: this.palette[0],
         pointBorderWidth: 2.5,
         pointRadius: 4,
         pointHoverRadius: 7,
         pointHoverBackgroundColor: this.palette[0],
-        pointHoverBorderColor: '#ffffff',
+        pointHoverBorderColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() : 'var(--color-heading)',
         pointHoverBorderWidth: 3,
         borderWidth: 3,
       }],
@@ -302,8 +302,8 @@ export class RevenueDashboard implements OnInit {
         data: d.ordersByStatus.map((i) => i.count),
         backgroundColor: d.ordersByStatus.map((_, i) => this.palette[i % this.palette.length]),
         borderWidth: 3,
-        borderColor: '#ffffff',
-        hoverBorderColor: '#ffffff',
+        borderColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() : 'var(--color-heading)',
+        hoverBorderColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() : 'var(--color-heading)',
         hoverBorderWidth: 4,
         hoverOffset: 8,
       }],
@@ -317,7 +317,7 @@ export class RevenueDashboard implements OnInit {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#1f1c18',
+        backgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : 'var(--color-heading)',
         titleFont: { family: 'Inter', size: 12, weight: '600' },
         bodyFont: { family: 'Inter', size: 13 },
         padding: 12,
@@ -327,8 +327,8 @@ export class RevenueDashboard implements OnInit {
       },
     },
     scales: {
-      x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375', maxRotation: 45 } },
-      y: { beginAtZero: true, grid: { color: 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375', callback: (v: any) => `EGP ${v}` } },
+      x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375', maxRotation: 45 } },
+      y: { beginAtZero: true, grid: { color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() : 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375', callback: (v: any) => `EGP ${v}` } },
     },
   };
 
@@ -338,7 +338,7 @@ export class RevenueDashboard implements OnInit {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#1f1c18',
+        backgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : 'var(--color-heading)',
         titleFont: { family: 'Inter', size: 12, weight: '600' },
         bodyFont: { family: 'Inter', size: 13 },
         padding: 12,
@@ -347,8 +347,8 @@ export class RevenueDashboard implements OnInit {
       },
     },
     scales: {
-      x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375' } },
-      y: { beginAtZero: true, grid: { color: 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#8c8375', callback: (v: any) => `EGP ${v}` } },
+      x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375' } },
+      y: { beginAtZero: true, grid: { color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() : 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375', callback: (v: any) => `EGP ${v}` } },
     },
   };
 
@@ -361,14 +361,14 @@ export class RevenueDashboard implements OnInit {
         position: 'bottom',
         labels: {
           font: { family: 'Inter', size: 12, weight: '500' },
-          color: '#544d43',
+          color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#544d43',
           padding: 16,
           usePointStyle: true,
           pointStyleWidth: 10,
         },
       },
       tooltip: {
-        backgroundColor: '#1f1c18',
+        backgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : 'var(--color-heading)',
         titleFont: { family: 'Inter', size: 12, weight: '600' },
         bodyFont: { family: 'Inter', size: 13 },
         padding: 12,

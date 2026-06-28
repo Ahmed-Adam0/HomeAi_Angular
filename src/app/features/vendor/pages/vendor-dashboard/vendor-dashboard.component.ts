@@ -245,7 +245,7 @@ export class VendorDashboard implements OnInit {
       }
     }
 
-    const goldColor = '#b8935c';
+    const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
     const gradient = ctx.getContext('2d')?.createLinearGradient(0, 0, 0, 280);
     if (gradient) {
       gradient.addColorStop(0, 'rgba(184, 147, 92, 0.38)');
@@ -267,7 +267,7 @@ export class VendorDashboard implements OnInit {
           backgroundColor: gradient || 'rgba(184, 147, 92, 0.06)',
           fill: true,
           tension: 0.25,
-          pointBackgroundColor: '#ffffff',
+          pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim(),
           pointBorderColor: goldColor,
           pointBorderWidth: 2,
           pointRadius: 4,
@@ -287,10 +287,10 @@ export class VendorDashboard implements OnInit {
             display: false,
           },
           tooltip: {
-            backgroundColor: '#1f1c18',
-            titleColor: '#ffffff',
-            bodyColor: '#e5e0d8',
-            borderColor: '#b8935c',
+            backgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : 'var(--color-heading)',
+            titleColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim() : '#fff',
+            bodyColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : 'var(--color-border)',
+            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(),
             borderWidth: 1,
             padding: 12,
             boxPadding: 4,
@@ -325,7 +325,7 @@ export class VendorDashboard implements OnInit {
               display: false,
             },
             ticks: {
-              color: '#70675a',
+              color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#70675a',
               font: {
                 size: 9,
                 family: 'Outfit, sans-serif'
@@ -334,10 +334,10 @@ export class VendorDashboard implements OnInit {
           },
           y: {
             grid: {
-              color: 'rgba(31, 28, 24, 0.04)',
+              color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() : 'rgba(31, 28, 24, 0.04)',
             },
             ticks: {
-              color: '#70675a',
+              color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#70675a',
               font: {
                 size: 9,
                 family: 'Outfit, sans-serif'
@@ -382,10 +382,10 @@ export class VendorDashboard implements OnInit {
         ],
         datasets: [{
           data: [activeVal, archivedVal],
-          backgroundColor: ['#b8935c', '#e5e0d8'],
-          borderColor: '#ffffff',
+          backgroundColor: [getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(), 'var(--color-border)'],
+          borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim(),
           borderWidth: 2.5,
-          hoverBorderColor: '#b8935c',
+          hoverBorderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(),
           hoverBorderWidth: 1,
           hoverOffset: 6
         }]
@@ -405,10 +405,10 @@ export class VendorDashboard implements OnInit {
             display: false
           },
           tooltip: {
-            backgroundColor: '#1f1c18',
-            titleColor: '#ffffff',
-            bodyColor: '#e5e0d8',
-            borderColor: '#b8935c',
+            backgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : 'var(--color-heading)',
+            titleColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim() : '#fff',
+            bodyColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : 'var(--color-border)',
+            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(),
             borderWidth: 1,
             padding: 10,
             cornerRadius: 8,

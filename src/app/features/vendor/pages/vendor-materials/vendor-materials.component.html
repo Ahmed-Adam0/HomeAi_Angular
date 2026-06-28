@@ -328,7 +328,7 @@
                               </div>
                               <i class="bi bi-chevron-right fs-9 text-muted dropdown-submenu-arrow"></i>
                             </div>
-                            <ul class="dropdown-submenu-menu shadow rounded list-unstyled m-0 py-1 bg-white">
+                            <ul class="dropdown-submenu-menu shadow rounded list-unstyled m-0 py-1 ">
                               <li *ngFor="let otherGroup of getOtherGroups(material.id)">
                                 <button 
                                   type="button"
@@ -374,7 +374,7 @@
       </section>
 
       <!-- Search Empty State (No query match) -->
-      <section *ngIf="filteredMaterials().length === 0 && materials().length > 0" class="empty-state-card border-0 rounded-4 p-5 bg-white text-center">
+      <section *ngIf="filteredMaterials().length === 0 && materials().length > 0" class="empty-state-card border-0 rounded-4 p-5  text-center">
         <div class="empty-icon-avatar mx-auto mb-4">
           <i class="bi bi-search text-muted display-6"></i>
         </div>
@@ -390,7 +390,7 @@
       </section>
 
       <!-- Stack Empty State (No materials exist at all) -->
-      <section *ngIf="materials().length === 0" class="empty-state-card border-0 rounded-4 p-5 bg-white text-center">
+      <section *ngIf="materials().length === 0" class="empty-state-card border-0 rounded-4 p-5  text-center">
         <div class="empty-icon-avatar mx-auto mb-4">
           <i class="bi bi-sliders text-muted display-6"></i>
         </div>

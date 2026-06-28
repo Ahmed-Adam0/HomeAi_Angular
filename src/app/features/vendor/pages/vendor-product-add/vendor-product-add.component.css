@@ -55,7 +55,7 @@
 
 .studio-hero-card {
   position: relative;
-  background: linear-gradient(135deg, #ffffff 0%, var(--fm-color-primary-50) 50%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--fm-color-primary-50) 50%, var(--color-surface) 100%);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: var(--fm-radius-xl);
   padding: 28px 32px 24px;
@@ -182,7 +182,7 @@
   align-items: center;
   gap: 6px;
   padding: 5px 14px 5px 10px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--color-surface);
   backdrop-filter: blur(8px);
   border: 1px solid var(--fm-color-neutral-200);
   border-radius: var(--fm-radius-pill);
@@ -307,7 +307,7 @@
 .hero-btn--publish {
   padding: 9px 22px;
   background: var(--fm-color-neutral-900);
-  color: #ffffff;
+  color: var(--color-surface);
   box-shadow: 0 2px 8px rgba(29, 27, 24, 0.15);
 }
 .hero-btn--publish:hover:not(:disabled) {
@@ -860,7 +860,7 @@ app-custom-dropdown {
 .btn-studio-dark {
   background-color: var(--fm-color-neutral-900);
   border: 1px solid var(--fm-color-neutral-900);
-  color: #ffffff;
+  color: var(--color-surface);
   font-weight: 700;
   padding: 8px 22px;
   border-radius: var(--fm-radius-pill);
@@ -942,7 +942,7 @@ app-custom-dropdown {
   bottom: 8px;
   left: 8px;
   background-color: var(--fm-color-primary-500);
-  color: #ffffff;
+  color: var(--color-surface);
   font-size: 0.6rem;
   font-weight: 800;
   padding: 2px 6px;
@@ -986,11 +986,11 @@ app-custom-dropdown {
 .set-primary-star:hover,
 .set-primary-star.star-highlighted {
   background-color: var(--fm-color-primary-500);
-  color: #ffffff;
+  color: var(--color-surface);
 }
 .delete-photo-btn:hover {
   background-color: var(--fm-color-danger-500);
-  color: #ffffff;
+  color: var(--color-surface);
 }
 
 /* Quality Checklists & Specs table */
@@ -1027,7 +1027,7 @@ app-custom-dropdown {
   height: 18px;
   border-radius: 50%;
   background-color: var(--fm-color-neutral-200);
-  color: #ffffff;
+  color: var(--color-surface);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1125,7 +1125,7 @@ app-custom-dropdown {
   background-color: var(--color-surface);
   border-radius: 24px;
   overflow: hidden;
-  border: 1px solid rgba(31, 28, 24, 0.05);
+  border: 1px solid var(--color-border);
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.025);
   transition: transform 0.2s ease;
 }
@@ -1161,7 +1161,7 @@ app-custom-dropdown {
   top: 12px;
   left: 12px;
   background-color: var(--fm-color-neutral-900);
-  color: #ffffff;
+  color: var(--color-surface);
   font-size: 0.65rem;
   font-weight: 800;
   padding: 2px 8px;
@@ -1263,7 +1263,7 @@ app-custom-dropdown {
 .btn-studio-publish {
   background-color: var(--fm-color-neutral-900);
   border: none;
-  color: #ffffff;
+  color: var(--color-surface);
   padding: 10px 32px;
   border-radius: var(--fm-radius-pill);
   font-size: 0.82rem;
@@ -1327,8 +1327,8 @@ app-custom-dropdown {
 
 /* Custom close button styling on the modal header */
 .btn-close-studio {
-  background: rgba(31, 28, 24, 0.05);
-  border: 1px solid rgba(31, 28, 24, 0.08);
+  background: var(--color-card-hover);
+  border: 1px solid var(--color-border);
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -1341,7 +1341,7 @@ app-custom-dropdown {
 }
 
 .btn-close-studio:hover {
-  background: rgba(31, 28, 24, 0.1);
+  background: var(--color-card-hover);
   color: var(--color-text);
   transform: scale(1.05);
 }
@@ -1362,7 +1362,7 @@ app-custom-dropdown {
 .studio-section-subheading {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--fm-color-neutral-900, #1f1c18);
+  color: var(--color-text);
   letter-spacing: -0.01em;
 }
 
@@ -1382,7 +1382,7 @@ app-custom-dropdown {
 }
 
 .text-gold {
-  color: var(--fm-color-primary-500, #b8935c) !important;
+  color: var(--fm-color-primary-500, var(--color-primary)) !important;
 }
 
 .bg-success-soft {
@@ -1416,9 +1416,9 @@ app-custom-dropdown {
 }
 
 .btn-outline-studio:hover {
-  background-color: var(--fm-color-neutral-100, #f4f2ee);
+  background-color: var(--fm-color-neutral-100, var(--color-surface, #f4f2ee));
   border-color: var(--fm-color-neutral-400, #b8b8b8);
-  color: var(--fm-color-neutral-900, #1f1c18);
+  color: var(--color-text);
 }
 
 .btn-outline-danger {
@@ -1446,8 +1446,8 @@ app-custom-dropdown {
 }
 
 .btn-xs.btn-studio-dark {
-  background-color: var(--fm-color-neutral-900, #1f1c18);
-  color: #ffffff;
+  background-color: var(--color-text);
+  color: var(--color-surface);
   border: none;
 }
 

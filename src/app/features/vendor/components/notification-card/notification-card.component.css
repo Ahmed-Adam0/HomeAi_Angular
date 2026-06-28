@@ -1,8 +1,8 @@
 .notification-card {
-  background: var(--fm-color-neutral-50, #faf9f6);
-  border: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08));
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--fm-radius-lg, 16px);
-  box-shadow: var(--fm-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.06));
+  box-shadow: var(--fm-shadow-sm);
   display: flex;
   gap: 0.875rem;
   padding: 1.125rem 1.25rem;
@@ -10,22 +10,22 @@
 }
 
 .notification-card:hover {
-  border-color: rgba(31, 28, 24, 0.12);
-  box-shadow: var(--fm-shadow-md, 0 8px 24px rgba(0, 0, 0, 0.08));
+  border-color: var(--color-border);
+  box-shadow: var(--fm-shadow-md);
   transform: translateY(-2px);
 }
 
 .notification-card--unread {
-  background: rgba(184, 147, 92, 0.06);
-  border-color: rgba(184, 147, 92, 0.18);
-  border-left: 3px solid var(--fm-color-primary-500, #b8935c);
+  background: var(--fm-color-primary-soft);
+  border-color: var(--color-primary);
+  border-left: 3px solid var(--color-primary);
 }
 
 .notification-card__icon {
   align-items: center;
-  background: var(--fm-color-neutral-100, #f4f2ee);
+  background: var(--color-surface-hover, var(--color-surface));
   border-radius: var(--fm-radius-circle, 50%);
-  color: var(--fm-color-neutral-600, #70675a);
+  color: var(--color-text-muted);
   display: inline-flex;
   flex-shrink: 0;
   height: 2.5rem;
@@ -34,8 +34,8 @@
 }
 
 .notification-card--unread .notification-card__icon {
-  background: rgba(184, 147, 92, 0.12);
-  color: var(--fm-color-primary-600, #a37e4c);
+  background: var(--fm-color-primary-soft);
+  color: var(--color-primary);
 }
 
 .notification-card__body {
@@ -53,7 +53,7 @@
 
 .notification-card__title {
   align-items: center;
-  color: var(--fm-color-neutral-900, #1f1c18);
+  color: var(--color-heading);
   display: flex;
   font-size: 0.9375rem;
   font-weight: 600;
@@ -68,7 +68,7 @@
 }
 
 .notification-card__unread-dot {
-  background: var(--fm-color-primary-500, #b8935c);
+  background: var(--color-primary);
   border-radius: var(--fm-radius-circle, 50%);
   display: inline-block;
   height: 0.5rem;
@@ -76,7 +76,7 @@
 }
 
 .notification-card__time {
-  color: var(--fm-color-neutral-500, #8c8375);
+  color: var(--color-text-muted);
   flex-shrink: 0;
   font-size: 0.75rem;
   font-weight: 500;
@@ -84,7 +84,7 @@
 }
 
 .notification-card__message {
-  color: var(--fm-color-neutral-700, #544d43);
+  color: var(--color-text-muted);
   font-size: 0.875rem;
   line-height: 1.55;
   margin: 0;
@@ -99,9 +99,9 @@
 
 .notification-card__mark-btn {
   background: transparent;
-  border: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.12));
+  border: 1px solid var(--color-border);
   border-radius: var(--fm-radius-sm, 8px);
-  color: var(--fm-color-neutral-800, #38332c);
+  color: var(--color-heading);
   cursor: pointer;
   font-size: 0.8125rem;
   font-weight: 600;
@@ -111,8 +111,8 @@
 }
 
 .notification-card__mark-btn:hover {
-  background: var(--fm-color-neutral-100, #f4f2ee);
-  border-color: rgba(31, 28, 24, 0.16);
+  background: var(--color-surface-hover, var(--color-surface));
+  border-color: var(--color-border);
 }
 
 .notification-card__mark-btn:disabled {
@@ -121,7 +121,7 @@
 }
 
 .notification-card__mark-btn:focus-visible {
-  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.24);
+  box-shadow: 0 0 0 3px var(--fm-color-primary-soft);
   outline: none;
 }
 

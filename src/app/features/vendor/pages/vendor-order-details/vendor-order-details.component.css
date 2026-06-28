@@ -5,16 +5,27 @@
    ============================================================================ */
 
 /* ─── Design Tokens ──────────────────────────────────────────────────────── */
+:host-context(html[data-theme="dark"]) .vod-workspace {
+  --vod-bg: #12100e;
+  --vod-surface: #1c1916;
+  --vod-border: rgba(255, 255, 255, 0.1);
+  --vod-border-med: rgba(255, 255, 255, 0.15);
+  --vod-text-head: #d9d3c7;
+  --vod-text-body: #a89f91;
+  --vod-text-muted: #8c8375;
+  --vod-text-faint: #5e554b;
+}
+
 .vod-workspace {
   /* Brand palette */
-  --vod-brand:         #b8935c;
+  --vod-brand:         var(--color-primary);
   --vod-brand-dim:     rgba(184, 147, 92, 0.12);
   --vod-brand-border:  rgba(184, 147, 92, 0.20);
   --vod-brand-deep:    #8a6a36;
 
   /* Neutrals */
   --vod-bg:            #f6f4f1;
-  --vod-surface:       #ffffff;
+  --vod-surface:       var(--color-surface);
   --vod-border:        rgba(0, 0, 0, 0.06);
   --vod-border-med:    rgba(0, 0, 0, 0.10);
 
@@ -65,7 +76,7 @@
 .vod-loading-inner { padding: 0; }
 .vod-skeleton-hero {
   height: 280px;
-  background: linear-gradient(90deg, #ede9e3 25%, #e5e0d8 50%, #ede9e3 75%);
+  background: linear-gradient(90deg, #ede9e3 25%, var(--color-border) 50%, #ede9e3 75%);
   background-size: 200% 100%;
   animation: shimmer 1.6s infinite;
 }
@@ -77,7 +88,7 @@
 }
 .vod-skeleton-card {
   height: 180px;
-  background: linear-gradient(90deg, #f0ece6 25%, #e8e3dc 50%, #f0ece6 75%);
+  background: linear-gradient(90deg, var(--color-surface-hover) 25%, var(--color-border) 50%, var(--color-surface-hover) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.6s infinite;
   border-radius: var(--vod-radius-lg);
@@ -435,7 +446,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--vod-text-muted);
-  background: #faf8f5;
+  background: var(--color-surface-hover);
   border-bottom: 1px solid var(--vod-border);
 }
 .vod-vendor-label svg {
@@ -451,7 +462,7 @@
   border-bottom: 1px solid var(--vod-border);
   transition: background 0.2s ease;
 }
-.vod-item-card:hover { background: #fdfcfb; }
+.vod-item-card:hover { background: var(--color-card-hover); }
 .vod-item-card--last { border-bottom: none; }
 
 .vod-item-thumb {
@@ -459,7 +470,7 @@
   height: 80px;
   border-radius: var(--vod-radius-sm);
   overflow: hidden;
-  background: #f0ece6;
+  background: var(--color-surface-hover);
   flex-shrink: 0;
   border: 1px solid var(--vod-border);
 }
@@ -498,7 +509,7 @@
   font-size: 0.75rem;
   font-family: 'JetBrains Mono', 'Menlo', monospace;
   color: var(--vod-text-muted);
-  background: #f3f0ec;
+  background: var(--color-surface-hover);
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
   border: 1px solid var(--vod-border);
@@ -606,7 +617,7 @@
   font-family: monospace;
 }
 .vod-activity-badge--muted {
-  background: #f0ece6;
+  background: var(--color-surface-hover);
   color: var(--vod-text-muted);
   border-color: var(--vod-border-med);
 }
@@ -717,7 +728,7 @@
   justify-content: space-between;
   padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--vod-border);
-  background: #faf8f5;
+  background: var(--color-surface-hover);
 }
 .vod-action-title {
   font-size: 0.75rem;
@@ -801,8 +812,8 @@
   cursor: pointer;
 
   /* CSS variables to easily support theme adjustments */
-  --picker-bg: var(--fm-input-bg, #ffffff);
-  --picker-border: var(--fm-input-border, rgba(31, 28, 24, 0.08));
+  --picker-bg: var(--fm-input-bg, var(--color-surface));
+  --picker-border: var(--fm-input-border, var(--color-border));
   --picker-text: var(--fm-color-neutral-800, #38332c);
   --picker-placeholder: var(--fm-color-neutral-400, #b3ab9d);
   --picker-icon-color: var(--fm-color-neutral-500, #8c8375);
@@ -816,7 +827,7 @@
 
 /* Focus effects (when input is focused) */
 .premium-date-picker-wrapper:focus-within:not(.disabled) {
-  border-color: var(--fm-input-focus-border, var(--fm-color-primary-500, #b8935c));
+  border-color: var(--fm-input-focus-border, var(--fm-color-primary-500, var(--color-primary)));
   box-shadow: 0 0 0 4px var(--fm-input-focus-ring, rgba(184, 147, 92, 0.08));
   background-color: var(--color-surface);
 }
@@ -826,7 +837,7 @@
   opacity: 0.6;
   cursor: not-allowed;
   background-color: rgba(244, 242, 238, 0.4);
-  border-color: var(--fm-border-medium, rgba(31, 28, 24, 0.08));
+  border-color: var(--fm-border-medium, var(--color-border));
 }
 
 /* Date Picker Input */
@@ -865,11 +876,11 @@
 }
 
 .premium-date-picker-wrapper:hover:not(.disabled) .premium-date-picker-icon {
-  color: var(--fm-color-primary-500, #b8935c);
+  color: var(--fm-color-primary-500, var(--color-primary));
 }
 
 .premium-date-picker-wrapper:focus-within:not(.disabled) .premium-date-picker-icon {
-  color: var(--fm-color-primary-500, #b8935c);
+  color: var(--fm-color-primary-500, var(--color-primary));
 }
 
 /* Webkit-specific overrides to hide native calendar button but overlay it to cover the entire container */
@@ -914,9 +925,9 @@
 .bg-dark .premium-date-picker-wrapper,
 .card-dark .premium-date-picker-wrapper,
 [data-theme="dark"] .premium-date-picker-wrapper {
-  --picker-bg: var(--fm-color-neutral-900, #1f1c18);
-  --picker-border: rgba(255, 255, 255, 0.12);
-  --picker-text: var(--fm-color-neutral-100, #f4f2ee);
+  --picker-bg: var(--color-text);
+  --picker-border: var(--color-surface);
+  --picker-text: var(--fm-color-neutral-100, var(--color-surface, #f4f2ee));
   --picker-placeholder: var(--fm-color-neutral-500, #8c8375);
   --picker-icon-color: var(--fm-color-neutral-400, #b3ab9d);
 }
@@ -924,7 +935,7 @@
 .bg-dark .premium-date-picker-wrapper:focus-within:not(.disabled),
 .card-dark .premium-date-picker-wrapper:focus-within:not(.disabled),
 [data-theme="dark"] .premium-date-picker-wrapper:focus-within:not(.disabled) {
-  background-color: var(--fm-color-neutral-900, #1f1c18);
+  background-color: var(--color-text);
 }
 
 .vod-action-complete {
@@ -954,7 +965,7 @@
   letter-spacing: 0.08em;
   color: var(--vod-text-faint);
   border-bottom: 1px solid var(--vod-border);
-  background: #faf8f5;
+  background: var(--color-surface-hover);
 }
 
 .vod-financials-rows {
@@ -1025,7 +1036,7 @@
 .vod-tracking-code {
   font-family: 'JetBrains Mono', 'Menlo', monospace;
   font-size: 0.75rem;
-  background: #f3f0ec;
+  background: var(--color-surface-hover);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   border: 1px solid var(--vod-border-med);
@@ -1036,7 +1047,7 @@
 .vod-workspace ::ng-deep .btn-primary {
   background-color: var(--vod-text-head) !important;
   border-color: var(--vod-text-head) !important;
-  color: #ffffff !important;
+  color: var(--color-surface) !important;
   font-weight: 600 !important;
   border-radius: var(--vod-radius-sm) !important;
   transition: all 0.25s var(--vod-ease) !important;
@@ -1059,7 +1070,7 @@
 .vod-workspace ::ng-deep .btn-premium {
   background: var(--vod-text-head) !important;
   border: 1px solid var(--vod-brand-border) !important;
-  color: #ffffff !important;
+  color: var(--color-surface) !important;
   border-radius: var(--vod-radius-sm) !important;
 }
 .vod-workspace ::ng-deep .btn-premium:hover {

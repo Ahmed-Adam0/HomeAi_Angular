@@ -1,9 +1,9 @@
 .vendor-revenue {
-  --color-primary: var(--fm-color-primary-500, #b8935c);
-  --color-surface: var(--fm-color-neutral-50, #faf9f6);
-  --color-background: var(--fm-surface-bg, var(--fm-color-neutral-50, #faf9f6));
-  --color-border: var(--fm-border-medium, rgba(31, 28, 24, 0.08));
-  --color-text-primary: var(--fm-color-neutral-900, #1f1c18);
+  --color-primary: var(--fm-color-primary-500, var(--color-primary));
+  --color-surface: var(--fm-color-neutral-50, var(--color-surface));
+  --color-background: var(--fm-surface-bg, var(--fm-color-neutral-50, var(--color-surface)));
+  --color-border: var(--fm-border-medium, var(--color-border));
+  --color-text-primary: var(--color-text);
   --color-text-secondary: var(--fm-color-neutral-600, #70675a);
 
   background:
@@ -74,8 +74,8 @@
   backdrop-filter: blur(12px);
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.88) 0%,
-    rgba(250, 249, 246, 0.72) 100%
+    var(--color-surface) 0%,
+    var(--color-card-hover) 100%
   );
   border: 1px solid var(--color-border);
   border-radius: var(--fm-radius-pill, 9999px);
@@ -147,9 +147,9 @@
   backdrop-filter: blur(12px);
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.92) 0%,
+    var(--color-surface) 0%,
     var(--color-surface) 55%,
-    rgba(250, 246, 240, 0.88) 100%
+    var(--color-card-hover) 100%
   );
   border: 1px solid var(--color-border);
   border-radius: var(--fm-radius-lg, 16px);
@@ -174,9 +174,9 @@
   backdrop-filter: blur(12px);
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.96) 0%,
+    var(--color-surface) 0%,
     var(--color-surface) 50%,
-    rgba(250, 246, 240, 0.9) 100%
+    var(--color-card-hover) 100%
   );
   border: 1px solid var(--color-border);
   border-radius: var(--fm-radius-lg, 16px);
@@ -222,9 +222,9 @@
   backdrop-filter: blur(12px);
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.94) 0%,
+    var(--color-surface) 0%,
     var(--color-surface) 48%,
-    rgba(250, 246, 240, 0.9) 100%
+    var(--color-card-hover) 100%
   );
   border: 1px solid var(--color-border);
   border-radius: var(--fm-radius-lg, 16px);
@@ -293,8 +293,8 @@
   backdrop-filter: blur(8px);
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(250, 249, 246, 0.4) 100%
+    var(--color-surface) 0%,
+    var(--color-card-hover) 100%
   );
   border: 1px dashed rgba(31, 28, 24, 0.1);
   border-radius: var(--fm-radius-md, 12px);

@@ -3,7 +3,7 @@
 }
 
 .card-header {
-  background: var(--primary-color, #1f1c18) !important;
+  background: var(--color-heading) !important;
   border-bottom: 0;
 }
 
@@ -13,44 +13,44 @@
 }
 
 .form-control, .form-select {
-  border: 1px solid rgba(31, 28, 24, 0.15);
+  border: 1px solid var(--color-border);
   background-color: var(--color-background);
-  color: var(--primary-color, #1f1c18);
+  color: var(--color-heading);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .form-control:focus, .form-select:focus {
-  border-color: #b8935c;
+  border-color: var(--color-primary);
   background-color: var(--color-surface);
-  box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.15);
+  box-shadow: 0 0 0 4px var(--fm-color-primary-soft);
   outline: 0;
 }
 
 .form-check-input:checked {
-  background-color: #b8935c !important;
-  border-color: #b8935c !important;
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
 }
 
 .btn-outline-dark {
-  color: var(--primary-color, #1f1c18);
+  color: var(--color-heading);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-outline-dark:hover {
-  background-color: var(--primary-color, #1f1c18) !important;
-  color: #ffffff !important;
+  background-color: var(--color-heading) !important;
+  color: var(--color-surface) !important;
   transform: translateY(-2px);
 }
 
 .btn-dark {
-  background-color: var(--primary-color, #1f1c18);
+  background-color: var(--color-heading);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-dark:hover {
-  background-color: #333333;
+  background-color: var(--color-heading);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--fm-shadow-md);
 }
 
 .btn-dark:disabled, .btn-outline-dark:disabled {
@@ -71,7 +71,7 @@
 /* Option row with price input */
 .form-check-option-row {
   padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(31, 28, 24, 0.06);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .form-check-option-row:last-child {
@@ -80,20 +80,20 @@
 
 .option-price-input .input-group-text {
   font-size: 0.72rem;
-  border: 1px solid rgba(31, 28, 24, 0.15);
+  border: 1px solid var(--color-border);
   border-right: none;
-  color: #888;
+  color: var(--color-text-muted);
 }
 
 .option-price-input .form-control {
   font-size: 0.78rem;
-  border: 1px solid rgba(31, 28, 24, 0.15);
+  border: 1px solid var(--color-border);
   padding: 0.3rem 0.6rem;
 }
 
 .option-price-input .form-control:focus {
-  border-color: #b8935c;
-  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--fm-color-primary-soft);
 }
 
 .fs-9 {
@@ -106,9 +106,9 @@ app-custom-dropdown {
 }
 
 ::ng-deep app-custom-dropdown.is-invalid .dropdown-trigger {
-  border-color: #dc3545 !important;
+  border-color: var(--fm-color-danger-600) !important;
 }
 
 ::ng-deep app-custom-dropdown.is-invalid .dropdown-trigger:focus {
-  box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.15) !important;
+  box-shadow: 0 0 0 4px var(--fm-color-danger-soft) !important;
 }

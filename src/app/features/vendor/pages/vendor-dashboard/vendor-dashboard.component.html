@@ -50,7 +50,7 @@
       <div class="row g-4 mb-4">
         <!-- KPI Card 1: Revenue -->
         <div class="col-sm-6 col-lg-3">
-          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 bg-white">
+          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 ">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <span class="kpi-label text-muted uppercase font-xxs fw-bold tracking-wider">{{ translationService.currentLang() === 'ar' ? 'إجمالي الإيرادات' : 'Total Revenue' }}</span>
@@ -69,7 +69,7 @@
 
         <!-- KPI Card 2: Orders -->
         <div class="col-sm-6 col-lg-3">
-          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 bg-white">
+          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 ">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <span class="kpi-label text-muted uppercase font-xxs fw-bold tracking-wider">{{ translationService.currentLang() === 'ar' ? 'إجمالي الطلبات' : 'Total Orders' }}</span>
@@ -89,7 +89,7 @@
 
         <!-- KPI Card 3: Catalog -->
         <div class="col-sm-6 col-lg-3">
-          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 bg-white cursor-pointer transition-all hover-lift" routerLink="/vendor/products">
+          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100  cursor-pointer transition-all hover-lift" routerLink="/vendor/products">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <span class="kpi-label text-muted uppercase font-xxs fw-bold tracking-wider">{{ translationService.currentLang() === 'ar' ? 'كتالوج المنتجات' : 'Store Catalog' }}</span>
@@ -109,7 +109,7 @@
 
         <!-- KPI Card 4: Reviews -->
         <div class="col-sm-6 col-lg-3">
-          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100 bg-white cursor-pointer transition-all hover-lift" routerLink="/vendor/reviews">
+          <div class="card kpi-card border-0 rounded-4 p-3 shadow-xs h-100  cursor-pointer transition-all hover-lift" routerLink="/vendor/reviews">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div>
                 <span class="kpi-label text-muted uppercase font-xxs fw-bold tracking-wider">{{ translationService.currentLang() === 'ar' ? 'تقييمات الورشة' : 'Workshop Rating' }}</span>
@@ -139,7 +139,7 @@
       <div class="row g-4 mb-4">
         <!-- Area Trend Chart Card -->
         <div class="col-12 col-lg-8">
-          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs bg-white h-100">
+          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs  h-100">
             <div class="chart-header d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
               <div>
                 <h3 class="h6 fw-extrabold text-dark m-0 uppercase letter-spacing-wide">
@@ -178,8 +178,8 @@
               <canvas id="trendChartCanvas"></canvas>
               
               <!-- Subtle empty state overlay inside the chart area -->
-              <div *ngIf="isTrendDataEmpty()" class="chart-empty-overlay d-flex flex-column align-items-center justify-content-center position-absolute top-0 start-0 w-100 h-100 rounded-4" style="background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(1.5px); pointer-events: none;">
-                <div class="empty-chart-badge px-3 py-2 rounded-pill bg-white border border-light-subtle d-flex align-items-center gap-2 shadow-xs">
+              <div *ngIf="isTrendDataEmpty()" class="chart-empty-overlay d-flex flex-column align-items-center justify-content-center position-absolute top-0 start-0 w-100 h-100 rounded-4" style="background: var(--color-surface); backdrop-filter: blur(1.5px); pointer-events: none;">
+                <div class="empty-chart-badge px-3 py-2 rounded-pill  border border-light-subtle d-flex align-items-center gap-2 shadow-xs">
                   <i class="bi bi-graph-up text-gold"></i>
                   <span class="font-xxs fw-bold text-secondary">
                     {{ translationService.currentLang() === 'ar' ? 'لا توجد بيانات مبيعات حتى الآن' : 'No sales activity yet' }}
@@ -192,7 +192,7 @@
 
         <!-- Product Status Donut Chart Card -->
         <div class="col-12 col-lg-4">
-          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs bg-white h-100 d-flex flex-column justify-content-between">
+          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs  h-100 d-flex flex-column justify-content-between">
             <div>
               <h3 class="h6 fw-extrabold text-dark mb-1 uppercase letter-spacing-wide">
                 {{ translationService.currentLang() === 'ar' ? 'توزيع كتالوج المنتجات' : 'Product Catalog Status' }}
@@ -216,7 +216,7 @@
             <div class="legend-container mt-4 pt-3 border-top border-light-subtle">
               <div class="d-flex justify-content-between align-items-center mb-2 font-xxs">
                 <div class="d-flex align-items-center gap-2">
-                  <span class="legend-color-dot" style="background-color: #b8935c; width: 9px; height: 9px; display: inline-block; border-radius: 50%;"></span>
+                  <span class="legend-color-dot" style="background-color: var(--color-primary); width: 9px; height: 9px; display: inline-block; border-radius: 50%;"></span>
                   <span class="text-secondary fw-semibold">{{ translationService.currentLang() === 'ar' ? 'منتجات نشطة بالمتجر' : 'Active storefront items' }}</span>
                 </div>
                 <span class="fw-extrabold text-dark">
@@ -226,7 +226,7 @@
               </div>
               <div class="d-flex justify-content-between align-items-center font-xxs">
                 <div class="d-flex align-items-center gap-2">
-                  <span class="legend-color-dot" style="background-color: #e5e0d8; width: 9px; height: 9px; display: inline-block; border-radius: 50%;"></span>
+                  <span class="legend-color-dot" style="background-color: var(--color-border); width: 9px; height: 9px; display: inline-block; border-radius: 50%;"></span>
                   <span class="text-secondary fw-semibold">{{ translationService.currentLang() === 'ar' ? 'منتجات مؤرشفة مخفية' : 'Archived hidden items' }}</span>
                 </div>
                 <span class="fw-extrabold text-dark">
@@ -243,7 +243,7 @@
       <div class="row g-4 mb-4">
         <!-- Reviews Sentiment Summary Card -->
         <div class="col-12 col-md-5 col-xl-4">
-          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs bg-white h-100">
+          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs  h-100">
             <h3 class="h6 fw-extrabold text-dark mb-1 uppercase letter-spacing-wide">
               {{ translationService.currentLang() === 'ar' ? 'ملخص تقييمات العملاء' : 'Customer Review Insights' }}
             </h3>
@@ -289,7 +289,7 @@
 
         <!-- Rating Distribution Card -->
         <div class="col-12 col-md-7 col-xl-8">
-          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs bg-white h-100">
+          <div class="card chart-card border-0 rounded-4 p-4 shadow-xs  h-100">
             <h3 class="h6 fw-extrabold text-dark mb-1 uppercase letter-spacing-wide">
               {{ translationService.currentLang() === 'ar' ? 'توزيع التقييمات بالنجوم' : 'Rating Distribution' }}
             </h3>
@@ -330,7 +330,7 @@
     <!-- Quick Actions Panel -->
     <div class="row g-4 mb-5">
       <div class="col-12">
-        <div class="card border-0 rounded-4 p-4 shadow-xs bg-white">
+        <div class="card border-0 rounded-4 p-4 shadow-xs ">
           <h3 class="h6 fw-extrabold text-dark mb-4 pb-2 border-bottom border-light uppercase letter-spacing-wide">
             {{ translationService.currentLang() === 'ar' ? 'إجراءات سريعة' : 'Quick Actions' }}
           </h3>
@@ -405,7 +405,7 @@
       <div class="row g-4" *ngIf="recentReviews().length > 0">
         <!-- Loop for latest 3 reviews -->
         <div class="col-12" *ngFor="let review of recentReviews()">
-          <div class="card card-review p-4 border-0 shadow-xs rounded-4 bg-white transition-all">
+          <div class="card card-review p-4 border-0 shadow-xs rounded-4  transition-all">
             <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
               <!-- Reviewer Content -->
               <div class="d-flex gap-3">
@@ -450,7 +450,7 @@
                   type="button"
                   (click)="toggleReplyForm(review.id)"
                   class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1.5 font-xxs fw-bold d-inline-flex align-items-center justify-content-center gap-1 border-0"
-                  style="background-color: rgba(31,28,24,0.06)"
+                  style="background-color: var(--color-card-hover)"
                 >
                   <i class="bi bi-reply-fill fs-7"></i>
                   {{ review.replyText ? (translationService.currentLang() === 'ar' ? 'تعديل الرد' : 'Edit Reply') : (translationService.currentLang() === 'ar' ? 'رد سريع' : 'Quick Reply') }}
@@ -480,11 +480,11 @@
               <textarea
                 [ngModel]="replyText()"
                 (ngModelChange)="replyText.set($event)"
-                class="form-control rounded-3 px-3 py-2 fs-7 mb-2 border-0 bg-white"
+                class="form-control rounded-3 px-3 py-2 fs-7 mb-2 border-0 "
                 rows="3"
               ></textarea>
               <div class="d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-outline-dark rounded-pill px-3 py-1 font-xxs border-0" style="background-color: rgba(31,28,24,0.04)" (click)="toggleReplyForm(review.id)">
+                <button type="button" class="btn btn-outline-dark rounded-pill px-3 py-1 font-xxs border-0" style="background-color: var(--color-card-hover)" (click)="toggleReplyForm(review.id)">
                   {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
                 </button>
                 <button type="button" class="btn btn-dark rounded-pill px-3 py-1 font-xxs d-flex align-items-center gap-1 border-0 shadow-sm" [disabled]="submittingReply() || !replyText().trim()" (click)="submitReply(review.id)">
@@ -499,15 +499,15 @@
 
         <!-- CTA to all reviews page -->
         <div class="col-12 text-center mt-2">
-          <a routerLink="/vendor/reviews" class="btn btn-outline-dark rounded-pill px-4 py-2 fs-7 fw-bold border-0" style="background-color: rgba(31,28,24,0.06)">
+          <a routerLink="/vendor/reviews" class="btn btn-outline-dark rounded-pill px-4 py-2 fs-7 fw-bold border-0" style="background-color: var(--color-card-hover)">
             {{ translationService.currentLang() === 'ar' ? 'عرض جميع التقييمات ←' : 'View All Customer Reviews →' }}
           </a>
         </div>
       </div>
 
       <!-- Reviews Empty state -->
-      <div *ngIf="recentReviews().length === 0" class="vendor-dashboard__empty-state p-5 bg-white rounded-4 shadow-xs text-center">
-        <div class="vendor-dashboard__empty-icon mx-auto mb-3" style="background: rgba(184, 147, 92, 0.1); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+      <div *ngIf="recentReviews().length === 0" class="vendor-dashboard__empty-state p-5  rounded-4 shadow-xs text-center">
+        <div class="vendor-dashboard__empty-icon mx-auto mb-3" style="background: var(--fm-color-primary-soft); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
           <i class="bi bi-chat-left-heart text-gold display-6"></i>
         </div>
         <h3 class="h6 fw-bold text-dark mb-1">{{ translationService.currentLang() === 'ar' ? 'لا توجد تقييمات لمنتجاتك بعد' : 'No Reviews Yet' }}</h3>

@@ -361,7 +361,7 @@
                     <h4 class="fw-bold text-dark fs-6 mb-1">{{ 'VENDOR.ORDER_DETAILS.AWAITING_APPROVAL_TITLE' | translate }}</h4>
                     <p class="text-muted small mb-3">{{ 'VENDOR.ORDER_DETAILS.AWAITING_APPROVAL_DESC' | translate }}</p>
                     @if (order()!.estimatedDeliveryDate) {
-                      <div class="p-2 bg-white rounded border text-secondary font-mono small fw-bold">
+                      <div class="p-2  rounded border text-secondary font-mono small fw-bold">
                         {{ order()!.estimatedDeliveryDate | date: 'dd/MM/yyyy' }}
                       </div>
                     }

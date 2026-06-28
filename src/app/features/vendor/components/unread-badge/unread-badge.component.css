@@ -1,9 +1,9 @@
 .unread-badge {
   align-items: center;
-  background: linear-gradient(135deg, var(--fm-color-primary-500, #b8935c), var(--fm-color-primary-700, #8a683d));
+  background: var(--color-primary);
   border-radius: var(--fm-radius-pill, 9999px);
-  box-shadow: 0 2px 8px rgba(184, 147, 92, 0.32);
-  color: #fff;
+  box-shadow: var(--fm-shadow-sm);
+  color: var(--color-surface);
   display: inline-flex;
   font-family: var(--fm-font-display, 'Outfit', serif);
   font-size: 0.8125rem;
@@ -22,9 +22,9 @@
 
 @keyframes badge-pulse {
   0%, 100% {
-    box-shadow: 0 2px 8px rgba(184, 147, 92, 0.32);
+    box-shadow: var(--fm-shadow-sm);
   }
   50% {
-    box-shadow: 0 2px 16px rgba(184, 147, 92, 0.52);
+    box-shadow: var(--fm-shadow-md);
   }
 }

@@ -156,7 +156,7 @@
                 type="button"
                 (click)="toggleReplyForm(review.id)"
                 class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1.5 font-xxs fw-bold d-inline-flex align-items-center justify-content-center gap-1 border-0"
-                style="background-color: rgba(31,28,24,0.06)"
+                style="background-color: var(--color-card-hover)"
               >
                 <i class="bi bi-reply-fill fs-7"></i>
                 {{ review.replyText ? (translationService.currentLang() === 'ar' ? 'تعديل الرد' : 'Edit Reply') : (translationService.currentLang() === 'ar' ? 'رد' : 'Reply') }}
@@ -195,7 +195,7 @@
             <textarea
               [ngModel]="replyText()"
               (ngModelChange)="replyText.set($event)"
-              class="form-control rounded-3 px-3 py-2 fs-7 mb-2 border-0 bg-white"
+              class="form-control rounded-3 px-3 py-2 fs-7 mb-2 border-0 "
               rows="3"
               [placeholder]="translationService.currentLang() === 'ar' ? 'اكتب ردك هنا (مثال: شكراً لك على ثقتك، يسعدنا أن المنتج نال إعجابك)...' : 'Write your response here (e.g. Thank you for your feedback! We are glad you enjoyed the item)...'"
             ></textarea>
@@ -203,7 +203,7 @@
               <button
                 type="button"
                 class="btn btn-outline-dark rounded-pill px-3 py-1 font-xxs border-0"
-                style="background-color: rgba(31,28,24,0.04)"
+                style="background-color: var(--color-card-hover)"
                 [disabled]="submittingReply()"
                 (click)="toggleReplyForm(review.id)"
               >

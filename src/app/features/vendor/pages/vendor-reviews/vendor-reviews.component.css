@@ -1,11 +1,11 @@
 .vendor-reviews-container {
   min-height: 100vh;
-  background-color: var(--fm-color-neutral-50, #faf9f6);
+  background-color: var(--fm-color-neutral-50, var(--color-surface));
 }
 
 .card-review {
   background-color: var(--color-surface);
-  border: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08));
+  border: 1px solid var(--fm-border-medium, var(--color-border));
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .text-gold {
-  color: var(--fm-color-primary-500, #b8935c) !important;
+  color: var(--fm-color-primary-500, var(--color-primary)) !important;
 }
 
 .text-light-gray {
@@ -32,17 +32,17 @@
 }
 
 .avatar-wrapper {
-  background-color: var(--fm-color-neutral-100, #f3f2eb);
+  background-color: var(--fm-color-neutral-100, var(--color-card-hover));
   color: var(--fm-color-neutral-600, #70675a);
 }
 
 .vendor-reply-box {
-  background-color: var(--fm-color-neutral-50, #faf9f6);
-  border-left: 3px solid var(--fm-color-primary-500, #b8935c);
+  background-color: var(--fm-color-neutral-50, var(--color-surface));
+  border-left: 3px solid var(--fm-color-primary-500, var(--color-primary));
 }
 
 .vendor-reply-form {
-  background-color: var(--fm-color-neutral-50, #faf9f6);
+  background-color: var(--fm-color-neutral-50, var(--color-surface));
   animation: slideDown 0.3s ease-out;
 }
 
@@ -78,7 +78,7 @@ textarea.form-control {
   .card-review .d-flex.flex-row.flex-md-column {
     flex-direction: column !important;
     width: 100% !important;
-    border-top: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08)) !important;
+    border-top: 1px solid var(--fm-border-medium, var(--color-border)) !important;
     padding-top: 1rem !important;
     margin-top: 1rem !important;
   }

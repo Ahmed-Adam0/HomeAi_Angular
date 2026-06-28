@@ -5,13 +5,22 @@
    ========================================== */
 
 .vendor-orders {
-  --color-primary: var(--fm-color-primary-500, #b8935c);
-  --color-surface: var(--fm-color-neutral-50, #faf9f6);
-  --color-background: var(--fm-surface-bg, var(--fm-color-neutral-50, #faf9f6));
-  --color-border: var(--fm-border-medium, rgba(31, 28, 24, 0.08));
-  --color-text-primary: var(--fm-color-neutral-900, #1f1c18);
+  --color-primary: var(--fm-color-primary-500, var(--color-primary));
+  --color-surface: var(--fm-color-neutral-50, var(--color-surface));
+  --color-background: var(--fm-surface-bg, var(--fm-color-neutral-50, var(--color-surface)));
+  --color-border: var(--fm-border-medium, var(--color-border));
+  --color-text-primary: var(--color-text);
   --color-text-secondary: var(--fm-color-neutral-600, #70675a);
+}
 
+:host-context(html[data-theme="dark"]) .vendor-orders {
+  --color-surface: var(--fm-color-neutral-100, #1c1916);
+  --color-background: var(--fm-color-neutral-50, #12100e);
+  --color-text-primary: var(--color-heading);
+  --color-text-secondary: var(--color-text-muted);
+}
+
+.vendor-orders {
   background:
     radial-gradient(
       ellipse 80% 50% at 50% -20%,
@@ -100,7 +109,7 @@
 }
 
 .vendor-orders__search-input {
-  background: var(--fm-input-bg, #ffffff);
+  background: var(--fm-input-bg, var(--color-surface));
   border: 1px solid var(--fm-input-border, var(--color-border));
   border-radius: var(--fm-radius-md, 12px);
   color: var(--color-text-primary);
@@ -134,7 +143,7 @@
 
 .vendor-orders__filter-toggle {
   align-items: center;
-  background: var(--fm-input-bg, #ffffff);
+  background: var(--fm-input-bg, var(--color-surface));
   border: 1px solid var(--fm-input-border, var(--color-border));
   border-radius: var(--fm-radius-md, 12px);
   color: var(--color-text-secondary);
@@ -247,7 +256,7 @@
 
 .vendor-orders__status-select {
   appearance: none;
-  background: var(--fm-input-bg, #ffffff);
+  background: var(--fm-input-bg, var(--color-surface));
   border: 1px solid var(--fm-input-border, var(--color-border));
   border-radius: var(--fm-radius-md, 12px);
   color: var(--color-text-primary);

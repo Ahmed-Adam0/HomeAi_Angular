@@ -1,31 +1,31 @@
 .image-uploader-wrapper {
-  border: 1px solid rgba(31, 28, 24, 0.08);
+  border: 1px solid var(--color-border);
 }
 
 .file-pick-container {
   border-style: dashed !important;
   border-width: 2px !important;
-  border-color: rgba(31, 28, 24, 0.15) !important;
+  border-color: var(--color-border) !important;
   background-color: var(--color-background) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .file-pick-container:hover {
-  border-color: #b8935c !important;
-  background-color: rgba(184, 147, 92, 0.02) !important;
+  border-color: var(--color-primary) !important;
+  background-color: var(--fm-color-primary-soft) !important;
 }
 
 .btn-premium {
-  background-color: #b8935c !important;
-  color: #ffffff !important;
+  background-color: var(--color-primary) !important;
+  color: var(--color-surface) !important;
   border: 0;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-premium:hover {
-  background-color: #a47f4b !important;
+  background-color: var(--color-primary-hover, var(--color-primary)) !important;
   transform: scale(1.03);
-  box-shadow: 0 6px 15px rgba(184, 147, 92, 0.3);
+  box-shadow: 0 6px 15px var(--fm-color-primary-soft);
 }
 
 .aspect-ratio-1-1 {
@@ -34,17 +34,17 @@
 }
 
 .thumbnail-wrapper {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--fm-shadow-sm);
 }
 
 .gallery-item-card {
-  border: 1px solid rgba(31, 28, 24, 0.06) !important;
+  border: 1px solid var(--color-border) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gallery-item-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: var(--fm-shadow-md) !important;
 }
 
 /* Delete button overlay on hover */
@@ -58,14 +58,14 @@
 }
 
 .badge-primary-cover {
-  background-color: rgba(31, 28, 24, 0.85);
+  background-color: var(--color-heading);
   backdrop-filter: blur(4px);
-  color: #ffffff;
-  border: 1px solid rgba(184, 147, 92, 0.4);
+  color: var(--color-surface);
+  border: 1px solid var(--color-primary);
 }
 
 .text-gold {
-  color: #b8935c !important;
+  color: var(--color-primary) !important;
 }
 
 .font-xxs {
@@ -73,7 +73,7 @@
 }
 
 .font-xxs.btn-link:hover {
-  color: #a47f4b !important;
+  color: var(--color-primary-hover, var(--color-primary)) !important;
 }
 
 /* RTL Support */
