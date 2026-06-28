@@ -11,15 +11,15 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslatePipe, RtlDirective, AutoDirectionDirective],
   template: `
-    <div appRtl class="address-form-container p-4 rounded-4 border bg-white mb-3">
-      <h4 class="h6 text-dark font-bold tracking-tight mb-3">
+    <div appRtl class="address-form-container p-4 rounded-4 mb-3">
+      <h4 class="h6 font-bold tracking-tight mb-3">
         {{ (address ? 'PROFILE.EDIT_ADDRESS' : 'PROFILE.ADD_ADDRESS') | translate }}
       </h4>
 
       <form [formGroup]="addressForm" (ngSubmit)="onSubmit()" class="row g-3">
         <!-- Label -->
         <div class="col-12 col-md-6">
-          <label class="form-label font-semibold text-dark small mb-1" for="label">
+          <label class="form-label font-semibold small mb-1" for="label">
             {{ 'PROFILE.ADDRESS_LABEL' | translate }}
           </label>
           <div class="input-container position-relative">
@@ -38,7 +38,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
 
         <!-- Address Line 1 -->
         <div class="col-12 col-md-6">
-          <label class="form-label font-semibold text-dark small mb-1" for="addressLine1">
+          <label class="form-label font-semibold small mb-1" for="addressLine1">
             {{ 'PROFILE.STREET_ADDRESS' | translate }} *
           </label>
           <div class="input-container position-relative">
@@ -60,7 +60,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
 
         <!-- Address Line 2 -->
         <div class="col-12 col-md-6">
-          <label class="form-label font-semibold text-dark small mb-1" for="addressLine2">
+          <label class="form-label font-semibold small mb-1" for="addressLine2">
             {{ 'PROFILE.APT_SUITE' | translate }}
           </label>
           <div class="input-container position-relative">
@@ -78,7 +78,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
 
         <!-- City -->
         <div class="col-12 col-md-6">
-          <label class="form-label font-semibold text-dark small mb-1" for="city">
+          <label class="form-label font-semibold small mb-1" for="city">
             {{ 'PROFILE.CITY' | translate }} *
           </label>
           <div class="input-container position-relative">
@@ -100,7 +100,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
 
         <!-- Country -->
         <div class="col-12 col-md-6">
-          <label class="form-label font-semibold text-dark small mb-1" for="country">
+          <label class="form-label font-semibold small mb-1" for="country">
             {{ 'PROFILE.COUNTRY' | translate }} *
           </label>
           <div class="input-container position-relative">
@@ -122,7 +122,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
 
         <!-- Postal Code -->
         <div class="col-12 col-md-6">
-          <label class="form-label font-semibold text-dark small mb-1" for="postalCode">
+          <label class="form-label font-semibold small mb-1" for="postalCode">
             {{ 'PROFILE.POSTAL_CODE' | translate }}
           </label>
           <div class="input-container position-relative">
@@ -146,7 +146,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
               type="checkbox"
               class="form-check-input pointer"
               formControlName="primary" />
-            <label class="form-check-label font-bold text-dark small pointer ms-2" for="primary">
+            <label class="form-check-label font-bold small pointer ms-2" for="primary">
               {{ 'PROFILE.SET_DEFAULT' | translate }}
             </label>
           </div>
@@ -173,26 +173,35 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
   `,
   styles: [
     `
+      h4 {
+        color: var(--fm-text-heading);
+      }
+      label {
+        color: var(--fm-text-muted);
+      }
+      .form-check-label {
+        color: var(--fm-text-body);
+      }
       .address-form-container {
-        border: 1px solid rgba(184, 147, 92, 0.12) !important;
-        background-color: rgba(255, 255, 255, 0.7) !important;
+        border: 1px solid var(--fm-border-medium) !important;
+        background-color: var(--fm-color-neutral-100) !important;
         backdrop-filter: var(--fm-glass-blur);
         -webkit-backdrop-filter: var(--fm-glass-blur);
         box-shadow: var(--fm-shadow-md);
       }
       .premium-input {
         border-radius: var(--fm-radius-lg);
-        border: 1px solid var(--fm-color-neutral-200);
-        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--fm-input-border);
+        background-color: var(--fm-input-bg);
         font-size: 0.9rem;
         height: 44px;
         transition: var(--fm-transition-smooth);
-        color: var(--fm-color-neutral-800);
+        color: var(--fm-text-body);
       }
       .premium-input:focus {
-        border-color: var(--fm-color-primary-500);
-        background-color: #ffffff;
-        box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.1);
+        border-color: var(--fm-input-focus-border);
+        background-color: var(--fm-input-bg);
+        box-shadow: 0 0 0 4px var(--fm-input-focus-ring);
         outline: none;
       }
       .input-icon-left {
@@ -215,28 +224,28 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
       }
       .btn-cancel {
         border: 1px solid var(--fm-color-neutral-300);
-        color: var(--fm-color-neutral-700);
+        color: var(--fm-text-body);
         font-weight: 600;
         background-color: transparent;
         transition: var(--fm-transition-smooth);
       }
       .btn-cancel:hover {
-        background-color: var(--fm-color-neutral-900);
-        border-color: var(--fm-color-neutral-900);
-        color: #ffffff;
+        background-color: var(--fm-color-neutral-800);
+        border-color: var(--fm-color-neutral-800);
+        color: var(--fm-text-inverted);
       }
       .btn-save-addr {
-        background-color: var(--fm-color-neutral-900);
-        color: #ffffff;
-        border: 1px solid var(--fm-color-neutral-900);
+        background-color: var(--fm-color-neutral-800);
+        color: var(--fm-text-inverted);
+        border: 1px solid var(--fm-color-neutral-800);
         font-weight: 600;
         transition: var(--fm-transition-smooth);
       }
       .btn-save-addr:hover {
         background-color: var(--fm-color-primary-500);
         border-color: var(--fm-color-primary-500);
-        color: #ffffff;
-        box-shadow: 0 6px 15px rgba(184, 147, 92, 0.2);
+        color: var(--fm-text-inverted);
+        box-shadow: 0 6px 15px var(--fm-color-primary-glow);
         transform: translateY(-1px);
       }
       .btn-save-addr:disabled {
@@ -245,7 +254,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
       }
       .invalid-feedback {
         font-size: 0.8rem;
-        color: #dc3545;
+        color: var(--fm-color-danger-500);
         font-weight: 500;
       }
       .premium-input {
@@ -255,6 +264,9 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
       .input-icon-left {
         inset-inline-start: 1rem !important;
         inset-inline-end: auto !important;
+      }
+      .border-top {
+        border-top: 1px solid var(--fm-border-medium) !important;
       }
     `
   ]

@@ -16,7 +16,7 @@ import { ProfileAddressForm } from '../profile-address-form/profile-address-form
         <!-- Header -->
         <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
           <div>
-            <h3 class="h5 mb-1 font-bold text-dark tracking-tight">{{ 'PROFILE.ADDRESS' | translate }}</h3>
+            <h3 class="h5 mb-1 font-bold tracking-tight">{{ 'PROFILE.ADDRESS' | translate }}</h3>
             <p class="text-muted small mb-0">{{ 'PROFILE.AI_ACTIVITY' | translate }}</p>
           </div>
           <!-- Add Address Button (hidden when form is open) -->
@@ -75,8 +75,11 @@ import { ProfileAddressForm } from '../profile-address-form/profile-address-form
   `,
   styles: [
     `
+      h3 {
+        color: var(--fm-text-heading);
+      }
       .address-list-card {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.6) 100%);
+        background: var(--fm-glass-bg);
         backdrop-filter: var(--fm-glass-blur);
         -webkit-backdrop-filter: var(--fm-glass-blur);
         border: 1px solid var(--fm-glass-border) !important;
@@ -85,43 +88,46 @@ import { ProfileAddressForm } from '../profile-address-form/profile-address-form
         transition: var(--fm-transition-smooth);
       }
       .address-list-card:hover {
-        box-shadow: 0 30px 60px rgba(184, 147, 92, 0.05) !important;
-        border-color: rgba(184, 147, 92, 0.2) !important;
+        box-shadow: var(--fm-shadow-xl) !important;
+        border-color: var(--fm-color-primary-soft) !important;
       }
       .btn-add-address {
-        background-color: var(--fm-color-neutral-900);
-        color: #ffffff;
+        background-color: var(--fm-color-neutral-800);
+        color: var(--fm-text-inverted);
         font-weight: 600;
-        transition: var(--fm-transition-smooth);
-        border: 1px solid var(--fm-color-neutral-900);
+        transition: var(--fm-transition-button-hover);
+        border: 1px solid var(--fm-color-neutral-800);
       }
       .btn-add-address:hover {
         background-color: var(--fm-color-primary-500);
         border-color: var(--fm-color-primary-500);
-        color: #ffffff;
-        box-shadow: 0 8px 20px rgba(184, 147, 92, 0.25);
+        color: var(--fm-text-inverted);
+        box-shadow: 0 8px 20px var(--fm-color-primary-glow);
         transform: translateY(-2px);
       }
       .empty-state-box {
-        background-color: rgba(255, 255, 255, 0.3) !important;
-        border: 2px dashed rgba(184, 147, 92, 0.2) !important;
+        background-color: var(--fm-color-neutral-100) !important;
+        border: 2px dashed var(--fm-border-medium) !important;
         transition: var(--fm-transition-smooth);
       }
       .empty-state-box:hover {
-        border-color: rgba(184, 147, 92, 0.4) !important;
-        background-color: rgba(255, 255, 255, 0.6) !important;
+        border-color: var(--fm-color-primary-500) !important;
+        background-color: var(--fm-color-neutral-200) !important;
       }
       .empty-icon-wrapper {
         width: 64px;
         height: 64px;
-        background-color: rgba(184, 147, 92, 0.08) !important;
+        background-color: var(--fm-color-primary-soft) !important;
         transition: var(--fm-transition-smooth);
       }
       .empty-state-box:hover .empty-icon-wrapper {
         background-color: var(--fm-color-primary-500) !important;
       }
       .empty-state-box:hover .empty-icon-wrapper i {
-        color: #ffffff !important;
+        color: var(--fm-text-inverted) !important;
+      }
+      .text-brand {
+        color: var(--fm-color-primary-500) !important;
       }
       .animate-map {
         transition: var(--fm-transition-smooth);

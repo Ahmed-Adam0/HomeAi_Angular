@@ -8,7 +8,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
   standalone: true,
   imports: [CommonModule, TranslatePipe],
   template: `
-    <div class="address-card p-4 rounded-4 bg-white d-flex flex-column justify-content-between h-100 position-relative transition-all">
+    <div class="address-card p-4 rounded-4 d-flex flex-column justify-content-between h-100 position-relative transition-all">
       <div>
         <!-- Card Header -->
         <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
@@ -16,7 +16,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
             <div class="label-icon-box d-flex align-items-center justify-content-center rounded-3">
               <i class="bi bi-geo-alt-fill"></i>
             </div>
-            <span class="font-bold text-dark small tracking-tight">{{ address.label || ('PROFILE.ADDRESS' | translate) }}</span>
+            <span class="address-card-label font-bold small tracking-tight">{{ address.label || ('PROFILE.ADDRESS' | translate) }}</span>
           </div>
           <!-- Primary Default Badge -->
           <span class="badge default-badge px-2.5 py-1 rounded-pill" *ngIf="address.primary">
@@ -26,7 +26,7 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
 
         <!-- Address Body -->
         <div class="address-details text-muted small mb-4">
-          <div class="font-semibold text-dark mb-1">{{ address.addressLine1 }}</div>
+          <div class="address-card-street font-semibold mb-1">{{ address.addressLine1 }}</div>
           <div *ngIf="address.addressLine2" class="mb-0.5">{{ address.addressLine2 }}</div>
           <div class="mb-0.5">
             {{ address.city }}<span *ngIf="address.postalCode">, {{ address.postalCode }}</span>
@@ -66,39 +66,48 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
   styles: [
     `
       .address-card {
-        border: 1px solid rgba(184, 147, 92, 0.08) !important;
-        background-color: rgba(255, 255, 255, 0.6) !important;
+        border: 1px solid var(--fm-border-medium) !important;
+        background-color: var(--fm-color-neutral-100) !important;
         transition: var(--fm-transition-smooth) !important;
         min-height: 190px;
-        box-shadow: 0 4px 12px rgba(29, 27, 24, 0.015);
+        box-shadow: var(--fm-shadow-xs);
       }
       .address-card:hover {
         transform: translateY(-4px);
         box-shadow: var(--fm-shadow-md) !important;
-        border-color: rgba(184, 147, 92, 0.25) !important;
-        background-color: #ffffff !important;
+        border-color: var(--fm-color-primary-soft) !important;
+        background-color: var(--fm-surface-card) !important;
+      }
+      .address-card-label {
+        color: var(--fm-text-heading);
+      }
+      .address-card-street {
+        color: var(--fm-text-heading);
+      }
+      .address-details {
+        color: var(--fm-text-muted) !important;
       }
       .label-icon-box {
         width: 32px;
         height: 32px;
-        background-color: rgba(184, 147, 92, 0.08);
+        background-color: var(--fm-color-primary-soft);
         color: var(--fm-color-primary-500);
         font-size: 0.95rem;
         transition: var(--fm-transition-smooth);
       }
       .address-card:hover .label-icon-box {
         background-color: var(--fm-color-primary-500);
-        color: #ffffff;
+        color: var(--fm-text-inverted);
       }
       .default-badge {
-        background: linear-gradient(135deg, var(--fm-color-primary-500), var(--fm-color-primary-600));
-        color: #ffffff;
+        background: var(--fm-color-primary-500);
+        color: var(--fm-text-inverted);
         font-size: 0.62rem;
         font-weight: 700;
         letter-spacing: 0.04em;
         text-transform: uppercase;
         border: 1px solid rgba(184, 147, 92, 0.1);
-        box-shadow: 0 2px 6px rgba(184, 147, 92, 0.25);
+        box-shadow: 0 2px 6px var(--fm-color-primary-glow);
       }
       .set-default-trigger {
         top: 1rem;
@@ -119,33 +128,33 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
         padding: 4px 8px;
         border-radius: var(--fm-radius-sm);
         height: auto;
-        border: 1px solid var(--fm-color-neutral-200);
+        border: 1px solid var(--fm-border-medium);
         background-color: transparent;
-        color: var(--fm-color-neutral-700);
+        color: var(--fm-text-body);
         font-weight: 600;
         transition: var(--fm-transition-smooth);
       }
       .btn-ghost-edit:hover {
-        background-color: var(--fm-color-neutral-900);
-        border-color: var(--fm-color-neutral-900);
-        color: #ffffff;
+        background-color: var(--fm-color-neutral-800);
+        border-color: var(--fm-color-neutral-800);
+        color: var(--fm-text-inverted);
       }
       .btn-ghost-delete {
         font-size: 0.75rem;
         padding: 4px 8px;
         border-radius: var(--fm-radius-sm);
         height: auto;
-        border: 1px solid rgba(220, 53, 69, 0.15);
+        border: 1px solid var(--fm-border-medium);
         background-color: transparent;
-        color: #dc3545;
+        color: var(--fm-color-danger-500);
         font-weight: 600;
         transition: var(--fm-transition-smooth);
       }
       .btn-ghost-delete:hover {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: #ffffff;
-        box-shadow: 0 4px 10px rgba(220, 53, 69, 0.15);
+        background-color: var(--fm-color-danger-500);
+        border-color: var(--fm-color-danger-500);
+        color: var(--fm-text-inverted);
+        box-shadow: 0 4px 10px var(--fm-color-danger-glow);
       }
       .pointer {
         cursor: pointer;
@@ -153,6 +162,12 @@ import { IAddressDto } from '../../interfaces/iaddress.dto';
       .ms-auto {
         margin-inline-start: auto !important;
         margin-inline-end: 0 !important;
+      }
+      .text-brand {
+        color: var(--fm-color-primary-500) !important;
+      }
+      .border-top {
+        border-top: 1px solid var(--fm-border-medium) !important;
       }
     `
   ]

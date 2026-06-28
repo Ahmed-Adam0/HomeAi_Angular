@@ -31,7 +31,7 @@
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
       </div>
-      <h3 class="fw-bold mb-2 text-dark">{{ 'ORDER_DETAILS_NOT_FOUND_TITLE' | translate }}</h3>
+      <h3 class="details-not-found-title fw-bold mb-2">{{ 'ORDER_DETAILS_NOT_FOUND_TITLE' | translate }}</h3>
       <p class="text-muted mb-4 px-3 mx-auto" style="max-width: 420px;">{{ 'ORDER_DETAILS_NOT_FOUND_DESC' | translate }}
       </p>
       <a routerLink="/orders" class="text-decoration-none">
@@ -65,7 +65,7 @@
             <div class="d-flex align-items-baseline gap-2">
               <span class="text-uppercase text-muted small fw-bold tracking-wider">{{ 'ORDERS_COL_ID' | translate
                 }}</span>
-              <span class="details-order-number text-dark fw-black fs-3">#{{ order()!.orderNumber }}</span>
+              <span class="details-order-number fw-black fs-3">#{{ order()!.orderNumber }}</span>
             </div>
             <div class="text-muted details-meta mt-1 small d-flex align-items-center gap-1.5">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor"
@@ -217,7 +217,7 @@
           <!-- Right Date/Time -->
           <div class="status-activity-time text-md-end text-start mt-2 mt-md-0 ps-md-4">
             <span class="d-block text-muted small mb-0.5">{{ 'ORDER_DETAILS_TRANSITIONED_ON' | translate }}</span>
-            <span class="fw-bold text-dark font-sans small">{{ history.createdAt | date: 'medium' }}</span>
+            <span class="status-history-date fw-bold font-sans small">{{ history.createdAt | date: 'medium' }}</span>
           </div>
         </div>
       </div>
@@ -235,7 +235,7 @@
           </div>
           <!-- Message text -->
           <div class="flex-grow-1">
-            <h3 class="fw-bold text-dark font-display mb-1">
+            <h3 class="share-transformation-title fw-bold font-display mb-1">
               {{ 'ORDER_DETAILS_DELIVERED_CONGRATS' | translate }}
             </h3>
             <p class="text-secondary mb-0 text-sm">
@@ -271,7 +271,7 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 border-bottom pb-3 mb-3">
               <div>
                 <div class="d-flex align-items-center gap-2 mb-1">
-                  <h4 class="fw-bold text-dark fs-5 mb-0">
+                  <h4 class="vendor-order-title fw-bold fs-5 mb-0">
                     {{ 'VENDOR_ORDER' | translate }} #{{ vo.id }}
                   </h4>
                   <app-status-badge [label]="vo.status | statusTranslation:'order'" [tone]="orderStatusTone(vo.status)"
@@ -285,7 +285,7 @@
               </div>
               <div class="text-md-end">
                 <div class="text-secondary small">{{ 'ORDER_DETAILS_TOTAL' | translate }}</div>
-                <div class="fw-bold text-dark font-sans">{{ vo.totalPrice | currencyFormat }}</div>
+                <div class="vendor-order-total fw-bold font-sans">{{ vo.totalPrice | currencyFormat }}</div>
               </div>
             </div>
 
@@ -296,7 +296,7 @@
                 style="border-radius: 12px; background: rgba(184, 147, 92, 0.05) !important;">
                 <div>
                   <span class="text-secondary small fw-medium d-block">{{ 'ESTIMATED_DELIVERY' | translate }}</span>
-                  <span class="fw-bold text-dark font-sans" style="font-size: 1.05rem; color: #b8935c;">
+                  <span class="fw-bold font-sans" style="font-size: 1.05rem; color: var(--fm-color-primary-500);">
                     {{ vo.estimatedDeliveryDate | date: 'dd/MM/yyyy' }}
                   </span>
                 </div>
@@ -332,7 +332,7 @@
                       (error)="$event.target.src = 'assets/images/image-placeholder.svg'" />
                   </div>
                   <div class="min-w-0">
-                    <div class="details-item-name fw-bold text-dark small">{{ item | localized:'productName' }}</div>
+                    <div class="details-item-name fw-bold small">{{ item | localized:'productName' }}</div>
                     <div class="text-muted small">
                       <span>{{ 'ORDER_DETAILS_QTY' | translate }}: {{ item.quantity }}</span>
                       @if (item.unitPrice) {
@@ -342,7 +342,7 @@
                       @if (item.attributes?.length) {
                       <div class="d-flex flex-wrap gap-1 mt-1">
                         @for (attr of item.attributes; track attr.nameEn) {
-                        <span class="badge bg-light text-dark border font-xxs py-1 px-2 rounded-pill">
+                        <span class="badge bg-light border font-xxs py-1 px-2 rounded-pill">
                           <span class="fw-semibold">
                             {{ translationService.currentLang() === 'ar' ? attr.nameAr : attr.nameEn }}:
                           </span>
@@ -354,7 +354,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="fw-bold text-dark font-sans">{{ item.total | currencyFormat }}</div>
+                <div class="details-item-row-total fw-bold font-sans">{{ item.total | currencyFormat }}</div>
               </div>
               }
             </div>
@@ -379,7 +379,7 @@
                       style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;">
                     </span>
                     <div>
-                      <span class="small fw-bold text-dark">
+                      <span class="milestone-status-text small fw-bold">
                         {{ 'MILESTONE_STATUS_' + (m.milestoneStatus | uppercase) | translate }}
                       </span>
                       @if (m.isPaid) {
@@ -394,7 +394,7 @@
                     </div>
                   </div>
                   <div class="d-flex align-items-center gap-3">
-                    <span class="small fw-bold text-dark">{{ m.amount | currencyFormat }}</span>
+                    <span class="milestone-amount small fw-bold">{{ m.amount | currencyFormat }}</span>
                     @if (isMilestoneDue(vo, m)) {
                     <app-button variant="primary" size="sm" [disabled]="isInitiatingVendorPayment()[vo.id]"
                       [isLoading]="isInitiatingVendorPayment()[vo.id]" (clicked)="onPayVendorOrderMilestone(vo.id)">
@@ -445,7 +445,7 @@
           <section class="details-card card-premium">
             <header class="details-card-header pb-3 border-bottom">
               <div class="details-card-title-group">
-                <h3 class="details-card-title mb-1 text-dark">{{ 'ORDER_DETAILS_PAYMENT_TITLE' | translate }}</h3>
+                <h3 class="details-card-title mb-1">{{ 'ORDER_DETAILS_PAYMENT_TITLE' | translate }}</h3>
                 <p class="text-muted small mb-0">{{ 'ORDER_DETAILS_PAYMENT_SUBTITLE' | translate }}</p>
               </div>
             </header>
@@ -454,7 +454,7 @@
               <div class="details-kv-row d-flex justify-content-between align-items-center py-2.5">
                 <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_PAYMENT_METHOD' | translate
                   }}</span>
-                <span class="details-v text-dark fw-bold">
+                <span class="details-v fw-bold">
                   {{ 'PAYMENT_METHOD_' + (order()!.paymentMethod.split(' ').join('_') | uppercase) | translate }}
                 </span>
               </div>
@@ -474,14 +474,14 @@
               <div
                 class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
                 <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_TOTAL' | translate }}</span>
-                <span class="details-v text-dark fw-bold font-sans">{{ activeVendorOrdersTotal() | currencyFormat
+                <span class="details-v fw-bold font-sans">{{ activeVendorOrdersTotal() | currencyFormat
                   }}</span>
               </div>
               }
               <div
                 class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
                 <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_PAID' | translate }}</span>
-                <span class="details-v text-dark fw-bold font-sans">{{ amountPaid() | currencyFormat }}</span>
+                <span class="details-v fw-bold font-sans">{{ amountPaid() | currencyFormat }}</span>
               </div>
               @if (amountToPay() > 0) {
               <div
@@ -504,14 +504,14 @@
               <div
                 class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
                 <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_TOTAL' | translate }}</span>
-                <span class="details-v text-dark fw-bold font-sans">{{ activeVendorOrdersTotal() | currencyFormat
+                <span class="details-v fw-bold font-sans">{{ activeVendorOrdersTotal() | currencyFormat
                   }}</span>
               </div>
               }
               <div
                 class="details-kv-row d-flex justify-content-between align-items-center py-2.5 border-top border-light mt-2 pt-2">
                 <span class="details-k text-secondary fw-semibold">{{ 'ORDER_DETAILS_AMOUNT_PAID' | translate }}</span>
-                <span class="details-v text-dark fw-bold font-sans">{{ amountPaid() | currencyFormat }}</span>
+                <span class="details-v fw-bold font-sans">{{ amountPaid() | currencyFormat }}</span>
               </div>
               @if (amountToPay() > 0) {
               <div

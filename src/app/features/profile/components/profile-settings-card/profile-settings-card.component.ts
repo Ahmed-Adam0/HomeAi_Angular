@@ -19,7 +19,7 @@ export interface IActionItem {
     <div class="settings-card card border-0 overflow-hidden">
       <div class="card-body p-4 p-md-5">
         <div class="mb-4 pb-2">
-          <h3 class="h5 mb-1 font-bold text-dark tracking-tight">{{ 'PROFILE.ACCOUNT_SETTINGS' | translate }}</h3>
+          <h3 class="h5 mb-1 font-bold tracking-tight">{{ 'PROFILE.ACCOUNT_SETTINGS' | translate }}</h3>
           <p class="text-muted small mb-0">{{ 'PROFILE.AI_ACTIVITY' | translate }}</p>
         </div>
 
@@ -28,16 +28,16 @@ export interface IActionItem {
           <div class="col" *ngFor="let action of actions; trackBy: trackByAction">
             <button
               type="button"
-              class="setting-item-btn w-100 d-flex align-items-center justify-content-between p-3.5 rounded-4 bg-white"
+              class="setting-item-btn w-100 d-flex align-items-center justify-content-between p-3.5 rounded-4"
               (click)="selectAction.emit(action)">
               <div class="d-flex align-items-center gap-3 text-start">
                 <!-- Icon Box -->
-                <div class="icon-box d-flex align-items-center justify-content-center rounded-3" [style.background-color]="action.iconBg || 'rgba(184, 147, 92, 0.08)'" [style.color]="action.iconColor || 'var(--fm-color-primary-500)'">
+                <div class="icon-box d-flex align-items-center justify-content-center rounded-3" [style.background-color]="action.iconBg || 'var(--fm-color-primary-soft)'" [style.color]="action.iconColor || 'var(--fm-color-primary-500)'">
                   <i class="bi" [class]="action.iconClass || 'bi-gear'"></i>
                 </div>
                 <!-- Label & Desc -->
                 <div class="d-flex flex-column">
-                  <span class="setting-label font-bold text-dark small">{{ action.labelKey | translate }}</span>
+                  <span class="setting-label font-bold small">{{ action.labelKey | translate }}</span>
                   <span class="setting-desc text-muted">{{ action.labelKey + '_DESC' | translate }}</span>
                 </div>
               </div>
@@ -57,8 +57,11 @@ export interface IActionItem {
   `,
   styles: [
     `
+      h3 {
+        color: var(--fm-text-heading);
+      }
       .settings-card {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.6) 100%);
+        background: var(--fm-glass-bg);
         backdrop-filter: var(--fm-glass-blur);
         -webkit-backdrop-filter: var(--fm-glass-blur);
         border: 1px solid var(--fm-glass-border) !important;
@@ -67,12 +70,12 @@ export interface IActionItem {
         transition: var(--fm-transition-smooth);
       }
       .settings-card:hover {
-        box-shadow: 0 30px 60px rgba(184, 147, 92, 0.05) !important;
-        border-color: rgba(184, 147, 92, 0.2) !important;
+        box-shadow: var(--fm-shadow-xl) !important;
+        border-color: var(--fm-color-primary-soft) !important;
       }
       .setting-item-btn {
-        border: 1px solid rgba(184, 147, 92, 0.06);
-        background-color: rgba(255, 255, 255, 0.5) !important;
+        border: 1px solid var(--fm-border-medium);
+        background-color: var(--fm-color-neutral-100) !important;
         transition: var(--fm-transition-smooth);
         cursor: pointer;
         outline: none;
@@ -80,8 +83,8 @@ export interface IActionItem {
       .setting-item-btn:hover {
         transform: translateY(-3px);
         box-shadow: var(--fm-shadow-md);
-        border-color: rgba(184, 147, 92, 0.2);
-        background-color: #ffffff !important;
+        border-color: var(--fm-color-primary-soft);
+        background-color: var(--fm-surface-card) !important;
       }
       .setting-item-btn:active {
         transform: scale(0.98);
@@ -98,11 +101,12 @@ export interface IActionItem {
       }
       .setting-label {
         font-size: 0.88rem;
-        color: var(--fm-color-neutral-800);
+        color: var(--fm-text-body);
       }
       .setting-desc {
         font-size: 0.72rem;
         font-weight: 500;
+        color: var(--fm-text-muted);
         margin-top: 2px;
       }
       .badge-count {

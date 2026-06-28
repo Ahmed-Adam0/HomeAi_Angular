@@ -23,7 +23,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
             <i class="bi bi-shield-lock-fill text-gold fs-4"></i>
           </div>
           <div>
-            <h3 class="h5 mb-0 font-bold text-dark tracking-tight">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</h3>
+            <h3 class="h5 mb-0 font-bold tracking-tight">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</h3>
             <p class="text-muted small mb-0">{{ 'PROFILE.PRIVACY_SECURITY_DESC' | translate }}</p>
           </div>
         </div>
@@ -31,7 +31,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
         <form [formGroup]="passwordForm" (ngSubmit)="submit()" class="row g-4">
           <!-- Current Password -->
           <div class="col-12 col-md-4">
-            <label class="form-label font-semibold text-dark small mb-2" for="oldPassword">
+            <label class="form-label font-semibold small mb-2" for="oldPassword">
               {{ 'PROFILE.CURRENT_PASSWORD' | translate }}
             </label>
             <div class="input-container position-relative">
@@ -59,7 +59,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 
           <!-- New Password -->
           <div class="col-12 col-md-4">
-            <label class="form-label font-semibold text-dark small mb-2" for="newPassword">
+            <label class="form-label font-semibold small mb-2" for="newPassword">
               {{ 'PROFILE.NEW_PASSWORD' | translate }}
             </label>
             <div class="input-container position-relative">
@@ -132,7 +132,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 
           <!-- Confirm New Password -->
           <div class="col-12 col-md-4">
-            <label class="form-label font-semibold text-dark small mb-2" for="confirmNewPassword">
+            <label class="form-label font-semibold small mb-2" for="confirmNewPassword">
               {{ 'PROFILE.CONFIRM_PASSWORD' | translate }}
             </label>
             <div class="input-container position-relative">
@@ -177,6 +177,12 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
   `,
   styles: [
     `
+      h3 {
+        color: var(--fm-text-heading);
+      }
+      label {
+        color: var(--fm-text-muted);
+      }
       .icon-header-wrap {
         width: 42px;
         height: 42px;
@@ -190,7 +196,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
         color: var(--fm-color-primary-500) !important;
       }
       .change-password-card {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.6) 100%);
+        background: var(--fm-glass-bg);
         backdrop-filter: var(--fm-glass-blur);
         -webkit-backdrop-filter: var(--fm-glass-blur);
         border: 1px solid var(--fm-glass-border) !important;
@@ -199,22 +205,22 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
         transition: var(--fm-transition-smooth);
       }
       .change-password-card:hover {
-        box-shadow: 0 30px 60px rgba(184, 147, 92, 0.05) !important;
-        border-color: rgba(184, 147, 92, 0.2) !important;
+        box-shadow: var(--fm-shadow-xl) !important;
+        border-color: var(--fm-color-primary-soft) !important;
       }
       .premium-input {
         border-radius: var(--fm-radius-lg);
-        border: 1px solid var(--fm-color-neutral-200);
-        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--fm-input-border);
+        background-color: var(--fm-input-bg);
         font-size: 0.95rem;
         height: 48px;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        color: var(--fm-color-neutral-800);
+        color: var(--fm-text-body);
       }
       .premium-input:focus {
-        border-color: var(--fm-color-primary-500);
-        background-color: #ffffff;
-        box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.1);
+        border-color: var(--fm-input-focus-border);
+        background-color: var(--fm-input-bg);
+        box-shadow: 0 0 0 4px var(--fm-input-focus-ring);
         outline: none;
       }
       .input-icon-left {
@@ -227,7 +233,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
         z-index: 4;
         transition: color 0.2s ease, transform 0.2s ease;
         padding: 4px;
-        color: var(--fm-color-neutral-400);
+        color: var(--fm-text-muted);
       }
       .btn-toggle-visibility:hover {
         color: var(--fm-color-primary-500) !important;
@@ -238,24 +244,24 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
       }
       .invalid-feedback {
         font-size: 0.82rem;
-        color: #dc3545;
+        color: var(--fm-color-danger-500);
         font-weight: 500;
       }
       .btn-change-pw {
-        background-color: var(--fm-color-neutral-900);
-        color: #ffffff;
+        background-color: var(--fm-color-neutral-800);
+        color: var(--fm-text-inverted);
         font-weight: 600;
         border-radius: var(--fm-radius-pill);
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        border: 1px solid var(--fm-color-neutral-900);
+        transition: var(--fm-transition-button-hover);
+        border: 1px solid var(--fm-color-neutral-800);
         position: relative;
         overflow: hidden;
       }
       .btn-change-pw:hover:not(:disabled) {
         background-color: var(--fm-color-primary-500);
         border-color: var(--fm-color-primary-500);
-        color: #ffffff;
-        box-shadow: 0 8px 20px rgba(184, 147, 92, 0.25);
+        color: var(--fm-text-inverted);
+        box-shadow: 0 8px 20px var(--fm-color-primary-glow);
         transform: translateY(-2px);
       }
       .btn-change-pw:active:not(:disabled) {
@@ -280,39 +286,39 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
         transition: width 0.4s ease, background-color 0.4s ease;
       }
       .strength-weak {
-        background-color: #dc3545 !important;
-        color: #dc3545 !important;
+        background-color: var(--fm-color-danger-500) !important;
+        color: var(--fm-color-danger-500) !important;
       }
       .strength-fair {
-        background-color: #fd7e14 !important;
-        color: #fd7e14 !important;
+        background-color: var(--fm-color-warning-500) !important;
+        color: var(--fm-color-warning-500) !important;
       }
       .strength-good {
-        background-color: #0dcaf0 !important;
-        color: #0dcaf0 !important;
+        background-color: var(--fm-color-info-500) !important;
+        color: var(--fm-color-info-500) !important;
       }
       .strength-strong {
-        background-color: #198754 !important;
-        color: #198754 !important;
+        background-color: var(--fm-color-success-500) !important;
+        color: var(--fm-color-success-500) !important;
       }
       .strength-rules {
         border-top: 1px dashed var(--fm-glass-border);
         padding-top: 12px;
       }
       .rule-item {
-        color: var(--fm-color-neutral-500);
+        color: var(--fm-text-muted);
         transition: color 0.3s ease;
       }
       .rule-item i {
         font-size: 0.9rem;
         transition: transform 0.3s ease, color 0.3s ease;
-        color: var(--fm-color-neutral-400);
+        color: var(--fm-text-disabled);
       }
       .rule-item.satisfied {
-        color: #198754;
+        color: var(--fm-color-success-500);
       }
       .rule-item.satisfied i {
-        color: #198754;
+        color: var(--fm-color-success-500);
         transform: scale(1.1);
       }
       /* Animations */

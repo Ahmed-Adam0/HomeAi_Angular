@@ -915,11 +915,46 @@
   background-color: var(--fm-color-neutral-400) !important;
 }
 
-/* Override bootstrap helper classes to be theme-aware and WCAG-compliant */
-.text-dark {
-  color: var(--fm-text-heading) !important;
+/* Specific theme-aware styles and overrides */
+.details-not-found-title {
+  color: var(--fm-text-heading);
 }
 
+.status-history-date {
+  color: var(--fm-text-heading);
+}
+
+.share-transformation-title {
+  color: var(--fm-text-heading);
+}
+
+.vendor-order-title {
+  color: var(--fm-text-heading);
+}
+
+.vendor-order-total {
+  color: var(--fm-text-heading);
+}
+
+.details-item-row-total {
+  color: var(--fm-text-heading);
+}
+
+.milestone-status-text {
+  color: var(--fm-text-heading);
+}
+
+.milestone-amount {
+  color: var(--fm-text-heading);
+}
+
+.badge {
+  background-color: var(--fm-color-neutral-100) !important;
+  color: var(--fm-text-body) !important;
+  border: 1px solid var(--fm-border-medium) !important;
+}
+
+/* Keep other bootstrap helper overrides theme-aware */
 .text-secondary {
   color: var(--fm-text-body) !important;
 }

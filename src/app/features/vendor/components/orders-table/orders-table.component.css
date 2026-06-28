@@ -94,7 +94,7 @@
 }
 
 .orders-table__table tbody td {
-  border-bottom: 1px solid rgba(31, 28, 24, 0.06);
+  border-bottom: 1px solid var(--fm-border-medium);
   padding: 0.75rem 0.875rem;
   vertical-align: middle;
   text-overflow: ellipsis;
@@ -111,7 +111,7 @@
 }
 
 .orders-table__row:hover {
-  background-color: rgba(31, 28, 24, 0.02);
+  background-color: var(--color-card-hover);
 }
 
 .orders-table__order-id {
@@ -172,7 +172,7 @@
 
 .orders-table__action-btn:hover {
   background: var(--fm-color-primary-600, #2d6a4f);
-  color: #fff;
+  color: var(--fm-text-inverted);
 }
 
 .orders-table__action-btn:focus-visible {
@@ -195,8 +195,8 @@
 }
 
 .orders-table__empty:hover {
-  border-color: rgba(31, 28, 24, 0.16);
-  box-shadow: var(--fm-shadow-md, 0 4px 12px rgba(0, 0, 0, 0.06));
+  border-color: var(--fm-border-strong);
+  box-shadow: var(--fm-shadow-md);
 }
 
 .orders-table__empty-inner {
@@ -265,9 +265,9 @@
 
 .order-card {
   background-color: var(--color-surface);
-  border: 1px solid var(--fm-border-medium, rgba(31, 28, 24, 0.08));
+  border: 1px solid var(--fm-border-medium);
   border-radius: var(--fm-radius-lg, 16px);
-  box-shadow: 0 1px 3px rgba(31, 28, 24, 0.02);
+  box-shadow: var(--fm-shadow-xs);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -282,8 +282,8 @@
 }
 
 .order-card:hover {
-  border-color: rgba(184, 147, 92, 0.22);
-  box-shadow: 0 4px 16px rgba(31, 28, 24, 0.04);
+  border-color: var(--fm-color-primary-300);
+  box-shadow: var(--fm-shadow-md);
   transform: translateY(-2px);
 }
 
@@ -415,7 +415,7 @@
 
 .order-card__action-btn:hover {
   background: var(--fm-color-primary-500, #b8935c);
-  color: #ffffff;
+  color: var(--fm-text-inverted);
 }
 
 .order-card__action-btn:active {

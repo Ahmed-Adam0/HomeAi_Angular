@@ -331,15 +331,12 @@
   backdrop-filter: blur(12px);
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    var(--color-surface) 55%,
-    rgba(250, 246, 240, 0.88) 100%
+    var(--fm-surface-card) 0%,
+    var(--color-surface) 100%
   );
   border: 1px solid var(--color-border);
   border-radius: var(--fm-radius-lg, 16px);
-  box-shadow:
-    0 1px 2px rgba(31, 28, 24, 0.04),
-    0 8px 24px rgba(31, 28, 24, 0.06);
+  box-shadow: var(--fm-shadow-sm);
   display: flex;
   flex-direction: column;
   gap: var(--fm-space-12, 0.75rem);
@@ -352,8 +349,8 @@
 }
 
 .vendor-orders__empty-state:hover {
-  border-color: rgba(184, 147, 92, 0.18);
-  box-shadow: var(--fm-shadow-md, 0 8px 24px rgba(0, 0, 0, 0.08));
+  border-color: var(--fm-color-primary-300);
+  box-shadow: var(--fm-shadow-md);
 }
 
 .vendor-orders__empty-icon {
@@ -497,15 +494,12 @@
     backdrop-filter: blur(12px);
     background: linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.92) 0%,
-      var(--color-surface) 55%,
-      rgba(250, 246, 240, 0.88) 100%
+      var(--fm-surface-card) 0%,
+      var(--color-surface) 100%
     );
     border: 1px solid var(--color-border);
     border-radius: var(--fm-radius-lg, 16px);
-    box-shadow:
-      0 1px 2px rgba(31, 28, 24, 0.04),
-      0 8px 24px rgba(31, 28, 24, 0.06);
+    box-shadow: var(--fm-shadow-sm);
     flex-direction: row;
     flex-wrap: nowrap;
     gap: var(--fm-space-16, 1rem);
@@ -581,15 +575,12 @@
   min-height: 16rem;
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    var(--color-surface) 55%,
-    rgba(250, 246, 240, 0.88) 100%
+    var(--fm-surface-card) 0%,
+    var(--color-surface) 100%
   );
   border: 1px solid var(--color-border);
   border-radius: var(--fm-radius-lg, 16px);
-  box-shadow:
-    0 1px 2px rgba(31, 28, 24, 0.04),
-    0 8px 24px rgba(31, 28, 24, 0.06);
+  box-shadow: var(--fm-shadow-sm);
 }
 
 .vendor-orders__spinner {
@@ -608,15 +599,12 @@
   backdrop-filter: blur(12px);
   background: linear-gradient(
     145deg,
-    rgba(255, 245, 245, 0.92) 0%,
-    var(--color-surface) 55%,
-    rgba(255, 240, 240, 0.88) 100%
+    var(--fm-color-danger-50) 0%,
+    var(--color-surface) 100%
   );
   border: 1px solid rgba(239, 68, 68, 0.2);
   border-radius: var(--fm-radius-lg, 16px);
-  box-shadow:
-    0 1px 2px rgba(31, 28, 24, 0.04),
-    0 8px 24px rgba(239, 68, 68, 0.06);
+  box-shadow: var(--fm-shadow-sm);
   display: flex;
   flex-direction: column;
   gap: var(--fm-space-12, 0.75rem);

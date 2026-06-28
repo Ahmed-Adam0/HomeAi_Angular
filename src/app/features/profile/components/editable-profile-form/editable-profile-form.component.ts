@@ -91,7 +91,7 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
           <div class="row g-4 edit-fields-container animate-fade-in">
             <!-- Full Name -->
             <div class="col-12 col-md-6">
-              <label class="form-label font-semibold text-dark small mb-2" for="fullName">{{ 'PROFILE.FULL_NAME' | translate }}</label>
+              <label class="form-label font-semibold small mb-2" for="fullName">{{ 'PROFILE.FULL_NAME' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
                   <i class="bi bi-person"></i>
@@ -111,7 +111,7 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
 
             <!-- Email -->
             <div class="col-12 col-md-6">
-              <label class="form-label font-semibold text-dark small mb-2" for="email">{{ 'PROFILE.EMAIL' | translate }}</label>
+              <label class="form-label font-semibold small mb-2" for="email">{{ 'PROFILE.EMAIL' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
                   <i class="bi bi-envelope"></i>
@@ -145,7 +145,7 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
 
             <!-- Phone -->
             <div class="col-12 col-md-6">
-              <label class="form-label font-semibold text-dark small mb-2" for="phoneNumber">{{ 'PROFILE.PHONE' | translate }}</label>
+              <label class="form-label font-semibold small mb-2" for="phoneNumber">{{ 'PROFILE.PHONE' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
                   <i class="bi bi-telephone"></i>
@@ -161,7 +161,7 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
 
             <!-- Preferred Language -->
             <div class="col-12 col-md-6">
-              <label class="form-label font-semibold text-dark small mb-2" for="preferredLanguage">{{ 'PROFILE.PREFERRED_LANGUAGE' | translate }}</label>
+              <label class="form-label font-semibold small mb-2" for="preferredLanguage">{{ 'PROFILE.PREFERRED_LANGUAGE' | translate }}</label>
               <div class="input-container position-relative">
                 <span class="input-icon-left position-absolute top-50 start-0 translate-middle-y ms-3 text-muted">
                   <i class="bi bi-translate"></i>
@@ -187,66 +187,69 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
   `,
   styles: [
     `
+      label {
+        color: var(--fm-text-muted);
+      }
       .profile-form-card {
         background: transparent;
       }
       .personal-info-title {
         font-size: 1.15rem;
         font-weight: 700;
-        color: #1e1e1c;
+        color: var(--fm-text-heading);
         letter-spacing: -0.02em;
       }
       .btn-edit-profile {
-        border: 1px solid #f1ebd9;
-        background-color: #fcfbf9;
-        color: #b8935c;
+        border: 1px solid var(--fm-border-medium);
+        background-color: var(--fm-color-neutral-100);
+        color: var(--fm-color-primary-500);
         font-weight: 600;
         font-size: 0.82rem;
-        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: 0 1px 2px rgba(184, 147, 92, 0.05);
+        transition: var(--fm-transition-smooth);
+        box-shadow: var(--fm-shadow-xs);
       }
       .btn-edit-profile:hover {
-        background-color: #b8935c;
-        border-color: #b8935c;
-        color: #ffffff;
+        background-color: var(--fm-color-primary-500);
+        border-color: var(--fm-color-primary-500);
+        color: var(--fm-text-inverted);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(184, 147, 92, 0.15);
+        box-shadow: 0 4px 12px var(--fm-color-primary-glow);
       }
       .personal-info-list {
         gap: 12px;
       }
       .info-list-item {
-        background: rgba(255, 255, 255, 0.4);
-        border: 1px solid rgba(0, 0, 0, 0.04) !important;
-        border-radius: 16px;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        background: var(--fm-color-neutral-100);
+        border: 1px solid var(--fm-border-medium) !important;
+        border-radius: var(--fm-radius-md);
+        transition: var(--fm-transition-smooth);
         cursor: pointer;
       }
       .info-list-item:hover {
-        background: #ffffff;
-        border-color: rgba(184, 147, 92, 0.2) !important;
+        background: var(--fm-surface-card);
+        border-color: var(--fm-color-primary-soft) !important;
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(184, 147, 92, 0.05);
+        box-shadow: var(--fm-shadow-md);
       }
       .info-icon-circle {
         width: 38px;
         height: 38px;
-        background-color: #f7f6f2;
-        color: #8c8c87;
+        background-color: var(--fm-color-neutral-200);
+        color: var(--fm-text-muted);
         font-size: 1.1rem;
         flex-shrink: 0;
         border-radius: 50%;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: var(--fm-transition-smooth);
       }
       .info-list-item:hover .info-icon-circle {
-        background-color: rgba(184, 147, 92, 0.1);
-        color: #b8935c;
+        background-color: var(--fm-color-primary-soft);
+        color: var(--fm-color-primary-500);
         transform: scale(1.06);
       }
       .info-label-block {
         display: block;
         font-size: 0.72rem;
-        color: #8a8a86;
+        color: var(--fm-text-muted);
         font-weight: 500;
         margin-bottom: 2px;
       }
@@ -254,21 +257,21 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
         display: block;
         font-size: 0.95rem;
         font-weight: 600;
-        color: #2c2c2a;
+        color: var(--fm-text-body);
       }
       .premium-input {
-        border-radius: 14px;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        background-color: rgba(255, 255, 255, 0.6);
+        border-radius: var(--fm-radius-lg);
+        border: 1px solid var(--fm-input-border);
+        background-color: var(--fm-input-bg);
         font-size: 0.95rem;
         height: 48px;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        color: #2c2c2a;
+        transition: var(--fm-transition-smooth);
+        color: var(--fm-text-body);
       }
       .premium-input:focus {
-        border-color: #b8935c;
-        background-color: #ffffff;
-        box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.12);
+        border-color: var(--fm-input-focus-border);
+        background-color: var(--fm-input-bg);
+        box-shadow: 0 0 0 4px var(--fm-input-focus-ring);
         outline: none;
       }
       .input-icon-left {
@@ -279,21 +282,22 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
       }
       .invalid-feedback {
         font-size: 0.8rem;
-        color: #dc3545;
+        color: var(--fm-color-danger-500);
         font-weight: 500;
       }
       .btn-save-profile {
-        background-color: #1e1e1c;
-        color: #ffffff;
+        background-color: var(--fm-color-neutral-800);
+        color: var(--fm-text-inverted);
         font-weight: 600;
-        border-radius: 20px;
-        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        border: 1px solid #1e1e1c;
+        border-radius: var(--fm-radius-pill);
+        transition: var(--fm-transition-button-hover);
+        border: 1px solid var(--fm-color-neutral-800);
       }
       .btn-save-profile:hover:not(:disabled) {
-        background-color: #b8935c;
-        border-color: #b8935c;
-        box-shadow: 0 4px 12px rgba(184, 147, 92, 0.2);
+        background-color: var(--fm-color-primary-500);
+        border-color: var(--fm-color-primary-500);
+        color: var(--fm-text-inverted);
+        box-shadow: 0 4px 12px var(--fm-color-primary-glow);
         transform: translateY(-1px);
       }
       .btn-save-profile:disabled {
@@ -316,9 +320,9 @@ import { IUpdateProfileDto } from '../../interfaces/iupdate-profile.dto';
         to { opacity: 1; transform: scale(1) translateY(0); }
       }
       .disabled-email-input {
-        background-color: rgba(245, 245, 240, 0.6) !important;
-        border-color: rgba(0, 0, 0, 0.05) !important;
-        color: #8c8c87 !important;
+        background-color: var(--fm-color-neutral-200) !important;
+        border-color: var(--fm-border-subtle) !important;
+        color: var(--fm-text-disabled) !important;
         cursor: not-allowed !important;
       }
       .input-icon-right {

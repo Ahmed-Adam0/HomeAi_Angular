@@ -1,8 +1,16 @@
 <div class="orders-page" appRtl>
-  <app-page-header
-    [title]="'ORDERS_TITLE' | translate"
-    [subtitle]="'ORDERS_SUBTITLE' | translate"
-  />
+  <!-- Premium Inline Compact Hero Banner (matches Order Details) -->
+  <div class="premium-hero position-relative overflow-hidden mb-4">
+    <div class="hero-glow position-absolute"></div>
+    <div class="container position-relative z-index-1">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+          <h1 class="premium-hero-title mb-1">{{ 'ORDERS_TITLE' | translate }}</h1>
+          <p class="premium-hero-subtitle m-0">{{ 'ORDERS_SUBTITLE' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="container pb-5">
     @if (facade.isLoadingList()) {
@@ -25,12 +33,12 @@
             <table class="table align-middle mb-0">
               <thead>
                 <tr>
-                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_ID' | translate }}</th>
-                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_DATE' | translate }}</th>
-                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_TOTAL' | translate }}</th>
-                  <th class="text-muted fw-semibold">{{ 'ORDERS_COL_PAYMENT' | translate }}</th>
-                  <th class="text-muted fw-semibold" style="padding-inline-start: 2.5rem;">{{ 'ORDERS_COL_STATUS' | translate }}</th>
-                  <th class="text-muted fw-semibold text-end">{{ 'ORDERS_COL_ACTION' | translate }}</th>
+                  <th class="fw-semibold">{{ 'ORDERS_COL_ID' | translate }}</th>
+                  <th class="fw-semibold">{{ 'ORDERS_COL_DATE' | translate }}</th>
+                  <th class="fw-semibold">{{ 'ORDERS_COL_TOTAL' | translate }}</th>
+                  <th class="fw-semibold">{{ 'ORDERS_COL_PAYMENT' | translate }}</th>
+                  <th class="fw-semibold" style="padding-inline-start: 2.5rem;">{{ 'ORDERS_COL_STATUS' | translate }}</th>
+                  <th class="fw-semibold text-end">{{ 'ORDERS_COL_ACTION' | translate }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -39,11 +47,11 @@
                     <td class="fw-semibold">
                       <div class="d-flex flex-column">
                         <span class="orders-id">{{ o.orderNumber }}</span>
-                        <span class="orders-meta text-muted">#{{ o.id }}</span>
+                        <span class="orders-meta">#{{ o.id }}</span>
                       </div>
                     </td>
-                    <td class="text-muted">{{ o.createdAt | date: 'mediumDate' }}</td>
-                    <td class="fw-semibold">{{ o.totalAmount | currencyFormat }}</td>
+                    <td class="orders-date">{{ o.createdAt | date: 'mediumDate' }}</td>
+                    <td class="orders-total fw-semibold">{{ o.totalAmount | currencyFormat }}</td>
                     <td>
                       <app-status-badge
                         [label]="o.paymentStatus | statusTranslation:'payment'"
@@ -92,7 +100,7 @@
               <div class="orders-card-top">
                 <div class="min-w-0">
                   <div class="orders-card-id">{{ o.orderNumber }}</div>
-                  <div class="orders-card-date text-muted">{{ o.createdAt | date: 'mediumDate' }}</div>
+                  <div class="orders-card-date">{{ o.createdAt | date: 'mediumDate' }}</div>
                 </div>
                 <div class="orders-card-total">{{ o.totalAmount | currencyFormat }}</div>
               </div>

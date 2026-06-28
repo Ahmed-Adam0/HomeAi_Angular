@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { OrdersFacade, OrderListItemVm } from '../../data-access/orders.facade';
-import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
+
 import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { Button } from '../../../../shared/components/button/button.component';
@@ -20,7 +20,7 @@ import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/sk
     RouterLink,
     DatePipe,
     UpperCasePipe,
-    PageHeaderComponent,
+
     LoadingSpinner,
     EmptyStateComponent,
     Button,
