@@ -143,7 +143,7 @@ export class OrderDetails {
     }
     const data = this.order();
     if (!data) return 0;
-    return data.paymentStatus === 'paid' ? data.totalAmount : 0;
+    return (data.paymentStatus === 'Paid' || data.paymentStatus === 'paid') ? data.totalAmount : 0;
   });
 
   /** Amount to Pay is the difference between active orders total and amount paid. */
@@ -157,16 +157,16 @@ export class OrderDetails {
     
     // Fall back to backend status if no active totals to compare against
     if (total === 0) {
-      return this.order()?.paymentStatus || 'pending';
+      return this.order()?.paymentStatus || 'Unpaid';
     }
     
     if (paid >= total) {
-      return 'paid';
+      return 'Paid';
     }
     if (paid === 0) {
-      return 'unpaid';
+      return 'Unpaid';
     }
-    return 'pending'; // Partial payment
+    return 'PartialPaid'; // Partial payment
   });
 
   editForm: FormGroup | null = null;

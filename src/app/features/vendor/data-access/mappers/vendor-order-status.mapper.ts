@@ -30,8 +30,6 @@ export const STATUS_FRONTEND_MAP: Record<string, VendorOrderStatus> = {
   'confirmed': VendorOrderStatus.Confirmed,
   'inprogress': VendorOrderStatus.InProgress,
   'in_progress': VendorOrderStatus.InProgress,
-  'readyforpickup': VendorOrderStatus.Shipped,
-  'ready_for_pickup': VendorOrderStatus.Shipped,
   'shipped': VendorOrderStatus.Shipped,
   'delivered': VendorOrderStatus.Delivered,
   'cancelled': VendorOrderStatus.Cancelled,

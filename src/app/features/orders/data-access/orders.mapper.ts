@@ -81,7 +81,7 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
       })
     : [];
 
-  const paymentStatus = order.paymentStatus ?? (status === 'delivered' ? 'paid' : 'pending');
+  const paymentStatus = order.paymentStatus ?? (status === 'delivered' ? 'Paid' : 'Unpaid');
 
   const vendorOrders: ICustomerVendorOrder[] = Array.isArray(order.vendorOrders)
     ? order.vendorOrders.map((vo) => {
@@ -146,7 +146,7 @@ export function mapBackendToOrder(order: IBackendOrder): IOrder {
   const isCOD = paymentMethod === 'COD' || paymentMethod === 'Cash on Delivery' || paymentMethod.toLowerCase().includes('cash');
 
   let finalStatus = status;
-  const isPaid = paymentStatus === 'paid';
+  const isPaid = paymentStatus === 'Paid' || paymentStatus === 'paid';
   const isPostApproval = status === 'pending_payment' || status === 'confirmed' || status === 'in_progress';
   
   if (isPostApproval && !isPaid && !isCOD) {
