@@ -380,14 +380,11 @@
   margin-left: var(--sidebar-width-expanded);
 }
 
-/* ── Top Header ──────────────────────────────────── */
+/* ── Top Header - Minimal SaaS ──────────────────────────────────── */
 .vendor-header {
-  height: 80px;
+  height: 64px;
   background-color: var(--color-surface);
-  background: color-mix(in srgb, var(--color-surface) 75%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -395,14 +392,13 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  animation: slideDown 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
 }
 
 .btn-toggle-sidebar {
@@ -412,221 +408,173 @@
   font-size: 24px;
   padding: 0;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 .btn-toggle-sidebar:hover {
-  transform: scale(1.1);
-  color: var(--color-primary);
+  opacity: 0.7;
 }
 
-/* Workspace Card */
-.workspace-card {
+.workspace-identity {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 6px 20px 6px 6px;
-  border-radius: 99px;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--color-surface) 70%, transparent), color-mix(in srgb, var(--color-surface) 30%, transparent));
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 10px rgba(0,0,0,0.02);
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  cursor: pointer;
-}
-
-.workspace-card:hover {
-  background: var(--color-surface);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
-  transform: translateY(-2px) scale(1.01);
-  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  gap: 12px;
 }
 
 .workspace-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--fm-color-primary-soft), color-mix(in srgb, var(--color-surface) 50%, transparent));
-  color: var(--color-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  font-size: 18px;
+  color: var(--color-text-muted);
 }
 
-.workspace-info {
+.workspace-text {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-
-.workspace-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--color-text-muted);
-  font-weight: 700;
-  margin-bottom: 2px;
-}
-
-.workspace-name-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .workspace-name {
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-heading);
-  letter-spacing: -0.3px;
-  background: linear-gradient(135deg, var(--color-heading) 30%, var(--color-primary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
 }
 
-.verified-badge {
-  font-size: 14px;
-  filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--color-primary) 30%, transparent));
+.workspace-subtitle {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  line-height: 1;
+  margin-top: 2px;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 16px;
 }
 
-/* Glass Buttons & Cards */
-.glass-btn {
-  background: linear-gradient(145deg, color-mix(in srgb, var(--color-surface) 70%, transparent), color-mix(in srgb, var(--color-surface) 30%, transparent));
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 8px rgba(0,0,0,0.02);
-  color: var(--color-text);
-  cursor: pointer;
+.action-group {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.saas-action {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  position: relative;
-  overflow: hidden;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
 }
 
-.glass-btn::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, transparent, color-mix(in srgb, var(--color-primary) 10%, transparent));
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.glass-btn:hover {
-  background: var(--color-surface);
-  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05), 0 4px 10px color-mix(in srgb, var(--color-primary) 15%, transparent);
-  transform: translateY(-2px) scale(1.05);
-  color: var(--color-primary);
-}
-
-.glass-btn:hover::before {
+.saas-action:hover {
   opacity: 1;
 }
 
-.icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  font-size: 18px;
-  padding: 0;
+/* Make shared components fit and remove their internal heavy borders */
+::ng-deep .saas-action > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-/* Override Vendor Notification Bell styling inside the wrapper */
-::ng-deep .notification-glass-wrapper .notification-bell-btn {
+::ng-deep .saas-action button {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
+  padding: 0 !important;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-text);
+}
+::ng-deep .saas-action:hover button {
+  color: var(--color-heading);
+}
+
+::ng-deep .notification-wrapper .notification-bell-btn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   color: inherit;
   position: relative;
-  z-index: 1;
 }
 
-::ng-deep .notification-glass-wrapper .notification-badge {
-  top: 8px !important;
-  right: 8px !important;
-  box-shadow: 0 0 0 2px var(--color-surface);
+::ng-deep .notification-wrapper .notification-badge {
+  top: 2px !important;
+  right: -2px !important;
 }
 
-/* Profile Section */
-.glass-card {
+.profile-trigger {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 6px 18px 6px 6px;
-  border-radius: 99px;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--color-surface) 70%, transparent), color-mix(in srgb, var(--color-surface) 30%, transparent));
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 10px rgba(0,0,0,0.02);
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+  margin-left: 12px;
 }
 
-.glass-card:hover {
-  background: var(--color-surface);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
-  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
-  transform: translateY(-2px) scale(1.02);
+.profile-trigger:hover {
+  opacity: 1;
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-heading));
-  color: var(--color-surface);
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  background: color-mix(in srgb, var(--color-border) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  color: var(--color-heading);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 13px;
   overflow: hidden;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
 
 .user-avatar .avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .user-name {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-heading);
-  line-height: 1.2;
 }
 
-.profile-chevron {
-  font-size: 14px;
+.logout-action {
+  gap: 8px;
   color: var(--color-text-muted);
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: all 0.2s ease;
+  margin-left: 20px;
+  padding-left: 28px;
+  border-left: 1px solid var(--color-border);
 }
 
-.glass-card:hover .profile-chevron {
-  color: var(--color-primary);
-  transform: translateY(2px);
+.logout-action i {
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.logout-text {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.logout-action:hover {
+  color: var(--color-danger, #ef4444);
+  opacity: 1;
+}
+
+.logout-action:hover i {
+  transform: translateX(2px);
+}
+
+.logout-action:active {
+  transform: scale(0.96);
 }
 
 /* ── Main Content View ───────────────────────────── */

@@ -1,8 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
-   PREMIUM LUXURY MINIMALIST THEME TOGGLE (60 × 30 px)
-   Apple / Vercel / Linear inspired aesthetic.
-   No visible border, soft glassmorphism, spring floating thumb,
-   and elegant rotate-on-toggle icon transitions.
+   CLEAN SAAS THEME TOGGLE (56 × 28 px)
+   Apple / Linear inspired aesthetic.
+   High contrast, clear state indication, lightweight.
    ═══════════════════════════════════════════════════════════════ */
 
 :host {
@@ -10,77 +9,39 @@
   vertical-align: middle;
   align-items: center;
   justify-content: center;
-  perspective: 400px;
 }
 
-/* ══════════════════════════════════════
-   § 1  THE TOGGLE CONTAINER (Pill)
-   ══════════════════════════════════════ */
 .luxury-toggle {
   position: relative;
   display: inline-flex;
   align-items: center;
-  width: 60px;
-  height: 30px;
+  width: 56px;
+  height: 28px;
   padding: 0;
   margin: 0;
   background: transparent;
-  border: none; /* No visible border */
-  border-radius: 9999px;
+  border: none;
+  border-radius: 99px;
   outline: none;
   box-sizing: border-box;
-  overflow: visible;
   cursor: pointer;
-
-  /* Snappy custom spring curve */
-  --spring-curve: cubic-bezier(0.25, 1, 0.4, 1);
-  --anim-duration: 400ms;
-
-  /* Base transforms & hardware acceleration */
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
   transform-style: preserve-3d;
   will-change: transform;
-
-  transition:
-    transform var(--anim-duration) var(--spring-curve),
-    box-shadow var(--anim-duration) var(--spring-curve);
+  transition: transform 0.2s ease;
 }
 
-/* Accessibility Focus Indicator */
-.luxury-toggle:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 2px var(--color-background, #faf9f6),
-    0 0 0 4.5px var(--fm-color-primary-500, #b8935c),
-    0 6px 16px rgba(184, 147, 92, 0.15);
+.luxury-toggle:hover {
+  transform: translateY(-1px);
 }
 
-.luxury-toggle--dark:focus-visible {
-  box-shadow:
-    0 0 0 2px var(--color-background, #0f172a),
-    0 0 0 4.5px var(--fm-color-primary-400, #93c5fd),
-    0 6px 16px rgba(0, 0, 0, 0.45);
+.luxury-toggle:active {
+  transform: scale(0.96);
 }
 
-/* Hover: Slight lift (translateY(-2px)) and larger soft shadow */
-.luxury-toggle:hover,
-.luxury-toggle--hovered {
-  transform: translate3d(0, -2px, 0) scale3d(1.02, 1.02, 1.02);
-}
-
-/* Press state: Tiny press animation */
-.luxury-toggle:active,
-.luxury-toggle--pressed {
-  transform: translate3d(0, -1px, 0) scale3d(0.96, 0.96, 1) !important;
-}
-
-/* ══════════════════════════════════════
-   § 2  THE CONTAINER TRACK (Glassmorphism)
-   ══════════════════════════════════════ */
 .toggle-container {
   position: absolute;
   inset: 0;
-  border-radius: 9999px;
+  border-radius: 99px;
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -88,192 +49,89 @@
   pointer-events: none;
   z-index: 1;
 
-  /* Light Theme glass style (Ivory/Gold tones) */
-  background: rgba(248, 246, 242, 0.42);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.4),
-    0 2px 8px rgba(184, 147, 92, 0.04),
-    0 1px 2px rgba(0, 0, 0, 0.01);
-
-  transition:
-    background var(--anim-duration) ease,
-    box-shadow var(--anim-duration) ease;
+  /* Light Theme */
+  background: color-mix(in srgb, var(--color-border) 40%, transparent);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  transition: background 0.3s ease;
 }
 
-/* Dark Theme glass style (Deep Slate/Charcoal) */
+/* Dark Theme container */
 .luxury-toggle--dark .toggle-container {
-  background: rgba(15, 23, 42, 0.35);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.03),
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    0 1px 2px rgba(0, 0, 0, 0.15);
+  background: color-mix(in srgb, var(--color-surface) 10%, rgba(255,255,255,0.1));
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
 }
 
-/* ══════════════════════════════════════
-   § 3  FLOATING GLASS THUMB
-   ══════════════════════════════════════ */
 .floating-thumb {
   position: absolute;
-  top: 3px;
-  left: 3px;
+  top: 2px;
+  left: 2px;
   width: 24px;
   height: 24px;
   z-index: 2;
-  will-change: transform;
-  transition: transform var(--anim-duration) var(--spring-curve);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   pointer-events: none;
 }
 
-/* Lens body */
 .thumb-lens {
   position: absolute;
   inset: 0;
   border-radius: 50%;
   
-  /* Light mode circular thumb */
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow:
-    0 3px 6px rgba(184, 147, 92, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.03),
-    inset 0 1px 0.5px rgba(255, 255, 255, 0.9);
-
-  will-change: transform;
-  transition:
-    background var(--anim-duration) ease,
-    transform var(--anim-duration) var(--spring-curve),
-    box-shadow var(--anim-duration) ease;
+  /* Light mode thumb */
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15), 0 1px 1px rgba(0,0,0,0.05);
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
-/* Dark mode circular thumb */
+/* Dark mode thumb */
 .luxury-toggle--dark .thumb-lens {
-  background: rgba(30, 41, 59, 0.9);
-  box-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0.5px rgba(255, 255, 255, 0.06);
+  background: #334155;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
-/* Scale up slightly while moving / sliding */
-.luxury-toggle--sliding .thumb-lens {
-  transform: scale3d(1.08, 1.08, 1);
-}
-
-/* Thumb slightly compresses on click/press */
-.luxury-toggle--pressed .thumb-lens {
-  transform: scale3d(0.92, 0.92, 1);
-}
-
-/* Ambient active thumb glow */
-.thumb-glow {
-  position: absolute;
-  inset: -20%;
-  border-radius: 50%;
-  filter: blur(4px);
-  opacity: 0.35;
-  transition: opacity var(--anim-duration) ease, background var(--anim-duration) ease;
-  background: radial-gradient(circle, rgba(184, 147, 92, 0.5) 0%, rgba(184, 147, 92, 0) 70%);
-}
-
-.luxury-toggle--dark .thumb-glow {
-  background: radial-gradient(circle, rgba(147, 197, 253, 0.4) 0%, rgba(147, 197, 253, 0) 70%);
-  opacity: 0.25;
-}
-
-/* ══════════════════════════════════════
-   § 4  ICONS AND OUTLINES
-   ══════════════════════════════════════ */
 .icon-wrapper {
   position: absolute;
   top: 0;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3;
-  
-  /* Inactive states: 35% opacity */
-  opacity: 0.35;
-  will-change: transform, opacity, color;
-  transition:
-    opacity var(--anim-duration) var(--spring-curve),
-    transform var(--anim-duration) var(--spring-curve),
-    color var(--anim-duration) ease;
+  opacity: 0.4;
+  transition: opacity 0.3s ease, color 0.3s ease;
 }
 
 .icon-wrapper--moon {
   left: 0;
-  /* Rotate slightly outwards when inactive */
-  transform: scale(0.88) rotate(15deg);
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .icon-wrapper--sun {
   right: 0;
-  /* Rotate slightly outwards when inactive */
-  transform: scale(0.88) rotate(-15deg);
-  color: #c2a679;
+  color: var(--color-text-muted);
 }
 
 .icon {
   width: 14px;
   height: 14px;
-  stroke-width: 2.2;
+  stroke-width: 2.5;
 }
 
-/* Active Icon Styles (100% opacity, rotated back to 0deg) */
 .icon-wrapper--active {
   opacity: 1;
-  transform: scale(1.02) rotate(0deg) !important;
 }
 
 .icon-wrapper--active.icon-wrapper--sun {
-  color: #b8935c; /* Soft gold */
+  color: var(--color-primary);
 }
 
 .icon-wrapper--active.icon-wrapper--moon {
-  color: #93c5fd; /* Soft blue */
+  color: var(--color-primary);
 }
 
-/* Outlined icon rotation slide physics */
-.luxury-toggle--sliding .icon-wrapper--active.icon-wrapper--sun .icon {
-  animation: sun-rotate-fade var(--anim-duration) ease;
-}
-
-.luxury-toggle--sliding .icon-wrapper--active.icon-wrapper--moon .icon {
-  animation: moon-rotate-fade var(--anim-duration) ease;
-}
-
-@keyframes sun-rotate-fade {
-  0% { transform: rotate(-25deg) scale(0.85); }
-  100% { transform: rotate(0deg) scale(1.02); }
-}
-
-@keyframes moon-rotate-fade {
-  0% { transform: rotate(25deg) scale(0.85); }
-  100% { transform: rotate(0deg) scale(1.02); }
-}
-
-/* ══════════════════════════════════════
-   § 5  ACCESSIBILITY (prefers-reduced-motion)
-   ══════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
-  .luxury-toggle,
-  .floating-thumb,
-  .thumb-lens,
-  .thumb-glow,
-  .icon-wrapper,
-  .icon {
-    animation: none !important;
-    transition-duration: 0s !important;
-  }
-
-  .luxury-toggle--dark .floating-thumb {
-    transform: translate3d(0, 0, 0) !important;
-  }
-
-  .luxury-toggle:not(.luxury-toggle--dark) .floating-thumb {
-    transform: translate3d(30px, 0, 0) !important;
+  .luxury-toggle, .floating-thumb, .thumb-lens, .icon-wrapper {
+    transition: none !important;
   }
 }

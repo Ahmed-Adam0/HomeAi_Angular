@@ -12,6 +12,7 @@ import { ToastContainer } from '../../../shared/components/toast/toast.component
 import { ThemeToggleComponent, LanguageSwitcher } from '../../../shared/components';
 import { VendorService } from '../../../features/vendor/services/vendor.service';
 import { IVendorProfile } from '../../../features/vendor/interfaces/iworkshop-profile';
+import { DialogService } from '../../../shared/services/dialog.service';
 
 @Component({
   selector: 'app-vendor-layout',
@@ -26,6 +27,7 @@ export class VendorLayoutComponent implements OnInit {
   private router = inject(Router);
   protected translationService = inject(TranslationService);
   private vendorService = inject(VendorService);
+  private dialogService = inject(DialogService);
 
   readonly navRoutes = NAV_ROUTES;
   readonly sidebarOpen = signal(false);
@@ -78,8 +80,18 @@ export class VendorLayoutComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate([this.navRoutes.LOGIN]);
+    this.dialogService.openConfirm({
+      title: this.translationService.currentLang() === 'ar' ? 'تسجيل الخروج' : 'Logout',
+      message: this.translationService.currentLang() === 'ar' ? 'هل أنت متأكد أنك تريد تسجيل الخروج؟' : 'Are you sure you want to log out?',
+      confirmText: this.translationService.currentLang() === 'ar' ? 'تسجيل الخروج' : 'Logout',
+      cancelText: this.translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel',
+      variant: 'danger'
+    }).then(confirmed => {
+      if (confirmed) {
+        this.authService.logout();
+        this.router.navigate([this.navRoutes.LOGIN]);
+      }
+    });
   }
 }
 

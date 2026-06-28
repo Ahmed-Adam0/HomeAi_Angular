@@ -1142,5 +1142,11 @@
   "CONTACT.FORM.SUCCESS_TEXT": "شكرًا لتواصلك معنا. سيقوم فريقنا بمراجعة استفسارك والرد عليك خلال 24 ساعة.",
   "CONTACT.FORM.SUCCESS_TITLE": "تم إرسال الرسالة بنجاح!",
   "CONTACT.FORM.TITLE": "أرسل لنا رسالة",
-  "YOUR_CART_IS_EMPTY": "سلة التسوق فارغة"
+  "YOUR_CART_IS_EMPTY": "سلة التسوق فارغة",
+  "NOT_FOUND.SYSTEM_ERROR": "فورني مايند الذكي // خطأ في النظام ٤٠٤",
+  "NOT_FOUND.TITLE_PREFIX": "عذرًا...",
+  "NOT_FOUND.TITLE_MAIN": "هذه الغرفة غير موجودة.",
+  "NOT_FOUND.DESCRIPTION": "يبدو أن الصفحة التي تبحث عنها قد تم نقلها أو إعادة تصميمها أو لم تكن موجودة في كتالوجنا أبدًا. دعنا نوجهك للعودة إلى صالة العرض.",
+  "NOT_FOUND.RETURN_HOME": "العودة للرئيسية",
+  "NOT_FOUND.CONTINUE_SHOPPING": "مواصلة التسوق"
 }

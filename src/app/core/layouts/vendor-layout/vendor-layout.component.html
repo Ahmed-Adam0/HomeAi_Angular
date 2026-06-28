@@ -87,50 +87,50 @@
         <button class="btn-toggle-sidebar d-md-none" (click)="toggleSidebar()" [attr.aria-label]="'VENDOR.LAYOUT.NAV_DASHBOARD' | translate">
           <i class="bi bi-list"></i>
         </button>
-        <div class="workspace-card">
-          <div class="workspace-icon">
-            <i class="bi bi-shop"></i>
-          </div>
-          <div class="workspace-info">
-            <span class="workspace-label">{{ 'VENDOR.LAYOUT.WORKSHOP_LABEL' | translate }}</span>
-            <div class="workspace-name-wrapper">
-              <span class="workspace-name">
-                @if (workshopProfile()) {
-                  {{ currentLang() === 'ar' ? workshopProfile()?.workshopNameAr : workshopProfile()?.workshopNameEn }}
-                } @else {
-                  <span class="skeleton-text"></span>
-                }
-              </span>
-            </div>
+
+        <div class="workspace-identity">
+          <i class="bi bi-shop workspace-icon"></i>
+          <div class="workspace-text">
+            <span class="workspace-name">
+              @if (workshopProfile()) {
+                {{ currentLang() === 'ar' ? workshopProfile()?.workshopNameAr : workshopProfile()?.workshopNameEn }}
+              } @else {
+                <span class="skeleton-text" style="width: 120px; height: 16px; display: inline-block;"></span>
+              }
+            </span>
+            <span class="workspace-subtitle">Vendor Dashboard</span>
           </div>
         </div>
       </div>
 
       <div class="header-right">
-        <app-theme-toggle></app-theme-toggle>
-        <app-language-switcher></app-language-switcher>
-        
-        <div class="notification-glass-wrapper glass-btn icon-btn">
-          <app-vendor-notification-bell />
-        </div>
-
-        <div class="user-profile-menu dropdown glass-card">
-          <div class="user-avatar">
-            @if (currentUser()?.image && !avatarError()) {
-              <img [src]="currentUser()?.image" alt="Profile" class="avatar-img" (error)="onAvatarError()" />
-            } @else {
-              {{ currentUser()?.initials || 'V' }}
-            }
+        <div class="action-group">
+          <div class="saas-action">
+            <app-language-switcher></app-language-switcher>
           </div>
-          <div class="user-details d-none d-sm-block">
-            <span class="user-name">{{ currentUser()?.name || 'Vendor' }}</span>
+          <div class="saas-action">
+            <app-theme-toggle></app-theme-toggle>
           </div>
-          <i class="bi bi-chevron-down profile-chevron d-none d-sm-block"></i>
-        </div>
+          <div class="saas-action notification-wrapper">
+            <app-vendor-notification-bell />
+          </div>
 
-        <button class="btn-logout glass-btn icon-btn" (click)="logout()" [attr.title]="'VENDOR.LAYOUT.LOGOUT_TOOLTIP' | translate">
-          <i class="bi bi-box-arrow-right"></i>
-        </button>
+          <div class="profile-trigger dropdown">
+            <div class="user-avatar">
+              @if (currentUser()?.image && !avatarError()) {
+                <img [src]="currentUser()?.image" alt="Profile" class="avatar-img" (error)="onAvatarError()" />
+              } @else {
+                {{ currentUser()?.initials || 'V' }}
+              }
+            </div>
+            <span class="user-name d-none d-sm-block">{{ currentUser()?.name || 'Vendor' }}</span>
+          </div>
+
+          <div class="saas-action logout-action d-none d-md-flex" (click)="logout()" [attr.title]="'VENDOR.LAYOUT.LOGOUT_TOOLTIP' | translate">
+            <i class="bi bi-box-arrow-right"></i>
+            <span class="logout-text">Logout</span>
+          </div>
+        </div>
       </div>
     </header>
 

@@ -1143,5 +1143,11 @@
   "CONTACT.FORM.SUCCESS_TEXT": "Thank you for reaching out. Our team will review your inquiry and get back to you within 24 hours.",
   "CONTACT.FORM.SUCCESS_TITLE": "Message Sent Successfully!",
   "CONTACT.FORM.TITLE": "Drop Us a Line",
-  "YOUR_CART_IS_EMPTY": "Your cart is empty"
+  "YOUR_CART_IS_EMPTY": "Your cart is empty",
+  "NOT_FOUND.SYSTEM_ERROR": "FURNIMIND AI // SYSTEM ERROR 404",
+  "NOT_FOUND.TITLE_PREFIX": "Oops...",
+  "NOT_FOUND.TITLE_MAIN": "This room doesn't exist.",
+  "NOT_FOUND.DESCRIPTION": "Looks like the page you're searching for has been moved, redesigned, or never existed in our catalog. Let's guide you back to the showroom.",
+  "NOT_FOUND.RETURN_HOME": "Return Home",
+  "NOT_FOUND.CONTINUE_SHOPPING": "Continue Shopping"
 }
