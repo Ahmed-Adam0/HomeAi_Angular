@@ -87,37 +87,50 @@
         <button class="btn-toggle-sidebar d-md-none" (click)="toggleSidebar()" [attr.aria-label]="'VENDOR.LAYOUT.NAV_DASHBOARD' | translate">
           <i class="bi bi-list"></i>
         </button>
-        <div class="workshop-info">
-          <span class="workshop-label">{{ 'VENDOR.LAYOUT.WORKSHOP_LABEL' | translate }}</span>
-          <span class="workshop-name">FurniMind Premium Workshop</span>
+        <div class="workspace-card">
+          <div class="workspace-icon">
+            <i class="bi bi-shop"></i>
+          </div>
+          <div class="workspace-info">
+            <span class="workspace-label">{{ 'VENDOR.LAYOUT.WORKSHOP_LABEL' | translate }}</span>
+            <div class="workspace-name-wrapper">
+              <span class="workspace-name">
+                @if (workshopProfile()) {
+                  {{ currentLang() === 'ar' ? workshopProfile()?.workshopNameAr : workshopProfile()?.workshopNameEn }}
+                } @else {
+                  <span class="skeleton-text"></span>
+                }
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="header-right">
-        <!-- Language Switcher -->
-        <div class="language-switcher-container">
-          <button class="btn-language-switch" (click)="selectLanguage(currentLang() === 'en' ? 'ar' : 'en')" [attr.title]="'VENDOR.LAYOUT.LANGUAGE_SWITCHER_' + (currentLang() | uppercase) | translate" [attr.aria-label]="'Switch Language'">
-            <span class="lang-icon"></span>
-            <span class="lang-text fw-bold">{{ currentLang() === 'en' ? ('VENDOR.LAYOUT.LANGUAGE_SWITCHER_EN' | translate) : ('VENDOR.LAYOUT.LANGUAGE_SWITCHER_AR' | translate) }}</span>
-          </button>
+        <app-theme-toggle></app-theme-toggle>
+        <app-language-switcher></app-language-switcher>
+        
+        <div class="notification-glass-wrapper glass-btn icon-btn">
+          <app-vendor-notification-bell />
         </div>
-<app-vendor-notification-bell />
-        <div class="user-profile-menu dropdown">
+
+        <div class="user-profile-menu dropdown glass-card">
           <div class="user-avatar">
             @if (currentUser()?.image && !avatarError()) {
               <img [src]="currentUser()?.image" alt="Profile" class="avatar-img" (error)="onAvatarError()" />
             } @else {
-              {{ currentUser()?.initials || 'AW' }}
+              {{ currentUser()?.initials || 'V' }}
             }
           </div>
           <div class="user-details d-none d-sm-block">
-            <span class="user-name">{{ currentUser()?.name || 'Alexander Wright' }}</span>
-            <span class="user-role">{{ currentUser()?.tier || '✦ AI Spaces Creator' }}</span>
+            <span class="user-name">{{ currentUser()?.name || 'Vendor' }}</span>
           </div>
-          <button class="btn-logout" (click)="logout()" [attr.title]="'VENDOR.LAYOUT.LOGOUT_TOOLTIP' | translate">
-            <i class="bi bi-box-arrow-right"></i>
-          </button>
+          <i class="bi bi-chevron-down profile-chevron d-none d-sm-block"></i>
         </div>
+
+        <button class="btn-logout glass-btn icon-btn" (click)="logout()" [attr.title]="'VENDOR.LAYOUT.LOGOUT_TOOLTIP' | translate">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
       </div>
     </header>
 
