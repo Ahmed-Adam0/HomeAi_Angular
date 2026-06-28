@@ -351,7 +351,8 @@
 }
 .profile-dropdown-header {
   padding: 18px 20px 12px 20px;
-  background-color: var(--fm-color-neutral-50, rgba(250, 249, 246, 0.4));
+  background-color: var(--color-card-hover);
+  border-bottom: 1px solid var(--fm-border-subtle);
 }
 .header-avatar-container {
   width: 44px;
@@ -539,6 +540,14 @@
   transform: rotate(90deg);
 }
 
+.mobile-toggle i {
+  color: var(--color-heading);
+}
+
+.mobile-drawer-username {
+  color: var(--fm-text-heading);
+}
+
 .mobile-nav-link {
   transition: var(--transition-fast);
   color: var(--fm-color-neutral-800);
@@ -546,6 +555,14 @@
 .mobile-nav-link:hover {
   padding-left: 3px;
   color: var(--fm-color-primary-500) !important;
+}
+
+/* Authenticated links in mobile drawer */
+.mobile-drawer-link {
+  color: var(--color-text);
+}
+.mobile-drawer-link:hover {
+  color: var(--color-heading);
 }
 
 .avatar-mini {
@@ -570,23 +587,23 @@
 }
 
 .mobile-lang-btn:hover {
-  background: #f0edea;
+  background: var(--fm-color-neutral-200);
   border-color: rgba(184, 147, 92, 0.3);
 }
 
 .mobile-lang-btn--active {
-  background: #b8935c;
-  border-color: #b8935c;
-  color: #fff;
+  background: var(--fm-color-primary-500);
+  border-color: var(--fm-color-primary-500);
+  color: var(--fm-text-inverted);
 }
 
 .mobile-lang-btn--active:hover {
-  background: #a37e4c;
-  border-color: #a37e4c;
+  background: var(--fm-color-primary-600);
+  border-color: var(--fm-color-primary-600);
 }
 
 .mobile-lang-btn:focus-visible {
-  outline: 2px solid #b8935c;
+  outline: 2px solid var(--fm-color-primary-500);
   outline-offset: 2px;
 }
 
@@ -958,7 +975,7 @@
 .cart-item-remove {
   background: transparent;
   border: none;
-  color: #cbd5e1;
+  color: var(--color-text-muted);
   cursor: pointer;
   padding: 6px;
   transition: all 0.2s ease;
@@ -967,8 +984,8 @@
 }
 
 .cart-item-remove:hover {
-  color: #ef4444;
-  background-color: #fef2f2;
+  color: var(--fm-color-danger-500);
+  background-color: var(--fm-color-danger-50);
 }
 
 /* Empty State */
@@ -982,7 +999,7 @@
 
 .cart-empty-icon {
   margin-bottom: 16px;
-  color: #cbd5e1;
+  color: var(--color-text-muted);
 }
 
 .cart-empty-text {
@@ -1032,7 +1049,7 @@
 
 .cart-free-shipping-bar {
   height: 4px;
-  background: #e5e1da;
+  background: var(--fm-color-neutral-300);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -1040,7 +1057,7 @@
 .cart-free-shipping-bar-fill {
   display: block;
   height: 100%;
-  background: #b8935c;
+  background: var(--fm-color-primary-500);
   width: 75%; /* Arbitrary representative progress value */
   border-radius: 10px;
 }
