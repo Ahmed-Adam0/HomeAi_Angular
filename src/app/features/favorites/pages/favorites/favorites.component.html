@@ -25,7 +25,7 @@
               {{ translationService.currentLang() === 'ar' ? 'قطعة محفوظة' : (favCount() === 1 ? 'item saved' : 'items saved') }}
               <span class="sep-dot mx-2">•</span>
               {{ translationService.currentLang() === 'ar' ? 'إجمالي القيمة:' : 'Total value:' }}
-              <strong class="text-dark ms-1">{{ totalValue() | currencyFormat }}</strong>
+              <strong class="fav-text-heading ms-1">{{ totalValue() | currencyFormat }}</strong>
             } @else {
               {{ translationService.currentLang() === 'ar' ? 'لا توجد مفضلات بعد' : 'No favorites yet' }}
             }
@@ -86,7 +86,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
               </svg>
             </div>
-            <h3 class="fw-bold text-dark mb-2 fs-5">
+            <h3 class="fw-bold empty-state-title mb-2 fs-5">
               {{ translationService.currentLang() === 'ar' ? 'مفضلتك فارغة' : 'Your wishlist is empty' }}
             </h3>
             <p class="text-secondary font-xs mb-4">
@@ -152,7 +152,7 @@
                   <p class="fav-category font-xxs text-secondary text-uppercase mb-1">
                     {{ translationService.currentLang() === 'ar' ? 'قطعة فاخرة' : 'Premium Piece' }}
                   </p>
-                  <h3 class="fav-card-title font-xs fw-bold text-dark mb-2 lh-sm">
+                  <h3 class="fav-card-title font-xs fw-bold mb-2 lh-sm">
                     {{ fav | localized:'productName' }}
                   </h3>
 
@@ -211,7 +211,7 @@
                 />
               </div>
               <div class="overflow-hidden">
-                <p class="fw-bold text-dark font-xs mb-0 text-truncate">
+                <p class="fw-bold sug-name font-xs mb-0 text-truncate">
                   {{ sug | localized:'name' }}
                 </p>
                 <p class="sug-price fw-black mb-0">{{ sug.price | currencyFormat }}</p>
