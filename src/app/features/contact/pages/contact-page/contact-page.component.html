@@ -1,13 +1,21 @@
 <!-- Hero Section -->
-<section class="hero-section" aria-label="Contact FurniMind AI Hero">
-  <div class="hero-bg-orbs"></div>
-  <div class="hero-grid-bg"></div>
+<section class="hero-section" aria-label="Contact FurniMind AI Hero" (mousemove)="onMouseMove($event)">
+  <div class="hero-mesh-gradient"></div>
+  <div class="hero-aurora"></div>
+  <div class="hero-noise-overlay"></div>
   <div class="container position-relative">
     <div class="hero-content">
-      <span class="hero-badge">{{ 'CONTACT.HERO.BADGE' | translate }}</span>
-      <h1 class="hero-title">{{ 'CONTACT.HERO.TITLE' | translate }}</h1>
-      <p class="hero-subtitle">{{ 'CONTACT.HERO.SUBTITLE' | translate }}</p>
-      <div class="hero-stats">
+      <span class="hero-badge reveal-fade-in">
+        <i class="bi bi-envelope-at"></i>
+        <span>{{ 'CONTACT.HERO.BADGE' | translate }}</span>
+      </span>
+      <h1 class="hero-title">
+        <span>{{ 'CONTACT.HERO.TITLE' | translate }}</span>
+      </h1>
+      <p class="hero-subtitle">
+        {{ 'CONTACT.HERO.SUBTITLE' | translate }}
+      </p>
+      <div class="hero-stats reveal-fade-in-delay">
         <div class="hero-stat">
           <span class="hero-stat-value">24/7</span>
           <span class="hero-stat-label">{{ 'CONTACT.HERO.STAT_AVAIL' | translate }}</span>
@@ -31,9 +39,10 @@
 <section class="info-section scroll-reveal" aria-label="Contact Information">
   <div class="container">
     <div class="info-grid">
-      @for (info of contactInfo; track info.icon) {
-        <div class="info-card">
-          <div class="info-card-inner">
+      @for (info of contactInfo; track info.icon; let i = $index) {
+        <div class="info-card stagger-{{i}}">
+          <div class="info-card-inner glass-card hover-lift">
+            <div class="info-glow"></div>
             <div class="info-icon-wrap"><i class="{{ info.icon }}"></i></div>
             <h3 class="info-title">{{ info.titleKey | translate }}</h3>
             <p class="info-desc">{{ info.descKey | translate }}</p>
@@ -54,16 +63,22 @@
 <section class="form-section scroll-reveal" aria-label="Contact Form and Support">
   <div class="container">
     <div class="form-layout">
-      <div class="form-column">
+      <!-- Form Column -->
+      <div class="form-column glass-card">
         <div class="section-header text-start">
           <span class="section-badge">{{ 'CONTACT.FORM.BADGE' | translate }}</span>
-          <h2 class="section-title">{{ 'CONTACT.FORM.TITLE' | translate }}</h2>
+          <h2 class="section-title gradient-text">{{ 'CONTACT.FORM.TITLE' | translate }}</h2>
           <p class="section-desc">{{ 'CONTACT.FORM.DESCRIPTION' | translate }}</p>
         </div>
 
         @if (submitted() && submitSuccess()) {
-          <div class="form-success">
-            <div class="form-success-icon"><i class="bi bi-check-circle-fill"></i></div>
+          <div class="form-success-container">
+            <div class="success-icon-wrap">
+              <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+              </svg>
+            </div>
             <h3 class="form-success-title">{{ 'CONTACT.FORM.SUCCESS_TITLE' | translate }}</h3>
             <p class="form-success-text">{{ 'CONTACT.FORM.SUCCESS_TEXT' | translate }}</p>
           </div>
@@ -79,7 +94,7 @@
         @if (!submitted() || submitError()) {
           <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form" novalidate>
             <div class="form-row">
-              <div class="form-group">
+              <div class="form-group" [class.field-error]="f.name.touched && f.name.invalid">
                 <div class="floating-input-wrap">
                   <input type="text" id="name" formControlName="name" class="form-input" placeholder=" " autocomplete="name" appAutoDir>
                   <label for="name" class="form-label-float">{{ 'CONTACT.FORM.NAME' | translate }}</label>
@@ -91,7 +106,7 @@
                   </span>
                 }
               </div>
-              <div class="form-group">
+              <div class="form-group" [class.field-error]="f.email.touched && f.email.invalid">
                 <div class="floating-input-wrap">
                   <input type="email" id="email" formControlName="email" class="form-input" placeholder=" " autocomplete="email" appAutoDir>
                   <label for="email" class="form-label-float">{{ 'CONTACT.FORM.EMAIL' | translate }}</label>
@@ -105,7 +120,7 @@
               </div>
             </div>
             <div class="form-row">
-              <div class="form-group">
+              <div class="form-group" [class.field-error]="f.phone.touched && f.phone.invalid">
                 <div class="floating-input-wrap">
                   <input type="tel" id="phone" formControlName="phone" class="form-input" placeholder=" " autocomplete="tel" appAutoDir>
                   <label for="phone" class="form-label-float">{{ 'CONTACT.FORM.PHONE' | translate }}</label>
@@ -117,7 +132,7 @@
                   </span>
                 }
               </div>
-              <div class="form-group">
+              <div class="form-group" [class.field-error]="f.subject.touched && f.subject.invalid">
                 <div class="floating-input-wrap">
                   <input type="text" id="subject" formControlName="subject" class="form-input" placeholder=" " appAutoDir>
                   <label for="subject" class="form-label-float">{{ 'CONTACT.FORM.SUBJECT' | translate }}</label>
@@ -130,7 +145,7 @@
                 }
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" [class.field-error]="f.message.touched && f.message.invalid">
               <div class="floating-input-wrap">
                 <textarea id="message" formControlName="message" class="form-input form-textarea" placeholder=" " rows="5" appAutoDir></textarea>
                 <label for="message" class="form-label-float">{{ 'CONTACT.FORM.MESSAGE' | translate }}</label>
@@ -142,7 +157,7 @@
                 </span>
               }
             </div>
-            <button type="submit" class="btn-submit" [disabled]="submitting()">
+            <button type="submit" class="btn-submit glowing-btn" [disabled]="submitting()">
               @if (submitting()) {
                 <span class="spinner"></span>
                 <span>{{ 'CONTACT.FORM.SUBMITTING' | translate }}</span>
@@ -155,15 +170,17 @@
         }
       </div>
 
+      <!-- Support Column -->
       <div class="support-column">
         <div class="section-header text-start">
           <span class="section-badge">{{ 'CONTACT.SUPPORT.BADGE' | translate }}</span>
-          <h2 class="section-title">{{ 'CONTACT.SUPPORT.TITLE' | translate }}</h2>
+          <h2 class="section-title gradient-text">{{ 'CONTACT.SUPPORT.TITLE' | translate }}</h2>
           <p class="section-desc">{{ 'CONTACT.SUPPORT.DESCRIPTION' | translate }}</p>
         </div>
         <div class="support-grid">
-          @for (option of supportOptions; track option.icon) {
-            <div class="support-card">
+          @for (option of supportOptions; track option.icon; let i = $index) {
+            <div class="support-card glass-card hover-lift stagger-{{i}}">
+              <div class="support-glow"></div>
               <div class="support-icon"><i class="{{ option.icon }}"></i></div>
               <h3 class="support-card-title">{{ option.titleKey | translate }}</h3>
               <p class="support-card-desc">{{ option.descKey | translate }}</p>
@@ -179,24 +196,46 @@
   </div>
 </section>
 
+<!-- Map Section -->
+<section class="map-section scroll-reveal" aria-label="Office Location Map">
+  <div class="container">
+    <div class="map-container glass-card">
+      <div class="map-glow-border"></div>
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d110502.7697402636!2d31.188423475283594!3d30.059488470123512!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14583fa60b21beeb%3A0x79dfb2963c100e51!2sCairo%2C%20Cairo%20Governorate!5e0!3m2!1sen!2seg!4v1720000000000!5m2!1sen!2seg" 
+        width="100%" 
+        height="450" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade"
+        title="FurniMind AI Headquarters Location Map">
+      </iframe>
+    </div>
+  </div>
+</section>
+
 <!-- FAQ Section -->
 <section class="faq-section scroll-reveal" aria-labelledby="faq-title">
   <div class="container">
     <div class="section-header">
       <span class="section-badge">{{ 'CONTACT.FAQ.BADGE' | translate }}</span>
-      <h2 id="faq-title" class="section-title">{{ 'CONTACT.FAQ.TITLE' | translate }}</h2>
+      <h2 id="faq-title" class="section-title gradient-text">{{ 'CONTACT.FAQ.TITLE' | translate }}</h2>
       <p class="section-desc">{{ 'CONTACT.FAQ.DESCRIPTION' | translate }}</p>
     </div>
     <div class="faq-accordion" role="region" aria-label="Frequently Asked Questions">
       @for (faq of faqItems; track faq.questionKey; let i = $index) {
-        <div class="faq-card" [class.active]="activeFaqIndex() === i">
+        <div class="faq-card glass-card" [class.active]="activeFaqIndex() === i">
           <button class="faq-trigger"
                   [attr.aria-expanded]="activeFaqIndex() === i"
                   [attr.aria-controls]="'faq-panel-' + i"
                   (click)="toggleFaq(i)">
             <span class="faq-number">{{ i + 1 | number: '2.0' }}</span>
             <span class="faq-question">{{ faq.questionKey | translate }}</span>
-            <i class="bi bi-plus-lg faq-icon"></i>
+            <div class="faq-icon-wrapper">
+              <span class="faq-icon-line h-line"></span>
+              <span class="faq-icon-line v-line"></span>
+            </div>
           </button>
           <div [id]="'faq-panel-' + i"
                class="faq-panel"
@@ -214,18 +253,18 @@
 
 <!-- CTA Section -->
 <section class="cta-section scroll-reveal" aria-labelledby="cta-title">
-  <div class="cta-bg-orbs"></div>
+  <div class="cta-mesh-gradient"></div>
   <div class="container position-relative">
-    <div class="cta-content">
+    <div class="cta-content glass-card-dark">
       <span class="cta-badge">{{ 'CONTACT.CTA.BADGE' | translate }}</span>
       <h2 id="cta-title" class="cta-title">{{ 'CONTACT.CTA.TITLE' | translate }}</h2>
       <p class="cta-subtitle">{{ 'CONTACT.CTA.SUBTITLE' | translate }}</p>
       <div class="cta-actions">
-        <a href="mailto:support@furnimind.ai" class="btn-cta-primary">
+        <a href="mailto:support@furnimind.ai" class="btn-cta-primary glowing-btn">
           <i class="bi bi-envelope-paper"></i>
           <span>{{ 'CONTACT.CTA.BUTTON_SUPPORT' | translate }}</span>
         </a>
-        <a routerLink="/products" class="btn-cta-secondary">
+        <a routerLink="/products" class="btn-cta-secondary premium-btn-outline-light">
           <i class="bi bi-grid"></i>
           <span>{{ 'CONTACT.CTA.BUTTON_MARKETPLACE' | translate }}</span>
         </a>

@@ -112,6 +112,15 @@ export class ContactPageComponent implements AfterViewInit {
     });
   }
 
+  onMouseMove(event: MouseEvent): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const x = (event.clientX / window.innerWidth) * 100;
+    const y = (event.clientY / window.innerHeight) * 100;
+    const host = this.el.nativeElement as HTMLElement;
+    host.style.setProperty('--mouse-x', `${x}%`);
+    host.style.setProperty('--mouse-y', `${y}%`);
+  }
+
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 

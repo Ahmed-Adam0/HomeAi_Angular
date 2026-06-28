@@ -53,6 +53,22 @@ export class AboutPageComponent implements AfterViewInit {
     { key: 'ABOUT.STATS.ORDERS', target: 210000, icon: 'bi bi-truck' },
   ];
 
+  readonly timelineItems = [
+    { yearKey: 'ABOUT.TIMELINE.ITEM1.YEAR', titleKey: 'ABOUT.TIMELINE.ITEM1.TITLE', descKey: 'ABOUT.TIMELINE.ITEM1.DESC' },
+    { yearKey: 'ABOUT.TIMELINE.ITEM2.YEAR', titleKey: 'ABOUT.TIMELINE.ITEM2.TITLE', descKey: 'ABOUT.TIMELINE.ITEM2.DESC' },
+    { yearKey: 'ABOUT.TIMELINE.ITEM3.YEAR', titleKey: 'ABOUT.TIMELINE.ITEM3.TITLE', descKey: 'ABOUT.TIMELINE.ITEM3.DESC' },
+    { yearKey: 'ABOUT.TIMELINE.ITEM4.YEAR', titleKey: 'ABOUT.TIMELINE.ITEM4.TITLE', descKey: 'ABOUT.TIMELINE.ITEM4.DESC' },
+  ];
+
+  readonly teamMembers = [
+    { nameKey: 'ABOUT.TEAM.MEMBER1.NAME', roleKey: 'ABOUT.TEAM.MEMBER1.ROLE', icon: 'bi bi-person-workspace', social: { linkedin: '#', github: '#' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER2.NAME', roleKey: 'ABOUT.TEAM.MEMBER2.ROLE', icon: 'bi bi-code-slash', social: { linkedin: '#', github: '#' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER3.NAME', roleKey: 'ABOUT.TEAM.MEMBER3.ROLE', icon: 'bi bi-terminal', social: { linkedin: '#', github: '#' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER4.NAME', roleKey: 'ABOUT.TEAM.MEMBER4.ROLE', icon: 'bi bi-cpu', social: { linkedin: '#', github: '#' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER5.NAME', roleKey: 'ABOUT.TEAM.MEMBER5.ROLE', icon: 'bi bi-database', social: { linkedin: '#', github: '#' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER6.NAME', roleKey: 'ABOUT.TEAM.MEMBER6.ROLE', icon: 'bi bi-bezier2', social: { linkedin: '#', github: '#' } },
+  ];
+
   readonly privacyItems: AccordionEntry[] = [
     { titleKey: 'ABOUT.PRIVACY.DATA_COLLECTION.TITLE', contentKey: 'ABOUT.PRIVACY.DATA_COLLECTION.DESCRIPTION' },
     { titleKey: 'ABOUT.PRIVACY.ACCOUNT_INFO.TITLE', contentKey: 'ABOUT.PRIVACY.ACCOUNT_INFO.DESCRIPTION' },
@@ -75,6 +91,15 @@ export class AboutPageComponent implements AfterViewInit {
   readonly activeTermsIndex = signal<number | null>(null);
 
   private animatingCounters = false;
+
+  onMouseMove(event: MouseEvent): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const x = (event.clientX / window.innerWidth) * 100;
+    const y = (event.clientY / window.innerHeight) * 100;
+    const host = this.el.nativeElement as HTMLElement;
+    host.style.setProperty('--mouse-x', `${x}%`);
+    host.style.setProperty('--mouse-y', `${y}%`);
+  }
 
   togglePrivacy(index: number): void {
     this.activePrivacyIndex.update((prev) => (prev === index ? null : index));
