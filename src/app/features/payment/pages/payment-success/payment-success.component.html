@@ -24,10 +24,37 @@
     </div>
   </div>
 
-  <div class="success-content-container">
+  <!-- Loading State -->
+  <div class="success-content-container" *ngIf="facade.isLoadingDetails()">
+    <div class="loading-state-wrapper text-center py-5">
+      <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem; color: var(--fm-color-primary-500, #b8935c) !important;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted fw-semibold">Loading payment and order details...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="success-content-container" *ngIf="!facade.isLoadingDetails() && facade.detailsErrorKey()">
+    <div class="error-state-card card-premium text-center p-5 animate-fade-in" style="max-width: 500px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+      <div class="error-icon-wrapper mb-4 mx-auto text-danger bg-danger-light rounded-circle d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; background: rgba(220, 53, 69, 0.08);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-danger">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h3 class="fw-bold mb-2 text-dark">{{ 'PAYMENT_SUCCESS.ERROR_LOAD_ORDER' | translate }}</h3>
+      <p class="text-muted mb-4 small">We couldn't retrieve the latest state of your order. Please check your network connection and try again.</p>
+      <app-button [label]="'RETRY' | translate" variant="primary" size="md" (clicked)="retryLoad()" />
+    </div>
+  </div>
+
+  <!-- Valid Success Details State -->
+  <div class="success-content-container" *ngIf="!facade.isLoadingDetails() && !facade.detailsErrorKey() && order()">
     <!-- Section 1 — Premium Success Hero -->
-    <header class="success-hero" role="banner">
-      <div class="success-icon-wrapper">
+    <header class="success-hero text-center mb-5" role="banner">
+      <div class="success-icon-wrapper mb-3 d-inline-block">
         <div class="pulse-ring ring-1"></div>
         <div class="pulse-ring ring-2"></div>
         <div class="checkmark-circle">
@@ -37,101 +64,229 @@
           </svg>
         </div>
       </div>
-      <h1 class="hero-headline" id="success-heading">{{ 'PAYMENT_SUCCESS.HERO_TITLE' | translate }}</h1>
-      <p class="hero-supporting-copy">{{ 'PAYMENT_SUCCESS.HERO_SUPPORTING_COPY' | translate }}</p>
+      <h1 class="hero-headline fw-black mb-2" id="success-heading">
+        {{ 'PAYMENT_SUCCESS.HERO_TITLE' | translate }}
+      </h1>
+      <p class="hero-supporting-copy text-muted mx-auto" style="max-width: 580px;">
+        {{ 'PAYMENT_SUCCESS.HERO_SUPPORTING_COPY' | translate }}
+      </p>
     </header>
 
-    <!-- Section 2 — Order Summary Card -->
-    <section class="order-summary-section" aria-labelledby="summary-heading">
-      <div class="summary-card">
-        <h2 class="card-title" id="summary-heading">{{ 'PAYMENT_SUCCESS.ORDER_SUMMARY_TITLE' | translate }}</h2>
+    <!-- Grid Layout -->
+    <div class="row g-4" style="max-width: 1200px; width: 100%; margin: 0 auto;">
+      
+      <!-- Left Column -->
+      <div class="col-lg-7">
+        <div class="d-flex flex-column gap-4">
+          
+          <!-- Summary Card -->
+          <section class="summary-card card-premium p-4" aria-labelledby="summary-heading" style="background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);">
+            <h2 class="card-title fs-5 fw-bold mb-4" id="summary-heading" style="color: var(--fm-color-neutral-800, #38332c);">
+              {{ 'PAYMENT_SUCCESS.ORDER_SUMMARY_TITLE' | translate }}
+            </h2>
 
-        <div class="summary-grid">
-          <div class="summary-item">
-            <span class="item-label">{{ 'PAYMENT_SUCCESS.ORDER_NUMBER' | translate }}</span>
-            <span class="item-value font-mono fw-bold" id="order-number-val">#{{ orderNumber() }}</span>
-          </div>
+            <div class="d-flex flex-column gap-3">
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                <span class="text-secondary fw-semibold small">{{ 'PAYMENT_SUCCESS.ORDER_NUMBER' | translate }}</span>
+                <span class="font-mono fw-bold" id="order-number-val">#{{ orderNumber() }}</span>
+              </div>
 
-          <div class="summary-item">
-            <span class="item-label">{{ 'PAYMENT_SUCCESS.PAYMENT_STATUS' | translate }}</span>
-            <div class="item-value">
-              <span class="premium-badge paid-badge" aria-label="Payment status is paid">
-                <span class="badge-dot"></span>
-                <span class="badge-text fw-bold">{{ 'PAYMENT_SUCCESS.BADGE_PAID' | translate }}</span>
-              </span>
-            </div>
-          </div>
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                <span class="text-secondary fw-semibold small">{{ 'PAYMENT_SUCCESS.PURCHASE_DATE' | translate }}</span>
+                <span id="purchase-date-val">{{ purchaseDate() | date:'mediumDate' }}</span>
+              </div>
 
-          <div class="summary-item">
-            <span class="item-label">{{ 'PAYMENT_SUCCESS.PURCHASE_DATE' | translate }}</span>
-            <span class="item-value" id="purchase-date-val">{{ purchaseDate() | date:'mediumDate' }}</span>
-          </div>
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                <span class="text-secondary fw-semibold small">{{ 'PAYMENT_SUCCESS.TRANSACTION_REF' | translate }}</span>
+                <span class="font-mono text-muted small" id="transaction-ref-val">{{ transactionRef() }}</span>
+              </div>
 
-          <div class="summary-item" *ngIf="totalAmount() !== null">
-            <span class="item-label">{{ 'PAYMENT_SUCCESS.TOTAL_AMOUNT' | translate }}</span>
-            <span class="item-value fw-bold text-brand" id="total-amount-val">{{ totalAmount()! | currencyFormat }}</span>
-          </div>
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                <span class="text-secondary fw-semibold small">{{ 'PAYMENT_SUCCESS.PAYMENT_STATUS' | translate }}</span>
+                <div>
+                  <app-status-badge 
+                    [label]="facade.calculatedPaymentStatus() | statusTranslation:'payment'"
+                    [tone]="facade.paymentStatusTone(facade.calculatedPaymentStatus())" 
+                    size="sm" />
+                </div>
+              </div>
 
-          <div class="summary-item">
-            <span class="item-label">{{ 'PAYMENT_SUCCESS.TRANSACTION_REF' | translate }}</span>
-            <span class="item-value font-mono text-muted fs-sm" id="transaction-ref-val">{{ transactionRef() }}</span>
-          </div>
-        </div>
-      </div>
-    </section>
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                <span class="text-secondary fw-semibold small">{{ 'PAYMENT_SUCCESS.TOTAL_AMOUNT' | translate }}</span>
+                <span class="fw-bold" id="total-amount-val">{{ facade.totalOrderAmount() | currencyFormat }}</span>
+              </div>
 
-    <!-- Section 3 — Order Journey Timeline -->
-    <section class="order-timeline-section" aria-labelledby="timeline-heading">
-      <h2 class="timeline-section-title" id="timeline-heading">{{ 'PAYMENT_SUCCESS.TIMELINE.TITLE' | translate }}</h2>
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light" style="background: rgba(184, 147, 92, 0.03); padding: 8px 12px; border-radius: 8px;">
+                <span class="text-brand fw-bold small">{{ 'PAYMENT_SUCCESS.PAID_IN_TRANSACTION' | translate }}</span>
+                <span class="fw-black text-brand" id="paid-in-txn-val">{{ paidInThisTransaction() | currencyFormat }}</span>
+              </div>
 
-      <div class="timeline-container">
-        <!-- Background Track Line -->
-        <div class="timeline-track">
-          <div class="timeline-track-progress"></div>
-        </div>
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                <span class="text-success fw-semibold small">{{ 'PAYMENT_SUCCESS.TOTAL_PAID' | translate }}</span>
+                <span class="fw-bold text-success" id="total-paid-val">{{ facade.amountPaid() | currencyFormat }}</span>
+              </div>
 
-        <div class="timeline-steps">
-          <div class="timeline-step"
-               *ngFor="let step of timelineSteps(); let i = index"
-               [class.completed]="step.isComplete"
-               [class.active]="step.isActive"
-               [attr.aria-current]="step.isActive ? 'step' : null">
+              <div class="d-flex justify-content-between align-items-center py-2">
+                <span class="text-secondary fw-semibold small">{{ 'PAYMENT_SUCCESS.REMAINING_BALANCE' | translate }}</span>
+                <span class="fw-bold" [class.text-danger]="facade.remainingBalance() > 0" [class.text-success]="facade.remainingBalance() === 0" id="remaining-balance-val">
+                  {{ facade.remainingBalance() | currencyFormat }}
+                </span>
+              </div>
 
-            <div class="step-marker-container">
-              <div class="step-marker">
-                <span class="marker-dot" *ngIf="!step.isComplete"></span>
-                <svg class="step-check-icon" *ngIf="step.isComplete" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
+              <!-- Next required payment -->
+              <div *ngIf="facade.remainingBalance() > 0 && facade.nextRequiredPayment()" class="mt-2 p-3 rounded-lg border border-warning" style="background: rgba(255, 193, 7, 0.03); border-radius: 12px; border-style: dashed !important;">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-uppercase text-muted font-xxs fw-bold tracking-wider mb-1">{{ 'PAYMENT_SUCCESS.NEXT_REQUIRED_PAYMENT' | translate }}</div>
+                    <div class="small fw-bold text-secondary">
+                      {{ 'MILESTONE_STATUS_' + (facade.nextRequiredPayment()!.milestoneStatus | uppercase) | translate }}
+                    </div>
+                  </div>
+                  <div class="fs-5 fw-bold text-warning">{{ facade.nextRequiredPayment()!.amount | currencyFormat }}</div>
+                </div>
               </div>
             </div>
+          </section>
 
-            <div class="step-content">
-              <span class="step-number" aria-hidden="true">0{{ i + 1 }}</span>
-              <h3 class="step-label">{{ step.labelKey | translate }}</h3>
+          <!-- Payment Progress Bar -->
+          <section class="progress-card card-premium p-4" style="background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-bold text-secondary small">{{ 'PAYMENT_SUCCESS.PAYMENT_PROGRESS' | translate }}</span>
+              <span class="fw-black text-brand">{{ facade.paymentProgress() | number:'1.0-0' }}%</span>
             </div>
-          </div>
+            <div class="progress" style="height: 12px; border-radius: 6px; background-color: var(--fm-color-neutral-100, #f1f0ea); overflow: hidden;">
+              <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                   role="progressbar" 
+                   [style.width.%]="facade.paymentProgress()"
+                   [attr.aria-valuenow]="facade.paymentProgress()" 
+                   aria-valuemin="0" 
+                   aria-valuemax="100"
+                   style="background-color: var(--fm-color-primary-500, #b8935c) !important; border-radius: 6px; transition: width 0.8s ease-out;">
+              </div>
+            </div>
+          </section>
+
+          <!-- Milestones Card -->
+          <section class="milestones-card card-premium p-4" *ngIf="facade.enrichedMilestones().length > 0" style="background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);">
+            <h2 class="card-title fs-5 fw-bold mb-3">
+              {{ 'PAYMENT_SUCCESS.MILESTONES_TITLE' | translate }}
+            </h2>
+            <div class="d-flex flex-column gap-2.5">
+              <div *ngFor="let m of facade.enrichedMilestones()" class="d-flex align-items-center justify-content-between p-3 rounded-lg border border-light" style="border-radius: 12px; background: rgba(184, 147, 92, 0.01);">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="milestone-dot"
+                    style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;"
+                    [style.background-color]="m.state === 'Paid' ? '#22c55e' : (m.state === 'Upcoming' ? '#cbd5e1' : '#b8935c')">
+                  </span>
+                  <div>
+                    <div class="small fw-bold">
+                      {{ 'MILESTONE_STATUS_' + (m.milestoneStatus | uppercase) | translate }}
+                    </div>
+                    <div class="font-xxs text-muted mt-0.5">
+                      <span *ngIf="m.state === 'Paid' && m.paidAt" class="text-success">
+                        Paid on {{ m.paidAt | date:'mediumDate' }}
+                      </span>
+                      <span *ngIf="m.state === 'Upcoming'" class="text-muted">Upcoming milestone</span>
+                      <span *ngIf="m.state === 'Processing'" class="text-warning">Payment processing</span>
+                      <span *ngIf="m.state === 'Failed'" class="text-danger">Last payment attempt failed</span>
+                      <span *ngIf="m.state === 'Pending'" class="text-warning">Awaiting payment</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="fw-bold small" [class.text-success]="m.state === 'Paid'">{{ m.amount | currencyFormat }}</span>
+                  <span class="badge small" 
+                        [style.background-color]="m.state === 'Paid' ? 'rgba(34, 197, 94, 0.08)' : (m.state === 'Upcoming' ? 'rgba(203, 213, 225, 0.2)' : 'rgba(184, 147, 92, 0.08)')"
+                        [style.color]="m.state === 'Paid' ? '#15803d' : (m.state === 'Upcoming' ? '#6b7280' : '#b8935c')"
+                        style="padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase;">
+                    {{ m.state }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
         </div>
       </div>
-    </section>
 
-    <!-- Section 4 — Recommended Actions -->
-    <footer class="actions-section">
-      <app-button
-        [label]="'PAYMENT_SUCCESS.CTA_VIEW_ORDERS' | translate"
-        variant="primary"
-        size="lg"
-        [attr.aria-label]="'View my placed orders details'"
-        (clicked)="viewOrders()">
-      </app-button>
-      <app-button
-        [label]="'PAYMENT_SUCCESS.CTA_CONTINUE_SHOPPING' | translate"
-        variant="outline"
-        size="lg"
-        [attr.aria-label]="'Continue shopping in marketplace'"
-        (clicked)="continueShopping()">
-      </app-button>
-    </footer>
+      <!-- Right Column -->
+      <div class="col-lg-5">
+        <div class="d-flex flex-column gap-4">
+          
+          <!-- Order Journey Timeline -->
+          <section class="order-timeline-section card-premium p-4" aria-labelledby="timeline-heading" style="background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);">
+            <h2 class="timeline-section-title fs-5 fw-bold mb-4" id="timeline-heading">{{ 'PAYMENT_SUCCESS.TIMELINE.TITLE' | translate }}</h2>
+
+            <div class="timeline-container position-relative ps-4" style="border-left: 2px solid rgba(184, 147, 92, 0.1); margin-left: 12px;">
+              <div class="timeline-steps d-flex flex-column gap-4">
+                <div class="timeline-step position-relative"
+                     *ngFor="let step of timelineSteps(); let i = index"
+                     [class.completed]="step.isComplete"
+                     [class.active]="step.isActive"
+                     [attr.aria-current]="step.isActive ? 'step' : null">
+
+                  <div class="step-marker-container position-absolute" style="left: -32px; top: 2px;">
+                    <div class="step-marker rounded-circle d-flex align-items-center justify-content-center" 
+                         [style.background-color]="step.isComplete ? '#657e5d' : (step.isActive ? '#b8935c' : '#f1f0ea')"
+                         style="width: 20px; height: 20px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                      <svg class="step-check-icon text-white" *ngIf="step.isComplete" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true" style="width: 10px; height: 10px;">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      <span class="marker-dot text-white bg-white rounded-circle" *ngIf="step.isActive" style="width: 6px; height: 6px; display: block;"></span>
+                    </div>
+                  </div>
+
+                  <div class="step-content">
+                    <span class="step-number text-muted font-mono" style="font-size: 10px; font-weight: 700; opacity: 0.5;">0{{ i + 1 }}</span>
+                    <h3 class="step-label fs-6 fw-bold mb-0" [style.color]="step.isActive ? 'var(--fm-color-primary-500, #b8935c)' : (step.isComplete ? 'var(--fm-color-success-500, #657e5d)' : '#6b7280')">
+                      {{ step.labelKey | translate }}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Recommended Actions (CTA Buttons) -->
+          <footer class="actions-section card-premium p-4" style="background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);">
+            <div class="d-flex flex-column gap-2">
+              
+              <!-- If Remaining Balance == 0 -->
+              <ng-container *ngIf="facade.remainingBalance() === 0">
+                <app-button
+                  [label]="'PAYMENT_SUCCESS.CTA_DOWNLOAD_INVOICE' | translate"
+                  variant="primary"
+                  size="lg"
+                  class="w-100"
+                  (clicked)="facade.translationService.currentLang() === 'ar' ? facade.translationService.translate('DOWNLOADING_INVOICE') : 'Downloading Invoice...'">
+                </app-button>
+              </ng-container>
+
+              <app-button
+                [label]="'PAYMENT_SUCCESS.CTA_VIEW_ORDERS' | translate"
+                [variant]="facade.remainingBalance() > 0 ? 'primary' : 'outline'"
+                size="lg"
+                class="w-100"
+                [attr.aria-label]="'View my placed orders details'"
+                [routerLink]="['/orders', order()?.id || merchantOrderId()?.split('_')?.[0] || '']">
+              </app-button>
+
+              <app-button
+                [label]="'PAYMENT_SUCCESS.CTA_CONTINUE_SHOPPING' | translate"
+                variant="outline"
+                size="lg"
+                class="w-100"
+                [attr.aria-label]="'Continue shopping in marketplace'"
+                (clicked)="continueShopping()">
+              </app-button>
+
+            </div>
+          </footer>
+
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 

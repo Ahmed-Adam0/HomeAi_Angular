@@ -1,12 +1,15 @@
 import { DestroyRef, computed, inject, Injectable, signal } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { catchError, finalize, map, Observable, of, switchMap, tap } from 'rxjs';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { catchError, finalize, forkJoin, map, Observable, of, retry, switchMap, tap, timer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrdersApiService } from './orders-api.service';
 import { ProductCacheService } from '../../../core/services/product-cache.service';
 import { IOrder, IOrderItem, OrderStatus } from '../interfaces';
 import { StatusBadgeTone } from '../../../shared/components/status-badge/status-badge.component';
 import { LoadingService } from '../../../core/services/loading.service';
+import { PaymentService } from '../../payment/services/payment.service';
+import { UiState } from '../../../core/state/ui.state';
+import { TranslationService } from '../../../shared/i18n/translation.service';
 
 export type PaymentStatus = IOrder['paymentStatus'];
 
@@ -31,6 +34,10 @@ export class OrdersFacade {
   private productCache = inject(ProductCacheService);
   private destroyRef = inject(DestroyRef);
   private loadingService = inject(LoadingService);
+  private paymentService = inject(PaymentService);
+  private uiState = inject(UiState);
+  readonly translationService = inject(TranslationService);
+  private router = inject(Router);
 
   readonly orders = signal<IOrder[] | null>(null);
   readonly selectedOrder = signal<IOrder | null>(null);
@@ -42,6 +49,31 @@ export class OrdersFacade {
 
   readonly listErrorKey = signal<string | null>(null);
   readonly detailsErrorKey = signal<string | null>(null);
+
+  // Remaining balance signals
+  readonly remainingBalanceDetails = signal<any | null>(null);
+  readonly isLoadingBreakdown = signal<boolean>(false);
+  readonly isInitiatingPayment = signal<boolean>(false);
+  readonly isInitiatingVendorPayment = signal<Record<string, boolean>>({});
+
+  private readonly ACTIVE_VO_STATUSES = new Set([
+    'confirmed',                  // Confirmed
+    'in_progress',                // InProgress
+    'pending_payment',            // PendingPayment
+    'shipped',                    // Shipped
+    'delivered',                  // Delivered
+  ]);
+
+  /**
+   * Helper to normalize statuses to snake_case for consistency
+   */
+  normalizeStatusSnake(value: string | undefined | null): string {
+    if (!value) return '';
+    return value
+      .replace(/([a-z])([A-Z])/g, '$1_$2')
+      .replace(/[\s_-]+/g, '_')
+      .toLowerCase();
+  }
 
   /**
    * Computed state: User can modify/cancel order only when status is 'pending'
@@ -81,6 +113,168 @@ export class OrdersFacade {
   });
 
   /**
+   * Compute total of active vendor orders.
+   */
+  readonly activeVendorOrdersTotal = computed(() => {
+    const vOrders = this.selectedOrder()?.vendorOrders ?? [];
+    return vOrders
+      .filter(vo => this.ACTIVE_VO_STATUSES.has(this.normalizeStatusSnake(vo.status)))
+      .reduce((sum, vo) => sum + (vo.totalPrice ?? 0), 0);
+  });
+
+  /**
+   * Compute total amount paid so far.
+   */
+  readonly amountPaid = computed(() => {
+    const breakdown = this.remainingBalanceDetails();
+    if (breakdown) {
+      return breakdown.totalPrice - breakdown.remainingBalance;
+    }
+    const data = this.selectedOrder();
+    if (!data) return 0;
+    return (data.paymentStatus === 'Paid' || data.paymentStatus === 'paid') ? data.totalAmount : 0;
+  });
+
+  /**
+   * Compute amount left to pay before order is fully paid.
+   */
+  readonly amountToPay = computed(() => {
+    return Math.max(0, this.activeVendorOrdersTotal() - this.amountPaid());
+  });
+
+  /**
+   * Derive payment status dynamically from calculations.
+   */
+  readonly calculatedPaymentStatus = computed(() => {
+    const total = this.activeVendorOrdersTotal();
+    const paid = this.amountPaid();
+    
+    if (total === 0) {
+      return this.selectedOrder()?.paymentStatus || 'Unpaid';
+    }
+    
+    if (paid >= total) {
+      return 'Paid';
+    }
+    if (paid === 0) {
+      return 'Unpaid';
+    }
+    return 'PartialPaid';
+  });
+
+  /**
+   * Sum of milestones that are currently due.
+   */
+  readonly pendingPaymentTotal = computed(() => {
+    const breakdown = this.remainingBalanceDetails();
+    if (!breakdown || !breakdown.milestones) return 0;
+
+    const vOrders = this.selectedOrder()?.vendorOrders ?? [];
+    return breakdown.milestones
+      .filter((m: any) => {
+        if (m.isPaid) return false;
+        const vo = vOrders.find(o => o.id === m.vendorOrderId.toString());
+        if (!vo) return false;
+        return this.normalizeStatusSnake(m.milestoneStatus) === vo.status &&
+          (vo.status === 'pending_payment' || vo.status === 'shipped' || vo.status === 'delivered');
+      })
+      .reduce((sum: number, m: any) => sum + m.amount, 0);
+  });
+
+  /**
+   * Total Order Value from order details or breakdown.
+   */
+  readonly totalOrderAmount = computed(() => {
+    return this.selectedOrder()?.totalAmount || this.remainingBalanceDetails()?.totalPrice || 0;
+  });
+
+  /**
+   * Dynamic remaining balance of the order.
+   */
+  readonly remainingBalance = computed(() => {
+    const total = this.totalOrderAmount();
+    const paid = this.amountPaid();
+    return Math.max(0, total - paid);
+  });
+
+  /**
+   * Progress percentage of payment.
+   */
+  readonly paymentProgress = computed(() => {
+    const total = this.totalOrderAmount();
+    if (total <= 0) return 0;
+    const paid = this.amountPaid();
+    return Math.min(100, Math.max(0, (paid / total) * 100));
+  });
+
+  /**
+   * Enriched milestones list with states.
+   */
+  readonly enrichedMilestones = computed(() => {
+    const breakdown = this.remainingBalanceDetails();
+    if (!breakdown || !breakdown.milestones) return [];
+
+    const vOrders = this.selectedOrder()?.vendorOrders ?? [];
+    return breakdown.milestones.map((m: any) => {
+      const vo = vOrders.find(o => o.id === m.vendorOrderId.toString());
+      const state = this.getMilestoneState(m, vo);
+      return {
+        ...m,
+        state,
+        vendorOrder: vo
+      };
+    });
+  });
+
+  /**
+   * Next Required Payment (first unpaid milestone)
+   */
+  readonly nextRequiredPayment = computed(() => {
+    const milestones = this.enrichedMilestones();
+    return milestones.find((m: any) => !m.isPaid) || null;
+  });
+
+  /**
+   * Returns state of milestone: Paid, Processing, Failed, Pending, Upcoming.
+   */
+  getMilestoneState(m: any, vo: any): 'Paid' | 'Processing' | 'Failed' | 'Pending' | 'Upcoming' {
+    if (m.isPaid) return 'Paid';
+    if (!vo) return 'Upcoming';
+
+    const currentStatus = this.normalizeStatusSnake(vo.status);
+    const mStatus = this.normalizeStatusSnake(m.milestoneStatus);
+
+    const statusOrder = ['pending_payment', 'shipped', 'delivered'];
+    const currentIdx = statusOrder.indexOf(currentStatus);
+    const milestoneIdx = statusOrder.indexOf(mStatus);
+
+    if (currentIdx === -1 || milestoneIdx === -1) {
+      return 'Pending';
+    }
+
+    if (currentIdx === milestoneIdx) {
+      const paymentStatus = (this.selectedOrder()?.paymentStatus || '').toLowerCase();
+      if (paymentStatus === 'failed') {
+        return 'Failed';
+      }
+      if (paymentStatus === 'processing' || paymentStatus === 'pending') {
+        return 'Processing';
+      }
+      return 'Pending';
+    }
+
+    if (currentIdx < milestoneIdx) {
+      return 'Upcoming';
+    }
+
+    return 'Pending';
+  }
+
+  readonly hasPendingPaymentOrders = computed(() => {
+    return this.pendingPaymentTotal() > 0 || this.activeVendorOrdersTotal() > 0;
+  });
+
+  /**
    * Fetches user's orders from the backend API.
    */
   loadOrders(): void {
@@ -104,11 +298,8 @@ export class OrdersFacade {
       .subscribe((orders) => this.orders.set(orders));
   }
 
-  /**
-   * Fetches detailed information for a single order.
-   */
-  loadOrder(id: string): void {
-    this.loadOrderDetails(id);
+  loadOrder(id: string, waitForPayment: boolean = false): void {
+    this.loadOrderDetails(id, waitForPayment);
   }
 
   /**
@@ -170,16 +361,42 @@ export class OrdersFacade {
     );
   }
 
-  loadOrderDetails(id: string): void {
+  loadOrderDetails(id: string | number, waitForPayment: boolean = false): void {
+    const stringId = id.toString();
+    const dbOrderId = stringId.split('_')[0];
+
     const done = this.loadingService.addInitTask();
     this.isLoadingDetails.set(true);
     this.detailsErrorKey.set(null);
 
-    this.api
-      .getOrderById(id)
-      .pipe(
+    forkJoin({
+      order: this.api.getOrderById(dbOrderId).pipe(
         switchMap((order) => this.enrichOrder(order)),
-        catchError(() => {
+        map((order) => {
+          if (waitForPayment && (order.paymentStatus === 'Unpaid' || order.paymentStatus === 'unpaid' || order.paymentStatus === 'pending')) {
+            throw new Error('Payment status not updated yet');
+          }
+          return order;
+        })
+      ),
+      balance: this.paymentService.getMasterOrderRemainingBalance(dbOrderId).pipe(
+        catchError((err) => {
+          console.error('Failed to load balance breakdown:', err);
+          return of(null);
+        })
+      )
+    })
+      .pipe(
+        retry({
+          count: 4,
+          delay: (error, retryCount) => {
+            const delayTime = Math.pow(2, retryCount) * 1000;
+            console.warn(`[OrdersFacade] Order state not confirmed or fetch failed. Retrying in ${delayTime}ms (Attempt ${retryCount}/4) due to: ${error.message || error}`);
+            return timer(delayTime);
+          }
+        }),
+        catchError((err) => {
+          console.error('Failed to load order details after retries:', err);
           this.detailsErrorKey.set('ORDERS_ERROR_LOAD_DETAILS');
           return of(null);
         }),
@@ -190,13 +407,113 @@ export class OrdersFacade {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
-        next: (order) => {
-          if (order) {
-            console.log('Loaded & enriched order:', order);
-            this.selectedOrder.set(order);
+        next: (result) => {
+          if (result) {
+            console.log('Loaded & enriched order with balance:', result);
+            this.selectedOrder.set(result.order);
+            this.remainingBalanceDetails.set(result.balance);
           }
         }
       });
+  }
+
+  loadRemainingBalance(orderId: string | number): void {
+    const stringId = orderId.toString();
+    const dbOrderId = stringId.split('_')[0];
+    this.isLoadingBreakdown.set(true);
+    this.paymentService.getMasterOrderRemainingBalance(dbOrderId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (breakdown) => {
+          this.remainingBalanceDetails.set(breakdown);
+          this.isLoadingBreakdown.set(false);
+        },
+        error: (err) => {
+          console.error('Failed to load payment breakdown:', err);
+          this.isLoadingBreakdown.set(false);
+        }
+      });
+  }
+
+  payApprovedOrders(): void {
+    const orderData = this.selectedOrder();
+    if (!orderData) return;
+
+    if (this.amountToPay() <= 0) {
+      this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_NO_APPROVED_ORDERS_ERROR') || 'No approved orders to pay');
+      return;
+    }
+
+    if (!orderData.id) return;
+
+    const payload = {
+      masterOrderId: Number(orderData.id)
+    };
+
+    this.isInitiatingPayment.set(true);
+    this.paymentService.initiateMasterOrderPayment(payload).subscribe({
+      next: (res) => {
+        if (res && res.paymentUrl) {
+          this.paymentService.startPaymentFlow(res.paymentUrl, Number(orderData.id)).subscribe({
+            next: (paymentRes) => {
+              this.isInitiatingPayment.set(false);
+              if (paymentRes.success) {
+                this.uiState.showAlert('success', this.translationService.translate('ORDER_DETAILS_PAYMENT_SUCCESS') || 'Payment completed successfully');
+                this.loadOrderDetails(orderData.id);
+              } else {
+                this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_FAILED') || 'Payment was unsuccessful or cancelled');
+              }
+            },
+            error: () => {
+              this.isInitiatingPayment.set(false);
+            }
+          });
+        } else {
+          this.isInitiatingPayment.set(false);
+          this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR') || 'Failed to initiate payment');
+        }
+      },
+      error: (err) => {
+        this.isInitiatingPayment.set(false);
+        console.error('Failed to initiate master order payment:', err);
+        this.uiState.showAlert('danger', err.error?.message || this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR') || 'Failed to initiate payment');
+      }
+    });
+  }
+
+  payVendorOrderMilestone(vendorOrderId: string): void {
+    const orderData = this.selectedOrder();
+    if (!orderData) return;
+
+    this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: true }));
+    this.paymentService.initiateVendorOrderPayment({ vendorOrderId: Number(vendorOrderId) }).subscribe({
+      next: (res) => {
+        if (res && res.paymentUrl) {
+          this.paymentService.startPaymentFlow(res.paymentUrl, Number(orderData.id)).subscribe({
+            next: (paymentRes) => {
+              this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
+              if (paymentRes.success) {
+                this.uiState.showAlert('success', this.translationService.translate('ORDER_DETAILS_PAYMENT_SUCCESS') || 'Payment completed successfully');
+                this.loadOrderDetails(orderData.id);
+              } else {
+                this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_FAILED') || 'Payment was unsuccessful or cancelled');
+              }
+            },
+            error: () => {
+              this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
+            }
+          });
+        } else {
+          this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
+          this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR') || 'Failed to initiate payment');
+        }
+      },
+      error: (err) => {
+        this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
+        console.error('Failed to initiate vendor order payment:', err);
+        this.uiState.showAlert('danger', err.error?.message || this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR') || 'Failed to initiate payment');
+      }
+    });
   }
 
   /**
@@ -208,6 +525,7 @@ export class OrdersFacade {
       switchMap((updatedOrder) => this.enrichOrder(updatedOrder)),
       tap((enrichedOrder) => {
         this.selectedOrder.set(enrichedOrder);
+        this.loadRemainingBalance(id);
         const currentOrders = this.orders();
         if (currentOrders) {
           this.orders.set(
@@ -228,6 +546,7 @@ export class OrdersFacade {
       switchMap((updatedOrder) => this.enrichOrder(updatedOrder)),
       tap((enrichedOrder) => {
         this.selectedOrder.set(enrichedOrder);
+        this.loadRemainingBalance(id);
         const currentOrders = this.orders();
         if (currentOrders) {
           this.orders.set(
