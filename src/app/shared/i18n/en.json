@@ -214,6 +214,8 @@
   "AI.CHATBOT.VOICE_MESSAGE": "Voice message",
   "AI.CHATBOT.WELCOME_TEXT": "Your personal furniture assistant. Ask me anything about our products, styles, or design recommendations.",
   "AI.CHATBOT.WELCOME_TITLE": "Hi! I'm FurniMind AI",
+  "AI.CHAT.LISTEN": "Listen",
+  "AI.CHAT.STOP": "Stop",
   "AI.DESIGN_SUMMARY.CONTINUE_EDITING": "Continue Editing",
   "AI.DESIGN_SUMMARY.CREATE_ORDER": "Create Order",
   "AI.DESIGN_SUMMARY.FINALIZED": "Finalized",

@@ -214,6 +214,8 @@
   "AI.CHATBOT.VOICE_MESSAGE": "رسالة صوتية",
   "AI.CHATBOT.WELCOME_TEXT": "مساعدك الشخصي للأثاث. اسألني أي شيء عن منتجاتنا أو الأساليب أو توصيات التصميم.",
   "AI.CHATBOT.WELCOME_TITLE": "مرحباً! أنا فورني مايند الذكي",
+  "AI.CHAT.LISTEN": "استمع",
+  "AI.CHAT.STOP": "إيقاف",
   "AI.DESIGN_SUMMARY.CONTINUE_EDITING": "متابعة التعديل",
   "AI.DESIGN_SUMMARY.CREATE_ORDER": "إنشاء طلب",
   "AI.DESIGN_SUMMARY.FINALIZED": "مكتمل",

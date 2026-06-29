@@ -21,9 +21,29 @@
           </div>
         }
 
-        <!-- Bubble -->
-        <div class="message-bubble font-sans" [class.user-bubble]="msg.sender === 'user'">
-          <p class="mb-0 fs-7.5 lh-base">{{ msg.text }}</p>
+        <!-- Bubble & Actions Column -->
+        <div class="d-flex flex-column gap-1" [class.align-items-start]="msg.sender === 'ai'" [class.align-items-end]="msg.sender === 'user'" style="max-width: calc(100% - 42px);">
+          <!-- Bubble -->
+          <div class="message-bubble font-sans" [class.user-bubble]="msg.sender === 'user'" [class.ai-bubble]="msg.sender === 'ai'" style="max-width: 100%;">
+            <p class="mb-0 fs-7.5 lh-base">{{ msg.text }}</p>
+          </div>
+
+          <!-- Speaker Button for AI Messages only -->
+          @if (msg.sender === 'ai' && speechService.isSupported()) {
+            <button
+              class="speech-action-btn border-0 bg-transparent text-muted fs-8 p-0"
+              (click)="toggleSpeech(msg)"
+              [title]="(speechService.currentlyPlayingId() === msg.timestamp ? 'AI.CHAT.STOP' : 'AI.CHAT.LISTEN') | translate"
+            >
+              @if (speechService.currentlyPlayingId() === msg.timestamp) {
+                <i class="bi bi-volume-mute-fill text-gold me-1"></i>
+                <span class="text-gold fw-semibold">{{ 'AI.CHAT.STOP' | translate }}</span>
+              } @else {
+                <i class="bi bi-volume-up hover-gold me-1"></i>
+                <span class="hover-gold">{{ 'AI.CHAT.LISTEN' | translate }}</span>
+              }
+            </button>
+          }
         </div>
 
         <!-- User Avatar -->

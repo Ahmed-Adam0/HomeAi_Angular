@@ -1034,3 +1034,31 @@
     height: 560px;
   }
 }
+
+.chatbot-speech-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: var(--fm-color-neutral-500, #8c8375);
+  font-size: 0.7rem;
+  padding: 2px 4px;
+  margin-top: 4px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-family: inherit;
+}
+
+.chatbot-speech-btn:hover {
+  color: var(--fm-color-primary-600, #8e6d45);
+}
+
+.chatbot-speech-btn svg {
+  flex-shrink: 0;
+}
+
+.chatbot-speech-btn .text-gold {
+  color: var(--fm-color-primary-600, #8e6d45) !important;
+}
+
