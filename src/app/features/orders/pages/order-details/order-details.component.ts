@@ -84,164 +84,18 @@ export class OrderDetails {
   readonly isApproveDialogVisible = signal(false);
   readonly isRejectDialogVisible = signal(false);
   readonly selectedVendorOrderId = signal<string | null>(null);
-  readonly isInitiatingPayment = signal(false);
-  readonly isInitiatingVendorPayment = signal<Record<string, boolean>>({});
-
-  readonly remainingBalanceDetails = signal<any | null>(null);
-  readonly isLoadingBreakdown = signal<boolean>(false);
-
-  readonly hasPendingPaymentOrders = computed(() => {
-    return this.pendingPaymentTotal() > 0 || this.activeVendorOrdersTotal() > 0;
-  });
-
-  private normalizeStatus(value: string | undefined | null): string {
-    if (!value) return '';
-    return value
-      .replace(/([a-z])([A-Z])/g, '$1_$2')
-      .replace(/[\s_-]+/g, '_')
-      .toLowerCase();
-  }
-
-  readonly pendingPaymentTotal = computed(() => {
-    const breakdown = this.remainingBalanceDetails();
-    if (!breakdown || !breakdown.milestones) return 0;
-
-    const vOrders = this.order()?.vendorOrders ?? [];
-    return breakdown.milestones
-      .filter((m: any) => {
-        if (m.isPaid) return false;
-        const vo = vOrders.find(o => o.id === m.vendorOrderId.toString());
-        if (!vo) return false;
-        return this.normalizeStatus(m.milestoneStatus) === vo.status &&
-          (vo.status === 'pending_payment' || vo.status === 'shipped' || vo.status === 'delivered');
-      })
-      .reduce((sum: number, m: any) => sum + m.amount, 0);
-  });
-
-  /** Active vendor-order statuses — normalized snake_case versions of the
-   *  backend enum, covering Confirmed → Delivered.
-   *  normalizeStatus() converts e.g. "Confirmed" → "confirmed" */
-  private readonly ACTIVE_VO_STATUSES = new Set([
-    'confirmed',                  // Confirmed
-    'in_progress',                // InProgress
-    'pending_payment',            // PendingPayment
-    'shipped',                    // Shipped
-    'delivered',                  // Delivered
-  ]);
-
-  readonly activeVendorOrdersTotal = computed(() => {
-    const vOrders = this.order()?.vendorOrders ?? [];
-    return vOrders
-      .filter(vo => this.ACTIVE_VO_STATUSES.has(this.normalizeStatus(vo.status)))
-      .reduce((sum, vo) => sum + (vo.totalPrice ?? 0), 0);
-  });
-
-  readonly amountPaid = computed(() => {
-    const breakdown = this.remainingBalanceDetails();
-    if (breakdown) {
-      return breakdown.totalPrice - breakdown.remainingBalance;
-    }
-    const data = this.order();
-    if (!data) return 0;
-    return (data.paymentStatus === 'Paid' || data.paymentStatus === 'paid') ? data.totalAmount : 0;
-  });
-
-  /** Amount to Pay is the difference between active orders total and amount paid. */
-  readonly amountToPay = computed(() => {
-    return Math.max(0, this.activeVendorOrdersTotal() - this.amountPaid());
-  });
-
-  readonly calculatedPaymentStatus = computed(() => {
-    const total = this.activeVendorOrdersTotal();
-    const paid = this.amountPaid();
-    
-    // Fall back to backend status if no active totals to compare against
-    if (total === 0) {
-      return this.order()?.paymentStatus || 'Unpaid';
-    }
-    
-    if (paid >= total) {
-      return 'Paid';
-    }
-    if (paid === 0) {
-      return 'Unpaid';
-    }
-    return 'PartialPaid'; // Partial payment
-  });
 
   editForm: FormGroup | null = null;
 
   constructor() {
     this.facade.connectDetailsRoute(this.route);
-
-    effect(() => {
-      const orderData = this.order();
-      if (orderData && orderData.id) {
-        this.loadRemainingBalance(orderData.id);
-      }
-    });
-  }
-
-  loadRemainingBalance(orderId: string | number): void {
-    this.paymentService.getMasterOrderRemainingBalance(orderId).subscribe({
-      next: (breakdown) => {
-        this.remainingBalanceDetails.set(breakdown);
-      },
-      error: (err) => {
-        console.error('Failed to load payment breakdown:', err);
-      }
-    });
-  }
-
-  onPayVendorOrderMilestone(vendorOrderId: string): void {
-    this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: true }));
-    this.paymentService.initiateVendorOrderPayment({ vendorOrderId: Number(vendorOrderId) }).subscribe({
-      next: (res) => {
-        if (res && res.paymentUrl) {
-          this.paymentService.startPaymentFlow(res.paymentUrl, Number(this.order()?.id || 0)).subscribe({
-            next: (paymentRes) => {
-              this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
-              if (paymentRes.success) {
-                this.uiState.showAlert('success', this.translationService.translate('ORDER_DETAILS_PAYMENT_SUCCESS') || 'Payment completed successfully');
-                const currentId = this.order()?.id;
-                if (currentId) {
-                  this.loadRemainingBalance(currentId);
-                  this.facade.loadOrderDetails(currentId);
-                }
-              } else {
-                this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_FAILED') || 'Payment was unsuccessful or cancelled');
-              }
-            },
-            error: () => {
-              this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
-            }
-          });
-        } else {
-          this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
-          this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
-        }
-      },
-      error: (err) => {
-        this.isInitiatingVendorPayment.update(prev => ({ ...prev, [vendorOrderId]: false }));
-        console.error('Failed to initiate vendor order payment:', err);
-        this.uiState.showAlert('danger', err.error?.message || this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
-      }
-    });
   }
 
   getMilestonesForVendorOrder(vo: any): any[] {
-    const breakdown = this.remainingBalanceDetails();
-    if (!breakdown || !breakdown.milestones) return [];
-    return breakdown.milestones.filter((m: any) => {
+    return this.facade.enrichedMilestones().filter((m: any) => {
       if (m.vendorOrderId.toString() !== vo.id?.toString()) return false;
-      return m.isPaid || this.isMilestoneDue(vo, m);
+      return m.isPaid || m.state === 'Pending' || m.state === 'Processing' || m.state === 'Failed';
     });
-  }
-
-  isMilestoneDue(vo: any, milestone: any): boolean {
-    if (milestone.isPaid) return false;
-    return this.normalizeStatus(milestone.milestoneStatus) === vo.status &&
-      (vo.status === 'pending_payment' || vo.status === 'shipped' || vo.status === 'delivered');
   }
 
   onShareTransformation(): void {
@@ -249,57 +103,6 @@ export class OrderDetails {
     if (orderId) {
       this.router.navigate(['/share-transformation'], { queryParams: { orderId } });
     }
-  }
-
-
-
-  onPayApprovedOrders(): void {
-    const orderData = this.order();
-    if (!orderData) return;
-
-    if (this.amountToPay() <= 0) {
-      this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_NO_APPROVED_ORDERS_ERROR'));
-      return;
-    }
-
-    if (!orderData.id) {
-      return;
-    }
-
-    const payload = {
-      masterOrderId: Number(orderData.id)
-    };
-
-    this.isInitiatingPayment.set(true);
-    this.paymentService.initiateMasterOrderPayment(payload).subscribe({
-      next: (res) => {
-        if (res && res.paymentUrl) {
-          this.paymentService.startPaymentFlow(res.paymentUrl, Number(orderData.id)).subscribe({
-            next: (paymentRes) => {
-              this.isInitiatingPayment.set(false);
-              if (paymentRes.success) {
-                this.uiState.showAlert('success', this.translationService.translate('ORDER_DETAILS_PAYMENT_SUCCESS') || 'Payment completed successfully');
-                this.loadRemainingBalance(orderData.id);
-                this.facade.loadOrderDetails(orderData.id);
-              } else {
-                this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_FAILED') || 'Payment was unsuccessful or cancelled');
-              }
-            },
-            error: () => {
-              this.isInitiatingPayment.set(false);
-            }
-          });
-        } else {
-          this.isInitiatingPayment.set(false);
-          this.uiState.showAlert('danger', this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
-        }
-      },
-      error: (err) => {
-        this.isInitiatingPayment.set(false);
-        console.error('Failed to initiate master order payment:', err);
-        this.uiState.showAlert('danger', err.error?.message || this.translationService.translate('ORDER_DETAILS_PAYMENT_INIT_ERROR'));
-      }
-    });
   }
 
   get editItemsArray(): FormArray<FormGroup<EditItemForm>> | null {
