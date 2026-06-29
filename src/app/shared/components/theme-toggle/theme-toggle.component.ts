@@ -5,6 +5,7 @@ import {
   signal,
   computed,
   afterNextRender,
+  ElementRef,
 } from '@angular/core';
 import { isPlatformBrowser, NgIf } from '@angular/common';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -19,6 +20,7 @@ import { ThemeService } from '../../../core/services/theme.service';
 export class ThemeToggleComponent {
   protected readonly themeService = inject(ThemeService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly elementRef = inject(ElementRef);
 
   /* ── Interactive states ── */
   protected readonly isHovered = signal(false);
@@ -72,13 +74,24 @@ export class ThemeToggleComponent {
   }
 
   protected onToggleTheme(event: MouseEvent): void {
-    this.triggerToggle();
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    this.triggerToggle(x, y);
   }
 
   protected onKeyDown(event: KeyboardEvent): void {
     if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault();
-      this.triggerToggle();
+      const el = this.elementRef.nativeElement.querySelector('.luxury-toggle');
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        this.triggerToggle(x, y);
+      } else {
+        this.triggerToggle();
+      }
     }
   }
 
@@ -108,7 +121,7 @@ export class ThemeToggleComponent {
 
   /* ── Private helpers ── */
 
-  private triggerToggle(): void {
+  private triggerToggle(x?: number, y?: number): void {
     if (this.isSliding()) return;
 
     if (this.prefersReducedMotion()) {
@@ -121,8 +134,11 @@ export class ThemeToggleComponent {
     // Slide duration aligns with the spring transition (400ms)
     this.slidingTimer = setTimeout(() => this.isSliding.set(false), 450);
 
-    // Global theme transition
-    this.themeService.toggleTheme();
+    // If coordinates are provided, use them; otherwise, default to center of the viewport
+    const revealX = x ?? window.innerWidth / 2;
+    const revealY = y ?? window.innerHeight / 2;
+
+    this.themeService.toggleThemeWithReveal(revealX, revealY);
   }
 
   private clearTimer(): void {

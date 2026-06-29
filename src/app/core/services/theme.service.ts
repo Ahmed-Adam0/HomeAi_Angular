@@ -18,6 +18,12 @@ export class ThemeService {
   // Signal to check if circular reveal is currently animating
   readonly isTransitioningSignal = signal<boolean>(false);
 
+  // Configurable transition parameters (duration in ms, and easing function)
+  readonly transitionConfig = {
+    duration: 700,
+    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  };
+
   constructor() {
     this.initializeTheme();
   }
@@ -94,9 +100,20 @@ export class ThemeService {
       return;
     }
 
-    // Expose click coordinates to CSS
+    // Calculate the dynamic circle radius needed to cover the entire viewport
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const maxRadius = Math.hypot(
+      Math.max(x, width - x),
+      Math.max(y, height - y)
+    );
+
+    // Expose reveal parameters to CSS
     document.documentElement.style.setProperty('--reveal-x', `${x}px`);
     document.documentElement.style.setProperty('--reveal-y', `${y}px`);
+    document.documentElement.style.setProperty('--reveal-radius', `${maxRadius}px`);
+    document.documentElement.style.setProperty('--reveal-duration', `${this.transitionConfig.duration}ms`);
+    document.documentElement.style.setProperty('--reveal-easing', this.transitionConfig.easing);
 
     const nextTheme = this.currentThemeSignal() === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT;
 
@@ -121,7 +138,7 @@ export class ThemeService {
     // Remove the energy wave element after it finishes expanding across the viewport
     setTimeout(() => {
       wave.remove();
-    }, 900);
+    }, this.transitionConfig.duration);
 
     const doc = document as any;
     if (doc.startViewTransition) {
@@ -154,17 +171,18 @@ export class ThemeService {
       // Trigger the clip-path expansion
       overlay.classList.add('active');
 
-      // Swap the theme variables halfway through the animation (at 350ms)
+      // Swap the theme variables at the end of the transition (covered completely)
       setTimeout(() => {
         this.setTheme(nextTheme, true);
-      }, 350);
-
-      // Clean up after the transition finishes (800ms)
-      setTimeout(() => {
-        overlay.remove();
-        document.documentElement.classList.remove('theme-transitioning');
-        this.isTransitioningSignal.set(false);
-      }, 800);
+        // Give the browser one frame to render the theme change before removing the overlay
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            overlay.remove();
+            document.documentElement.classList.remove('theme-transitioning');
+            this.isTransitioningSignal.set(false);
+          }, 50); // slight buffer for rendering
+        });
+      }, this.transitionConfig.duration);
     }
   }
 
