@@ -18,6 +18,7 @@ import { ChatMessage } from '../../../features/ai/interfaces/chat-message.interf
 import { NotificationService } from '../../../shared/services/notification.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
+import { SpeechService } from '../../../features/ai/services/speech.service';
 
 @Component({
   selector: 'app-chatbot-widget',
@@ -31,6 +32,7 @@ export class ChatbotWidget implements OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly notificationService = inject(NotificationService);
   private readonly platformId = inject(PLATFORM_ID);
+  protected readonly speechService = inject(SpeechService);
 
   @ViewChild('messagesContainer') private readonly messagesContainer!: ElementRef<HTMLElement>;
   @ViewChild('messageTextarea') private readonly messageTextarea!: ElementRef<HTMLTextAreaElement>;
@@ -93,6 +95,15 @@ export class ChatbotWidget implements OnDestroy {
 
   ngOnDestroy(): void {
     this.clearRecording();
+    this.speechService.stop();
+  }
+
+  toggleSpeech(message: ChatMessage): void {
+    if (this.speechService.currentlyPlayingId() === message.id) {
+      this.speechService.stop();
+    } else {
+      void this.speechService.speak(message.id, message.content);
+    }
   }
 
   toggleChat(): void {

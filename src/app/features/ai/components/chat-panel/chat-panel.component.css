@@ -160,3 +160,35 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.speech-action-btn {
+  font-family: var(--fm-font-sans, inherit);
+  color: var(--fm-color-neutral-500, #8c8375);
+  font-size: 0.75rem; /* fs-8 equivalent */
+  transition: var(--fm-transition-fast, all 0.2s ease);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-top: 4px;
+}
+
+.speech-action-btn:hover {
+  color: #8e6d45; /* hover-gold color */
+}
+
+.speech-action-btn .text-gold {
+  color: #8e6d45 !important;
+}
+
+.speech-action-btn .hover-gold {
+  color: inherit;
+}
+
+.speech-action-btn:hover .hover-gold {
+  color: #8e6d45;
+}
+
