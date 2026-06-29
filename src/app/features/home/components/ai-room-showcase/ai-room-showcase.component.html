@@ -61,25 +61,7 @@
         </div>
       </div>
 
-      <!-- Floating Product Preview Card (Desktop overlay) -->
-      <div 
-        *ngIf="activeProduct() && !isMobile()"
-        class="floating-product-card reveal-card"
-        [style.top.%]="activeHotspot()?.y"
-        [style.left.%]="activeHotspot()?.x"
-        [ngClass]="getCardDirectionClass(activeHotspot()!.x, activeHotspot()!.y)"
-        (click)="$event.stopPropagation()"
-      >
-        <!-- Card Close control -->
-        <button class="close-card-btn" (click)="closePopup()" [aria-label]="isArabic() ? 'إغلاق' : 'Close'">
-          ✕
-        </button>
 
-        <!-- Dynamic Showcase Card wrapper -->
-        <div class="popup-card-content">
-          <app-showcase-product-card [product]="activeProduct()!" [isMobile]="false"></app-showcase-product-card>
-        </div>
-      </div>
 
       <!-- Left / Right Slider Navigation Controls -->
       <button 
@@ -125,15 +107,15 @@
 
     </div>
 
-    <!-- Mobile Product Preview Card (Drawer at Bottom of Viewport) -->
-    <div class="mobile-drawer-sheet" [class.drawer-open]="activeProduct() && isMobile()">
-      <div class="drawer-sheet-backdrop" (click)="closePopup()"></div>
-      <div class="drawer-sheet-wrapper">
+    <!-- Hotspot Product Preview Card (Bottom Sheet Modal for All Breakpoints) -->
+    <div class="mobile-drawer-sheet" [class.drawer-open]="activeProduct()" (click)="onBackdropClick($event)">
+      <div class="drawer-sheet-backdrop"></div>
+      <div class="drawer-sheet-wrapper" (click)="$event.stopPropagation()">
         <div class="drawer-sheet-handle"></div>
-        <button class="drawer-sheet-close-btn" (click)="closePopup()">✕</button>
+        <button class="drawer-sheet-close-btn" (click)="closePopup()" [aria-label]="isArabic() ? 'إغلاق' : 'Close'">✕</button>
         
         <div class="drawer-sheet-body" *ngIf="activeProduct()">
-          <app-showcase-product-card [product]="activeProduct()!" [isMobile]="true"></app-showcase-product-card>
+          <app-showcase-product-card [product]="activeProduct()!" [isMobile]="false"></app-showcase-product-card>
         </div>
       </div>
     </div>

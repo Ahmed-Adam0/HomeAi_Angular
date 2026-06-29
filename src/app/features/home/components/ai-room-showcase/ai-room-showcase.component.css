@@ -546,104 +546,138 @@ html[data-theme="dark"] .slider-utilities-bar {
 }
 
 /* ==========================================================================
-   MOBILE BOTTOM DRAWER SHEET STYLING
+   MOBILE & TABLET MODAL POPUP STYLING (MATCHING ADD-TO-CART MODAL/CARD)
    ========================================================================== */
 
 .mobile-drawer-sheet {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end; /* Bottom sheet alignment */
+  justify-content: center; /* Horizontally centered */
+  padding: 24px; /* Space from the edges/bottom on desktop */
   visibility: hidden;
-  transition: visibility 0.4s ease;
+  transition: visibility 0.35s ease;
 }
 
 .mobile-drawer-sheet.drawer-open {
   visibility: visible;
 }
 
+/* Backdrop matching Add to Cart's overlay background & blur */
 .drawer-sheet-backdrop {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(31, 28, 24, 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* same opacity */
+  backdrop-filter: blur(10px); /* same blur */
+  -webkit-backdrop-filter: blur(10px);
   opacity: 0;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.35s ease;
+  z-index: 1;
 }
 
 .mobile-drawer-sheet.drawer-open .drawer-sheet-backdrop {
   opacity: 1;
 }
 
+/* Wrapper representing the popup card itself */
 .drawer-sheet-wrapper {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  position: relative;
   background-color: var(--color-surface);
-  border-top-left-radius: 28px;
-  border-top-right-radius: 28px;
-  padding: 24px 20px;
-  transform: translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.08);
+  border-radius: 24px; /* same radius */
+  max-width: 420px; /* same max-width */
+  width: 100%;
+  padding: 24px; /* comfortable padding */
+  box-shadow: var(--color-shadow);
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
+  opacity: 0;
+  transform: translateY(40px); /* slide-up start state */
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 85vh; /* viewport height constraint */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 2;
 }
 
 .mobile-drawer-sheet.drawer-open .drawer-sheet-wrapper {
-  transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0); /* slide-up end state */
 }
 
+/* Hide handle - matching modal style */
 .drawer-sheet-handle {
-  width: 40px;
-  height: 4px;
-  background: var(--fm-color-neutral-300, #d9d3c7);
-  border-radius: 20px;
-  margin: 0 auto 16px auto;
+  display: none;
 }
 
+/* Close Button matching csm-close style */
 .drawer-sheet-close-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: var(--fm-color-neutral-100, #f4f2ee);
-  border: none;
-  color: var(--fm-color-neutral-700, #544d43);
-  width: 28px;
-  height: 28px;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  border: none;
+  background: var(--color-card-hover, rgba(0, 0, 0, 0.05));
+  color: var(--color-text-muted);
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  font-weight: bold;
-  cursor: pointer;
+  transition: all 0.2s ease;
   z-index: 10;
+  font-size: 12px;
+}
+
+.drawer-sheet-close-btn:hover {
+  background: var(--fm-color-neutral-200, #e6e3dd);
+  color: var(--color-text);
+  transform: scale(1.1);
 }
 
 [dir="rtl"] .drawer-sheet-close-btn {
   right: auto;
-  left: 20px;
+  left: 14px;
 }
 
+/* Body container inside modal to support scrolling and prevent viewport overflow */
 .drawer-sheet-body {
   width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  padding-right: 4px;
 }
 
-.drawer-sheet-body ::ng-deep .product-card {
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
+/* Custom scrollbar styling for the scrollable modal body */
+.drawer-sheet-body::-webkit-scrollbar {
+  width: 4px;
+}
+.drawer-sheet-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.drawer-sheet-body::-webkit-scrollbar-thumb {
+  background: var(--fm-color-neutral-300, #d9d3c7);
+  border-radius: 2px;
 }
 
-.drawer-sheet-body ::ng-deep .product-card .image-wrapper {
-  aspect-ratio: 16 / 10;
-  border-radius: 16px;
+/* Responsive Overrides matching Mobile Breakpoint */
+@media (max-width: 576px) {
+  .mobile-drawer-sheet {
+    padding: 12px; /* creates small horizontal/bottom margins on mobile */
+  }
+
+  .drawer-sheet-wrapper {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 20px;
+    padding: 24px 16px 16px;
+    max-height: 82vh;
+  }
 }
 
 /* ==========================================================================

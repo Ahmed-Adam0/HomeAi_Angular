@@ -148,6 +148,13 @@ export class AiRoomShowcaseComponent implements OnInit, OnDestroy {
     this.isLoadingProduct.set(false);
   }
 
+  onBackdropClick(event: MouseEvent): void {
+    if ((event.target as HTMLElement).classList.contains('mobile-drawer-sheet') || 
+        (event.target as HTMLElement).classList.contains('drawer-sheet-backdrop')) {
+      this.closePopup();
+    }
+  }
+
   // Slider navigation methods
   prevSlide(): void {
     this.closePopup();
