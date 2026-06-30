@@ -99,15 +99,10 @@
 }
 
 .dropdown-menu-custom {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: var(--fm-z-dropdown);
+  width: 100%;
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--fm-radius-sm, 8px);
-  margin-top: 6px;
   box-shadow: var(--fm-shadow-floating);
   max-height: 220px;
   display: flex;
@@ -203,7 +198,6 @@
 
 .animate-expand {
   animation: expand-slide-down 0.3s var(--fm-ease-smooth) both;
-  overflow: hidden;
 }
 
 @keyframes expand-slide-down {

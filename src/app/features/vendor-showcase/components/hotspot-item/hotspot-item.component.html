@@ -23,11 +23,11 @@
         <label class="form-label">{{ translationService.currentLang() === 'ar' ? 'المنتج المرتبط' : 'Linked Product' }}</label>
         
         <div class="searchable-select-container">
-          <button type="button" class="form-select text-start dropdown-trigger" (click)="toggleDropdown()">
+          <button #dropdownTrigger type="button" class="form-select text-start dropdown-trigger" (click)="toggleDropdown()">
             {{ selectedProductLabel() || (translationService.currentLang() === 'ar' ? 'اختر منتجاً...' : 'Select Product...') }}
           </button>
 
-          @if (isDropdownOpen()) {
+          <ng-template #dropdownPanel>
             <div class="dropdown-menu-custom">
               <div class="search-input-wrap p-2 border-bottom">
                 <input 
@@ -51,7 +51,7 @@
                 }
               </ul>
             </div>
-          }
+          </ng-template>
         </div>
       </div>
 
