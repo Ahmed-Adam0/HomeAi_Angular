@@ -187,9 +187,9 @@ export class Navbar implements OnInit {
     }
   }
 
-  isLinkActive(route: string, labelEn: string): boolean {
+  public isNavLinkActive(route: string, labelEn: string): boolean {
     this.currentUrl(); // reactive tracking dependency
-    
+
     if (labelEn === 'AI Accent') {
       return (
         this.router.isActive('/room-upload', false) ||
@@ -210,11 +210,11 @@ export class Navbar implements OnInit {
   }
 
   updateActiveLink(url: string): void {
-    if (this.isLinkActive(NAV_ROUTES.PRODUCTS, 'Products')) {
+    if (this.isNavLinkActive(NAV_ROUTES.PRODUCTS, 'Products')) {
       this.activeMainLink.set('Products');
-    } else if (this.isLinkActive(NAV_ROUTES.ROOM_UPLOAD, 'AI Accent')) {
+    } else if (this.isNavLinkActive(NAV_ROUTES.ROOM_UPLOAD, 'AI Accent')) {
       this.activeMainLink.set('AI Accent');
-    } else if (this.isLinkActive(NAV_ROUTES.INSPIRATIONS, 'Inspirations')) {
+    } else if (this.isNavLinkActive(NAV_ROUTES.INSPIRATIONS, 'Inspirations')) {
       this.activeMainLink.set('Inspirations');
     } else {
       this.activeMainLink.set('');
