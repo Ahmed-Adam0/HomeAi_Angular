@@ -19,10 +19,12 @@ import { QuickViewService } from '../../../features/products/services/quick-view
 import { calculateOldPrice, calculateDiscountPercentage } from '../../utils/price-utils';
 
 
+import { ThreeDViewerComponent } from '../three-d-viewer/three-d-viewer.component';
+
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [NgIf, RouterLink, CurrencyFormatPipe, TranslatePipe, LocalizedPipe, LazyImageDirective],
+  imports: [NgIf, RouterLink, CurrencyFormatPipe, TranslatePipe, LocalizedPipe, LazyImageDirective, ThreeDViewerComponent],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css',
 })
@@ -32,6 +34,8 @@ export class ProductCard implements OnInit {
 
   @Output() delete = new EventEmitter<number>();
   @Output() statusChange = new EventEmitter<{ id: number; isActive: boolean }>();
+
+  readonly is3DMode = signal<boolean>(false);
 
   readonly translationService = inject(TranslationService);
   readonly cartService = inject(CartService);
@@ -66,6 +70,12 @@ export class ProductCard implements OnInit {
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
+  }
+
+  toggle3DMode(event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.is3DMode.update(mode => !mode);
   }
 
   ngOnInit(): void {

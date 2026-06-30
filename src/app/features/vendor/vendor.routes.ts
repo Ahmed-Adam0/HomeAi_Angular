@@ -81,6 +81,27 @@ export const vendorRoutes: Routes = [
             (m) => m.VendorProducts,
           ),
       },
+      {
+        path: APP_ROUTES.VENDOR_SHOWCASES,
+        loadComponent: () =>
+          import('../vendor-showcase/pages/showcase-list/showcase-list.component').then(
+            (m) => m.ShowcaseListComponent
+          ),
+      },
+      {
+        path: APP_ROUTES.VENDOR_SHOWCASE_CREATE,
+        loadComponent: () =>
+          import('../vendor-showcase/pages/create-showcase/create-showcase.component').then(
+            (m) => m.CreateShowcase
+          ),
+      },
+      {
+        path: APP_ROUTES.VENDOR_SHOWCASE_EDIT,
+        loadComponent: () =>
+          import('../vendor-showcase/pages/edit-showcase/edit-showcase.component').then(
+            (m) => m.EditShowcase
+          ),
+      },
     
       {
         path: APP_ROUTES.VENDOR_REVENUE, // 'revenue'

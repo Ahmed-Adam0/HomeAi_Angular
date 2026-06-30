@@ -41,6 +41,10 @@
           <i class="bi bi-cash-stack"></i>
           <span>{{ 'VENDOR.LAYOUT.NAV_REVENUE' | translate }}</span>
         </a>
+        <a [routerLink]="navRoutes.VENDOR_SHOWCASES" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
+          <i class="bi bi-images"></i>
+          <span>{{ translationService.currentLang() === 'ar' ? 'معارض البانر' : 'Showcase Banners' }}</span>
+        </a>
          <a [routerLink]="navRoutes.VENDOR_NOTIFICATIONS" routerLinkActive="active" (click)="closeSidebar()" class="nav-item">
           <i class="bi bi-bell-fill"></i>
           <span>{{ 'VENDOR.LAYOUT.NAV_NOTIFICATIONS' | translate }}</span>
