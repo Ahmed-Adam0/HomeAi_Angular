@@ -42,7 +42,7 @@ interface IConfigGroup {
     NgIf,
     NgFor,
     NgStyle,
-    NgClass,
+   
     RouterLink,
     SkeletonLoader,
     CurrencyFormatPipe,
