@@ -31,6 +31,7 @@
               [placeholder]="'CONFIRM_EMAIL_OTP.EMAIL_PLACEHOLDER' | translate"
               [class.is-invalid]="showValidation('email')"
               [class.is-valid]="showSuccess('email')"
+              readonly
               appAutoDir
             />
             <span class="field-status-icon success-icon" *ngIf="showSuccess('email')">

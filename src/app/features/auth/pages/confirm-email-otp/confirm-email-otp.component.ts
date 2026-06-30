@@ -42,13 +42,15 @@ export class ConfirmEmailOtp {
   readonly direction = computed(() => this.currentLang() === 'ar' ? 'rtl' : 'ltr');
 
   constructor() {
-    const email = this.route.snapshot.queryParamMap.get('email') ?? '';
+    const routeEmail = this.route.snapshot.queryParamMap.get('email') ?? '';
+    const storedEmail = this.authService.getPendingEmailConfirmation();
+    const initialEmail = routeEmail || storedEmail || '';
     const accountTypeParam = this.route.snapshot.queryParamMap.get('accountType') as 'customer' | 'vendor' | null;
 
     this.accountType = accountTypeParam ?? 'customer';
 
     this.confirmForm = this.fb.group({
-      email: [email, [Validators.required, Validators.email]],
+      email: [initialEmail, [Validators.required, Validators.email]],
       otpCodeEmail: ['', [Validators.required, Validators.pattern(/^\d+$/), Validators.minLength(4)]],
     });
   }
@@ -72,14 +74,17 @@ export class ConfirmEmailOtp {
     this.isLoading = true;
     this.errorMessage = '';
 
+    const formValue = this.confirmForm.value;
     const payload = {
-      ...this.confirmForm.value,
+      email: formValue.email || this.authService.getPendingEmailConfirmation() || '',
+      otpCodeEmail: formValue.otpCodeEmail,
       accountType: this.accountType
     };
 
     this.authService.confirmEmailOtp(payload).subscribe({
       next: () => {
         this.isLoading = false;
+        this.authService.clearPendingEmailConfirmation();
         const localizedSuccess = this.translationService.translate('CONFIRM_EMAIL_OTP.SUCCESS_MESSAGE');
         this.uiState.showAlert('success', localizedSuccess);
         

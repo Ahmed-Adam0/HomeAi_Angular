@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, tap, catchError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { API_URLS } from '../../../core/constants/api-urls';
@@ -35,6 +35,7 @@ export class AuthService {
   private platformId = inject(PLATFORM_ID);
   private baseUrl = environment.apiUrl;
   private readonly authToken = signal<string | null>(null);
+  private readonly pendingEmailConfirmationMessage = 'OTP sent to your email to confirm your account.';
   private readonly userProfile = signal<AuthProfile | null>(null);
   private profileImageFetched = false;
 
@@ -208,6 +209,47 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}${API_URLS.AUTH.CONFIRM_EMAIL}`, data);
   }
 
+  isPendingEmailConfirmationError(error: unknown): boolean {
+    if (!(error instanceof HttpErrorResponse) || error.status !== 400) {
+      return false;
+    }
+
+    const message = this.extractErrorMessage(error);
+    return message.trim().toLowerCase() === this.pendingEmailConfirmationMessage.trim().toLowerCase();
+  }
+
+  handlePendingEmailConfirmation(error: unknown, email: string): boolean {
+    if (!this.isPendingEmailConfirmationError(error)) {
+      return false;
+    }
+
+    const normalizedEmail = email?.trim();
+    if (!normalizedEmail) {
+      return false;
+    }
+
+    if (this.isBrowser) {
+      localStorage.setItem(LOCAL_STORAGE_KEYS.PENDING_EMAIL_CONFIRMATION, normalizedEmail);
+    }
+
+    return true;
+  }
+
+  getPendingEmailConfirmation(): string | null {
+    if (!this.isBrowser) {
+      return null;
+    }
+
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.PENDING_EMAIL_CONFIRMATION);
+    return stored?.trim() || null;
+  }
+
+  clearPendingEmailConfirmation(): void {
+    if (this.isBrowser) {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.PENDING_EMAIL_CONFIRMATION);
+    }
+  }
+
   resetPassword(data: IResetPasswordRequest) {
     return this.http.post(`${this.baseUrl}${API_URLS.AUTH.RESET_PASSWORD}`, data);
   }
@@ -247,6 +289,7 @@ export class AuthService {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.USER);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.AVATAR_URL);
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.PENDING_EMAIL_CONFIRMATION);
       localStorage.removeItem('workshopId');
       localStorage.removeItem('workshop_id');
     }
@@ -402,5 +445,29 @@ export class AuthService {
 
   private getAuthToken(response: IAuthResponse): string | null {
     return response.token ?? response.accessToken ?? response.data?.token ?? response.result?.token ?? null;
+  }
+
+  private extractErrorMessage(error: HttpErrorResponse): string {
+    const body = error.error;
+
+    if (typeof body === 'string') {
+      return body;
+    }
+
+    if (body && typeof body === 'object') {
+      if (typeof body?.message === 'string' && body.message.trim()) {
+        return body.message;
+      }
+
+      if (typeof body?.error === 'string' && body.error.trim()) {
+        return body.error;
+      }
+
+      if (typeof body?.detail === 'string' && body.detail.trim()) {
+        return body.detail;
+      }
+    }
+
+    return '';
   }
 }
