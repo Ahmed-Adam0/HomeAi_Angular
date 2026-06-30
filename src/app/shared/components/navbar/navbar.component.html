@@ -5,16 +5,15 @@
     <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
       <!-- Social Links -->
       <div class="social-links d-flex gap-3">
-        <a href="https://facebook.com" target="_blank" class="opacity-75 hover-opacity-100"
-          aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-        <a href="https://instagram.com" target="_blank" class="opacity-75 hover-opacity-100"
-          aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-        <a href="https://twitter.com" target="_blank" class="opacity-75 hover-opacity-100"
-          aria-label="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
-        <a href="https://linkedin.com" target="_blank" class="opacity-75 hover-opacity-100"
-          aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-        <a href="https://youtube.com" target="_blank" class="opacity-75 hover-opacity-100"
-          aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+        <a
+          href="https://www.facebook.com/share/1NUpe2SWCn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="opacity-75 hover-opacity-100"
+          aria-label="Facebook"
+        >
+          <i class="bi bi-facebook"></i>
+        </a>
       </div>
 
       <!-- Utility Links & Dropdowns -->
@@ -70,7 +69,7 @@
         <div class="nav-item-wrapper">
           <a [routerLink]="link.route" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: link.route === '/' }"
-            class="nav-link-custom d-flex align-items-center gap-1" [class.active]="isLinkActive(link.route, link.labelEn)"
+            class="nav-link-custom d-flex align-items-center gap-1" [class.active]="isNavLinkActive(link.route, link.labelEn)"
             (click)="selectMainLink(link.labelEn)">
             <span>{{ link | localized:'label' }}</span>
           </a>
@@ -449,11 +448,15 @@
 
   <!-- Drawer Footer -->
   <div class="drawer-footer p-3 border-top d-flex gap-3 justify-content-center">
-    <a href="https://facebook.com" class="opacity-70"><i class="bi bi-facebook fs-5"></i></a>
-    <a href="https://instagram.com" class="opacity-70"><i class="bi bi-instagram fs-5"></i></a>
-    <a href="https://twitter.com" class="opacity-70"><i class="bi bi-twitter-x"></i></a>
-    <a href="https://linkedin.com" class="opacity-70"><i class="bi bi-linkedin fs-5"></i></a>
-    <a href="https://youtube.com" class="opacity-70"><i class="bi bi-youtube fs-5"></i></a>
+    <a
+      href="https://www.facebook.com/share/1NUpe2SWCn/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="opacity-70"
+      aria-label="Facebook"
+    >
+      <i class="bi bi-facebook fs-5"></i>
+    </a>
   </div>
 </div>
 

@@ -52,35 +52,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
     iconClass: 'bi-facebook',
     labelEn: 'Facebook',
     labelAr: 'فيسبوك',
-    url: 'https://www.facebook.com',
-  },
-  {
-    id: 'instagram',
-    iconClass: 'bi-instagram',
-    labelEn: 'Instagram',
-    labelAr: 'إنستغرام',
-    url: 'https://www.instagram.com',
-  },
-  {
-    id: 'x',
-    iconClass: 'bi-twitter-x',
-    labelEn: 'X',
-    labelAr: 'إكس',
-    url: 'https://x.com',
-  },
-  {
-    id: 'linkedin',
-    iconClass: 'bi-linkedin',
-    labelEn: 'LinkedIn',
-    labelAr: 'لينكد إن',
-    url: 'https://www.linkedin.com',
-  },
-  {
-    id: 'youtube',
-    iconClass: 'bi-youtube',
-    labelEn: 'YouTube',
-    labelAr: 'يوتيوب',
-    url: 'https://www.youtube.com',
+    url: 'https://www.facebook.com/share/1NUpe2SWCn/',
   },
 ];
 
