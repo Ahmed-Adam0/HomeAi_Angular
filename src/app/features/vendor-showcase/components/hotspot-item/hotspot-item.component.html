@@ -1,0 +1,78 @@
+<div class="hotspot-item-card" [class.inactive]="!hotspot.isActive">
+  <div class="card-header-row d-flex justify-content-between align-items-center mb-3">
+    <span class="hotspot-index">
+      {{ translationService.currentLang() === 'ar' ? 'نقطة #' : 'Hotspot #' }}{{ index + 1 }}
+      <small class="coordinates-label">({{ hotspot.x }}%, {{ hotspot.y }}%)</small>
+    </span>
+    
+    <button type="button" class="btn-delete" (click)="onDelete()" [title]="translationService.currentLang() === 'ar' ? 'حذف' : 'Delete'">
+      <i class="bi bi-trash-fill"></i>
+    </button>
+  </div>
+
+  <div class="card-body-fields">
+    <!-- Searchable Product Selection Dropdown -->
+    <div class="mb-3 position-relative">
+      <label class="form-label">{{ translationService.currentLang() === 'ar' ? 'المنتج المرتبط' : 'Linked Product' }}</label>
+      
+      <div class="searchable-select-container">
+        <button type="button" class="form-select text-start dropdown-trigger" (click)="toggleDropdown()">
+          {{ selectedProductLabel() || (translationService.currentLang() === 'ar' ? 'اختر منتجاً...' : 'Select Product...') }}
+        </button>
+
+        @if (isDropdownOpen()) {
+          <div class="dropdown-menu-custom">
+            <div class="search-input-wrap p-2 border-bottom">
+              <input 
+                type="text" 
+                class="form-control form-control-sm" 
+                [placeholder]="translationService.currentLang() === 'ar' ? 'بحث عن منتج...' : 'Search product...'"
+                [value]="searchText()"
+                (input)="onSearchInput($event)"
+                (click)="$event.stopPropagation()"
+              />
+            </div>
+            <ul class="options-list">
+              @for (prod of filteredProducts(); track prod.value) {
+                <li class="option-item" (click)="selectProduct(prod.value)" [class.selected]="prod.value === hotspot.productId">
+                  {{ prod.label }}
+                </li>
+              } @empty {
+                <li class="no-options p-3 text-center text-muted">
+                  {{ translationService.currentLang() === 'ar' ? 'لا توجد منتجات مطابقة' : 'No products found' }}
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="row g-2 align-items-center">
+      <div class="col-6">
+        <label class="form-label mb-1">{{ translationService.currentLang() === 'ar' ? 'ترتيب العرض' : 'Display Order' }}</label>
+        <input 
+          type="number" 
+          class="form-control" 
+          [value]="hotspot.displayOrder" 
+          (change)="onOrderChange($event)"
+          min="1"
+        />
+      </div>
+      <div class="col-6 d-flex align-items-center justify-content-end pt-3">
+        <div class="form-check form-switch">
+          <input 
+            class="form-check-input" 
+            type="checkbox" 
+            [id]="'active-switch-' + index" 
+            [checked]="hotspot.isActive"
+            (change)="onActiveChange($event)"
+          />
+          <label class="form-check-label" [for]="'active-switch-' + index">
+            {{ translationService.currentLang() === 'ar' ? 'نشط' : 'Active' }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,139 @@
+<div class="vendor-showcase-list-wrapper" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  
+  <!-- Breadcrumbs navigation -->
+  <div class="breadcrumb-container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/vendor/dashboard']">
+            <i class="bi bi-grid-1x2-fill me-1"></i>
+            {{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ translationService.currentLang() === 'ar' ? 'معارض البانر' : 'Showcase Banners' }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Header section -->
+  <header class="page-header-section">
+    <div class="header-info">
+      <h1>{{ translationService.currentLang() === 'ar' ? 'إدارة معارض الصفحة الرئيسية' : 'Showcase Banners' }}</h1>
+      <p class="subtitle">{{ translationService.currentLang() === 'ar' ? 'صمم وخصّص معارض البانر التفاعلية ثلاثية الأبعاد المعروضة على الصفحة الرئيسية.' : 'Design and publish interactive 3D hotspot banner slideshows displayed on the main home page.' }}</p>
+    </div>
+
+    <div class="header-actions">
+      <a [routerLink]="['/vendor/showcases/create']" class="btn-primary-custom">
+        <i class="bi bi-plus-lg"></i>
+        <span>{{ translationService.currentLang() === 'ar' ? 'إنشاء معرض جديد' : 'Create New Banner' }}</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="py-5 text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted mt-2">{{ translationService.currentLang() === 'ar' ? 'جاري تحميل المعارض...' : 'Loading showcase list...' }}</p>
+    </div>
+  }
+  <!-- Error State -->
+  @else if (error()) {
+    <div class="error-state-card py-5 text-center p-4">
+      <i class="bi bi-exclamation-triangle-fill text-danger mb-3 d-block display-4"></i>
+      <h3 class="fw-bold mb-2">{{ translationService.currentLang() === 'ar' ? 'فشل تحميل البيانات' : 'Failed to Load Showcases' }}</h3>
+      <p class="text-muted mb-4">{{ translationService.currentLang() === 'ar' ? 'حدث خطأ أثناء الاتصال بالخادم. يرجى إعادة المحاولة.' : 'An error occurred while connecting to the server. Please try again.' }}</p>
+      <button (click)="fetchShowcases()" class="btn btn-primary-custom px-4">
+        {{ translationService.currentLang() === 'ar' ? 'إعادة المحاولة' : 'Retry' }}
+      </button>
+    </div>
+  }
+  <!-- Empty State -->
+  @else if (showcases().length === 0) {
+    <div class="empty-state-card py-5 text-center p-4">
+      <i class="bi bi-images mb-3 d-block display-4 text-muted"></i>
+      <h3 class="fw-bold mb-2">{{ translationService.currentLang() === 'ar' ? 'لا توجد معارض مضافة بعد' : 'No Showcase Banners Found' }}</h3>
+      <p class="text-muted mb-4">{{ translationService.currentLang() === 'ar' ? 'ابدأ بإنشاء أول معرض بانر تفاعلي لصفحتك الرئيسية الآن.' : 'Get started by creating your first interactive home page banner showcase now.' }}</p>
+      <a [routerLink]="['/vendor/showcases/create']" class="btn-primary-custom px-4 text-decoration-none">
+        <i class="bi bi-plus-lg"></i>
+        <span>{{ translationService.currentLang() === 'ar' ? 'إنشاء معرض جديد' : 'Create New Banner' }}</span>
+      </a>
+    </div>
+  }
+  <!-- Grid List -->
+  @else {
+    <div class="row g-4 showcase-grid">
+      @for (slide of showcases(); track slide.id) {
+        <div class="col-md-6 col-xl-4">
+          <div class="showcase-card shadow-premium" [class.inactive]="!slide.isActive">
+            
+            <!-- Background Image Area -->
+            <div class="card-img-wrap">
+              <img [src]="slide.backgroundImageUrl || 'assets/images/beige_interior.png'" [alt]="slide.title" class="card-banner-img">
+              <div class="card-img-overlay-details p-3">
+                <span class="status-badge" [class.active]="slide.isActive">
+                  {{ slide.isActive 
+                    ? (translationService.currentLang() === 'ar' ? 'نشط' : 'Active') 
+                    : (translationService.currentLang() === 'ar' ? 'غير نشط' : 'Inactive') }}
+                </span>
+                
+                <span class="display-order-badge">
+                  {{ translationService.currentLang() === 'ar' ? 'ترتيب: ' : 'Order: ' }}{{ slide.displayOrder }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Card Body details -->
+            <div class="card-body p-4">
+              <h3 class="card-title">{{ slide.title }}</h3>
+              <p class="card-desc text-muted mb-4">{{ slide.subtitle }}</p>
+
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top border-light">
+                <!-- Hotspots Count Indicator -->
+                <span class="hotspots-count">
+                  <i class="bi bi-pin-map-fill me-1 text-primary"></i>
+                  {{ slide.hotspots.length }} {{ translationService.currentLang() === 'ar' ? 'نقاط تفاعلية' : 'Hotspots' }}
+                </span>
+
+                <!-- Action Button Trigger -->
+                <div class="card-actions-row d-flex gap-2">
+                  <button type="button" class="btn-action-circle btn-preview" (click)="onPreview(slide, $event)" [title]="translationService.currentLang() === 'ar' ? 'معاينة' : 'Preview'">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                  <button type="button" class="btn-action-circle btn-edit" (click)="onEdit(slide.id, $event)" [title]="translationService.currentLang() === 'ar' ? 'تعديل' : 'Edit'">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button type="button" class="btn-action-circle btn-delete" (click)="onDelete(slide.id, $event)" [title]="translationService.currentLang() === 'ar' ? 'حذف' : 'Delete'">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Interactive Preview Modal Overlay -->
+  @if (selectedSlideForPreview()) {
+    <div class="preview-modal-backdrop" (click)="closePreview()">
+      <div class="preview-modal-content" (click)="$event.stopPropagation()">
+        <button class="btn-close-modal" (click)="closePreview()" [aria-label]="translationService.currentLang() === 'ar' ? 'إغلاق' : 'Close'">✕</button>
+        
+        <h4 class="modal-preview-title p-3 border-bottom mb-0">
+          {{ translationService.currentLang() === 'ar' ? 'معاينة المعرض التفاعلي' : 'Interactive Banner Preview' }}
+        </h4>
+        <div class="modal-preview-body p-4">
+          <app-showcase-preview [slide]="selectedSlideForPreview()!"></app-showcase-preview>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

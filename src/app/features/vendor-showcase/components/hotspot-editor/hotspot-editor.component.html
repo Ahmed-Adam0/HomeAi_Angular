@@ -1,0 +1,69 @@
+<div class="row g-4 hotspot-editor-wrapper">
+  <!-- Left Side: Visual Image Workspace -->
+  <div class="col-lg-7">
+    <div class="workspace-card p-3">
+      <h4 class="mb-2">{{ translationService.currentLang() === 'ar' ? 'مساحة العمل المرئية' : 'Visual Workspace' }}</h4>
+      <p class="text-muted text-sm mb-3">
+        {{ translationService.currentLang() === 'ar' ? 'انقر على الصورة لإضافة نقطة ساخنة. اسحب النقاط لتغيير مواضعها.' : 'Click anywhere on the image to add a hotspot. Drag markers to reposition them.' }}
+      </p>
+
+      <div class="image-container-wrap">
+        @if (imageUrl) {
+          <div 
+            #editorContainer 
+            class="visual-editor-container" 
+            (click)="onContainerClick($event)"
+          >
+            <img [src]="imageUrl" alt="Showcase background" class="editor-bg-image">
+            
+            <!-- Hotspot Markers -->
+            @for (hotspot of hotspots; track $index; let i = $index) {
+              <div 
+                class="hotspot-marker"
+                [class.inactive]="!hotspot.isActive"
+                [style.left.%]="hotspot.x"
+                [style.top.%]="hotspot.y"
+                (mousedown)="onDragStart($event, i)"
+                [title]="(translationService.currentLang() === 'ar' ? 'نقطة #' : 'Hotspot #') + (i + 1)"
+              >
+                <div class="marker-pulse"></div>
+                <div class="marker-dot">
+                  <span>{{ i + 1 }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-image-placeholder">
+            <i class="bi bi-image mb-3"></i>
+            <p class="mb-0">{{ translationService.currentLang() === 'ar' ? 'يرجى اختيار صورة الخلفية أولاً لعرض مساحة العمل المرئية' : 'Please select a background image first to load the visual workspace' }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Hotspot Attributes Panel -->
+  <div class="col-lg-5">
+    <div class="attributes-panel-card p-3">
+      <h4 class="mb-3">{{ translationService.currentLang() === 'ar' ? 'تفاصيل النقاط الساخنة' : 'Hotspot Configurations' }}</h4>
+      
+      <div class="hotspots-list-scroll">
+        @for (hotspot of hotspots; track $index; let i = $index) {
+          <app-hotspot-item
+            [hotspot]="hotspot"
+            [index]="i"
+            [productsList]="productsList"
+            (delete)="deleteHotspot($event)"
+            (update)="updateHotspot($event.index, $event.changes)"
+          ></app-hotspot-item>
+        } @empty {
+          <div class="no-hotspots-placeholder py-5 text-center text-muted border-dashed-custom">
+            <i class="bi bi-cursor-fill mb-2 d-block"></i>
+            <p class="mb-0">{{ translationService.currentLang() === 'ar' ? 'لا توجد نقاط ساخنة مضافة بعد' : 'No hotspots added yet' }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

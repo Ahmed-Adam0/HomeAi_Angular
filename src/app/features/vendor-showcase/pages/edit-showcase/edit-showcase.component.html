@@ -1,0 +1,52 @@
+<div class="vendor-showcase-edit-wrapper" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  
+  <!-- Breadcrumbs navigation -->
+  <div class="breadcrumb-container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/vendor/dashboard']">
+            <i class="bi bi-grid-1x2-fill me-1"></i>
+            {{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/vendor/showcases']">
+            {{ translationService.currentLang() === 'ar' ? 'معارض البانر' : 'Showcase Banners' }}
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ translationService.currentLang() === 'ar' ? 'تعديل المعرض' : 'Edit Banner' }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Header Section -->
+  <header class="page-header-section mb-4">
+    <div class="header-info">
+      <h1>{{ translationService.currentLang() === 'ar' ? 'تعديل معرض البانر' : 'Edit Showcase Banner' }}</h1>
+      <p class="subtitle">{{ translationService.currentLang() === 'ar' ? 'قم بتعديل النصوص، صورة الخلفية، ومواضع النقاط التفاعلية المرتبطة بمنتجاتك.' : 'Modify meta titles, background image, or rearrange interactive product hotspot markers.' }}</p>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  @if (loadingShowcase() || loadingProducts()) {
+    <div class="card p-5 text-center shadow-sm border-0">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted mt-2 mb-0">{{ translationService.currentLang() === 'ar' ? 'جاري تحميل تفاصيل المعرض وتجهيز المصمم...' : 'Retrieving showcase configurations and preparing designer workspace...' }}</p>
+    </div>
+  } @else {
+    <!-- Form Component -->
+    <app-showcase-form
+      [slide]="slide()"
+      [productsList]="productsList()"
+      [isSubmitting]="isSubmitting()"
+      (submitForm)="onSubmit($event)"
+      (cancel)="onCancel()"
+    ></app-showcase-form>
+  }
+
+</div>

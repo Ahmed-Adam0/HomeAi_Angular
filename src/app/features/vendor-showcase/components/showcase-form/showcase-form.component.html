@@ -1,0 +1,182 @@
+<form [formGroup]="showcaseForm" (ngSubmit)="onSubmit()" class="showcase-edit-form" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  
+  <div class="row g-4">
+    <!-- Main Form Fields (Left Side) -->
+    <div class="col-xl-8">
+      
+      <!-- Section 1: Basic Information -->
+      <div class="form-section-card p-4 mb-4">
+        <h3 class="section-title mb-4">
+          <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+          {{ translationService.currentLang() === 'ar' ? 'المعلومات الأساسية' : 'Basic Information' }}
+        </h3>
+        
+        <div class="row g-3">
+          <!-- English Title -->
+          <div class="col-md-6">
+            <label class="form-label required">{{ translationService.currentLang() === 'ar' ? 'العنوان (بالإنجليزي)' : 'Title (English)' }}</label>
+            <input type="text" formControlName="titleEn" class="form-control" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل العنوان بالإنجليزي...' : 'Enter Title in English...'">
+            @if (showcaseForm.get('titleEn')?.touched && showcaseForm.get('titleEn')?.errors?.['required']) {
+              <div class="invalid-feedback d-block">{{ translationService.currentLang() === 'ar' ? 'العنوان بالإنجليزي مطلوب' : 'English Title is required' }}</div>
+            }
+          </div>
+
+          <!-- Arabic Title -->
+          <div class="col-md-6">
+            <label class="form-label required">{{ translationService.currentLang() === 'ar' ? 'العنوان (بالعربي)' : 'Title (Arabic)' }}</label>
+            <input type="text" formControlName="titleAr" class="form-control" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل العنوان بالعربي...' : 'Enter Title in Arabic...'">
+            @if (showcaseForm.get('titleAr')?.touched && showcaseForm.get('titleAr')?.errors?.['required']) {
+              <div class="invalid-feedback d-block">{{ translationService.currentLang() === 'ar' ? 'العنوان بالعربي مطلوب' : 'Arabic Title is required' }}</div>
+            }
+          </div>
+
+          <!-- English Subtitle -->
+          <div class="col-md-6">
+            <label class="form-label">{{ translationService.currentLang() === 'ar' ? 'الوصف الفرعي (بالإنجليزي)' : 'Subtitle (English)' }}</label>
+            <textarea formControlName="subtitleEn" rows="2" class="form-control" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل الوصف بالإنجليزي...' : 'Enter Subtitle in English...'"></textarea>
+          </div>
+
+          <!-- Arabic Subtitle -->
+          <div class="col-md-6">
+            <label class="form-label">{{ translationService.currentLang() === 'ar' ? 'الوصف الفرعي (بالعربي)' : 'Subtitle (Arabic)' }}</label>
+            <textarea formControlName="subtitleAr" rows="2" class="form-control" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل الوصف بالعربي...' : 'Enter Subtitle in Arabic...'"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Image & Settings -->
+      <div class="form-section-card p-4 mb-4">
+        <h3 class="section-title mb-4">
+          <i class="bi bi-image-fill me-2 text-primary"></i>
+          {{ translationService.currentLang() === 'ar' ? 'صورة الخلفية والإعدادات' : 'Background & Settings' }}
+        </h3>
+        
+        <div class="row g-4">
+          <div class="col-md-7">
+            <app-image-upload 
+              [existingImageUrl]="slide?.backgroundImageUrl || null"
+              (imageSelected)="onImageSelected($event)"
+            ></app-image-upload>
+            @if (imageError) {
+              <div class="invalid-feedback d-block mt-2">{{ translationService.currentLang() === 'ar' ? 'صورة الخلفية مطلوبة للمعرض الجديد' : 'Background image is required for new showcase banners' }}</div>
+            }
+          </div>
+          
+          <div class="col-md-5 d-flex flex-column justify-content-between">
+            <div class="mb-3">
+              <label class="form-label required">{{ translationService.currentLang() === 'ar' ? 'ترتيب العرض' : 'Display Order' }}</label>
+              <input type="number" formControlName="displayOrder" class="form-control" min="1">
+              @if (showcaseForm.get('displayOrder')?.touched && showcaseForm.get('displayOrder')?.invalid) {
+                <div class="invalid-feedback d-block">{{ translationService.currentLang() === 'ar' ? 'الرجاء إدخال ترتيب عرض صالح' : 'Please enter a valid display order' }}</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check form-switch pt-3">
+                <input class="form-check-input" type="checkbox" id="isActiveSwitch" formControlName="isActive">
+                <label class="form-check-label ms-2 fw-semibold" for="isActiveSwitch">
+                  {{ translationService.currentLang() === 'ar' ? 'تفعيل المعرض' : 'Enable Showcase' }}
+                </label>
+              </div>
+              <p class="text-muted text-sm mt-1">{{ translationService.currentLang() === 'ar' ? 'تحديد هذا الخيار لعرض هذا المعرض للمستخدمين على الصفحة الرئيسية.' : 'Check this option to publish this showcase banner to home page visitors.' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Call To Action Button -->
+      <div class="form-section-card p-4 mb-4">
+        <h3 class="section-title mb-4">
+          <i class="bi bi-link-45deg me-2 text-primary"></i>
+          {{ translationService.currentLang() === 'ar' ? 'زر الانتقال السريع (CTA)' : 'Call To Action (CTA) Button' }}
+        </h3>
+        
+        <div class="row g-3">
+          <!-- Button Text English -->
+          <div class="col-md-4">
+            <label class="form-label">{{ translationService.currentLang() === 'ar' ? 'نص الزر (بالإنجليزي)' : 'Button Text (English)' }}</label>
+            <input type="text" formControlName="buttonTextEn" class="form-control" [placeholder]="translationService.currentLang() === 'ar' ? 'مثل: تسوق الآن' : 'e.g. Shop Now'">
+          </div>
+
+          <!-- Button Text Arabic -->
+          <div class="col-md-4">
+            <label class="form-label">{{ translationService.currentLang() === 'ar' ? 'نص الزر (بالعربي)' : 'Button Text (Arabic)' }}</label>
+            <input type="text" formControlName="buttonTextAr" class="form-control" [placeholder]="translationService.currentLang() === 'ar' ? 'مثل: تسوق الآن' : 'e.g. Shop Now'">
+          </div>
+
+          <!-- Button Link -->
+          <div class="col-md-4">
+            <label class="form-label required">{{ translationService.currentLang() === 'ar' ? 'رابط التوجيه' : 'Target Button Link' }}</label>
+            <input type="text" formControlName="buttonLink" class="form-control" [placeholder]="translationService.currentLang() === 'ar' ? 'مثل: /products' : 'e.g. /products'">
+            @if (showcaseForm.get('buttonLink')?.touched && showcaseForm.get('buttonLink')?.errors?.['required']) {
+              <div class="invalid-feedback d-block">{{ translationService.currentLang() === 'ar' ? 'رابط التوجيه مطلوب' : 'Button Link is required' }}</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Hotspots visual editor -->
+      <div class="form-section-card p-4 mb-4">
+        <h3 class="section-title mb-4">
+          <i class="bi bi-pin-map-fill me-2 text-primary"></i>
+          {{ translationService.currentLang() === 'ar' ? 'النقاط الساخنة التفاعلية' : 'Interactive Hotspots Designer' }}
+        </h3>
+        
+        <app-hotspot-editor
+          [imageUrl]="selectedImagePreview || slide?.backgroundImageUrl || null"
+          [hotspots]="hotspots"
+          [productsList]="productsList"
+          (hotspotsChange)="onHotspotsChanged($event)"
+        ></app-hotspot-editor>
+      </div>
+
+    </div>
+
+    <!-- Preview Panel & Actions Sticky Row (Right Side) -->
+    <div class="col-xl-4">
+      <div class="sticky-sidebar">
+        
+        <!-- Live Preview Device -->
+        <div class="form-section-card p-4 mb-4">
+          <h3 class="section-title mb-3">
+            <i class="bi bi-eye-fill me-2 text-primary"></i>
+            {{ translationService.currentLang() === 'ar' ? 'معاينة فورية حية' : 'Live Real-time Preview' }}
+          </h3>
+          
+          <app-showcase-preview 
+            [slide]="previewSlideData"
+            [previewImage]="selectedImagePreview"
+          ></app-showcase-preview>
+        </div>
+
+        <!-- Form Submission Button Actions -->
+        <div class="form-section-card p-4">
+          <button 
+            type="submit" 
+            class="btn btn-premium w-100 mb-3 py-2.5 d-flex align-items-center justify-content-center gap-2"
+            [disabled]="isSubmitting"
+          >
+            @if (isSubmitting) {
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span>{{ translationService.currentLang() === 'ar' ? 'جاري الحفظ...' : 'Saving Changes...' }}</span>
+            } @else {
+              <i class="bi bi-cloud-check-fill"></i>
+              <span>{{ translationService.currentLang() === 'ar' ? 'حفظ ونشر المعرض' : 'Save & Publish Banner' }}</span>
+            }
+          </button>
+
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary w-100 py-2.5"
+            (click)="onCancel()"
+            [disabled]="isSubmitting"
+          >
+            {{ translationService.currentLang() === 'ar' ? 'إلغاء الأمر' : 'Cancel' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</form>

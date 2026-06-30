@@ -762,3 +762,114 @@ html[data-theme="dark"] .slider-utilities-bar {
     height: 6px;
   }
 }
+
+/* ==========================================================================
+   SKELETON LOADER & CTA STYLING
+   ========================================================================== */
+
+.showcase-skeleton-viewport {
+  position: relative;
+  background-color: var(--fm-color-neutral-100, #f4f2ee);
+}
+
+.skeleton-visual {
+  width: 100%;
+  height: 100%;
+}
+
+.showcase-skeleton-viewport .skeleton-meta-panel {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  z-index: 10;
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 24px 30px;
+  border-radius: var(--fm-radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+html[data-theme="dark"] .showcase-skeleton-viewport .skeleton-meta-panel {
+  background: rgba(18, 16, 14, 0.92);
+  border: 1px solid rgba(200, 168, 123, 0.2);
+}
+
+[dir="rtl"] .showcase-skeleton-viewport .skeleton-meta-panel {
+  left: auto;
+  right: 40px;
+}
+
+.skeleton-badge {
+  width: 120px;
+  height: 18px;
+  border-radius: var(--fm-radius-pill);
+}
+
+.skeleton-title {
+  width: 70%;
+  height: 28px;
+  border-radius: 4px;
+}
+
+.skeleton-desc {
+  width: 90%;
+  height: 16px;
+  border-radius: 4px;
+}
+
+/* Slide CTA Button styling */
+.slide-cta-wrapper {
+  margin-top: 16px;
+  display: flex;
+}
+
+.slide-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--fm-font-sans, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-surface, #ffffff);
+  background-color: var(--fm-color-primary-500, #b8935c);
+  padding: 10px 24px;
+  border-radius: var(--fm-radius-pill, 9999px);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(184, 147, 92, 0.25);
+  border: none;
+}
+
+.slide-cta-btn:hover {
+  background-color: var(--fm-color-primary-600, #9f7d4b);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(184, 147, 92, 0.4);
+  color: var(--color-surface, #ffffff);
+}
+
+.slide-cta-btn:active {
+  transform: translateY(0);
+}
+
+.cta-arrow {
+  transition: transform 0.3s ease;
+}
+
+.slide-cta-btn:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+[dir="rtl"] .slide-cta-btn:hover .cta-arrow {
+  transform: translateX(-4px);
+}
+
+@media (max-width: 767.98px) {
+  .showcase-skeleton-viewport .skeleton-meta-panel {
+    display: none;
+  }
+}

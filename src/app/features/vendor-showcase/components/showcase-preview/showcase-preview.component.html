@@ -1,0 +1,50 @@
+<div class="showcase-preview-viewport shadow-premium">
+  <!-- Background Image -->
+  <img 
+    [src]="previewImage || slide.backgroundImageUrl || 'assets/images/beige_interior.png'" 
+    [alt]="slide.titleEn || slide.title || 'Showcase Banner'" 
+    class="slide-background-img"
+  />
+  
+  <!-- Overlay Gradient -->
+  <div class="slide-art-overlay"></div>
+
+  <!-- Meta Panel -->
+  <div class="slide-meta-panel">
+    <span class="slide-room-badge">{{ isArabic() ? 'معاينة حية للغرفة' : 'Live Room Concept' }}</span>
+    <h3 class="slide-title-heading">
+      {{ isArabic() ? (slide.titleAr || slide.title || 'عنوان المعرض') : (slide.titleEn || slide.title || 'Showcase Title') }}
+    </h3>
+    <p class="slide-subtitle-desc">
+      {{ isArabic() ? (slide.subtitleAr || slide.subtitle || 'وصف المعرض الفرعي هنا.') : (slide.subtitleEn || slide.subtitle || 'Showcase subtitle goes here.') }}
+    </p>
+
+    <!-- CTA Button -->
+    @if (isArabic() ? slide.buttonTextAr : slide.buttonTextEn) {
+      <div class="slide-cta-wrapper">
+        <a href="#" (click)="onCtaClick($event)" class="btn btn-premium slide-cta-btn">
+          {{ isArabic() ? slide.buttonTextAr : slide.buttonTextEn }}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right cta-arrow" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+          </svg>
+        </a>
+      </div>
+    }
+  </div>
+
+  <!-- Hotspots -->
+  <div class="slide-hotspots-overlay">
+    @for (hotspot of slide.hotspots; track hotspot.id || $index) {
+      @if (hotspot.isActive) {
+        <div 
+          class="hotspot-point"
+          [style.top.%]="hotspot.y"
+          [style.left.%]="hotspot.x"
+        >
+          <div class="hotspot-pulse"></div>
+          <div class="hotspot-dot"></div>
+        </div>
+      }
+    }
+  </div>
+</div>

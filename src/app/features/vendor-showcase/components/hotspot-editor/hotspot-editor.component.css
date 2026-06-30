@@ -1,0 +1,160 @@
+.hotspot-editor-wrapper {
+  margin-top: 10px;
+}
+
+.workspace-card, .attributes-panel-card {
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  height: 100%;
+}
+
+.workspace-card h4, .attributes-panel-card h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fm-color-neutral-800, #38332c);
+}
+
+.text-sm {
+  font-size: 13px;
+}
+
+.image-container-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.visual-editor-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--fm-color-neutral-200, var(--color-border));
+  cursor: crosshair;
+  user-select: none;
+}
+
+.editor-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.empty-image-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 2px dashed var(--fm-color-neutral-300, #d9d3c7);
+  border-radius: 12px;
+  background-color: var(--fm-color-neutral-50, #faf9f6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--fm-color-neutral-500, #8c8375);
+  padding: 40px;
+}
+
+.empty-image-placeholder i {
+  font-size: 40px;
+  color: var(--fm-color-neutral-400, #b0a99e);
+}
+
+/* Hotspot Markers inside visual editor */
+.hotspot-marker {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hotspot-marker:active {
+  cursor: grabbing;
+}
+
+.hotspot-marker.inactive {
+  opacity: 0.5;
+}
+
+.marker-pulse {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--fm-color-primary-500, #b8935c);
+  border-radius: 50%;
+  animation: marker-pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+.marker-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: var(--fm-color-primary-500, #b8935c);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.marker-dot span {
+  font-size: 7px;
+  font-weight: 700;
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.hotspot-marker:hover .marker-dot {
+  transform: scale(1.3);
+  background-color: var(--fm-color-primary-600, #9f7d4b);
+}
+
+@keyframes marker-pulse-ring {
+  0% {
+    transform: scale(0.33);
+    opacity: 1;
+  }
+  80%, 100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Scrollable attributes list */
+.hotspots-list-scroll {
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.hotspots-list-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.hotspots-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.hotspots-list-scroll::-webkit-scrollbar-thumb {
+  background: var(--fm-color-neutral-300, #d9d3c7);
+  border-radius: 2px;
+}
+
+.border-dashed-custom {
+  border: 1.5px dashed var(--fm-color-neutral-200, var(--color-border));
+  border-radius: 12px;
+}
+
+.no-hotspots-placeholder i {
+  font-size: 28px;
+  color: var(--fm-color-neutral-400, #b0a99e);
+}
