@@ -1,36 +1,39 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed, PLATFORM_ID, HostListener } from '@angular/core';
 import { NgIf, NgFor, NgClass, NgStyle, isPlatformBrowser } from '@angular/common';
-import { ShowcaseService, ShowcaseSlide, ShowcaseHotspot } from '../../services/showcase.service';
-import { ProductService } from '../../../products/services/product.service';
+import { RouterLink } from '@angular/router';
+import { ShowcaseService, ShowcaseSlide, ShowcaseHotspot, ShowcaseProduct } from '../../services/showcase.service';
 import { IProduct } from '../../../products/interfaces/iproduct';
 import { CartService } from '../../../cart/services/cart.service';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { ShowcaseProductCardComponent } from '../showcase-product-card/showcase-product-card.component';
 import { UiState } from '../../../../core/state/ui.state';
+import { ProductService } from '../../../products/services/product.service';
 
 @Component({
   selector: 'app-ai-room-showcase',
   standalone: true,
-  imports: [NgIf, NgFor, NgClass, NgStyle, TranslatePipe, ShowcaseProductCardComponent],
+  imports: [NgIf, NgFor, NgClass, NgStyle, TranslatePipe, ShowcaseProductCardComponent, RouterLink],
   templateUrl: './ai-room-showcase.component.html',
   styleUrl: './ai-room-showcase.component.css'
 })
 export class AiRoomShowcaseComponent implements OnInit, OnDestroy {
   protected translationService = inject(TranslationService);
   protected cartService = inject(CartService);
-  private productService = inject(ProductService);
   private showcaseService = inject(ShowcaseService);
   private uiState = inject(UiState);
   private platformId = inject(PLATFORM_ID);
+  private productService = inject(ProductService);
 
   readonly isArabic = computed(() => this.translationService.currentLang() === 'ar');
   readonly isMobile = signal<boolean>(false);
   
-  // Showcase Slides and Slider State
+  // Showcase Slides, loading/error states, and Slider State
   readonly slides = signal<ShowcaseSlide[]>([]);
   readonly currentSlideIndex = signal<number>(0);
   readonly isPlaying = signal<boolean>(true);
+  readonly loading = signal<boolean>(true);
+  readonly error = signal<boolean>(false);
 
   // Active Hotspot & Resolved Product details
   readonly activeHotspot = signal<ShowcaseHotspot | null>(null);
@@ -79,37 +82,53 @@ export class AiRoomShowcaseComponent implements OnInit, OnDestroy {
   }
 
   private loadSlidesAndSync(): void {
-    this.showcaseService.getShowcaseSlides().subscribe({
+    this.loading.set(true);
+    this.error.set(false);
+    this.showcaseService.getShowcase().subscribe({
       next: (showcaseSlides) => {
-        this.slides.set(showcaseSlides);
-        this.resolveProductIds(showcaseSlides);
+        const activeSortedSlides = (showcaseSlides || [])
+          .filter(slide => slide.isActive)
+          .sort((a, b) => a.displayOrder - b.displayOrder);
+
+        activeSortedSlides.forEach(slide => {
+          if (slide.hotspots) {
+            slide.hotspots = slide.hotspots
+              .filter(h => h.isActive)
+              .sort((a, b) => a.displayOrder - b.displayOrder);
+          }
+        });
+
+        this.slides.set(activeSortedSlides);
+        this.loading.set(false);
         this.startAutoplay();
       },
-      error: (err) => console.error('Failed to load showcase slides', err)
+      error: (err) => {
+        console.error('Failed to load showcase slides', err);
+        this.error.set(true);
+        this.loading.set(false);
+      }
     });
   }
 
-  /**
-   * Resolve mockup product IDs to actual backend product IDs to guarantee
-   * that clicking hotspots will successfully load products without 404 errors.
-   */
-  private resolveProductIds(showcaseSlides: ShowcaseSlide[]): void {
-    this.productService.getProducts({ page: 1, limit: 30 } as any).subscribe({
-      next: (products) => {
-        if (!products || products.length === 0) return;
-        
-        // Dynamically assign actual product IDs to mock hotspots
-        showcaseSlides.forEach((slide, sIdx) => {
-          slide.hotspots.forEach((hotspot, hIdx) => {
-            const index = (sIdx * 3 + hIdx) % products.length;
-            hotspot.productId = products[index].id;
-          });
-        });
-      },
-      error: (err) => {
-        console.warn('Could not retrieve catalog products to map showcase hotspots. Running defaults.', err);
-      }
-    });
+  private mapShowcaseProductToIProduct(showcaseProduct: ShowcaseProduct): IProduct {
+    return {
+      id: showcaseProduct.id,
+      nameAr: showcaseProduct.nameAr || '',
+      nameEn: showcaseProduct.nameEn || '',
+      descriptionAr: showcaseProduct.descriptionAr || '',
+      descriptionEn: showcaseProduct.descriptionEn || '',
+      price: showcaseProduct.basePrice || 0,
+      basePrice: showcaseProduct.basePrice || 0,
+      mainImageUrl: showcaseProduct.mainImageUrl || '',
+      averageRating: showcaseProduct.averageRating || 0,
+      categoryId: 0,
+      categoryNameAr: '',
+      categoryNameEn: '',
+      workshopId: 0,
+      workshopNameAr: '',
+      workshopNameEn: '',
+      createdAt: new Date().toISOString()
+    };
   }
 
   // Hotspot selection flow
@@ -122,24 +141,30 @@ export class AiRoomShowcaseComponent implements OnInit, OnDestroy {
     }
 
     this.activeHotspot.set(hotspot);
-    this.activeProduct.set(null);
-    this.isLoadingProduct.set(true);
+    
+    if (hotspot.product) {
+      this.isLoadingProduct.set(true);
+      // Map lightweight product first as quick placeholder
+      const mappedProduct = this.mapShowcaseProductToIProduct(hotspot.product);
+      this.activeProduct.set(mappedProduct);
 
-    this.productService.getProductById(hotspot.productId).subscribe({
-      next: (product) => {
-        this.activeProduct.set(product);
-        this.isLoadingProduct.set(false);
-      },
-      error: (err) => {
-        console.error(`Failed to load product details for ID ${hotspot.productId}`, err);
-        const isAr = this.isArabic();
-        this.uiState.showAlert(
-          'danger',
-          isAr ? 'فشل تحميل تفاصيل المنتج.' : 'Failed to retrieve product details.'
-        );
-        this.closePopup();
-      }
-    });
+      // Async fetch full product details to load 3D models and variants
+      this.productService.getProductById(hotspot.product.id).subscribe({
+        next: (fullProduct) => {
+          if (this.activeHotspot() === hotspot) {
+            this.activeProduct.set(fullProduct);
+            this.isLoadingProduct.set(false);
+          }
+        },
+        error: (err) => {
+          console.error(`Failed to fetch complete details for product ID: ${hotspot.product.id}`, err);
+          this.isLoadingProduct.set(false);
+        }
+      });
+    } else {
+      this.activeProduct.set(null);
+      this.isLoadingProduct.set(false);
+    }
   }
 
   closePopup(): void {

@@ -34,12 +34,12 @@
    ========================================================================== */
 
 .image-wrapper {
-  aspect-ratio: 1 / 1;
-  width: 100%;
+  height: 240px !important;
+  width: 100% !important;
   cursor: pointer;
-  background-color: transparent;
-  border-top-left-radius: 15px !important;
-  border-top-right-radius: 15px !important;
+  background-color: var(--fm-color-neutral-50, #faf9f6) !important;
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
   position: relative;
@@ -47,16 +47,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--fm-space-20);
+  padding: var(--fm-space-12) !important;
+  z-index: 1;
+  flex-shrink: 0;
 }
 
 .product-img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: block;
 }
 
 .product-card:hover .product-img {
@@ -540,6 +541,10 @@
 }
 
 @media (max-width: 767.98px) {
+  .image-wrapper {
+    height: 180px !important;
+  }
+
   .card-body {
     padding: 1rem !important;
   }
@@ -573,6 +578,68 @@
     top: 10px;
     right: 10px;
   }
+
+/* ==========================================================================
+   3. 3D PREVIEW STYLING & DEEP OVERRIDES
+   ========================================================================== */
+
+.three-d-toggle-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--fm-glass-bg) !important;
+  backdrop-filter: var(--fm-glass-blur) !important;
+  -webkit-backdrop-filter: var(--fm-glass-blur) !important;
+  border: 1px solid var(--fm-glass-border) !important;
+  color: var(--fm-color-neutral-800) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: var(--fm-glass-shadow) !important;
+  cursor: pointer;
+}
+
+[dir="rtl"] .three-d-toggle-btn {
+  left: auto;
+  right: 12px;
+}
+
+.three-d-toggle-btn:hover {
+  transform: scale(1.1) !important;
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px var(--fm-color-primary-glow) !important;
+}
+
+.three-d-toggle-btn.active {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--color-primary) !important;
+}
+
+.three-d-viewer-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.three-d-viewer-wrap app-three-d-viewer {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Deep override model viewer layout inside product card media slot */
+::ng-deep .three-d-viewer-wrap .viewer-container {
+  height: 100% !important;
+  width: 100% !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
   
   [dir="rtl"] .favorite-btn {
     right: auto;

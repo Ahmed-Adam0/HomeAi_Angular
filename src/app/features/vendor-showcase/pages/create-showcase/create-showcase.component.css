@@ -1,0 +1,32 @@
+.vendor-showcase-create-wrapper {
+  padding: 24px;
+}
+
+.breadcrumb-container {
+  margin-bottom: 20px;
+}
+
+.breadcrumb-item a {
+  text-decoration: none;
+  color: var(--fm-color-neutral-600, #70675a);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-item a:hover {
+  color: var(--fm-color-primary-500, #b8935c);
+}
+
+.page-header-section h1 {
+  font-family: var(--fm-font-display), serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--fm-color-neutral-900, #1f1c18);
+  margin-bottom: 6px;
+}
+
+.page-header-section .subtitle {
+  font-size: 14px;
+  color: var(--fm-color-neutral-600, #70675a);
+  margin: 0;
+}

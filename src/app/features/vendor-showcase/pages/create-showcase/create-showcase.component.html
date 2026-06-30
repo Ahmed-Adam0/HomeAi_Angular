@@ -1,0 +1,51 @@
+<div class="vendor-showcase-create-wrapper" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  
+  <!-- Breadcrumbs navigation -->
+  <div class="breadcrumb-container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/vendor/dashboard']">
+            <i class="bi bi-grid-1x2-fill me-1"></i>
+            {{ translationService.currentLang() === 'ar' ? 'لوحة التحكم' : 'Dashboard' }}
+          </a>
+        </li>
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/vendor/showcases']">
+            {{ translationService.currentLang() === 'ar' ? 'معارض البانر' : 'Showcase Banners' }}
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ translationService.currentLang() === 'ar' ? 'إنشاء معرض' : 'Create Banner' }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Header Section -->
+  <header class="page-header-section mb-4">
+    <div class="header-info">
+      <h1>{{ translationService.currentLang() === 'ar' ? 'إنشاء معرض جديد' : 'Create Showcase Banner' }}</h1>
+      <p class="subtitle">{{ translationService.currentLang() === 'ar' ? 'صمم معرض بانر تفاعلي جذاب بالكامل لترويج منتجات ورشتك.' : 'Design an interactive showcase banner slider with custom hotspots to promote your catalog.' }}</p>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  @if (loadingProducts()) {
+    <div class="card p-5 text-center shadow-sm border-0">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted mt-2 mb-0">{{ translationService.currentLang() === 'ar' ? 'جاري تحضير مصمم المعارض والمنتجات...' : 'Initializing designer workspace and catalog...' }}</p>
+    </div>
+  } @else {
+    <!-- Form Component -->
+    <app-showcase-form
+      [productsList]="productsList()"
+      [isSubmitting]="isSubmitting()"
+      (submitForm)="onSubmit($event)"
+      (cancel)="onCancel()"
+    ></app-showcase-form>
+  }
+
+</div>

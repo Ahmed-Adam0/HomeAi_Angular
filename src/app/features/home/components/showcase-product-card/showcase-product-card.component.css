@@ -4,6 +4,7 @@
   flex-direction: column;
   background-color: var(--color-surface);
   width: 100%;
+  position: relative;
 }
 
 /* Media Box */
@@ -137,7 +138,7 @@
   border: 1px solid rgba(0, 0, 0, 0.05);
   padding: 5px 12px;
   border-radius: 20px;
-  color: var(--fm-color-neutral-900, #1f1c18);
+  color:  #1f1c18;
   font-family: var(--fm-font-sans), sans-serif;
   font-size: 9px;
   font-weight: 700;
@@ -258,3 +259,45 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Loading Overlay */
+.showcase-card-loader-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: var(--fm-glass-blur, blur(6px));
+  -webkit-backdrop-filter: var(--fm-glass-blur, blur(6px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  gap: 12px;
+  transition: opacity 0.3s ease;
+  border-radius: 14px;
+}
+
+html[data-theme="dark"] .showcase-card-loader-overlay {
+  background: rgba(23, 20, 18, 0.85);
+}
+
+.showcase-card-loader-overlay .loader-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(184, 147, 92, 0.15);
+  border-top-color: var(--color-primary, #b8935c);
+  border-radius: 50%;
+  animation: spin-loader-showcase 0.8s infinite linear;
+}
+
+.showcase-card-loader-overlay .loader-text {
+  font-size: 11px;
+  color: var(--color-text-muted, #70675a);
+  font-weight: 500;
+}
+
+@keyframes spin-loader-showcase {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

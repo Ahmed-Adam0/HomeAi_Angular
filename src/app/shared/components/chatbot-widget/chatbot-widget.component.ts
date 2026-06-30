@@ -24,6 +24,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 import { SpeechService } from '../../../features/ai/services/speech.service';
 import { ChatMessageComponent } from '../chat-message/chat-message.component';
+import { NAV_ROUTES } from '../../../core/constants';
 
 @Component({
   selector: 'app-chatbot-widget',
@@ -449,13 +450,15 @@ export class ChatbotWidget implements OnDestroy {
     this.messageInput.set('');
     this.resetTextareaHeight();
 
-    const userId = this.authService.currentUser()?.id ?? 'guest-user';
-    this.chatService.sendChatMessage(
-      userId,
-      text,
-      voiceBlob,
-      localAudioUrl
-    );
+    // If the user is not authenticated, redirect to login and preserve returnUrl.
+    if (!this.authService.isLoggedIn()) {
+      this.notificationService.info('Please sign in to use the AI Chat.');
+      void this.router.navigate([NAV_ROUTES.LOGIN], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+
+    const userId = this.authService.currentUser()?.id ?? '';
+    this.chatService.sendChatMessage(userId, text, voiceBlob, localAudioUrl);
 
     this.recordedAudioBlob.set(null);
     this.recordedAudioUrl.set(null);

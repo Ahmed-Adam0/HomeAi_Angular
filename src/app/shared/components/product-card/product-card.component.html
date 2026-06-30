@@ -2,13 +2,35 @@
      [dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
   
   <!-- 1. Image & Overlay Actions Section -->
-  <div class="image-wrapper" [routerLink]="mode === 'customer' ? ['/products', product.id] : ['/vendor/products']" [queryParams]="mode === 'customer' ? null : { openEditModal: product.id }">
-    <img
-      [appLazyImage]="product.mainImageUrl"
-      [alt]="product | localized:'name'"
-      class="product-img"
-      loading="lazy"
-    />
+  <div class="image-wrapper" [routerLink]="is3DMode() ? null : (mode === 'customer' ? ['/products', product.id] : ['/vendor/products'])" [queryParams]="is3DMode() ? null : (mode === 'customer' ? null : { openEditModal: product.id })">
+    
+    @if (is3DMode()) {
+      <div class="three-d-viewer-wrap w-100 h-100" (click)="$event.stopPropagation(); $event.preventDefault();">
+        <app-three-d-viewer 
+          [glbUrl]="product.product3DModelUrl || undefined"
+          class="w-100 h-100 d-block"
+        ></app-three-d-viewer>
+      </div>
+    } @else {
+      <img
+        [appLazyImage]="product.mainImageUrl || product.imageUrl || ''"
+        [alt]="product | localized:'name'"
+        class="product-img"
+        loading="lazy"
+      />
+    }
+
+    <!-- Floating 3D Toggle Button -->
+    <button
+      *ngIf="product.product3DModelUrl"
+      type="button"
+      class="three-d-toggle-btn d-flex align-items-center justify-content-center"
+      [class.active]="is3DMode()"
+      (click)="toggle3DMode($event)"
+      [title]="is3DMode() ? 'Show Image' : 'Show 3D View'"
+    >
+      <i class="bi" [class.bi-box-3d]="!is3DMode()" [class.bi-image]="is3DMode()"></i>
+    </button>
 
     <!-- Floating Favorite Button (Top-Right) -->
     <button

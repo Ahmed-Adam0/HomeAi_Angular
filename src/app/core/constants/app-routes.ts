@@ -46,6 +46,9 @@ export const APP_ROUTES = {
   VENDOR_PRODUCTS: 'products',
   VENDOR_PRODUCT_ADD: 'products/add',
   VENDOR_PRODUCT_EDIT: 'products/edit/:id',
+  VENDOR_SHOWCASES: 'showcases',
+  VENDOR_SHOWCASE_CREATE: 'showcases/create',
+  VENDOR_SHOWCASE_EDIT: 'showcases/edit/:id',
   VENDOR_MATERIALS: 'materials',
 
   AI_CHAT: 'ai-chat',
@@ -104,6 +107,9 @@ export const NAV_ROUTES = {
   VENDOR_PRODUCTS: '/vendor/products',
   VENDOR_PRODUCT_ADD: '/vendor/products/add',
   vendorProductEdit: (id: string | number) => `/vendor/products/edit/${id}`,
+  VENDOR_SHOWCASES: '/vendor/showcases',
+  VENDOR_SHOWCASE_CREATE: '/vendor/showcases/create',
+  vendorShowcaseEdit: (id: string | number) => `/vendor/showcases/edit/${id}`,
   VENDOR_MATERIALS: '/vendor/materials',
 
   AI_CHAT: '/ai-chat',

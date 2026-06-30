@@ -1,5 +1,11 @@
 <div class="showcase-card-container" [dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
   
+  <!-- Loading state indicator overlay -->
+  <div class="showcase-card-loader-overlay" *ngIf="isLoading">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">{{ translationService.currentLang() === 'ar' ? 'جاري تحميل التفاصيل ثلاثية الأبعاد...' : 'Loading 3D Details...' }}</span>
+  </div>
+  
   <!-- 1. Media Section (3D Viewer if exists, else static image) -->
   <div class="showcase-media-box">
     
@@ -46,7 +52,7 @@
     <!-- Static Image Fallback -->
     <ng-template #staticImage>
       <div class="showcase-image-wrap" [routerLink]="['/products', product.id]">
-        <img [src]="product.mainImageUrl" [alt]="product | localized:'name'" class="showcase-static-img" />
+        <img [appLazyImage]="product.mainImageUrl" [alt]="product | localized:'name'" class="showcase-static-img" />
       </div>
     </ng-template>
 
