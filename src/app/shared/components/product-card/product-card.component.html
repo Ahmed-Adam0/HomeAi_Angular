@@ -2,7 +2,7 @@
      [dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
   
   <!-- 1. Image & Overlay Actions Section -->
-  <div class="image-wrapper" [routerLink]="is3DMode() ? null : (mode === 'customer' ? ['/products', product.id] : ['/vendor/products'])" [queryParams]="is3DMode() ? null : (mode === 'customer' ? null : { openEditModal: product.id })">
+  <div class="image-wrapper" [class.is-3d-active]="is3DMode()" [routerLink]="is3DMode() ? null : (mode === 'customer' ? ['/products', product.id] : ['/vendor/products'])" [queryParams]="is3DMode() ? null : (mode === 'customer' ? null : { openEditModal: product.id })">
     
     @if (is3DMode()) {
       <div class="three-d-viewer-wrap w-100 h-100" (click)="$event.stopPropagation(); $event.preventDefault();">
@@ -29,7 +29,7 @@
       (click)="toggle3DMode($event)"
       [title]="is3DMode() ? 'Show Image' : 'Show 3D View'"
     >
-      <i class="bi" [class.bi-box-3d]="!is3DMode()" [class.bi-image]="is3DMode()"></i>
+      <i class="bi" [class.bi-box]="!is3DMode()" [class.bi-image]="is3DMode()"></i>
     </button>
 
     <!-- Floating Favorite Button (Top-Right) -->
@@ -63,7 +63,7 @@
     </div>
 
     <!-- Quick View Overlay -->
-    <div *ngIf="isInStock()" class="quick-view-overlay" (click)="openQuickView($event)">
+    <div *ngIf="isInStock() && !is3DMode()" class="quick-view-overlay" (click)="openQuickView($event)">
       <span class="btn-quick-view">
         {{ 'QUICK_VIEW' | translate }}
       </span>

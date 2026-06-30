@@ -116,7 +116,6 @@
   border-radius: var(--fm-radius-md, 12px);
   background-color: #ffffff;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .product-image {
