@@ -144,6 +144,7 @@ export class Login implements OnInit, AfterViewInit {
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
         this.isLoading = false;
+        this.authService.clearPendingEmailConfirmation();
         if (this.authService.isVendor()) {
           console.warn('[Login] - Vendor account detected on customer login. Rejecting and logging out.');
           this.authService.logout();
@@ -158,6 +159,15 @@ export class Login implements OnInit, AfterViewInit {
       },
       error: (err) => {
         this.isLoading = false;
+
+        const loginEmail = this.loginForm.get('email')?.value?.trim() ?? '';
+        if (this.authService.handlePendingEmailConfirmation(err, loginEmail)) {
+          this.router.navigate([NAV_ROUTES.CONFIRM_EMAIL_OTP], {
+            queryParams: { email: loginEmail }
+          });
+          return;
+        }
+
         this.errorMessage = this.authErrorHandler.handle(err, 'login');
       }
     });
