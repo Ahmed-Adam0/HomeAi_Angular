@@ -2,93 +2,174 @@
   <!-- Header -->
   <div class="chat-header p-3 border-bottom d-flex align-items-center justify-content-between">
     <div>
-      <h3 class="fs-6 fw-bold text-dark mb-0 font-display">AI Furniture Assistant</h3>
+      <h3 class="fs-6 fw-bold text-dark mb-0 font-display">{{ 'AI.CHAT.ASSISTANT_TITLE' | translate }}</h3>
       <div class="d-flex align-items-center gap-1.5 mt-0.5">
         <span class="status-dot"></span>
-        <span class="fs-9 text-muted font-secondary fw-semibold text-uppercase tracking-wider">Online</span>
+        <span class="fs-9 text-muted font-secondary fw-semibold text-uppercase tracking-wider">{{ 'AI.CHAT.ONLINE' | translate }}</span>
       </div>
     </div>
   </div>
 
   <!-- Messages List -->
   <div class="chat-messages flex-grow-1 p-3 overflow-y-auto" #scrollContainer>
-    @for (msg of aiService.messages(); track msg.timestamp) {
-      <div class="message-wrapper d-flex gap-2.5 mb-4" [class.user-wrapper]="msg.sender === 'user'">
-        <!-- Robot/AI Avatar -->
-        @if (msg.sender === 'ai') {
-          <div class="avatar-box ai-avatar d-flex align-items-center justify-content-center flex-shrink-0">
-            <i class="bi bi-robot"></i>
-          </div>
-        }
-
-        <!-- Bubble & Actions Column -->
-        <div class="d-flex flex-column gap-1" [class.align-items-start]="msg.sender === 'ai'" [class.align-items-end]="msg.sender === 'user'" style="max-width: calc(100% - 42px);">
-          <!-- Bubble -->
-          <div class="message-bubble font-sans" [class.user-bubble]="msg.sender === 'user'" [class.ai-bubble]="msg.sender === 'ai'" style="max-width: 100%;">
-            <p class="mb-0 fs-7.5 lh-base">{{ msg.text }}</p>
-          </div>
-
-          <!-- Speaker Button for AI Messages only -->
-          @if (msg.sender === 'ai' && speechService.isSupported()) {
-            <button
-              class="speech-action-btn border-0 bg-transparent text-muted fs-8 p-0"
-              (click)="toggleSpeech(msg)"
-              [title]="(speechService.currentlyPlayingId() === msg.timestamp ? 'AI.CHAT.STOP' : 'AI.CHAT.LISTEN') | translate"
-            >
-              @if (speechService.currentlyPlayingId() === msg.timestamp) {
-                <i class="bi bi-volume-mute-fill text-gold me-1"></i>
-                <span class="text-gold fw-semibold">{{ 'AI.CHAT.STOP' | translate }}</span>
-              } @else {
-                <i class="bi bi-volume-up hover-gold me-1"></i>
-                <span class="hover-gold">{{ 'AI.CHAT.LISTEN' | translate }}</span>
-              }
-            </button>
-          }
+    @if (messages().length === 0) {
+      <div class="welcome-container d-flex flex-column align-items-center justify-content-center text-center p-4">
+        <div class="welcome-icon mb-3">
+          <div class="welcome-icon-ring"></div>
+          <i class="bi bi-robot fs-2 text-gold"></i>
         </div>
-
-        <!-- User Avatar -->
-        @if (msg.sender === 'user') {
-          <div class="avatar-box user-avatar d-flex align-items-center justify-content-center flex-shrink-0">
-            <i class="bi bi-person-fill"></i>
-          </div>
-        }
+        <h3 class="welcome-title fs-6 fw-bold text-dark mb-2">{{ 'AI.CHATBOT.WELCOME_TITLE' | translate }}</h3>
+        <p class="welcome-text fs-8 text-muted mb-4">{{ 'AI.CHATBOT.WELCOME_TEXT' | translate }}</p>
+        <div class="welcome-divider my-2 w-25 border-top"></div>
+        <p class="welcome-hint fs-9 text-muted mt-2">{{ 'AI.CHATBOT.HINT' | translate }}</p>
       </div>
     }
 
-    <!-- Typing indicator -->
-    @if (aiService.isTyping()) {
-      <div class="message-wrapper d-flex gap-2.5 mb-4">
-        <div class="avatar-box ai-avatar d-flex align-items-center justify-content-center flex-shrink-0">
-          <i class="bi bi-robot"></i>
+    @for (msg of messages(); track trackById($index, msg)) {
+      <app-chat-message [message]="msg"></app-chat-message>
+    }
+
+    <!-- Typing indicator (Matching chatbot widget exactly) -->
+    @if (loading()) {
+      <div class="chatbot-message message-bot">
+        <div class="bot-avatar-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 8V4H8"></path>
+            <rect width="16" height="12" x="4" y="8" rx="2"></rect>
+            <path d="M2 14h2"></path>
+            <path d="M20 14h2"></path>
+          </svg>
         </div>
-        <div class="message-bubble typing-bubble d-flex align-items-center gap-1">
-          <span class="typing-dot"></span>
-          <span class="typing-dot"></span>
-          <span class="typing-dot"></span>
+        <div class="message-content">
+          <div class="message-bubble typing-bubble">
+            <div class="typing-dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
         </div>
       </div>
     }
   </div>
 
-  <!-- Bottom Input area -->
-  <div class="chat-input-bar p-3 border-top bg-white">
-    <div class="input-wrapper d-flex align-items-center gap-2 px-3 py-2 rounded-pill border">
-      <!-- Upload inspiration button -->
-      <button type="button" class="action-btn border-0 bg-transparent text-muted" (click)="openInspirationUpload()" title="Upload Inspiration">
-        <i class="bi bi-image fs-5 hover-gold"></i>
-      </button>
+  <!-- Bottom Input Area (Exact copy of chatbot-widget inputs and styles) -->
+  <div class="chatbot-input">
+    @if (recordedAudioUrl() && !isRecording()) {
+      <div class="voice-preview">
+        <audio
+          #previewAudio
+          [src]="recordedAudioUrl()"
+          (loadedmetadata)="onPreviewLoaded()"
+          (timeupdate)="onPreviewTimeUpdate()"
+          (ended)="onPreviewEnded()"
+          class="voice-preview-audio-hidden"
+        ></audio>
 
-      <!-- Input field -->
-      <input type="text"
-             class="form-control border-0 p-0 bg-transparent fs-7.5 shadow-none"
-             placeholder="Ask for changes..."
-             [(ngModel)]="inputMessage"
-             (keyup.enter)="sendMessage()" />
+        <button
+          class="voice-preview-play"
+          (click)="togglePreviewPlay()"
+          [attr.aria-label]="previewPlaying() ? 'Pause voice message' : 'Play voice message'"
+        >
+          @if (previewPlaying()) {
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+              <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+            </svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z"></path>
+            </svg>
+          }
+        </button>
 
-      <!-- Send button -->
-      <button type="button" class="action-btn send-btn border-0 bg-transparent text-muted" (click)="sendMessage()" [disabled]="!inputMessage.trim()">
-        <i class="bi bi-send-fill fs-5" [class.text-gold]="inputMessage.trim()"></i>
-      </button>
-    </div>
+        <div class="voice-preview-body">
+          <div class="voice-preview-label">{{ 'AI.CHATBOT.VOICE_MESSAGE' | translate }}</div>
+          <div class="voice-preview-track" (click)="seekPreview($event)">
+            <div class="voice-preview-progress" [style.width.%]="previewProgress()"></div>
+          </div>
+          <div class="voice-preview-time">
+            {{ formatAudioTime(previewCurrentTime()) }} / {{ formatAudioTime(previewDuration() || recordingDuration()) }}
+          </div>
+        </div>
+
+        <button class="voice-preview-delete" (click)="clearRecording()" aria-label="Delete voice message">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
+      </div>
+    }
+
+    @if (isRecording()) {
+      <div class="recording-bar">
+        <div class="recording-bar-left">
+          <span class="recording-dot"></span>
+          <span class="recording-timer">{{ formatDuration(recordingDuration()) }}</span>
+          <div class="recording-waveform" aria-hidden="true">
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+          </div>
+        </div>
+        <div class="recording-bar-actions">
+          <button class="btn-recording-cancel" (click)="clearRecording()" aria-label="Cancel recording">
+            {{ 'AI.CHATBOT.CANCEL' | translate }}
+          </button>
+          <button class="btn-recording-send" (click)="sendMessage()" aria-label="Stop recording and send">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+            {{ 'AI.CHATBOT.SEND' | translate }}
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="input-wrapper">
+        <textarea
+          #messageTextarea
+          class="chatbot-textarea"
+          rows="1"
+          [value]="messageInput()"
+          (input)="onInputChange($event)"
+          (keydown)="onKeydown($event)"
+          [placeholder]="'AI.CHATBOT.PLACEHOLDER' | translate"
+          [disabled]="loading()"
+        ></textarea>
+
+        <div class="input-actions">
+          @if (voiceSupported()) {
+            <button
+              class="btn-mic"
+              (click)="toggleRecording()"
+              [disabled]="loading()"
+              aria-label="Start voice recording"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="22"></line>
+              </svg>
+            </button>
+          }
+
+          <button
+            class="btn-send"
+            (click)="sendMessage()"
+            [disabled]="!canSend()"
+            aria-label="Send message"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    }
   </div>
 </div>

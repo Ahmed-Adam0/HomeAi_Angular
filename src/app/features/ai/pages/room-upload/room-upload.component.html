@@ -1,0 +1,204 @@
+<section class="upload-page d-flex align-items-center justify-content-center" aria-label="Room Upload Entry">
+
+  <!-- Hidden file input -->
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    class="d-none"
+    id="room-file-input"
+    aria-label="Select room image"
+    (change)="onFileSelected($event)"
+  />
+
+  <div class="upload-container">
+
+    <!-- Page Header -->
+    <div class="text-center mb-5">
+      <div class="page-badge d-inline-flex align-items-center gap-2 mb-3">
+        <i class="bi bi-stars"></i>
+        <span class="fs-9 fw-bold text-uppercase tracking-wider">{{ 'AI.ROOM_UPLOAD.BADGE' | translate }}</span>
+      </div>
+      <h1 class="page-title font-display fw-bold mb-2">{{ 'AI.ROOM_UPLOAD.TITLE' | translate }}</h1>
+      <p class="page-subtitle fs-7 text-muted font-sans">{{ 'AI.ROOM_UPLOAD.SUBTITLE' | translate }}</p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="upload-card">
+
+      @if (!sessionService.hasRoom()) {
+        <!-- Drop Zone (shown when no image is selected) -->
+        <div
+          class="drop-zone d-flex flex-column align-items-center justify-content-center gap-3"
+          [class.drop-zone--active]="isDragging()"
+          id="room-drop-zone"
+          role="region"
+          aria-label="Drop zone for room image"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+        >
+          <!-- Icon -->
+          <div class="drop-icon d-flex align-items-center justify-content-center">
+            <i class="bi" [class.bi-cloud-upload]="!isDragging()" [class.bi-cloud-arrow-down-fill]="isDragging()"></i>
+          </div>
+
+          <!-- Labels -->
+          <div class="text-center">
+            <p class="drop-hint fs-6 fw-semibold font-sans mb-1">{{ 'AI.ROOM_UPLOAD.DROP_HINT' | translate }}</p>
+            <p class="fs-8 text-muted font-sans mb-0">{{ 'AI.ROOM_UPLOAD.OR' | translate }}</p>
+          </div>
+
+          <!-- Browse Button -->
+          <button
+            type="button"
+            class="btn-browse font-sans fw-semibold d-flex align-items-center gap-2"
+            id="room-browse-btn"
+            (click)="openFilePicker()"
+          >
+            <i class="bi bi-folder2-open"></i>
+            {{ 'AI.ROOM_UPLOAD.BROWSE' | translate }}
+          </button>
+
+          <!-- Accepted formats hint -->
+          <p class="accepted-hint fs-9 text-muted font-sans mb-0">{{ 'AI.ROOM_UPLOAD.ACCEPTED' | translate }}</p>
+        </div>
+
+      } @else {
+        <!-- Preview State (shown after image is selected) -->
+        <div class="preview-state d-flex flex-column align-items-center gap-3">
+
+          <!-- Preview Image -->
+          <div class="preview-image-wrapper position-relative">
+            <img
+              [src]="sessionService.previewUrl()"
+              alt="Room preview"
+              class="preview-image rounded-3"
+            />
+            <!-- Remove button overlay -->
+            <button
+              type="button"
+              class="btn-remove-image position-absolute d-flex align-items-center justify-content-center"
+              id="room-remove-image-btn"
+              (click)="clearRoom()"
+              title="Remove image"
+              aria-label="Remove selected room image"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+
+          <!-- Change Photo link -->
+          <button
+            type="button"
+            class="btn-change-photo font-sans fs-8 fw-semibold d-flex align-items-center gap-1"
+            id="room-change-photo-btn"
+            (click)="openFilePicker()"
+          >
+            <i class="bi bi-arrow-repeat"></i>
+            {{ 'AI.ROOM_UPLOAD.CHANGE' | translate }}
+          </button>
+
+        </div>
+      }
+
+    </div><!-- /upload-card -->
+
+    <!-- Room Dimensions Card -->
+    <div class="upload-card mt-4">
+      <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+        <i class="bi bi-rulers text-muted fs-6"></i>
+        <h2 class="fs-7.5 fw-bold text-muted text-uppercase tracking-wider mb-0 font-sans">
+          {{ 'AI.ROOM_UPLOAD.DIMENSIONS_HEADER' | translate }}
+        </h2>
+      </div>
+
+      <div class="row g-3">
+        <!-- Width -->
+        <div class="col-4">
+          <label for="width-input" class="form-label fs-8 text-muted fw-semibold mb-1 d-block font-sans">
+            {{ 'AI.ROOM_UPLOAD.WIDTH' | translate }}
+          </label>
+          <input
+            id="width-input"
+            type="number"
+            class="form-control dimension-input fs-7.5 shadow-none"
+            placeholder="0.0"
+            min="1"
+            step="0.1"
+            [(ngModel)]="width"
+          />
+        </div>
+
+        <!-- Length -->
+        <div class="col-4">
+          <label for="length-input" class="form-label fs-8 text-muted fw-semibold mb-1 d-block font-sans">
+            {{ 'AI.ROOM_UPLOAD.LENGTH' | translate }}
+          </label>
+          <input
+            id="length-input"
+            type="number"
+            class="form-control dimension-input fs-7.5 shadow-none"
+            placeholder="0.0"
+            min="1"
+            step="0.1"
+            [(ngModel)]="length"
+          />
+        </div>
+
+        <!-- Height -->
+        <div class="col-4">
+          <label for="height-input" class="form-label fs-8 text-muted fw-semibold mb-1 d-block font-sans">
+            {{ 'AI.ROOM_UPLOAD.HEIGHT' | translate }}
+          </label>
+          <input
+            id="height-input"
+            type="number"
+            class="form-control dimension-input fs-7.5 shadow-none"
+            placeholder="0.0"
+            min="1"
+            step="0.1"
+            [(ngModel)]="height"
+          />
+        </div>
+      </div>
+
+      <!-- Validation reminder -->
+      <p class="fs-9 text-muted font-sans mt-3 mb-0">
+        {{ 'AI.ROOM_UPLOAD.DIMENSIONS_REQUIRED' | translate }}
+      </p>
+    </div>
+
+    <!-- Validation Error -->
+    @if (errorMessage()) {
+      <div class="error-banner d-flex align-items-center gap-2 mt-3" role="alert">
+        <i class="bi bi-exclamation-circle-fill flex-shrink-0"></i>
+        <span class="fs-8 font-sans">{{ errorMessage()! | translate }}</span>
+      </div>
+    }
+
+    <!-- Continue Button -->
+    <div class="d-flex justify-content-center mt-4">
+      <button
+        type="button"
+        class="btn-continue font-sans fw-bold d-flex align-items-center gap-2"
+        id="room-continue-btn"
+        [disabled]="!isFormValid()"
+        [class.btn-continue--active]="isFormValid()"
+        (click)="startDesign()"
+        aria-label="Continue to AI Design"
+      >
+        <span>{{ 'AI.ROOM_UPLOAD.CONTINUE' | translate }}</span>
+        <i class="bi bi-arrow-right-circle-fill"></i>
+      </button>
+    </div>
+
+    <!-- Step indicator -->
+    <div class="step-indicator d-flex align-items-center justify-content-center gap-2 mt-4">
+      <span class="step-dot step-dot--active"></span>
+      <span class="step-dot"></span>
+    </div>
+
+  </div><!-- /upload-container -->
+
+</section>

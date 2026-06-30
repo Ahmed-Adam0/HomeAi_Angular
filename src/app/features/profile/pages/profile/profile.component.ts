@@ -161,7 +161,7 @@ export class Profile implements AfterViewInit, OnDestroy {
       },
       { 
         labelKey: 'PROFILE.AI_DESIGNS', 
-        route: NAV_ROUTES.AI_CHAT, 
+        route: NAV_ROUTES.ROOM_UPLOAD, 
         iconClass: 'bi-sparkles', 
         badgeValue: designs > 0 ? designs : undefined, 
         iconBg: 'rgba(184, 147, 92, 0.1)', 
@@ -697,6 +697,6 @@ export class Profile implements AfterViewInit, OnDestroy {
   }
 
   onCreateAiDesign(): void {
-    void this.router.navigate([NAV_ROUTES.AI_CHAT]);
+    void this.router.navigate([NAV_ROUTES.ROOM_UPLOAD]);
   }
 }

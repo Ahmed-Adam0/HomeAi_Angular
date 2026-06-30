@@ -10,6 +10,12 @@
   height: 100%;
 }
 
+/* RTL: chat sidebar border flips to the left */
+[dir="rtl"] .chat-sidebar-section {
+  border-right: none;
+  border-left: 1px solid var(--fm-color-neutral-200, var(--color-border));
+}
+
 .room-display-section {
   height: 100%;
   overflow: hidden;
@@ -39,7 +45,7 @@
     height: auto;
     overflow-y: auto;
   }
-  
+
   .chat-sidebar-section,
   .room-display-section,
   .product-sidebar-section {
@@ -48,7 +54,7 @@
     border-left: none;
     border-bottom: 1px solid var(--fm-color-neutral-200, var(--color-border));
   }
-  
+
   .product-sidebar-section {
     position: fixed;
     bottom: 0;

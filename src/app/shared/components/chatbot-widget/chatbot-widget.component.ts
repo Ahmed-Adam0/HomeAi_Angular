@@ -12,6 +12,10 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ChatService } from '../../../features/ai/services/chat.service';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { ChatMessage } from '../../../features/ai/interfaces/chat-message.interface';
@@ -19,12 +23,12 @@ import { NotificationService } from '../../../shared/services/notification.servi
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 import { SpeechService } from '../../../features/ai/services/speech.service';
-import { Router } from '@angular/router';
+import { ChatMessageComponent } from '../chat-message/chat-message.component';
 import { NAV_ROUTES } from '../../../core/constants';
 
 @Component({
   selector: 'app-chatbot-widget',
-  imports: [TranslatePipe, ClickOutsideDirective],
+  imports: [TranslatePipe, ClickOutsideDirective, ChatMessageComponent],
   templateUrl: './chatbot-widget.component.html',
   styleUrl: './chatbot-widget.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,8 +37,8 @@ export class ChatbotWidget implements OnDestroy {
   private readonly chatService = inject(ChatService);
   private readonly authService = inject(AuthService);
   private readonly notificationService = inject(NotificationService);
-  private readonly router = inject(Router);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly router = inject(Router);
   protected readonly speechService = inject(SpeechService);
 
   @ViewChild('messagesContainer') private readonly messagesContainer!: ElementRef<HTMLElement>;
@@ -42,6 +46,7 @@ export class ChatbotWidget implements OnDestroy {
   @ViewChild('previewAudio') private readonly previewAudio?: ElementRef<HTMLAudioElement>;
 
   readonly isOpen = signal(false);
+  readonly isVisible = signal(true);
   readonly messages = this.chatService.messages;
   readonly loading = this.chatService.loading;
   readonly isRecording = this.chatService.isRecording;
@@ -73,14 +78,10 @@ export class ChatbotWidget implements OnDestroy {
   private durationIntervalId: ReturnType<typeof setInterval> | null = null;
   private sendAfterStop = false;
   private cancelledRecording = false;
+  private routerSubscription?: Subscription;
+  private messagesSubscription?: Subscription;
 
   constructor() {
-    // Auto-scroll when messages change
-    effect(() => {
-      this.chatService.messages();
-      this.triggerScroll();
-    });
-
     // Valid injection context usage: registered once during construction phase
     afterNextRender(() => {
       this.scrollToBottom();
@@ -93,10 +94,64 @@ export class ChatbotWidget implements OnDestroy {
         navigator.mediaDevices.getUserMedia
       );
       this.voiceSupported.set(hasMicSupport);
+
+      // Initialize route visibility check
+      this.updateVisibility(this.router.url);
+
+      // Subscribe to Router changes
+      this.routerSubscription = this.router.events
+        .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+        .subscribe((event) => {
+          this.updateVisibility(event.urlAfterRedirects);
+        });
+
+      // Auto-scroll logic: only when first opened, user sends a message, or bot responds and user is near bottom.
+      let previousCount = 0;
+      this.messagesSubscription = toObservable(this.chatService.messages).subscribe(messages => {
+        const currentCount = messages.length;
+        if (currentCount === 0) {
+          previousCount = 0;
+          return;
+        }
+
+        const isFirstLoad = previousCount === 0;
+        const lastMsg = messages[currentCount - 1];
+        const isUserMsg = lastMsg?.sender === 'user';
+        const dist = this.getDistanceFromBottom();
+        const wasAtBottom = dist < 80;
+
+        previousCount = currentCount;
+
+        if (isFirstLoad || isUserMsg || wasAtBottom) {
+          setTimeout(() => this.scrollToBottom(), 0);
+        }
+      });
+    }
+  }
+
+
+  private updateVisibility(url: string): void {
+    const cleanUrl = url.split('?')[0].split('#')[0];
+    const shouldHide =
+      cleanUrl.endsWith('/ai-chat') ||
+      cleanUrl.endsWith('/room-upload') ||
+      cleanUrl.includes('/ai-chat/') ||
+      cleanUrl.includes('/room-upload/');
+    
+    this.isVisible.set(!shouldHide);
+    
+    if (shouldHide && this.isOpen()) {
+      this.isOpen.set(false);
     }
   }
 
   ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
     this.clearRecording();
     this.speechService.stop();
   }
@@ -116,9 +171,13 @@ export class ChatbotWidget implements OnDestroy {
     }
   }
 
-  triggerScroll(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => this.scrollToBottom(), 0);
+  private getDistanceFromBottom(): number {
+    try {
+      const el = this.messagesContainer?.nativeElement;
+      if (!el) return 0;
+      return el.scrollHeight - el.scrollTop - el.clientHeight;
+    } catch {
+      return 0;
     }
   }
 

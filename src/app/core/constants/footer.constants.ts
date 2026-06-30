@@ -22,7 +22,7 @@ export const FOOTER_LINK_COLUMNS: FooterColumn[] = [
       { labelEn: 'My account', labelAr: 'حسابي', route: NAV_ROUTES.PROFILE },
       { labelEn: 'My orders', labelAr: 'طلباتي', route: NAV_ROUTES.ORDERS },
       { labelEn: 'Wishlist', labelAr: 'المفضلة', route: NAV_ROUTES.FAVORITES },
-      { labelEn: 'AI Designer', labelAr: 'المصمم الذكي', route: NAV_ROUTES.AI_CHAT },
+      { labelEn: 'AI Designer', labelAr: 'المصمم الذكي', route: NAV_ROUTES.ROOM_UPLOAD },
     ],
   },
   {

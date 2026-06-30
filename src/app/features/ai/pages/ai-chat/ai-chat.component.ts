@@ -16,7 +16,7 @@ import { AiService } from '../../services/ai.service';
     GeneratedRoom,
     ProductSidebar,
     DesignSummaryModal,
-    InspirationAnalysisModal
+    InspirationAnalysisModal,
   ],
   templateUrl: './ai-chat.component.html',
   styleUrl: './ai-chat.component.css',

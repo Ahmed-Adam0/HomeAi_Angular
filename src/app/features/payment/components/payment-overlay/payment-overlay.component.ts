@@ -1,5 +1,5 @@
-import { Component, inject, computed, signal, ChangeDetectionStrategy, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, computed, signal, ChangeDetectionStrategy, effect, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PaymentService } from '../../services/payment.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -15,6 +15,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 export class PaymentOverlayComponent {
   private paymentService = inject(PaymentService);
   private sanitizer = inject(DomSanitizer);
+  private readonly platformId = inject(PLATFORM_ID);
 
   readonly isVisible = this.paymentService.isOverlayVisible;
   readonly isIframeLoading = this.paymentService.isIframeLoading;
@@ -28,6 +29,7 @@ export class PaymentOverlayComponent {
   constructor() {
     // Body scroll lock effect
     effect((onCleanup) => {
+      if (!isPlatformBrowser(this.platformId)) return;
       const visible = this.isVisible();
       if (visible) {
         document.body.classList.add('modal-open');
