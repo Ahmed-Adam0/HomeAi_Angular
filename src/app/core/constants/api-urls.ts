@@ -76,6 +76,9 @@ export const API_URLS = {
     LIST: 'inspirations',
     CREATE: 'inspirations',
   },
+  CONTACT: {
+    SUBMIT: 'Contact',
+  },
   VENDOR: {
     ORDERS_FILTER: 'VendorOrders/orders/filter',
     ORDER_DETAILS: (orderId: number | string) => `VendorOrders/orders/${orderId}`,
