@@ -24,12 +24,14 @@
                 [style.left.%]="hotspot.x"
                 [style.top.%]="hotspot.y"
                 (mousedown)="onDragStart($event, i)"
-                [title]="(translationService.currentLang() === 'ar' ? 'نقطة #' : 'Hotspot #') + (i + 1)"
               >
                 <div class="marker-pulse"></div>
                 <div class="marker-dot">
                   <span>{{ i + 1 }}</span>
                 </div>
+                <span class="marker-tooltip">
+                  {{ translationService.currentLang() === 'ar' ? 'نقطة' : 'Hotspot' }} {{ i + 1 }} ({{ hotspot.x }}%, {{ hotspot.y }}%)
+                </span>
               </div>
             }
           </div>
@@ -59,8 +61,16 @@
           ></app-hotspot-item>
         } @empty {
           <div class="no-hotspots-placeholder py-5 text-center text-muted border-dashed-custom">
-            <i class="bi bi-cursor-fill mb-2 d-block"></i>
-            <p class="mb-0">{{ translationService.currentLang() === 'ar' ? 'لا توجد نقاط ساخنة مضافة بعد' : 'No hotspots added yet' }}</p>
+            <div class="animated-pointer-wrap mb-3">
+              <i class="bi bi-cursor-fill cursor-pointer-icon"></i>
+              <span class="pulse-ring-pointer"></span>
+            </div>
+            <h5 class="fw-semibold mb-1 text-dark-custom">{{ translationService.currentLang() === 'ar' ? 'ابدأ التصميم' : 'Begin Designing' }}</h5>
+            <p class="mb-0 text-xs text-muted-custom">
+              {{ translationService.currentLang() === 'ar' 
+                ? 'انقر في أي مكان على الصورة لإضافة نقطتك الساخنة الأولى.' 
+                : 'Click anywhere on the image to add your first hotspot.' }}
+            </p>
           </div>
         }
       </div>

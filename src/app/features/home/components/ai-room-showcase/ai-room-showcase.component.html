@@ -146,7 +146,7 @@
           
           <div class="drawer-sheet-body">
             @if (activeProduct()) {
-              <app-showcase-product-card [product]="activeProduct()!" [isMobile]="false"></app-showcase-product-card>
+              <app-showcase-product-card [product]="activeProduct()!" [isMobile]="false" [isLoading]="isLoadingProduct()"></app-showcase-product-card>
             }
           </div>
         </div>

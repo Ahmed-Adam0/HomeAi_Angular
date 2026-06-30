@@ -40,11 +40,15 @@ export class LazyImageDirective implements OnInit {
   }
 
   private loadImage(): void {
+    const nativeElement = this.el.nativeElement;
+
     if (!this.src) {
+      this.renderer.removeClass(nativeElement, 'fm-skeleton');
+      this.renderer.setAttribute(nativeElement, 'src', 'assets/images/image-placeholder.svg');
+      this.renderer.setStyle(nativeElement, 'opacity', '1');
       return;
     }
 
-    const nativeElement = this.el.nativeElement;
     const img = new Image();
     img.src = this.src;
     
@@ -60,9 +64,11 @@ export class LazyImageDirective implements OnInit {
     };
 
     img.onerror = () => {
-      // Clean up skeleton styling on error
+      // Clean up skeleton styling on error and apply fallback asset
       this.renderer.removeClass(nativeElement, 'fm-skeleton');
-      this.renderer.setStyle(nativeElement, 'opacity', '0.5');
+      this.renderer.setAttribute(nativeElement, 'src', 'assets/images/image-placeholder.svg');
+      this.renderer.setStyle(nativeElement, 'opacity', '1');
+      console.warn(`Failed to load product image asset from path: "${this.src}". Applied fallback placeholder.`);
     };
   }
 }

@@ -22,8 +22,13 @@ export class HotspotItemComponent {
   @Output() delete = new EventEmitter<number>();
   @Output() update = new EventEmitter<{ index: number; changes: Partial<ShowcaseHotspot> }>();
 
+  readonly isCollapsed = signal<boolean>(false);
   readonly isDropdownOpen = signal<boolean>(false);
   readonly searchText = signal<string>('');
+
+  toggleCollapse(): void {
+    this.isCollapsed.update(c => !c);
+  }
 
   readonly filteredProducts = computed(() => {
     const query = this.searchText().toLowerCase().trim();

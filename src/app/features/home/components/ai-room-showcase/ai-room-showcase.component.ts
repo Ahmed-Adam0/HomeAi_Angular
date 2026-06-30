@@ -8,6 +8,7 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { ShowcaseProductCardComponent } from '../showcase-product-card/showcase-product-card.component';
 import { UiState } from '../../../../core/state/ui.state';
+import { ProductService } from '../../../products/services/product.service';
 
 @Component({
   selector: 'app-ai-room-showcase',
@@ -22,6 +23,7 @@ export class AiRoomShowcaseComponent implements OnInit, OnDestroy {
   private showcaseService = inject(ShowcaseService);
   private uiState = inject(UiState);
   private platformId = inject(PLATFORM_ID);
+  private productService = inject(ProductService);
 
   readonly isArabic = computed(() => this.translationService.currentLang() === 'ar');
   readonly isMobile = signal<boolean>(false);
@@ -141,13 +143,28 @@ export class AiRoomShowcaseComponent implements OnInit, OnDestroy {
     this.activeHotspot.set(hotspot);
     
     if (hotspot.product) {
+      this.isLoadingProduct.set(true);
+      // Map lightweight product first as quick placeholder
       const mappedProduct = this.mapShowcaseProductToIProduct(hotspot.product);
       this.activeProduct.set(mappedProduct);
+
+      // Async fetch full product details to load 3D models and variants
+      this.productService.getProductById(hotspot.product.id).subscribe({
+        next: (fullProduct) => {
+          if (this.activeHotspot() === hotspot) {
+            this.activeProduct.set(fullProduct);
+            this.isLoadingProduct.set(false);
+          }
+        },
+        error: (err) => {
+          console.error(`Failed to fetch complete details for product ID: ${hotspot.product.id}`, err);
+          this.isLoadingProduct.set(false);
+        }
+      });
     } else {
       this.activeProduct.set(null);
+      this.isLoadingProduct.set(false);
     }
-    
-    this.isLoadingProduct.set(false);
   }
 
   closePopup(): void {

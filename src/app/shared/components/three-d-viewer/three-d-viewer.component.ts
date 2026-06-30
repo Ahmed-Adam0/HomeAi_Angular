@@ -17,6 +17,7 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
         camera-controls
         touch-action="pan-y"
         shadow-intensity="1"
+        interaction-prompt="none"
         alt="3D Furniture Model"
         (load)="onModelLoad()"
         (error)="onModelError()">
@@ -35,8 +36,17 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
         </span>
       </div>
 
+      <!-- Redesigned High-Contrast Instructions Controls -->
       <div class="viewer-instructions" *ngIf="!isLoading() && !hasError() && glbUrl">
-        <span>Drag to rotate | Scroll to zoom</span>
+        <div class="instruction-badge">
+          <i class="bi bi-arrows-move"></i>
+          <span>Drag</span>
+        </div>
+        <div class="instruction-separator"></div>
+        <div class="instruction-badge">
+          <i class="bi bi-zoom-in"></i>
+          <span>Zoom</span>
+        </div>
       </div>
     </div>
   `,
@@ -53,11 +63,22 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
       justify-content: center;
       border: 1px solid rgba(0, 0, 0, 0.05);
     }
+    /* Dark mode: viewer container background */
+    :host-context(html[data-theme="dark"]) .viewer-container {
+      background: linear-gradient(180deg, #1c1917 0%, #171412 100%);
+      border-color: rgba(255, 255, 255, 0.06);
+    }
+
     model-viewer {
       width: 100%;
       height: 100%;
       display: block;
       outline: none;
+      /* Override model-viewer's internal Shadow DOM prompt styling */
+      --poster-color: transparent;
+    }
+    :host-context(html[data-theme="dark"]) model-viewer {
+      --poster-color: transparent;
     }
     .viewer-loader {
       position: absolute;
@@ -73,6 +94,11 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
       z-index: 10;
       gap: 12px;
     }
+    /* Dark mode: loader overlay */
+    :host-context(html[data-theme="dark"]) .viewer-loader {
+      background: rgba(23, 20, 18, 0.9);
+    }
+
     .loader-spinner {
       width: 36px;
       height: 36px;
@@ -88,6 +114,11 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
       font-weight: 500;
       letter-spacing: 0.02em;
     }
+    /* Dark mode: loader text */
+    :host-context(html[data-theme="dark"]) .loader-text {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     .viewer-error-box {
       display: flex;
       flex-direction: column;
@@ -98,6 +129,11 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
       text-align: center;
       padding: 24px;
     }
+    /* Dark mode: error box text */
+    :host-context(html[data-theme="dark"]) .viewer-error-box {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
     .error-icon {
       font-size: 24px;
     }
@@ -106,29 +142,65 @@ import { isPlatformBrowser, NgIf } from '@angular/common';
       font-family: var(--fm-font-sans, sans-serif);
       font-weight: 500;
     }
+    
+    /* ===== Instructions Banner (Drag / Zoom controls) ===== */
     .viewer-instructions {
       position: absolute;
-      bottom: 8px;
-      left: 0;
-      width: 100%;
-      text-align: center;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
       pointer-events: none;
-      z-index: 5;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 6px 14px;
+      border-radius: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
     }
-    .viewer-instructions span {
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      color: #8c8375;
+    /* Dark mode: instructions banner */
+    :host-context(html[data-theme="dark"]) .viewer-instructions {
+      background: rgba(23, 20, 18, 0.9);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .instruction-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 20px;
+      font-weight: 600;
       font-family: var(--fm-font-sans, sans-serif);
-      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      opacity: 0.8;
+      letter-spacing: 0.04em;
+      color: #1f1c18;
     }
+    /* Dark mode: badge text → white for contrast */
+    :host-context(html[data-theme="dark"]) .instruction-badge {
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .instruction-badge i {
+      color: var(--color-primary, #b8935c);
+      font-size: 11px;
+    }
+
+    .instruction-separator {
+      width: 1px;
+      height: 12px;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+    /* Dark mode: separator */
+    :host-context(html[data-theme="dark"]) .instruction-separator {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }

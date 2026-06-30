@@ -10,19 +10,21 @@ import { FavoritesService } from '../../../favorites/services/favorites.service'
 import { UiState } from '../../../../core/state/ui.state';
 import { LocalizedPipe } from '../../../../shared/pipes/localized.pipe';
 import { ThreeDViewerComponent } from '../../../../shared/components/three-d-viewer/three-d-viewer.component';
+import { LazyImageDirective } from '../../../../shared/directives/lazy-image.directive';
 import { calculateOldPrice, calculateDiscountPercentage } from '../../../../shared/utils/price-utils';
 import { localized } from '../../../../shared/utils/localized';
 
 @Component({
   selector: 'app-showcase-product-card',
   standalone: true,
-  imports: [NgIf, NgClass, RouterLink, CurrencyFormatPipe, TranslatePipe, LocalizedPipe, ThreeDViewerComponent],
+  imports: [NgIf, NgClass, RouterLink, CurrencyFormatPipe, TranslatePipe, LocalizedPipe, ThreeDViewerComponent, LazyImageDirective],
   templateUrl: './showcase-product-card.component.html',
   styleUrl: './showcase-product-card.component.css'
 })
 export class ShowcaseProductCardComponent {
   @Input({ required: true }) product!: IProduct;
   @Input() isMobile = false;
+  @Input() isLoading = false;
 
   @ViewChild('viewer') viewerComponent?: ThreeDViewerComponent;
 
