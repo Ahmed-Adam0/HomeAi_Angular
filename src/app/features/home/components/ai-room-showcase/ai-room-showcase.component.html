@@ -1,124 +1,157 @@
-<section class="room-showcase-section" 
-         (mouseenter)="onMouseEnter()" 
-         (mouseleave)="onMouseLeave()"
-         (touchstart)="onTouchStart($event)"
-         (touchend)="onTouchEnd($event)">
-  
-  <div class="container-fluid px-0">
+@if (!error() && (loading() || slides().length > 0)) {
+  <section class="room-showcase-section" 
+           (mouseenter)="onMouseEnter()" 
+           (mouseleave)="onMouseLeave()"
+           (touchstart)="onTouchStart($event)"
+           (touchend)="onTouchEnd($event)">
     
-    <!-- Section Header (Premium floating style over full slider) -->
-    <div class="showcase-section-header text-center mb-4 px-3">
-      <span class="subtitle-gold">{{ 'EXPLORE_IN_3D_SUBTITLE' | translate }}</span>
-      <h2 class="section-title-display">{{ 'EXPLORE_IN_3D_TITLE' | translate }}</h2>
-      <p class="section-desc-light">
-        {{ 'EXPLORE_IN_3D_DESC' | translate }}
-      </p>
-    </div>
-
-    <!-- Main Slider Box -->
-    <div class="showcase-slider-viewport shadow-premium" (click)="closePopup()">
+    <div class="container-fluid px-0">
       
-      <!-- Slide Track -->
-      <div class="slider-slides-track">
-        <div 
-          *ngFor="let slide of slides(); let sIdx = index"
-          class="slider-slide-item"
-          [class.active-slide]="sIdx === currentSlideIndex()"
-        >
-          <!-- Background image with Ken Burns slow zoom -->
-          <img 
-            [src]="slide.backgroundImage" 
-            [alt]="isArabic() ? (slide.titleAr || slide.title) : slide.title" 
-            class="slide-background-img"
-            [class.ken-burns-zoom]="sIdx === currentSlideIndex() && isPlaying()"
-          />
-          
-          <!-- Cinematic Overlay Gradient -->
-          <div class="slide-art-overlay"></div>
+      <!-- Section Header (Premium floating style over full slider) -->
+      <div class="showcase-section-header text-center mb-4 px-3">
+        <span class="subtitle-gold">{{ 'EXPLORE_IN_3D_SUBTITLE' | translate }}</span>
+        <h2 class="section-title-display">{{ 'EXPLORE_IN_3D_TITLE' | translate }}</h2>
+        <p class="section-desc-light">
+          {{ 'EXPLORE_IN_3D_DESC' | translate }}
+        </p>
+      </div>
 
-          <!-- Slide Meta Text Info (Parallax/Staggered reveal) -->
-          <div class="slide-meta-panel" *ngIf="sIdx === currentSlideIndex()">
-            <span class="slide-room-badge">{{ isArabic() ? 'معاينة حية للغرفة' : 'Live Room Concept' }}</span>
-            <h3 class="slide-title-heading">{{ isArabic() ? (slide.titleAr || slide.title) : slide.title }}</h3>
-            <p class="slide-subtitle-desc">{{ isArabic() ? (slide.subtitleAr || slide.subtitle) : slide.subtitle }}</p>
+      @if (loading()) {
+        <!-- Skeleton Loader State -->
+        <div class="showcase-slider-viewport showcase-skeleton-viewport shadow-premium">
+          <div class="skeleton-visual fm-skeleton"></div>
+          <div class="skeleton-meta-panel">
+            <div class="skeleton-badge fm-skeleton"></div>
+            <div class="skeleton-title fm-skeleton"></div>
+            <div class="skeleton-desc fm-skeleton"></div>
+          </div>
+        </div>
+      } @else {
+        <!-- Main Slider Box -->
+        <div class="showcase-slider-viewport shadow-premium" (click)="closePopup()">
+          
+          <!-- Slide Track -->
+          <div class="slider-slides-track">
+            @for (slide of slides(); track slide.id; let sIdx = $index) {
+              <div 
+                class="slider-slide-item"
+                [class.active-slide]="sIdx === currentSlideIndex()"
+              >
+                <!-- Background image with Ken Burns slow zoom -->
+                <img 
+                  [src]="slide.backgroundImageUrl" 
+                  [alt]="slide.title" 
+                  class="slide-background-img"
+                  [class.ken-burns-zoom]="sIdx === currentSlideIndex() && isPlaying()"
+                />
+                
+                <!-- Cinematic Overlay Gradient -->
+                <div class="slide-art-overlay"></div>
+
+                <!-- Slide Meta Text Info (Parallax/Staggered reveal) -->
+                @if (sIdx === currentSlideIndex()) {
+                  <div class="slide-meta-panel">
+                    <span class="slide-room-badge">{{ isArabic() ? 'معاينة حية للغرفة' : 'Live Room Concept' }}</span>
+                    <h3 class="slide-title-heading">{{ slide.title }}</h3>
+                    <p class="slide-subtitle-desc">{{ slide.subtitle }}</p>
+                    
+                    <!-- CTA Button -->
+                    @if (slide.buttonText && slide.buttonLink) {
+                      <div class="slide-cta-wrapper">
+                        <a [routerLink]="slide.buttonLink" class="btn btn-premium slide-cta-btn">
+                          {{ slide.buttonText }}
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right cta-arrow" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                          </svg>
+                        </a>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Hotspots Container -->
+                @if (sIdx === currentSlideIndex()) {
+                  <div class="slide-hotspots-overlay">
+                    @for (hotspot of slide.hotspots; track hotspot.id; let hIdx = $index) {
+                      <div 
+                        class="hotspot-point"
+                        [style.top.%]="hotspot.y"
+                        [style.left.%]="hotspot.x"
+                        [class.active]="activeHotspot() === hotspot"
+                        (click)="onHotspotClick(hotspot, $event)"
+                        [style.animation-delay]="(hIdx * 150) + 'ms'"
+                      >
+                        <div class="hotspot-pulse"></div>
+                        <div class="hotspot-dot"></div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
           </div>
 
-          <!-- Hotspots Container -->
-          <div class="slide-hotspots-overlay" *ngIf="sIdx === currentSlideIndex()">
-            <div 
-              *ngFor="let hotspot of slide.hotspots; let hIdx = index"
-              class="hotspot-point"
-              [style.top.%]="hotspot.y"
-              [style.left.%]="hotspot.x"
-              [class.active]="activeHotspot() === hotspot"
-              (click)="onHotspotClick(hotspot, $event)"
-              [style.animation-delay]="(hIdx * 150) + 'ms'"
-            >
-              <div class="hotspot-pulse"></div>
-              <div class="hotspot-dot"></div>
+          <!-- Left / Right Slider Navigation Controls -->
+          <button 
+            type="button" 
+            class="slider-nav-arrow slider-nav-arrow--prev" 
+            (click)="prevSlide(); $event.stopPropagation()"
+            [aria-label]="isArabic() ? 'السابق' : 'Previous Slide'"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+
+          <button 
+            type="button" 
+            class="slider-nav-arrow slider-nav-arrow--next" 
+            (click)="nextSlide(); $event.stopPropagation()"
+            [aria-label]="isArabic() ? 'التالي' : 'Next Slide'"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+
+          <!-- Autoplay Pause / Play & Pagination Controls Row -->
+          <div class="slider-utilities-bar" (click)="$event.stopPropagation()">
+            <!-- Play / Pause switch -->
+            <button type="button" class="autoplay-toggle-btn" (click)="togglePlay()" [title]="isPlaying() ? 'Pause Autoplay' : 'Play Autoplay'">
+              <i class="bi" [ngClass]="isPlaying() ? 'bi-pause-fill' : 'bi-play-fill'"></i>
+            </button>
+            
+            <div class="slider-bullets-rail">
+              @for (slide of slides(); track slide.id; let dotIdx = $index) {
+                <button 
+                  type="button" 
+                  class="slider-bullet-dot"
+                  [class.bullet-active]="dotIdx === currentSlideIndex()"
+                  (click)="selectSlide(dotIdx)"
+                  [aria-label]="'Go to slide ' + (dotIdx + 1)"
+                ></button>
+              }
             </div>
           </div>
+
         </div>
-      </div>
+      }
 
-
-
-      <!-- Left / Right Slider Navigation Controls -->
-      <button 
-        type="button" 
-        class="slider-nav-arrow slider-nav-arrow--prev" 
-        (click)="prevSlide(); $event.stopPropagation()"
-        [aria-label]="isArabic() ? 'السابق' : 'Previous Slide'"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
-      </button>
-
-      <button 
-        type="button" 
-        class="slider-nav-arrow slider-nav-arrow--next" 
-        (click)="nextSlide(); $event.stopPropagation()"
-        [aria-label]="isArabic() ? 'التالي' : 'Next Slide'"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </button>
-
-      <!-- Autoplay Pause / Play & Pagination Controls Row -->
-      <div class="slider-utilities-bar" (click)="$event.stopPropagation()">
-        <!-- Play / Pause switch -->
-        <button type="button" class="autoplay-toggle-btn" (click)="togglePlay()" [title]="isPlaying() ? 'Pause Autoplay' : 'Play Autoplay'">
-          <i class="bi" [ngClass]="isPlaying() ? 'bi-pause-fill' : 'bi-play-fill'"></i>
-        </button>
-        
-        <div class="slider-bullets-rail">
-          <button 
-            *ngFor="let slide of slides(); let dotIdx = index"
-            type="button" 
-            class="slider-bullet-dot"
-            [class.bullet-active]="dotIdx === currentSlideIndex()"
-            (click)="selectSlide(dotIdx)"
-            [aria-label]="'Go to slide ' + (dotIdx + 1)"
-          ></button>
+      <!-- Hotspot Product Preview Card (Bottom Sheet Modal for All Breakpoints) -->
+      <div class="mobile-drawer-sheet" [class.drawer-open]="activeProduct()" (click)="onBackdropClick($event)">
+        <div class="drawer-sheet-backdrop"></div>
+        <div class="drawer-sheet-wrapper" (click)="$event.stopPropagation()">
+          <div class="drawer-sheet-handle"></div>
+          <button class="drawer-sheet-close-btn" (click)="closePopup()" [aria-label]="isArabic() ? 'إغلاق' : 'Close'">✕</button>
+          
+          <div class="drawer-sheet-body">
+            @if (activeProduct()) {
+              <app-showcase-product-card [product]="activeProduct()!" [isMobile]="false" [isLoading]="isLoadingProduct()"></app-showcase-product-card>
+            }
+          </div>
         </div>
       </div>
 
     </div>
-
-    <!-- Hotspot Product Preview Card (Bottom Sheet Modal for All Breakpoints) -->
-    <div class="mobile-drawer-sheet" [class.drawer-open]="activeProduct()" (click)="onBackdropClick($event)">
-      <div class="drawer-sheet-backdrop"></div>
-      <div class="drawer-sheet-wrapper" (click)="$event.stopPropagation()">
-        <div class="drawer-sheet-handle"></div>
-        <button class="drawer-sheet-close-btn" (click)="closePopup()" [aria-label]="isArabic() ? 'إغلاق' : 'Close'">✕</button>
-        
-        <div class="drawer-sheet-body" *ngIf="activeProduct()">
-          <app-showcase-product-card [product]="activeProduct()!" [isMobile]="false"></app-showcase-product-card>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
+  </section>
+}

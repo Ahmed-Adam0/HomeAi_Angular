@@ -1,0 +1,30 @@
+<div class="image-upload-container">
+  <label class="upload-area" [class.has-preview]="previewUrl() || existingImageUrl">
+    <input type="file" (change)="onFileSelected($event)" accept="image/*" class="d-none">
+    
+    @if (previewUrl()) {
+      <div class="preview-wrap">
+        <img [src]="previewUrl()" alt="Selected Preview" class="upload-preview">
+        <div class="change-overlay">
+          <i class="bi bi-camera-fill mb-2"></i>
+          <span>{{ translationService.currentLang() === 'ar' ? 'تغيير الصورة' : 'Change Image' }}</span>
+        </div>
+      </div>
+    } @else if (existingImageUrl) {
+      <div class="preview-wrap">
+        <img [src]="existingImageUrl" alt="Current Image" class="upload-preview">
+        <div class="change-overlay">
+          <i class="bi bi-camera-fill mb-2"></i>
+          <span>{{ translationService.currentLang() === 'ar' ? 'تغيير الصورة' : 'Change Image' }}</span>
+        </div>
+      </div>
+    } @else {
+      <div class="upload-placeholder">
+        <i class="bi bi-cloud-arrow-up-fill mb-3"></i>
+        <h3>{{ translationService.currentLang() === 'ar' ? 'تحميل صورة الخلفية' : 'Upload Background Image' }}</h3>
+        <p>{{ translationService.currentLang() === 'ar' ? 'اسحب الصورة هنا أو اضغط للتصفح' : 'Drag image here or click to browse' }}</p>
+        <span class="btn-browse">{{ translationService.currentLang() === 'ar' ? 'تصفح الملفات' : 'Browse Files' }}</span>
+      </div>
+    }
+  </label>
+</div>

@@ -3,6 +3,10 @@
  * This structure keeps endpoints organized by feature area and maintains scalability.
  */
 export const API_URLS = {
+  HOME: {
+    SHOWCASE: 'Home/showcase',
+    SHOWCASE_DETAILS: (id: string | number) => `Home/showcase/${id}`,
+  },
   AUTH: {
     LOGIN: 'auth/login',
     REGISTER: 'auth/register',
