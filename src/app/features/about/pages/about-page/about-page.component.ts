@@ -61,12 +61,12 @@ export class AboutPageComponent implements AfterViewInit {
   ];
 
   readonly teamMembers = [
-    { nameKey: 'ABOUT.TEAM.MEMBER1.NAME', roleKey: 'ABOUT.TEAM.MEMBER1.ROLE', icon: 'bi bi-person-workspace', social: { linkedin: '#', github: '#' } },
-    { nameKey: 'ABOUT.TEAM.MEMBER2.NAME', roleKey: 'ABOUT.TEAM.MEMBER2.ROLE', icon: 'bi bi-code-slash', social: { linkedin: '#', github: '#' } },
-    { nameKey: 'ABOUT.TEAM.MEMBER3.NAME', roleKey: 'ABOUT.TEAM.MEMBER3.ROLE', icon: 'bi bi-terminal', social: { linkedin: '#', github: '#' } },
-    { nameKey: 'ABOUT.TEAM.MEMBER4.NAME', roleKey: 'ABOUT.TEAM.MEMBER4.ROLE', icon: 'bi bi-cpu', social: { linkedin: '#', github: '#' } },
-    { nameKey: 'ABOUT.TEAM.MEMBER5.NAME', roleKey: 'ABOUT.TEAM.MEMBER5.ROLE', icon: 'bi bi-database', social: { linkedin: '#', github: '#' } },
-    { nameKey: 'ABOUT.TEAM.MEMBER6.NAME', roleKey: 'ABOUT.TEAM.MEMBER6.ROLE', icon: 'bi bi-bezier2', social: { linkedin: '#', github: '#' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER1.NAME', roleKey: 'ABOUT.TEAM.MEMBER1.ROLE', icon: 'bi bi-person-workspace', social: { facebook: 'https://www.facebook.com/share/1NUpe2SWCn/' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER2.NAME', roleKey: 'ABOUT.TEAM.MEMBER2.ROLE', icon: 'bi bi-code-slash', social: { facebook: 'https://www.facebook.com/share/1NUpe2SWCn/' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER3.NAME', roleKey: 'ABOUT.TEAM.MEMBER3.ROLE', icon: 'bi bi-terminal', social: { facebook: 'https://www.facebook.com/share/1NUpe2SWCn/' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER4.NAME', roleKey: 'ABOUT.TEAM.MEMBER4.ROLE', icon: 'bi bi-cpu', social: { facebook: 'https://www.facebook.com/share/1NUpe2SWCn/' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER5.NAME', roleKey: 'ABOUT.TEAM.MEMBER5.ROLE', icon: 'bi bi-database', social: { facebook: 'https://www.facebook.com/share/1NUpe2SWCn/' } },
+    { nameKey: 'ABOUT.TEAM.MEMBER6.NAME', roleKey: 'ABOUT.TEAM.MEMBER6.ROLE', icon: 'bi bi-bezier2', social: { facebook: 'https://www.facebook.com/share/1NUpe2SWCn/' } },
   ];
 
   readonly privacyItems: AccordionEntry[] = [

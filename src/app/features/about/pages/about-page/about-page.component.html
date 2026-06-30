@@ -190,8 +190,15 @@
           <h3 class="team-name">{{ member.nameKey | translate }}</h3>
           <p class="team-role">{{ member.roleKey | translate }}</p>
           <div class="team-socials">
-            <a [href]="member.social.linkedin" class="social-icon" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-            <a [href]="member.social.github" class="social-icon" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a
+              [href]="member.social.facebook"
+              class="social-icon"
+              aria-label="Facebook"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <i class="bi bi-facebook"></i>
+            </a>
           </div>
         </div>
       }
