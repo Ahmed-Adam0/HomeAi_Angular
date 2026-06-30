@@ -187,13 +187,34 @@ export class Navbar implements OnInit {
     }
   }
 
+  isLinkActive(route: string, labelEn: string): boolean {
+    this.currentUrl(); // reactive tracking dependency
+    
+    if (labelEn === 'AI Accent') {
+      return (
+        this.router.isActive('/room-upload', false) ||
+        this.router.isActive('/ai-chat', false) ||
+        this.router.isActive('/ai-result', false) ||
+        this.router.isActive('/scan-room', false) ||
+        this.router.isActive('/rooms', false)
+      );
+    }
+    if (labelEn === 'Products') {
+      return (
+        this.router.isActive(NAV_ROUTES.PRODUCTS, false) ||
+        this.router.isActive(NAV_ROUTES.SEARCH, false) ||
+        this.router.isActive(NAV_ROUTES.CATEGORIES, false)
+      );
+    }
+    return this.router.isActive(route, route === '/');
+  }
+
   updateActiveLink(url: string): void {
-    const path = url.split('?')[0];
-    if (path === NAV_ROUTES.PRODUCTS || path.startsWith(`${NAV_ROUTES.CATEGORIES}/`) || path === NAV_ROUTES.SEARCH) {
+    if (this.isLinkActive(NAV_ROUTES.PRODUCTS, 'Products')) {
       this.activeMainLink.set('Products');
-    } else if (path.startsWith('/rooms')) {
+    } else if (this.isLinkActive(NAV_ROUTES.ROOM_UPLOAD, 'AI Accent')) {
       this.activeMainLink.set('AI Accent');
-    } else if (path.startsWith('/inspirations')) {
+    } else if (this.isLinkActive(NAV_ROUTES.INSPIRATIONS, 'Inspirations')) {
       this.activeMainLink.set('Inspirations');
     } else {
       this.activeMainLink.set('');

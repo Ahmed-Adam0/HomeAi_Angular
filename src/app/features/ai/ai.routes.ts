@@ -1,14 +1,21 @@
 import { Routes } from '@angular/router';
 import { APP_ROUTES } from '../../core/constants';
+import { roomSessionGuard } from '../../core/guards/room-session.guard';
 
 export const aiRoutes: Routes = [
   {
     path: 'rooms',
-    redirectTo: APP_ROUTES.AI_CHAT,
+    redirectTo: APP_ROUTES.ROOM_UPLOAD,
     pathMatch: 'full',
   },
   {
+    path: APP_ROUTES.ROOM_UPLOAD,
+    loadComponent: () =>
+      import('./pages/room-upload/room-upload.component').then((m) => m.RoomUpload),
+  },
+  {
     path: APP_ROUTES.AI_CHAT,
+    canActivate: [roomSessionGuard],
     loadComponent: () =>
       import('./pages/ai-chat/ai-chat.component').then((m) => m.AiChat),
   },

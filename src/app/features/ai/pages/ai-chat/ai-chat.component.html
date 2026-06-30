@@ -4,12 +4,13 @@
     <app-chat-panel class="d-block h-100"></app-chat-panel>
   </div>
 
-  <!-- Center Area: Generated Room Panel -->
+  <!-- Center Area: Main Room Workspace -->
+  <!-- The GeneratedRoom component now handles: demo room / uploaded room / generated result -->
   <div class="room-display-section flex-grow-1">
     <app-generated-room class="d-block h-100"></app-generated-room>
   </div>
 
-  <!-- Right Side: Slide-in Drawer Details -->
+  <!-- Right Side: Slide-in Drawer Details (product sidebar) -->
   @if (aiService.isSidebarOpen()) {
     <div class="product-sidebar-section flex-shrink-0">
       <app-product-sidebar class="d-block h-100"></app-product-sidebar>

@@ -49,6 +49,7 @@ export const APP_ROUTES = {
   VENDOR_MATERIALS: 'materials',
 
   AI_CHAT: 'ai-chat',
+  ROOM_UPLOAD: 'room-upload',
 
   INSPIRATIONS: 'inspirations',
   SHARE_TRANSFORMATION: 'share-transformation',
@@ -106,6 +107,7 @@ export const NAV_ROUTES = {
   VENDOR_MATERIALS: '/vendor/materials',
 
   AI_CHAT: '/ai-chat',
+  ROOM_UPLOAD: '/room-upload',
 
   INSPIRATIONS: '/inspirations',
   SHARE_TRANSFORMATION: '/share-transformation',

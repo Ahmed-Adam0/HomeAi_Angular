@@ -1,4 +1,5 @@
-import { Component, inject, HostListener, computed, signal, effect } from '@angular/core';
+import { Component, inject, HostListener, computed, signal, effect, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { NgIf, NgFor } from '@angular/common';
 import { QuickViewService } from '../../services/quick-view.service';
 import { ProductService } from '../../services/product.service';
@@ -24,6 +25,7 @@ export class QuickViewModalComponent {
   readonly cartService = inject(CartService);
   private favoritesService = inject(FavoritesService);
   readonly translationService = inject(TranslationService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   protected readonly isOpen = this.quickViewService.isOpen;
   protected readonly product = this.quickViewService.product;
@@ -95,6 +97,7 @@ export class QuickViewModalComponent {
     }, { allowSignalWrites: true });
 
     effect(() => {
+      if (!isPlatformBrowser(this.platformId)) return;
       if (this.isOpen()) {
         document.body.style.overflow = 'hidden';
       } else {

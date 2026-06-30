@@ -14,6 +14,48 @@
 .room-image {
   user-select: none;
   pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* ── Awaiting Generation Overlay ─────────────────────────────────────────── */
+.awaiting-overlay {
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(31, 28, 24, 0.55) 0%,
+    rgba(31, 28, 24, 0.72) 100%
+  );
+  backdrop-filter: blur(2px);
+  z-index: 5;
+}
+
+.awaiting-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-size: 1.4rem;
+  animation: icon-float 3s ease-in-out infinite;
+}
+
+.awaiting-title {
+  color: #ffffff;
+  font-size: 1.05rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.awaiting-desc {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.825rem;
+  max-width: 320px;
+  line-height: 1.55;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes icon-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
 }
 
 /* Hotspots styling */
