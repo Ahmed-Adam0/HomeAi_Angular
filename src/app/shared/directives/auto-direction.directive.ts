@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Renderer2, inject, AfterViewInit } from '@angular/core';
+import { Directive, ElementRef, Renderer2, inject, AfterViewInit, Input, DoCheck } from '@angular/core';
 
 const ARABIC_REGEX = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
 
@@ -9,16 +9,32 @@ const ARABIC_REGEX = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE7
     '(input)': 'onInput($event)',
   },
 })
-export class AutoDirectionDirective implements AfterViewInit {
+export class AutoDirectionDirective implements AfterViewInit, DoCheck {
   private el = inject(ElementRef);
   private renderer = inject(Renderer2);
 
+  @Input('appAutoDir') defaultDir: 'rtl' | 'ltr' | '' = 'ltr';
+
+  private lastValue = '';
+
   ngAfterViewInit(): void {
-    this.applyDirection(this.getNativeValue());
+    const initialVal = this.getNativeValue();
+    this.lastValue = initialVal;
+    this.applyDirection(initialVal);
+  }
+
+  ngDoCheck(): void {
+    const currentVal = this.getNativeValue();
+    if (currentVal !== this.lastValue) {
+      this.lastValue = currentVal;
+      this.applyDirection(currentVal);
+    }
   }
 
   onInput(event: Event): void {
-    this.applyDirection((event.target as HTMLInputElement | HTMLTextAreaElement).value);
+    const val = (event.target as HTMLInputElement | HTMLTextAreaElement).value;
+    this.lastValue = val;
+    this.applyDirection(val);
   }
 
   private applyDirection(value: string): void {
@@ -30,7 +46,9 @@ export class AutoDirectionDirective implements AfterViewInit {
 
   private detectDirection(value: string): 'rtl' | 'ltr' {
     const trimmed = value.trim();
-    if (!trimmed) return 'ltr';
+    if (!trimmed) {
+      return this.defaultDir === 'rtl' ? 'rtl' : 'ltr';
+    }
     const firstChar = trimmed.charAt(0);
     return ARABIC_REGEX.test(firstChar) ? 'rtl' : 'ltr';
   }

@@ -23,7 +23,7 @@
             <label class="form-label required">{{ translationService.currentLang() === 'ar' ? 'العنوان (بالإنجليزي)' : 'Title (English)' }}</label>
             <div class="form-input-icon-wrap">
               <i class="bi bi-alphabet input-icon"></i>
-              <input type="text" formControlName="titleEn" class="form-control with-icon" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل العنوان بالإنجليزي...' : 'Enter Title in English...'">
+              <input type="text" formControlName="titleEn" [appAutoDir]="'ltr'" class="form-control with-icon" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل العنوان بالإنجليزي...' : 'Enter Title in English...'">
             </div>
             @if (showcaseForm.get('titleEn')?.touched && showcaseForm.get('titleEn')?.errors?.['required']) {
               <div class="invalid-feedback d-block mt-1 animate-slide-error">
@@ -38,7 +38,7 @@
             <label class="form-label required">{{ translationService.currentLang() === 'ar' ? 'العنوان (بالعربي)' : 'Title (Arabic)' }}</label>
             <div class="form-input-icon-wrap">
               <i class="bi bi-translate input-icon"></i>
-              <input type="text" formControlName="titleAr" class="form-control with-icon" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل العنوان بالعربي...' : 'Enter Title in Arabic...'">
+              <input type="text" formControlName="titleAr" [appAutoDir]="'rtl'" class="form-control with-icon" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل العنوان بالعربي...' : 'Enter Title in Arabic...'">
             </div>
             @if (showcaseForm.get('titleAr')?.touched && showcaseForm.get('titleAr')?.errors?.['required']) {
               <div class="invalid-feedback d-block mt-1 animate-slide-error">
@@ -53,7 +53,7 @@
             <label class="form-label">{{ translationService.currentLang() === 'ar' ? 'الوصف الفرعي (بالإنجليزي)' : 'Subtitle (English)' }}</label>
             <div class="form-input-icon-wrap">
               <i class="bi bi-chat-left-text input-icon textarea-icon"></i>
-              <textarea formControlName="subtitleEn" rows="2" class="form-control with-icon" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل الوصف بالإنجليزي...' : 'Enter Subtitle in English...'"></textarea>
+              <textarea formControlName="subtitleEn" [appAutoDir]="'ltr'" rows="2" class="form-control with-icon" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل الوصف بالإنجليزي...' : 'Enter Subtitle in English...'"></textarea>
             </div>
           </div>
 
@@ -62,7 +62,7 @@
             <label class="form-label">{{ translationService.currentLang() === 'ar' ? 'الوصف الفرعي (بالعربي)' : 'Subtitle (Arabic)' }}</label>
             <div class="form-input-icon-wrap">
               <i class="bi bi-chat-left-quote input-icon textarea-icon"></i>
-              <textarea formControlName="subtitleAr" rows="2" class="form-control with-icon" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل الوصف بالعربي...' : 'Enter Subtitle in Arabic...'"></textarea>
+              <textarea formControlName="subtitleAr" [appAutoDir]="'rtl'" rows="2" class="form-control with-icon" [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل الوصف بالعربي...' : 'Enter Subtitle in Arabic...'"></textarea>
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import { ImageUploadComponent } from '../image-upload/image-upload.component';
 import { HotspotEditorComponent } from '../hotspot-editor/hotspot-editor.component';
 import { ShowcasePreviewComponent } from '../showcase-preview/showcase-preview.component';
 import { TranslationService } from '../../../../shared/i18n/translation.service';
+import { AutoDirectionDirective } from '../../../../shared/directives';
 
 @Component({
   selector: 'app-showcase-form',
@@ -16,7 +17,8 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
     ReactiveFormsModule,
     ImageUploadComponent,
     HotspotEditorComponent,
-    ShowcasePreviewComponent
+    ShowcasePreviewComponent,
+    AutoDirectionDirective
   ],
   templateUrl: './showcase-form.component.html',
   styleUrl: './showcase-form.component.css'
