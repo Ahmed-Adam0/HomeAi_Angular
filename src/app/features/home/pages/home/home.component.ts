@@ -1,5 +1,6 @@
-import { Component, ElementRef, inject, PLATFORM_ID, Renderer2, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, inject, PLATFORM_ID, Renderer2, AfterViewInit, OnInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 import { HeroSectionComponent } from '../../components/hero-section/hero-section.component';
 import { InteriorCategoriesShowcaseComponent } from '../../components/interior-categories-showcase/interior-categories-showcase.component';
 import { LatestCollectionsComponent } from '../../components/latest-collections/latest-collections.component';
@@ -27,10 +28,34 @@ import { WhyChooseUsComponent } from '../../components/why-choose-us/why-choose-
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
-export class Home implements AfterViewInit {
+export class Home implements AfterViewInit, OnInit {
   private el = inject(ElementRef);
   private renderer = inject(Renderer2);
   private platformId = inject(PLATFORM_ID);
+  private router = inject(Router);
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const currentUrl = window.location.href;
+      
+      // Check if URL has query params before hash (Paymob redirect format)
+      if (currentUrl.includes('?') && currentUrl.includes('#') && currentUrl.indexOf('?') < currentUrl.indexOf('#')) {
+        const rest = currentUrl.split('?')[1];
+        const paramsStr = rest.split('#')[0];
+        const route = rest.split('#')[1] || '/';
+        
+        // Extract query params
+        const params = new URLSearchParams(paramsStr);
+        const queryParams: any = {};
+        params.forEach((value, key) => {
+          queryParams[key] = value;
+        });
+
+        // Use Angular Router to navigate to the intended route with extracted params
+        this.router.navigate([route], { queryParams, replaceUrl: true });
+      }
+    }
+  }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
