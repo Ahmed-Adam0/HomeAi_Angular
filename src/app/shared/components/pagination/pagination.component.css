@@ -59,3 +59,30 @@
     font-size: 0.75rem !important;
   }
 }
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.pagination-container::-webkit-scrollbar {
+  display: none;
+}
+
+.pagination-premium {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  margin: 0 auto !important;
+}
+
+.pagination-premium .page-item {
+  flex-shrink: 0 !important;
+}
+

@@ -275,6 +275,8 @@
   --color-overlay: var(--fm-surface-overlay);
   --color-scrollbar: rgba(0, 0, 0, 0.15);
   --color-selection: var(--fm-color-primary-light);
+  --color-selection-bg: var(--fm-color-primary-700);
+  --color-selection-text: #ffffff;
 }
 
 /* ==========================================
@@ -423,4 +425,6 @@ html[data-theme="dark"] {
   --color-overlay: var(--fm-surface-overlay);
   --color-scrollbar: rgba(255, 255, 255, 0.15);
   --color-selection: var(--fm-color-primary-light);
+  --color-selection-bg: #ffffff;
+  --color-selection-text: var(--fm-color-primary-100);
 }

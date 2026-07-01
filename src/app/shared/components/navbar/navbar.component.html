@@ -284,9 +284,13 @@
               <a routerLink="/auth/login" class="login-action-btn text-decoration-none fs-7 fw-bold" aria-label="Login">
                 <span>{{ 'NAV_LOGIN' | translate }}</span>
               </a>
-              <a routerLink="/auth/register" class="register-action-btn text-decoration-none fs-7 fw-bold"
+              <a routerLink="/auth/register" class="register-action-btn register-action-btn--desktop text-decoration-none fs-7 fw-bold"
                 aria-label="Register">
                 <span>{{ 'NAV_REGISTER' | translate }}</span>
+              </a>
+              <a routerLink="/login" class="register-action-btn register-action-btn--mobile text-decoration-none fs-7 fw-bold"
+                aria-label="Login">
+                <span>{{ 'NAV_LOGIN' | translate }}</span>
               </a>
             </div>
           </div>
@@ -351,8 +355,6 @@
     <div class="mobile-utilities d-flex flex-column gap-2 mb-4">
       <a routerLink="/about" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{
         'NAV_ABOUT_US' | translate }}</a>
-      <a routerLink="/blog" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{ 'NAV_BLOG'
-        | translate }}</a>
       <a routerLink="/contact" class="text-decoration-none text-muted py-1 fs-7" (click)="toggleMobileMenu()">{{
         'NAV_CONTACT_US' | translate }}</a>
     </div>
@@ -435,11 +437,11 @@
             <i class="bi bi-box-arrow-in-right"></i>
             <span>{{ 'NAV_LOGIN' | translate }}</span>
           </a>
-          <a routerLink="/auth/register"
+          <a routerLink="/login"
             class="btn btn-gold w-100 rounded-pill fs-7 py-2 text-white fw-bold d-flex align-items-center justify-content-center gap-2"
             (click)="toggleMobileMenu()">
-            <i class="bi bi-person-plus"></i>
-            <span>{{ 'NAV_REGISTER' | translate }}</span>
+            <i class="bi bi-box-arrow-in-right"></i>
+            <span>{{ 'NAV_LOGIN' | translate }}</span>
           </a>
         </div>
       </div>
@@ -462,7 +464,7 @@
 
 <!-- Backdrop (Mobile/Tablet drawer trigger overlay) -->
 @if (isMobileMenuOpen()) {
-<div class="drawer-backdrop position-fixed top-0 bottom-0 start-0 end-0 z-4" (click)="toggleMobileMenu()">
+<div class="drawer-backdrop position-fixed top-0 bottom-0 start-0 end-0" (click)="toggleMobileMenu()">
 </div>
 }
 

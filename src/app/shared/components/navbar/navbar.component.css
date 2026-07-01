@@ -504,6 +504,9 @@
 .register-action-btn:active {
   transform: translateY(0);
 }
+.register-action-btn--mobile {
+  display: none !important;
+}
 
 /* ==========================================================================
    5. Mobile Drawer Menu & Overlay
@@ -643,6 +646,7 @@
 }
 
 .drawer-backdrop {
+  z-index: var(--fm-z-overlay);
   background-color: var(--fm-surface-overlay);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -1278,6 +1282,14 @@
 
   .auth-guest-actions .login-action-btn {
     display: none;
+  }
+
+  .auth-guest-actions .register-action-btn--desktop {
+    display: none !important;
+  }
+
+  .auth-guest-actions .register-action-btn--mobile {
+    display: inline-block !important;
   }
 }
 
