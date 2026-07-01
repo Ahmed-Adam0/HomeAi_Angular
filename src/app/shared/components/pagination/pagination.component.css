@@ -86,3 +86,16 @@
   flex-shrink: 0 !important;
 }
 
+.pagination-premium .page-link.ellipsis {
+  cursor: default !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  color: var(--fm-color-neutral-400) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

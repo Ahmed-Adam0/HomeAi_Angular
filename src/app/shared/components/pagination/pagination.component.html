@@ -8,8 +8,12 @@
       </button>
     </li>
     @for (page of pages; track page) {
-      <li class="page-item" [class.active]="page === currentPage">
-        <button class="page-link" (click)="onPageClick(page)">{{ page }}</button>
+      <li class="page-item" [class.active]="page === currentPage" [class.disabled]="page === '...'">
+        @if (page === '...') {
+          <span class="page-link ellipsis">...</span>
+        } @else {
+          <button class="page-link" (click)="onPageClick(page)">{{ page }}</button>
+        }
       </li>
     }
     <li class="page-item" [class.disabled]="currentPage === totalPages">
