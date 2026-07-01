@@ -1,5 +1,5 @@
 .assistant-page-container {
-  height: calc(100vh - 120px);
+  height: calc(100vh - 100px);
   min-height: 600px;
   background-color: var(--fm-color-neutral-50, #faf9f6);
 }

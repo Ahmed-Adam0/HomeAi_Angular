@@ -5,9 +5,11 @@
     <router-outlet></router-outlet>
   </main>
 
-  <footer>
-    <app-footer></app-footer>
-  </footer>
+  @if (!isAiChatRoute()) {
+    <footer>
+      <app-footer></app-footer>
+    </footer>
+  }
 
   <app-auth-required-dialog></app-auth-required-dialog>
   <app-confirm-dialog-container></app-confirm-dialog-container>
