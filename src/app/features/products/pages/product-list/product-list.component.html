@@ -214,7 +214,7 @@
           class="sidebar-search-input"
           [placeholder]="'FILTER_SEARCH_PLACEHOLDER' | translate"
           [(ngModel)]="activeFilters.query"
-          (input)="applyFilters()"
+          (change)="applyFilters()"
           appAutoDir
         />
         <div class="sidebar-search-icon-wrapper position-absolute top-50 start-0 translate-middle-y ms-3">
