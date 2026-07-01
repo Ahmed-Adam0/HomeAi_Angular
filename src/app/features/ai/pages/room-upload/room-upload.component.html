@@ -183,13 +183,18 @@
         type="button"
         class="btn-continue font-sans fw-bold d-flex align-items-center gap-2"
         id="room-continue-btn"
-        [disabled]="!isFormValid()"
-        [class.btn-continue--active]="isFormValid()"
+        [disabled]="!isFormValid() || loading()"
+        [class.btn-continue--active]="isFormValid() && !loading()"
         (click)="startDesign()"
         aria-label="Continue to AI Design"
       >
-        <span>{{ 'AI.ROOM_UPLOAD.CONTINUE' | translate }}</span>
-        <i class="bi bi-arrow-right-circle-fill"></i>
+        @if (loading()) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span>{{ 'AI.ROOM_UPLOAD.CONTINUE' | translate }}</span>
+        } @else {
+          <span>{{ 'AI.ROOM_UPLOAD.CONTINUE' | translate }}</span>
+          <i class="bi bi-arrow-right-circle-fill"></i>
+        }
       </button>
     </div>
 

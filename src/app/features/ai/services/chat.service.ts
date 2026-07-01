@@ -9,6 +9,7 @@ import { ChatMessage } from '../interfaces/chat-message.interface';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { Router } from '@angular/router';
+import { RoomDesignSessionService } from './room-design-session.service';
 
 /** Maps HTTP status codes to user-friendly error messages for the chatbot. */
 const ERROR_MESSAGES: Record<number, string> = {
@@ -30,6 +31,7 @@ export class ChatService {
   private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly roomDesignSessionService = inject(RoomDesignSessionService);
   private readonly apiUrl = environment.apiUrl;
 
   readonly messages = signal<ChatMessage[]>([]);
@@ -74,16 +76,24 @@ export class ChatService {
           catchError((error: HttpErrorResponse) => this.handleHttpError(error)),
         )
         .subscribe(response => {
-          if (response.success && response.data?.reply) {
+          const replyContent = response.data?.reply || (response as any).message || '';
+          const imageUrl = response.data?.imageUrl || (response as any).imageUrl || null;
+
+          if (replyContent || imageUrl) {
             this.messages.update(current => [
               ...current,
               {
                 id: crypto.randomUUID(),
-                content: response.data.reply,
+                content: replyContent,
                 sender: 'bot',
                 timestamp: new Date(),
+                imageUrl: imageUrl || undefined
               },
             ]);
+
+            if (imageUrl) {
+              this.roomDesignSessionService.setGeneratedImageUrl(imageUrl);
+            }
           } else if (!response.success && response.message) {
             this.notificationService.error(response.message);
           }
@@ -119,16 +129,28 @@ export class ChatService {
         catchError((error: HttpErrorResponse) => this.handleHttpError(error)),
       )
       .subscribe(response => {
-        if (response.success && response.data?.reply) {
+        console.log('[ChatService] text message raw response:', response);
+        const replyContent = response.data?.reply || (response as any).message || '';
+        const imageUrl = response.data?.imageUrl || (response as any).imageUrl || null;
+        console.log('[ChatService] Parsed imageUrl:', imageUrl);
+
+        if (replyContent || imageUrl) {
           this.messages.update(current => [
             ...current,
             {
               id: crypto.randomUUID(),
-              content: response.data.reply,
+              content: replyContent,
               sender: 'bot',
               timestamp: new Date(),
+              imageUrl: imageUrl || undefined
             },
           ]);
+
+          if (imageUrl) {
+            console.log('[ChatService] Calling setGeneratedImageUrl with:', imageUrl);
+            this.roomDesignSessionService.setGeneratedImageUrl(imageUrl);
+            console.log('[ChatService] Session after update:', this.roomDesignSessionService.session());
+          }
         } else if (!response.success && response.message) {
           this.notificationService.error(response.message);
         }

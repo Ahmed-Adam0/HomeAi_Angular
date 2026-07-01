@@ -232,6 +232,7 @@
   "AI.ROOM_UPLOAD.CONTINUE": "تابع إلى التصميم الذكي",
   "AI.ROOM_UPLOAD.ERROR_TYPE": "يرجى اختيار ملف صورة صالح (JPG، PNG، WEBP).",
   "AI.ROOM_UPLOAD.ERROR_SIZE": "الملف كبير جداً. الحد الأقصى هو 10 ميجابايت.",
+  "AI.ROOM_UPLOAD.UPLOAD_ERROR": "فشل تحميل صورة الغرفة. يرجى المحاولة مرة أخرى.",
   "AI.ROOM_UPLOAD.DIMENSIONS_HEADER": "أبعاد الغرفة",
   "AI.ROOM_UPLOAD.WIDTH": "العرض (بالمتر)",
   "AI.ROOM_UPLOAD.LENGTH": "الطول (بالمتر)",

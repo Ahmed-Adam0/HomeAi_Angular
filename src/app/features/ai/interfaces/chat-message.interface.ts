@@ -4,5 +4,6 @@ export interface ChatMessage {
   sender: 'user' | 'bot';
   timestamp: Date;
   audioUrl?: string;
+  imageUrl?: string;
 }
 
