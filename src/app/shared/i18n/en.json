@@ -233,6 +233,7 @@
   "AI.ROOM_UPLOAD.CONTINUE": "Continue to AI Design",
   "AI.ROOM_UPLOAD.ERROR_TYPE": "Please select a valid image file (JPG, PNG, WEBP).",
   "AI.ROOM_UPLOAD.ERROR_SIZE": "File is too large. Maximum size is 10 MB.",
+  "AI.ROOM_UPLOAD.UPLOAD_ERROR": "Failed to upload the room image. Please try again.",
   "AI.ROOM_UPLOAD.DIMENSIONS_HEADER": "Room Dimensions",
   "AI.ROOM_UPLOAD.WIDTH": "Width (meters)",
   "AI.ROOM_UPLOAD.LENGTH": "Length (meters)",

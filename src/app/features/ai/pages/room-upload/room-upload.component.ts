@@ -2,8 +2,11 @@ import { Component, inject, signal, computed, ElementRef, ViewChild } from '@ang
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { RoomDesignSessionService } from '../../services/room-design-session.service';
+import { RoomDesignApiService } from '../../services/room-design-api.service';
+import { NotificationService } from '../../../../shared/services/notification.service';
 import { NAV_ROUTES } from '../../../../core/constants';
 
 /** Maximum accepted file size: 10 MB */
@@ -19,6 +22,11 @@ const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 export class RoomUpload {
   private readonly router = inject(Router);
   protected readonly sessionService = inject(RoomDesignSessionService);
+  private readonly roomDesignApi = inject(RoomDesignApiService);
+  private readonly notificationService = inject(NotificationService);
+
+  /** Whether the upload request is in progress */
+  protected readonly loading = signal(false);
 
   @ViewChild('fileInput') private fileInput!: ElementRef<HTMLInputElement>;
 
@@ -111,16 +119,42 @@ export class RoomUpload {
    *     this.router.navigate([NAV_ROUTES.AI_CHAT]);
    *   }
    */
-  startDesign(): void {
+  async startDesign(): Promise<void> {
     if (!this.isFormValid()) return;
 
-    this.sessionService.setRoomDimensions(
-      this.width()!,
-      this.length()!,
-      this.height()!
-    );
+    const file = this.sessionService.session().roomFile;
+    const w = this.width();
+    const l = this.length();
+    const h = this.height();
 
-    void this.router.navigate([NAV_ROUTES.AI_CHAT]);
+    if (!file) {
+      this.errorMessage.set('AI.ROOM_UPLOAD.ERROR_TYPE');
+      return;
+    }
+
+    if (w === null || w < 1 || l === null || l < 1 || h === null || h < 1) {
+      this.errorMessage.set('AI.ROOM_UPLOAD.DIMENSIONS_REQUIRED');
+      return;
+    }
+
+    this.loading.set(true);
+    this.errorMessage.set(null);
+    this.sessionService.setStatusUploading();
+    this.sessionService.setRoomDimensions(w, l, h);
+
+    try {
+      const response = await firstValueFrom(
+        this.roomDesignApi.uploadRoomImage(file, w, l, h)
+      );
+
+      this.sessionService.setUploadResult(response.roomId, response.imageUrl);
+      void this.router.navigate([NAV_ROUTES.AI_CHAT]);
+    } catch (error) {
+      console.error('Room upload failed:', error);
+      this.notificationService.error('AI.ROOM_UPLOAD.UPLOAD_ERROR');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   // ─── Private helpers ──────────────────────────────────────────────────────

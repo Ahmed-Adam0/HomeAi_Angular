@@ -9,17 +9,27 @@
          TODO: generatedImageUrl will be populated by the backend generation
                endpoint — no template changes will be needed at that point.
     ──────────────────────────────────────────────────────────────────────── -->
-    <img
-      [src]="workspaceImageUrl"
-      alt="Room workspace"
-      class="room-image w-100 h-100 object-fit-cover"
-    />
+    @if (isGenerated()) {
+      <app-before-after-slider
+        [beforeImageUrl]="sessionService.session().roomPreviewUrl ?? ''"
+        [afterImageUrl]="sessionService.session().generatedImageUrl ?? ''"
+        [beforeLabel]="'AI.ROOM_PREVIEW.UPLOADED_LABEL' | translate"
+        [afterLabel]="'AI.ROOM_PREVIEW.GENERATED_LABEL' | translate"
+        class="w-100 h-100 d-block"
+      ></app-before-after-slider>
+    } @else {
+      <img
+        [src]="workspaceImageUrl()"
+        alt="Room workspace"
+        class="room-image w-100 h-100 object-fit-contain"
+      />
+    }
 
     <!-- ── "Awaiting Generation" Overlay ────────────────────────────────────
          Shown after the user has uploaded a room but before the AI runs.
          Disappears automatically once generatedImageUrl is populated.
     ──────────────────────────────────────────────────────────────────────── -->
-    @if (isAwaitingGeneration) {
+    @if (isAwaitingGeneration()) {
       <div class="awaiting-overlay position-absolute inset-0 d-flex flex-column align-items-center justify-content-center gap-3 p-4">
         <div class="awaiting-icon d-flex align-items-center justify-content-center rounded-circle">
           <i class="bi bi-magic"></i>
@@ -35,57 +45,10 @@
       </div>
     }
 
-    <!-- ── Hotspots ──────────────────────────────────────────────────────────
-         Only shown after the AI has generated a result (isGenerated).
-         While awaiting, the overlay takes the foreground.
-    ──────────────────────────────────────────────────────────────────────── -->
-    @if (isGenerated) {
-      @for (hs of aiService.currentRoom().hotspots; track hs.id) {
-        <div class="hotspot-wrapper position-absolute"
-             [style.left.%]="hs.x"
-             [style.top.%]="hs.y"
-             [class.active]="aiService.selectedHotspotId() === hs.id">
-
-          <!-- Hover label/tag -->
-          <span class="hotspot-label font-sans fs-8 fw-semibold px-2.5 py-1 rounded shadow-md">
-            {{ hs.label }}
-          </span>
-
-          <!-- Hotspot button -->
-          <button class="hotspot-btn d-flex align-items-center justify-content-center fw-bold fs-7.5"
-                  (click)="selectHotspot(hs.id, $event)">
-            {{ hs.id }}
-          </button>
-        </div>
-      }
-    }
-
-    <!-- ── Demo-mode hotspots ─────────────────────────────────────────────
-         Show demo hotspots on the static room when no session is active.
-    ──────────────────────────────────────────────────────────────────────── -->
-    @if (!sessionService.hasRoom()) {
-      @for (hs of aiService.currentRoom().hotspots; track hs.id) {
-        <div class="hotspot-wrapper position-absolute"
-             [style.left.%]="hs.x"
-             [style.top.%]="hs.y"
-             [class.active]="aiService.selectedHotspotId() === hs.id">
-
-          <span class="hotspot-label font-sans fs-8 fw-semibold px-2.5 py-1 rounded shadow-md">
-            {{ hs.label }}
-          </span>
-
-          <button class="hotspot-btn d-flex align-items-center justify-content-center fw-bold fs-7.5"
-                  (click)="selectHotspot(hs.id, $event)">
-            {{ hs.id }}
-          </button>
-        </div>
-      }
-    }
-
   </div>
 
   <!-- Proceed to Order — only visible when AI has generated a result -->
-  @if (isGenerated) {
+  @if (isGenerated()) {
     <div class="mt-4">
       <button class="btn btn-proceed font-sans fw-bold px-4 py-2.5 shadow-sm d-flex align-items-center gap-2"
               (click)="openSummary()">

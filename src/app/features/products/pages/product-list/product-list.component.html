@@ -214,15 +214,15 @@
           class="sidebar-search-input"
           [placeholder]="'FILTER_SEARCH_PLACEHOLDER' | translate"
           [(ngModel)]="activeFilters.query"
-          (input)="applyFilters()"
+          (change)="applyFilters()"
           appAutoDir
         />
-        <div class="sidebar-search-icon-wrapper position-absolute top-50 start-0 translate-middle-y ms-3">
+        <div class="sidebar-search-icon-wrapper position-absolute top-50 translate-middle-y">
           <i class="bi bi-search"></i>
         </div>
         <button
           *ngIf="activeFilters.query"
-          class="sidebar-search-clear-btn position-absolute top-50 end-0 translate-middle-y me-3 border-0 bg-transparent p-0"
+          class="sidebar-search-clear-btn position-absolute top-50 translate-middle-y border-0 bg-transparent p-0"
           (click)="activeFilters.query = ''; applyFilters()"
         >
           <i class="bi bi-x-lg"></i>

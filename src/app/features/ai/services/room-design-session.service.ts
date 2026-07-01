@@ -117,6 +117,32 @@ export class RoomDesignSessionService {
     }));
   }
 
+  /** Mark session as uploading */
+  setStatusUploading(): void {
+    this._session.update(current => ({
+      ...current,
+      status: 'uploading',
+    }));
+  }
+
+  /** Set upload result after successful API call */
+  setUploadResult(roomId: string, uploadedImageUrl: string): void {
+    this._session.update(current => ({
+      ...current,
+      roomId,
+      uploadedImageUrl,
+      status: 'completed',
+    }));
+  }
+
+  /** Set generated image URL from AI backend */
+  setGeneratedImageUrl(url: string): void {
+    this._session.update(current => ({
+      ...current,
+      generatedImageUrl: url
+    }));
+  }
+
   /**
    * Full session reset — clears all fields including reserved backend fields.
    * Call this when starting a completely new session.
