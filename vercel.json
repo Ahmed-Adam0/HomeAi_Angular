@@ -1,11 +1,11 @@
 {
+  "version": 2,
   "buildCommand": "ng build",
   "installCommand": "npm install --legacy-peer-deps",
   "outputDirectory": "dist/furniture-ai/browser",
-  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!assets/|.*\\.js|.*\\.css|.*\\.png|.*\\.jpg|.*\\.svg|.*\\.json|api/).*)",
       "destination": "/index.html"
     }
   ]
