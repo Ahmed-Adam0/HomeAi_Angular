@@ -9,6 +9,9 @@
   letter-spacing: 0.01em;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   background-color: var(--color-surface);
+  padding-block: 0.75rem;
+  padding-inline-start: 3rem;
+  padding-inline-end: 3rem;
 }
 
 .search-input:focus {
@@ -18,33 +21,19 @@
 
 .search-icon {
   font-size: 1.1rem;
+  inset-inline-start: 1rem;
 }
 
 .btn-clear {
   font-size: 0.8rem;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
+  inset-inline-end: 1rem;
 }
 
 .btn-clear:hover {
   transform: scale(1.15);
   color: var(--color-text);
-}
-
-/* RTL layout adjustments */
-[dir="rtl"] .search-input {
-  padding-left: 3rem !important;
-  padding-right: 3.5rem !important;
-}
-
-[dir="rtl"] .search-icon {
-  right: 1.5rem;
-  left: auto;
-}
-
-[dir="rtl"] .btn-clear {
-  left: 1.5rem;
-  right: auto;
 }
 
 @media (max-width: 575px) {
@@ -59,12 +48,8 @@
 @media (max-width: 374px) {
   .search-input {
     font-size: 0.8rem;
-    padding-left: 2.5rem !important;
-    padding-right: 2.5rem !important;
-  }
-  [dir="rtl"] .search-input {
-    padding-left: 2.5rem !important;
-    padding-right: 2.5rem !important;
+    padding-inline-start: 2.5rem;
+    padding-inline-end: 2.5rem;
   }
   .search-icon {
     font-size: 0.9rem;
