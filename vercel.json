@@ -2,7 +2,6 @@
   "buildCommand": "ng build",
   "installCommand": "npm install --legacy-peer-deps",
   "outputDirectory": "dist/furniture-ai/browser",
-  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/(.*)",
