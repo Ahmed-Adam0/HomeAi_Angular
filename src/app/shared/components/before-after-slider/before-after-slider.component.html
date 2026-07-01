@@ -1,0 +1,34 @@
+<div class="comparison-container" #container [class.dragging]="isDragging">
+  <!-- AFTER Image (Base Layer) -->
+  <img [src]="afterImageUrl" class="image-after" alt="After Transformation" loading="lazy" />
+  @if (afterLabel) {
+    <span class="badge-tag badge-after">
+      {{ afterLabel }}
+    </span>
+  }
+
+  <!-- BEFORE Image (Clipped Overlay Layer) -->
+  <img [src]="beforeImageUrl" 
+       class="image-before" 
+       [style.clip-path]="'inset(0 ' + (100 - sliderPosition) + '% 0 0)'" 
+       alt="Before Transformation" 
+       loading="lazy" />
+  @if (beforeLabel) {
+    <span class="badge-tag badge-before" [style.opacity]="sliderPosition > 15 ? 1 : 0">
+      {{ beforeLabel }}
+    </span>
+  }
+
+  <!-- Interactive Drag Handle -->
+  <div class="slider-handle" 
+       [style.left.%]="sliderPosition" 
+       (mousedown)="startDrag($event)" 
+       (touchstart)="startDrag($event)">
+    <div class="handle-line"></div>
+    <div class="handle-button">
+      <i class="bi bi-chevron-left"></i>
+      <i class="bi bi-chevron-right"></i>
+    </div>
+    <div class="handle-line"></div>
+  </div>
+</div>
