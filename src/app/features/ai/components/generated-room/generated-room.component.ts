@@ -44,11 +44,6 @@ export class GeneratedRoom {
     !!this.sessionService.session().generatedImageUrl
   );
 
-  selectHotspot(id: number, event: Event): void {
-    event.stopPropagation();
-    this.aiService.selectHotspot(id);
-  }
-
   openSummary(): void {
     this.aiService.isSummaryOpen.set(true);
   }
