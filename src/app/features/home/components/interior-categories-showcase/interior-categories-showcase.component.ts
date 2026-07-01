@@ -7,7 +7,6 @@ interface IShowcaseCategory {
   titleKey: string;
   buttonKey: string;
   imageUrl: string;
-  queryParams: Record<string, string>;
 }
 
 @Component({
@@ -25,15 +24,13 @@ export class InteriorCategoriesShowcaseComponent {
       id: 1,
       titleKey: 'HOME.SHOWCASE.BEIGE_TITLE',
       buttonKey: 'HOME.SHOWCASE.BEIGE_BTN',
-      imageUrl: '/assets/images/beige_interior.png',
-      queryParams: { query: 'beige' }
+      imageUrl: '/assets/images/beige_interior.png'
     },
     {
       id: 2,
       titleKey: 'HOME.SHOWCASE.KITCHEN_TITLE',
       buttonKey: 'HOME.SHOWCASE.KITCHEN_BTN',
-      imageUrl: '/assets/images/kitchen_furniture.png',
-      queryParams: { query: 'kitchen' }
+      imageUrl: '/assets/images/kitchen_furniture.png'
     }
   ];
 
