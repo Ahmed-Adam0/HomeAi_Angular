@@ -46,14 +46,6 @@
               "fonts": {
                 "inline": false
               }
-            },
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "security": {
-              "allowedHosts": []
-            },
-            "ssr": {
-              "entry": "src/server.ts"
             }
           },
           "configurations": {
@@ -86,26 +78,26 @@
           },
           "defaultConfiguration": "production"
         },
-       "serve": {
-  "builder": "@angular/build:dev-server",
- "options": {
-  "host": "0.0.0.0",
-  "port": 4200,
-  "allowedHosts": [
-    "localhost",
-    "192.168.1.35"
-  ]
-},
-  "configurations": {
-    "production": {
-      "buildTarget": "furniture-ai:build:production"
-    },
-    "development": {
-      "buildTarget": "furniture-ai:build:development"
-    }
-  },
-  "defaultConfiguration": "development"
-},
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": {
+            "host": "0.0.0.0",
+            "port": 4200,
+            "allowedHosts": [
+              "localhost",
+              "192.168.1.35"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "furniture-ai:build:production"
+            },
+            "development": {
+              "buildTarget": "furniture-ai:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
