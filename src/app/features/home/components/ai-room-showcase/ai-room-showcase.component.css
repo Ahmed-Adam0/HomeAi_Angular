@@ -675,17 +675,40 @@ html[data-theme="dark"] .slider-utilities-bar {
 }
 
 /* Responsive Overrides matching Mobile Breakpoint */
-@media (max-width: 576px) {
+@media (max-width: 767.98px) {
   .mobile-drawer-sheet {
-    padding: 12px; /* creates small horizontal/bottom margins on mobile */
+    position: relative;
+    inset: auto;
+    z-index: 10;
+    display: none;
+    padding: 0 16px;
+    background: transparent;
+    visibility: visible;
+    transition: none;
+  }
+
+  .mobile-drawer-sheet.drawer-open {
+    display: block;
+  }
+
+  .drawer-sheet-backdrop {
+    display: none !important;
   }
 
   .drawer-sheet-wrapper {
-    max-width: 100%;
-    width: 100%;
+    position: relative;
+    transform: none !important;
+    max-height: none !important;
+    opacity: 1 !important;
+    margin: 24px auto 0 auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     border-radius: 20px;
-    padding: 24px 16px 16px;
-    max-height: 82vh;
+    max-width: 480px;
+    width: 100%;
+    padding: 20px 16px 16px;
+    border: 1px solid var(--fm-color-neutral-200, var(--color-border));
+    background-color: var(--color-surface);
+    transition: none;
   }
 }
 
