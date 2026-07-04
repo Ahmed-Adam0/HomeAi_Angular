@@ -8,7 +8,7 @@
     <div class="vod-loading-inner">
       <div class="vod-skeleton-hero"></div>
       <div class="vod-skeleton-strip"></div>
-      <div class="container-fluid px-3 px-lg-5 mt-4">
+      <div class="container-fluid px-2 px-md-3 px-lg-5 mt-4">
         <div class="row g-4">
           <div class="col-lg-8">
             <div class="vod-skeleton-card mb-3"></div>
@@ -27,7 +27,7 @@
        ERROR STATE
        ═══════════════════════════════════════════════════════════════════ -->
   @else if (error()) {
-  <div class="container-fluid px-3 px-lg-5 pt-4">
+  <div class="container-fluid px-2 px-md-3 px-lg-5 pt-4">
     <app-alert type="danger" [message]="error() || 'An error occurred while loading order details.'"
       [dismissible]="false"></app-alert>
   </div>
@@ -40,7 +40,7 @@
 
   <!-- ── COMMAND HERO ──────────────────────────────────────────────── -->
   <header class="vod-command-hero">
-    <div class="container-fluid px-3 px-lg-5">
+    <div class="container-fluid px-2 px-md-3 px-lg-5">
 
       <!-- Breadcrumb Row -->
       <div class="vod-breadcrumb-row">
@@ -144,8 +144,8 @@
   </header>
 
   <!-- ── MAIN BODY GRID ─────────────────────────────────────────────── -->
-  <div class="vod-body container-fluid px-3 px-lg-5 mt-5">
-    <div class="row g-5">
+  <div class="vod-body container-fluid px-2 px-md-3 px-lg-5 mt-4 mt-md-5">
+    <div class="row g-3 g-md-4 g-lg-5">
 
       <!-- LEFT — PRIMARY CONTENT ──────────────────────────────────── -->
       <div class="col-12 col-lg-8">
@@ -585,7 +585,7 @@
        EMPTY STATE
        ═══════════════════════════════════════════════════════════════════ -->
   @else {
-  <div class="container-fluid px-3 px-lg-5 pt-4">
+  <div class="container-fluid px-2 px-md-3 px-lg-5 pt-4">
     <app-empty-state [title]="'VENDOR.ORDER_DETAILS.ERROR_404' | translate"
       [description]="'VENDOR.ORDER_DETAILS.ERROR_500' | translate" icon="📦"></app-empty-state>
   </div>

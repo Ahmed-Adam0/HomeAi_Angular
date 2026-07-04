@@ -1,4 +1,5 @@
-import { Directive, ElementRef, Input, OnInit, Renderer2, inject } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit, Renderer2, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Directive({
   selector: 'img[appLazyImage]',
@@ -7,6 +8,7 @@ import { Directive, ElementRef, Input, OnInit, Renderer2, inject } from '@angula
 export class LazyImageDirective implements OnInit {
   private readonly el = inject(ElementRef);
   private readonly renderer = inject(Renderer2);
+  private readonly platformId = inject(PLATFORM_ID);
 
   @Input('appLazyImage') src!: string;
   
@@ -23,19 +25,22 @@ export class LazyImageDirective implements OnInit {
     this.renderer.setStyle(nativeElement, 'opacity', '0');
     this.renderer.setStyle(nativeElement, 'transition', 'opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1)');
 
-    // Lazy load using IntersectionObserver
-    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            this.loadImage();
-            observer.disconnect();
-          }
+    // Prevent any browser-only code from executing during SSR
+    if (isPlatformBrowser(this.platformId)) {
+      // Lazy load using IntersectionObserver if supported, otherwise load immediately
+      if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.loadImage();
+              observer.disconnect();
+            }
+          });
         });
-      });
-      observer.observe(nativeElement);
-    } else {
-      this.loadImage();
+        observer.observe(nativeElement);
+      } else {
+        this.loadImage();
+      }
     }
   }
 
