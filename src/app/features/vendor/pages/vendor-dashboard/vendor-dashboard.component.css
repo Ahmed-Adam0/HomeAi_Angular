@@ -20,6 +20,9 @@
   min-height: 100%;
   padding: var(--fm-space-32, 2rem) var(--fm-space-24, 1.5rem) var(--fm-space-64, 4rem);
   width: 100%;
+  min-width: 0;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 /* --------------------------------------------------------------------------
@@ -113,6 +116,7 @@
   gap: var(--fm-space-40, 2.5rem);
   max-width: 88rem;
   width: 100%;
+  min-width: 0;
 }
 
 .vendor-dashboard__section {
@@ -346,7 +350,7 @@
 @media (max-width: 359px) {
   .vendor-dashboard {
     gap: 1.5rem;
-    padding: 0.75rem 0.5rem 1.5rem !important;
+    padding: max(0.75rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-left)) !important;
   }
 
   .vendor-dashboard__content {
@@ -462,10 +466,15 @@
   }
 }
 
-/* --- 360-389px (small modern phones) --- */
-@media (min-width: 360px) and (max-width: 389px) {
+/* --- Mobile (360px - 575px) --- */
+@media (min-width: 360px) and (max-width: 575px) {
   .vendor-dashboard {
-    padding: 1rem 0.75rem 2rem !important;
+    gap: 2rem;
+    padding: max(1.5rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(2.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)) !important;
+  }
+
+  .vendor-dashboard__content {
+    gap: 2rem;
   }
 
   .vendor-dashboard__title {
@@ -700,6 +709,7 @@
   .vendor-dashboard__header,
   .vendor-dashboard__content {
     max-width: 1600px;
+    margin: 0 auto;
   }
 }
 
@@ -936,7 +946,7 @@
 }
 
 .rating-huge-display:hover {
-  transform: scale(1.04) translateY(-2px);
+  transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(184, 147, 92, 0.06);
 }
 

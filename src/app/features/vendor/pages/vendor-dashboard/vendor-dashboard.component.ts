@@ -218,7 +218,7 @@ export class VendorDashboard implements OnInit {
 
     const isAr = this.translationService.currentLang() === 'ar';
     const isRevenue = this.selectedTrend() === 'revenue';
-    
+
     const revData = this.revenueAnalyticsData();
     const ordData = this.ordersAnalyticsData();
 
@@ -258,8 +258,8 @@ export class VendorDashboard implements OnInit {
       data: {
         labels,
         datasets: [{
-          label: isRevenue 
-            ? (isAr ? 'الإيرادات اليومية' : 'Daily Revenue') 
+          label: isRevenue
+            ? (isAr ? 'الإيرادات اليومية' : 'Daily Revenue')
             : (isAr ? 'عدد الطلبات اليومية' : 'Daily Orders'),
           data: dataValues,
           borderColor: goldColor,
@@ -445,23 +445,23 @@ export class VendorDashboard implements OnInit {
     const labels: string[] = [];
     const revenueValues: number[] = [];
     const ordersValues: number[] = [];
-    
+
     // Always anchor to the current system date (today) to ensure the timeline is live
     const now = new Date();
-    
+
     const isAr = this.translationService.currentLang() === 'ar';
-    
+
     for (let i = 6; i >= 0; i--) {
       const d = new Date(now.getTime());
       d.setDate(now.getDate() - i);
-      
+
       const label = d.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' });
       labels.push(label);
-      
+
       // Compute range boundaries for this day
       const dayStart = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
       const dayEnd = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
-      
+
       // Filter orders placed on this calendar day
       const dayOrders = orders.filter(o => {
         if (!o.placedAt) return false;
@@ -472,19 +472,19 @@ export class VendorDashboard implements OnInit {
           return false;
         }
       });
-      
+
       // Calculate revenue from delivered or completed orders only to match the Total Revenue KPI exactly
       const dayRevenue = dayOrders
         .filter(o => o.status === 'delivered' || o.status === 'completed')
         .reduce((sum, o) => sum + Number(o.totalAmount || o.subtotal || 0), 0);
-        
+
       // Count all orders placed on this day to match Total Orders KPI exactly
       const dayOrdersCount = dayOrders.length;
-      
+
       revenueValues.push(dayRevenue);
       ordersValues.push(dayOrdersCount);
     }
-    
+
     return { labels, revenueValues, ordersValues };
   }
 
@@ -493,7 +493,7 @@ export class VendorDashboard implements OnInit {
 
     const products$ = this.vendorProductService.getVendorProducts().pipe(catchError(err => { console.error(err); return of([]); }));
     const reviews$ = this.vendorReviewsService.getVendorReviews().pipe(catchError(err => { console.error(err); return of([]); }));
-    
+
     // Stats & Top rated product queries (Requirement 5)
     const stats$ = this.vendorProductService.getVendorStats().pipe(
       catchError(err => {
@@ -537,7 +537,7 @@ export class VendorDashboard implements OnInit {
         const completedOrdersCount = orders.filter(o => o.status === 'delivered' || o.status === 'completed').length;
         const pendingOrdersCount = orders.filter(o => o.status === 'pending').length;
         const activeOrdersCount = orders.filter(o => o.status === 'confirmed' || o.status === 'processing' || o.status === 'ready').length;
-        
+
         // Sum total amount for completed/delivered orders
         const totalRevenue = orders
           .filter(o => o.status === 'delivered' || o.status === 'completed')

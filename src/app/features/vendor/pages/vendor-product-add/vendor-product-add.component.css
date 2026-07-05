@@ -1307,7 +1307,7 @@ app-custom-dropdown {
 
 @media (max-width: 575.98px) {
   .vendor-add-workspace {
-    padding: 0 !important;
+    padding: max(0px, env(safe-area-inset-top)) max(0px, env(safe-area-inset-right)) max(0px, env(safe-area-inset-bottom)) max(0px, env(safe-area-inset-left)) !important;
   }
   .page-title {
     font-size: 1.25rem;
@@ -1317,7 +1317,7 @@ app-custom-dropdown {
     padding-bottom: 32px;
   }
   .frosted-studio-publish-bar {
-    padding: 12px;
+    padding: max(12px, env(safe-area-inset-bottom)) 12px 12px 12px;
   }
   .btn-studio-publish {
     padding: 8px 20px;

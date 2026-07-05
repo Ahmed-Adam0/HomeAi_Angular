@@ -4,7 +4,8 @@ import {
   provideZoneChangeDetection,
   APP_INITIALIZER,
 } from '@angular/core';
-import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import { RouteReuseStrategy, provideRouter, withInMemoryScrolling } from '@angular/router';
+import { TabRouteReuseStrategy } from './core/strategies/tab-route-reuse.strategy';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
@@ -19,6 +20,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
+
     provideRouter(
       routes,
       withInMemoryScrolling({
@@ -26,6 +28,7 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled',
       }),
     ),
+    { provide: RouteReuseStrategy, useClass: TabRouteReuseStrategy },
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
     provideAnimationsAsync(),

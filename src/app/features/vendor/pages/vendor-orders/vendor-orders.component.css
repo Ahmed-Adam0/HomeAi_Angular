@@ -398,7 +398,7 @@
 @media (max-width: 359px) {
   .vendor-orders {
     gap: 1rem;
-    padding: 0.75rem 0.5rem 1.5rem !important;
+    padding: max(0.75rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-left)) !important;
   }
 
   .vendor-orders__title {
@@ -433,7 +433,7 @@
 /* ── 360-389px ── */
 @media (min-width: 360px) and (max-width: 389px) {
   .vendor-orders {
-    padding: 1rem 0.75rem 2rem !important;
+    padding: max(1rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(2rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left)) !important;
   }
 
   .vendor-orders__title {
@@ -458,7 +458,7 @@
 /* ── 576-767px ── */
 @media (min-width: 576px) and (max-width: 767px) {
   .vendor-orders {
-    padding: 1.5rem 1.25rem 3rem;
+    padding: max(1.5rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right)) max(3rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
   }
 }
 
@@ -544,7 +544,7 @@
 /* ── 374px and below ── */
 @media (max-width: 374px) {
   .vendor-orders {
-    padding: var(--fm-space-16, 1rem) var(--fm-space-12, 0.75rem) var(--fm-space-40, 2.5rem) !important;
+    padding: max(1rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(2.5rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left)) !important;
     gap: var(--fm-space-20, 1.25rem);
   }
 

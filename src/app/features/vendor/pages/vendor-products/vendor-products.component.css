@@ -904,9 +904,9 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .vendor-products-wrapper {
-    padding: var(--fm-space-20) var(--fm-space-16) var(--fm-space-40);
+    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(40px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   }
 
   .page-header-section {
@@ -1393,7 +1393,7 @@
 }
 
 /* Responsive Drawer Settings */
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .quickview-drawer {
     width: 100vw;
   }

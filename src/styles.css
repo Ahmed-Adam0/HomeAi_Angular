@@ -9,8 +9,24 @@
 @import './styles/components/datepicker.css';
 
 
+:root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+}
+
 body {
   background-color: var(--fm-surface-bg) !important;
+}
+
+/* Hide duplicate headers when mobile shell is active */
+body.mobile-shell-active .cart-header-nav,
+body.mobile-shell-active .cart-page-header,
+body.mobile-shell-active .page-header-section,
+body.mobile-shell-active .header-breadcrumb-title,
+body.mobile-shell-active .profile-header {
+  display: none !important;
 }
 
 /* Body scroll lock when modal is open */
@@ -360,3 +376,5 @@ html[data-theme="dark"] .table > :not(caption) > * > * {
   color: var(--color-text) !important;
   border-bottom-color: var(--color-border) !important;
 }
+
+

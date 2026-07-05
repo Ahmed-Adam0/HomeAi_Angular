@@ -60,10 +60,14 @@
 
       </div>
 
-      <div class="nav-section-footer">
+      <div class="nav-section-footer d-flex flex-column gap-2">
         <a [routerLink]="navRoutes.HOME" class="nav-item btn-back-store">
           <i class="bi bi-shop"></i>
           <span>{{ 'VENDOR.LAYOUT.NAV_BACK_MARKETPLACE' | translate }}</span>
+        </a>
+        <a (click)="logout()" class="nav-item btn-logout cursor-pointer text-danger" [attr.aria-label]="translationService.currentLang() === 'ar' ? 'تسجيل الخروج' : 'Logout'">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>{{ translationService.currentLang() === 'ar' ? 'تسجيل الخروج' : 'Logout' }}</span>
         </a>
       </div>
     </nav>

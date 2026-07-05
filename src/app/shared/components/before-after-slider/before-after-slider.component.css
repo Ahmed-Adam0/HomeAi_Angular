@@ -7,6 +7,7 @@
   user-select: none;
   cursor: ew-resize;
   background-color: var(--fm-color-neutral-200);
+  touch-action: none;
 }
 
 .image-after {
@@ -94,6 +95,7 @@
   justify-content: center;
   align-items: center;
   cursor: grab;
+  touch-action: none;
   /* Smooth transition when releasing or loading, bypassed during active drag */
   transition: left 0.3s var(--fm-ease-smooth, cubic-bezier(0.16, 1, 0.3, 1));
 }

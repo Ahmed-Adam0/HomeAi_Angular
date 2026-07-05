@@ -20,11 +20,15 @@ export const customerGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
+  const isVendor = authService.isAuthenticated() && authService.isVendor();
+  console.log(`[Diagnostic] customerGuard checking access. Target: ${route.url}. isVendor: ${isVendor}`);
+
   // If user is authenticated as a vendor, redirect to vendor dashboard
-  if (authService.isAuthenticated() && authService.isVendor()) {
+  if (isVendor) {
     console.warn('[customerGuard] - Vendor attempting to access customer area. Redirecting to vendor dashboard.');
     return router.createUrlTree([NAV_ROUTES.VENDOR_DASHBOARD]);
   }
 
+  console.log(`[Diagnostic] customerGuard returning true.`);
   return true;
 };

@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { PlatformService } from '../../services/platform.service';
 import { Navbar } from '../../../shared/components/navbar/navbar.component';
 import { Footer } from '../../../shared/components/footer/footer.component';
 import { RtlDirective } from '../../../shared/directives/rtl.directive';
@@ -21,12 +22,14 @@ import { filter } from 'rxjs/operators';
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   readonly uiState = inject(UiState);
+  readonly platform = inject(PlatformService);
   private readonly router = inject(Router);
   readonly isAiChatRoute = signal(false);
 
   constructor() {
+    console.log(`[Diagnostic] MainLayoutComponent constructor. platform.isNative() = ${this.platform.isNative()}`);
     this.updateAiChatRoute(this.router.url);
 
     this.router.events
@@ -37,6 +40,10 @@ export class MainLayoutComponent {
       .subscribe((event) => {
         this.updateAiChatRoute(event.urlAfterRedirects);
       });
+  }
+
+  ngOnInit() {
+    console.log(`[Diagnostic] MainLayoutComponent ngOnInit. platform.isNative() = ${this.platform.isNative()}`);
   }
 
   private updateAiChatRoute(url: string): void {

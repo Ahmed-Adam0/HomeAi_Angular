@@ -8,22 +8,23 @@
   }
 
   <!-- BEFORE Image (Clipped Overlay Layer) -->
-  <img [src]="beforeImageUrl" 
+  <img #imageBefore [src]="beforeImageUrl" 
        class="image-before" 
-       [style.clip-path]="'inset(0 ' + (100 - sliderPosition) + '% 0 0)'" 
+       [style.clip-path]="'inset(0 50% 0 0)'" 
        alt="Before Transformation" 
        loading="lazy" />
   @if (beforeLabel) {
-    <span class="badge-tag badge-before" [style.opacity]="sliderPosition > 15 ? 1 : 0">
+    <span #badgeBefore class="badge-tag badge-before" [style.opacity]="1">
       {{ beforeLabel }}
     </span>
   }
 
   <!-- Interactive Drag Handle -->
-  <div class="slider-handle" 
-       [style.left.%]="sliderPosition" 
-       (mousedown)="startDrag($event)" 
-       (touchstart)="startDrag($event)">
+  <div #sliderHandle class="slider-handle" 
+       [style.left.%]="50" 
+       (pointerdown)="startDrag($event)"
+       (touchstart)="startDrag($event)"
+       (mousedown)="startDrag($event)">
     <div class="handle-line"></div>
     <div class="handle-button">
       <i class="bi bi-chevron-left"></i>

@@ -1,4 +1,11 @@
 .vendor-profile-page {
   min-height: 100vh;
   background-color: var(--fm-surface-bg);
+  padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(40px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+@media (min-width: 768px) {
+  .vendor-profile-page {
+    padding: max(40px, env(safe-area-inset-top)) max(32px, env(safe-area-inset-right)) max(64px, env(safe-area-inset-bottom)) max(32px, env(safe-area-inset-left));
+  }
 }

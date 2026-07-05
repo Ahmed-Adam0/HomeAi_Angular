@@ -13,29 +13,41 @@ import { ThemeToggleComponent, LanguageSwitcher } from '../../../shared/componen
 import { VendorService } from '../../../features/vendor/services/vendor.service';
 import { IVendorProfile } from '../../../features/vendor/interfaces/iworkshop-profile';
 import { DialogService } from '../../../shared/services/dialog.service';
+import { PlatformService } from '../../services/platform.service';
+import { OverlayStateService } from '../../services/overlay-state.service';
+import { MobileLayoutComponent } from '../mobile-layout/mobile-layout.component';
+import { ElementRef, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-vendor-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, RtlDirective, TranslatePipe, VendorNotificationBellComponent, ConfirmDialogContainer, ToastContainer, ThemeToggleComponent, LanguageSwitcher],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, RtlDirective, TranslatePipe, VendorNotificationBellComponent, ConfirmDialogContainer, ToastContainer, ThemeToggleComponent, LanguageSwitcher, MobileLayoutComponent],
   templateUrl: './vendor-layout.component.html',
   styleUrl: './vendor-layout.component.css',
 
 })
-export class VendorLayoutComponent implements OnInit {
+export class VendorLayoutComponent implements OnInit, AfterViewInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   protected translationService = inject(TranslationService);
   private vendorService = inject(VendorService);
   private dialogService = inject(DialogService);
+  readonly platform = inject(PlatformService);
+  private overlayService = inject(OverlayStateService);
 
   readonly navRoutes = NAV_ROUTES;
   readonly sidebarOpen = signal(false);
   /** Desktop sidebar: collapsed by default, toggled via button click */
   readonly sidebarExpanded = signal(false);
   private readonly platformId = inject(PLATFORM_ID);
+  private elRef = inject(ElementRef);
   
   readonly workshopProfile = signal<IVendorProfile | null>(null);
+
+  private readonly sidebarOverlayRef = {
+    id: 'vendor-sidebar',
+    close: () => this.closeSidebar()
+  };
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -43,6 +55,41 @@ export class VendorLayoutComponent implements OnInit {
         next: (profile) => this.workshopProfile.set(profile),
         error: (err) => console.error('Failed to fetch workshop profile', err)
       });
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        const diagnostics = [];
+        let current: HTMLElement | null = this.elRef.nativeElement.querySelector('.vendor-layout-wrapper') || this.elRef.nativeElement;
+        
+        while (current && current !== document.documentElement) {
+          const style = window.getComputedStyle(current);
+          diagnostics.push({
+            Tag: current.tagName.toLowerCase(),
+            Classes: current.className,
+            ID: current.id,
+            Width: style.width,
+            ClientWidth: current.clientWidth,
+            ScrollWidth: current.scrollWidth,
+            OffsetWidth: current.offsetWidth,
+            MaxWidth: style.maxWidth,
+            MinWidth: style.minWidth,
+            Margin: style.margin,
+            Padding: style.padding,
+            Overflow: style.overflow,
+            Display: style.display,
+            Position: style.position,
+            Transform: style.transform
+          });
+          current = current.parentElement;
+        }
+
+        console.log('=== VENDOR PORTAL RESPONSIVE DIAGNOSTICS ===');
+        console.log('window.innerWidth:', window.innerWidth);
+        console.table(diagnostics);
+      }, 2000);
     }
   }
 
@@ -72,11 +119,18 @@ export class VendorLayoutComponent implements OnInit {
   readonly currentUser = this.authService.currentUser;
 
   toggleSidebar() {
-    this.sidebarOpen.update((open) => !open);
+    const open = !this.sidebarOpen();
+    this.sidebarOpen.set(open);
+    if (open) {
+      this.overlayService.registerOverlay(this.sidebarOverlayRef);
+    } else {
+      this.overlayService.unregisterOverlay(this.sidebarOverlayRef.id);
+    }
   }
 
   closeSidebar() {
     this.sidebarOpen.set(false);
+    this.overlayService.unregisterOverlay(this.sidebarOverlayRef.id);
   }
 
   logout() {

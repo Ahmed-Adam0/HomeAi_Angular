@@ -1,7 +1,7 @@
-import { Component, computed, inject , OnInit, AfterViewInit, PLATFORM_ID } from '@angular/core';
+import { Component, computed, inject , OnInit, AfterViewInit, PLATFORM_ID, NgZone } from '@angular/core';
 import { CommonModule ,isPlatformBrowser} from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AuthErrorHandler } from '../../services/auth-error-handler.service';
 import { NAV_ROUTES } from '../../../../core/constants';
@@ -9,6 +9,9 @@ import { TranslationService } from '../../../../shared/i18n/translation.service'
 import{environment} from '../../../../../environments/environment';
 import { AutoDirectionDirective } from '../../../../shared/directives/auto-direction.directive';
 import { CartService } from '../../../cart/services/cart.service';
+import { PlatformService } from '../../../../core/services/platform.service';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -26,6 +29,8 @@ export class Login implements OnInit, AfterViewInit {
   private translationService = inject(TranslationService);
   private platformId = inject(PLATFORM_ID);
   private cartService = inject(CartService);
+  private platformService = inject(PlatformService);
+  private ngZone = inject(NgZone);
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -183,8 +188,79 @@ export class Login implements OnInit, AfterViewInit {
     }
     this.loadGoogleIdentityServices();
   }
-   onGoogleLogin(): void {
-    this.promptGoogleSignIn();
+  async onGoogleLogin(): Promise<void> {
+    console.log('[Diagnostic] Google button clicked');
+    const isNative = this.platformService.isNative();
+
+    if (isNative) {
+      console.log('[Diagnostic] Native branch');
+      try {
+        const user = await GoogleAuth.signIn();
+        console.log('[Google Auth] - Native sign-in success:', !!user, 'idToken present:', !!user?.authentication?.idToken);
+        
+        if (user && user.authentication && user.authentication.idToken) {
+          const idToken = user.authentication.idToken;
+          
+          this.ngZone.run(() => {
+            console.log('[Google Auth] - Sending idToken to backend...');
+            this.isLoading = true;
+            this.errorMessage = '';
+            
+            this.authService.loginWithGoogleIdToken(idToken, this.translationService.currentLang()).subscribe({
+              next: (response: any) => {
+                console.log('[Diagnostic] Backend login success');
+                this.isLoading = false;
+                
+                if (response?.data?.registrationRequired) {
+                  const registrationToken = response.data.registrationToken;
+                  const googleProfile = response.data.googleProfile;
+                  this.authService.saveGoogleRegistrationState(registrationToken, googleProfile);
+                  this.ngZone.run(() => {
+                    this.router.navigate([NAV_ROUTES.COMPLETE_GOOGLE_REGISTRATION], { replaceUrl: true });
+                  });
+                  return;
+                }
+
+                if (this.authService.isVendor()) {
+                  console.warn('[Google Login] - Vendor account detected on customer login. Rejecting and logging out.');
+                  this.authService.logout();
+                  this.errorMessage = this.currentLang() === 'ar'
+                    ? 'حسابات الموردين غير مسموح لها بتسجيل الدخول من هنا. يرجى استخدام بوابة الموردين.'
+                    : 'Customer accounts are not allowed to log in here.';
+                  return;
+                }
+                this.translationService.syncFromBackend();
+                let destination = this.returnUrl || NAV_ROUTES.HOME;
+                if (!destination.startsWith('/')) {
+                  destination = '/' + destination;
+                }
+                console.log(`[Diagnostic] Router.navigateByUrl(${destination})`);
+                this.ngZone.run(() => {
+                  this.router.navigateByUrl(destination, { replaceUrl: true });
+                });
+              },
+              error: (err) => {
+                this.ngZone.run(() => {
+                  console.error('[Google Auth] - Backend request failed:', err);
+                  this.isLoading = false;
+                  this.errorMessage = this.authErrorHandler.handle(err, 'login');
+                });
+              }
+            });
+          });
+        }
+      } catch (error) {
+        this.ngZone.run(() => {
+          console.error('[Google Auth] - Native sign-in failure:', error);
+          this.errorMessage = this.currentLang() === 'ar'
+            ? 'فشل تسجيل الدخول عبر Google. حاول مجدداً.'
+            : 'Google sign-in failed. Please try again.';
+        });
+      }
+    } else {
+      console.log('[Diagnostic] Web branch');
+      this.promptGoogleSignIn();
+    }
   }
 
   private loadGoogleIdentityServices(): void {
@@ -259,37 +335,41 @@ export class Login implements OnInit, AfterViewInit {
       return;
     }
 
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.ngZone.run(() => {
+      this.isLoading = true;
+      this.errorMessage = '';
 
-    this.authService.loginWithGoogleIdToken(idToken, this.translationService.currentLang()).subscribe({
-      next: (response: any) => {
-        this.isLoading = false;
-        
-        if (response?.data?.registrationRequired) {
-          const registrationToken = response.data.registrationToken;
-          const googleProfile = response.data.googleProfile;
-          this.authService.saveGoogleRegistrationState(registrationToken, googleProfile);
-          this.router.navigate([NAV_ROUTES.COMPLETE_GOOGLE_REGISTRATION]);
-          return;
-        }
+      this.authService.loginWithGoogleIdToken(idToken, this.translationService.currentLang()).subscribe({
+        next: (response: any) => {
+          console.log('[Diagnostic] Backend login success');
+          this.isLoading = false;
+          
+          if (response?.data?.registrationRequired) {
+            const registrationToken = response.data.registrationToken;
+            const googleProfile = response.data.googleProfile;
+            this.authService.saveGoogleRegistrationState(registrationToken, googleProfile);
+            this.router.navigate([NAV_ROUTES.COMPLETE_GOOGLE_REGISTRATION]);
+            return;
+          }
 
-        if (this.authService.isVendor()) {
-          console.warn('[Google Login] - Vendor account detected on customer login. Rejecting and logging out.');
-          this.authService.logout();
-          this.errorMessage = this.currentLang() === 'ar'
-            ? 'حسابات الموردين غير مسموح لها بتسجيل الدخول من هنا. يرجى استخدام بوابة الموردين.'
-            : 'Customer accounts are not allowed to log in here.';
-          return;
+          if (this.authService.isVendor()) {
+            console.warn('[Google Login] - Vendor account detected on customer login. Rejecting and logging out.');
+            this.authService.logout();
+            this.errorMessage = this.currentLang() === 'ar'
+              ? 'حسابات الموردين غير مسموح لها بتسجيل الدخول من هنا. يرجى استخدام بوابة الموردين.'
+              : 'Customer accounts are not allowed to log in here.';
+            return;
+          }
+          this.translationService.syncFromBackend();
+          const destination = this.returnUrl || NAV_ROUTES.HOME;
+          console.log(`[Diagnostic] Router.navigateByUrl(${destination})`);
+          this.router.navigateByUrl(destination, { replaceUrl: true });
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.errorMessage = this.authErrorHandler.handle(err, 'login');
         }
-        this.translationService.syncFromBackend();
-        const destination = this.returnUrl || NAV_ROUTES.HOME;
-        this.router.navigateByUrl(destination, { replaceUrl: true });
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.errorMessage = this.authErrorHandler.handle(err, 'login');
-      }
+      });
     });
   }
 }

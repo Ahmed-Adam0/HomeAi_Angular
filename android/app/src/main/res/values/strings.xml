@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">HomeAI</string>
-    <string name="title_activity_main">HomeAI</string>
+    <string name="app_name">FurniMind</string>
+    <string name="title_activity_main">FurniMind</string>
     <string name="package_name">com.homeai.app</string>
     <string name="custom_url_scheme">com.homeai.app</string>
+    <string name="server_client_id">834738882064-e87ejpnt830djaabjh07uhhk626sanhe.apps.googleusercontent.com</string>
 </resources>

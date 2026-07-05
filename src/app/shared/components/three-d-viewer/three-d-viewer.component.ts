@@ -1,5 +1,9 @@
 import { Component, ElementRef, Input, OnInit, AfterViewInit, OnDestroy, ViewChild, PLATFORM_ID, inject, signal, OnChanges, SimpleChanges, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { isPlatformBrowser, NgIf } from '@angular/common';
+import { Capacitor, registerPlugin } from '@capacitor/core';
+import { formatImageUrl } from '../../../core/utils/api-utils';
+
+const ARLauncher = registerPlugin<any>('ARLauncher');
 
 @Component({
   selector: 'app-three-d-viewer',
@@ -250,12 +254,29 @@ export class ThreeDViewerComponent implements OnInit, AfterViewInit, OnDestroy, 
 
   triggerAR(): void {
     if (isPlatformBrowser(this.platformId)) {
-      const mv = this.modelViewerRef?.nativeElement;
-      if (mv && typeof mv.activateAR === 'function') {
-        mv.activateAR();
-      } else {
-        console.warn('Model viewer element is not loaded or does not support activateAR.');
+      const isAndroid = Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android';
+      if (isAndroid && this.glbUrl) {
+        const absoluteUrl = formatImageUrl(this.glbUrl);
+        
+        // Call native Scene Viewer explicitly
+        ARLauncher.launchAR({ glbUrl: absoluteUrl }).catch((err: any) => {
+          console.warn('[AR] Scene Viewer failed or is unavailable:', err);
+          this.fallbackToModelViewer();
+        });
+        
+        return;
       }
+
+      this.fallbackToModelViewer();
+    }
+  }
+
+  private fallbackToModelViewer(): void {
+    const mv = this.modelViewerRef?.nativeElement;
+    if (mv && typeof mv.activateAR === 'function') {
+      mv.activateAR();
+    } else {
+      console.warn('Model viewer element is not loaded or does not support activateAR.');
     }
   }
 }

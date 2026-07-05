@@ -15,6 +15,7 @@ import {
 } from '../interfaces/iauth-request';
 import { IAuthResponse } from '../interfaces/iauth-response';
 import { LOCAL_STORAGE_KEYS } from '../../../core/constants/localstorage-keys';
+import { TabRouteReuseStrategy } from '../../../core/strategies/tab-route-reuse.strategy';
 
 interface AuthProfile {
   id?: string;
@@ -292,6 +293,8 @@ export class AuthService {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.PENDING_EMAIL_CONFIRMATION);
       localStorage.removeItem('workshopId');
       localStorage.removeItem('workshop_id');
+      
+      TabRouteReuseStrategy.clearCache();
     }
     this.clearAuthState();
   }

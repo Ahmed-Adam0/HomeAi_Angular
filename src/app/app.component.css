@@ -1,6 +1,7 @@
 .app-content-wrapper {
   transition: opacity 0.3s ease;
   opacity: 1;
+  padding-bottom: var(--safe-area-bottom);
 }
 
 .app-content--loading {

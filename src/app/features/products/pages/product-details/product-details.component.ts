@@ -99,6 +99,7 @@ export class ProductDetails implements OnInit, OnDestroy {
   }
 
   triggerAR(event: Event): void {
+    console.log("[AR] Button clicked");
     event.stopPropagation();
     event.preventDefault();
     if (this.detailsViewerComponent) {
