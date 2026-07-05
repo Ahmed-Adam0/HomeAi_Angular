@@ -12,6 +12,7 @@ export const CURRENCIES: CurrencyOption[] = [
 ];
 
 export const MAIN_NAV_LINKS: NavLink[] = [
+  { labelEn: 'Home', labelAr: 'الرئيسية', route: '/' },
   { labelEn: 'Products', labelAr: 'المنتجات', route: '/products' },
   { labelEn: 'AI Accent', labelAr: 'لمسة الذكاء', route: '/room-upload' },
   { labelEn: 'Inspirations', labelAr: 'الأفكار الملهمة', route: '/inspirations' },

@@ -161,7 +161,7 @@
               </div>
             </div>
             <div class="vendor-revenue-dashboard__chart-body">
-              <p-chart type="line" [data]="lcData" [options]="chartOptions" height="320px" />
+              <p-chart type="line" [data]="lcData" [options]="chartOptions()" height="320px" />
             </div>
           </div>
         } @else {
@@ -184,7 +184,7 @@
                 </div>
               </div>
               <div class="vendor-revenue-dashboard__chart-body vendor-revenue-dashboard__chart-body--center">
-                <p-chart type="doughnut" [data]="dcData" [options]="doughnutOptions" height="300px" />
+                <p-chart type="doughnut" [data]="dcData" [options]="doughnutOptions()" height="300px" />
               </div>
             </div>
           } @else {
@@ -205,7 +205,7 @@
                 </div>
               </div>
               <div class="vendor-revenue-dashboard__chart-body">
-                <p-chart type="bar" [data]="bcData" [options]="barChartOptions" height="300px" />
+                <p-chart type="bar" [data]="bcData" [options]="barChartOptions()" height="300px" />
               </div>
             </div>
           } @else {
