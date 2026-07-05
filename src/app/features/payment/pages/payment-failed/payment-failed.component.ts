@@ -22,4 +22,12 @@ export class PaymentFailedComponent {
   backToCart(): void {
     this.router.navigate(['/cart']);
   }
+
+  viewOrders(): void {
+    this.router.navigate(['/orders']);
+  }
+
+  continueShopping(): void {
+    this.router.navigate(['/products']);
+  }
 }
