@@ -79,6 +79,124 @@ export class OrderDetails {
 
   readonly order = computed(() => this.facade.selectedOrder());
 
+  readonly paymentStages = computed(() => {
+    const order = this.order();
+    if (!order) return [];
+
+    const milestones = this.facade.enrichedMilestones() || [];
+
+    const fallbackStages = [
+      {
+        id: 'deposit',
+        icon: 'credit-card',
+        titleKey: 'ORDER_DETAILS_STAGE_DEPOSIT_TITLE',
+        descKey: 'ORDER_DETAILS_STAGE_DEPOSIT_DESC',
+        status: this.getFallbackStageStatus('deposit')
+      },
+      {
+        id: 'production',
+        icon: 'hammer',
+        titleKey: 'ORDER_DETAILS_STAGE_PRODUCTION_TITLE',
+        descKey: 'ORDER_DETAILS_STAGE_PRODUCTION_DESC',
+        status: this.getFallbackStageStatus('production')
+      },
+      {
+        id: 'delivery',
+        icon: 'truck',
+        titleKey: 'ORDER_DETAILS_STAGE_DELIVERY_TITLE',
+        descKey: 'ORDER_DETAILS_STAGE_DELIVERY_DESC',
+        status: this.getFallbackStageStatus('delivery')
+      }
+    ];
+
+    if (milestones.length === 0) {
+      return fallbackStages;
+    }
+
+    const getStageStatusFromMilestones = (statusKey: string): 'completed' | 'current' | 'upcoming' => {
+      const stageMilestones = milestones.filter(
+        (m: any) => (m.milestoneStatus || '').toLowerCase() === statusKey.toLowerCase()
+      );
+      if (stageMilestones.length === 0) return 'upcoming';
+
+      const allPaid = stageMilestones.every((m: any) => m.isPaid);
+      if (allPaid) return 'completed';
+
+      if (statusKey === 'pendingpayment') {
+        return 'current';
+      }
+      if (statusKey === 'shipped') {
+        const depositMilestones = milestones.filter(
+          (m: any) => (m.milestoneStatus || '').toLowerCase() === 'pendingpayment'
+        );
+        const depositPaid = depositMilestones.every((m: any) => m.isPaid);
+        return depositPaid ? 'current' : 'upcoming';
+      }
+      if (statusKey === 'delivered') {
+        const priorMilestones = milestones.filter(
+          (m: any) => ['pendingpayment', 'shipped'].includes((m.milestoneStatus || '').toLowerCase())
+        );
+        const priorPaid = priorMilestones.every((m: any) => m.isPaid);
+        return priorPaid ? 'current' : 'upcoming';
+      }
+      return 'upcoming';
+    };
+
+    return [
+      {
+        id: 'deposit',
+        icon: 'credit-card',
+        titleKey: 'ORDER_DETAILS_STAGE_DEPOSIT_TITLE',
+        descKey: 'ORDER_DETAILS_STAGE_DEPOSIT_DESC',
+        status: getStageStatusFromMilestones('pendingpayment')
+      },
+      {
+        id: 'production',
+        icon: 'hammer',
+        titleKey: 'ORDER_DETAILS_STAGE_PRODUCTION_TITLE',
+        descKey: 'ORDER_DETAILS_STAGE_PRODUCTION_DESC',
+        status: getStageStatusFromMilestones('shipped')
+      },
+      {
+        id: 'delivery',
+        icon: 'truck',
+        titleKey: 'ORDER_DETAILS_STAGE_DELIVERY_TITLE',
+        descKey: 'ORDER_DETAILS_STAGE_DELIVERY_DESC',
+        status: getStageStatusFromMilestones('delivered')
+      }
+    ];
+  });
+
+  private getFallbackStageStatus(stageId: 'deposit' | 'production' | 'delivery'): 'completed' | 'current' | 'upcoming' {
+    const order = this.order();
+    if (!order) return 'upcoming';
+
+    const status = this.facade.displayStatusFor(order);
+    
+    if (status === 'pending' || status === 'awaiting_customer_approval' || status === 'pending_payment') {
+      if (stageId === 'deposit') return 'current';
+      return 'upcoming';
+    }
+    
+    if (status === 'confirmed' || status === 'in_progress' || status === 'processing') {
+      if (stageId === 'deposit') return 'completed';
+      if (stageId === 'production') return 'current';
+      return 'upcoming';
+    }
+
+    if (status === 'shipped' || status === 'ready') {
+      if (stageId === 'deposit' || stageId === 'production') return 'completed';
+      if (stageId === 'delivery') return 'current';
+      return 'upcoming';
+    }
+
+    if (status === 'delivered' || status === 'completed') {
+      return 'completed';
+    }
+
+    return 'upcoming';
+  }
+
   readonly isConfirmDialogVisible = signal(false);
   readonly isEditModalVisible = signal(false);
   readonly isApproveDialogVisible = signal(false);

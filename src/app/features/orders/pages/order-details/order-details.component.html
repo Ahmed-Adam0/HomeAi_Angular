@@ -3,6 +3,23 @@
   <div class="premium-hero position-relative overflow-hidden mb-4">
     <div class="hero-glow position-absolute"></div>
     <div class="container position-relative z-index-1">
+      <!-- 1. Small Elegant Informational Banner -->
+      @if (order() && order()!.status !== 'cancelled' && order()!.status !== 'refunded' && order()!.status !== 'returned') {
+      <div class="payment-info-banner d-flex align-items-start gap-2.5 p-3 rounded mb-4 animate-fade-in">
+        <div class="payment-banner-icon d-flex align-items-center justify-content-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        </div>
+        <div class="payment-banner-content">
+          <span class="payment-banner-title fw-bold me-2">{{ 'ORDER_DETAILS_BANNER_TITLE' | translate }}</span>
+          <span class="payment-banner-desc text-white-50">{{ 'ORDER_DETAILS_BANNER_DESC' | translate }}</span>
+        </div>
+      </div>
+      }
+
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
         <div>
           <h1 class="premium-hero-title mb-1 text-white">{{ 'ORDER_DETAILS_TITLE' | translate }}</h1>
@@ -39,6 +56,96 @@
       </a>
     </div>
     } @else {
+    <!-- 2. Premium Payment Progress Card -->
+    @if (order()!.status !== 'cancelled' && order()!.status !== 'refunded' && order()!.status !== 'returned') {
+    <div class="payment-progress-card card-premium p-4 mb-4 animate-fade-in-up">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-4 mb-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="payment-progress-icon-bg d-flex align-items-center justify-content-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+          </div>
+          <div>
+            <h3 class="payment-progress-title fw-bold mb-0">{{ 'ORDER_DETAILS_FLEXIBLE_PAYMENTS_TITLE' | translate }}</h3>
+          </div>
+        </div>
+        
+        @if (facade.amountToPay() > 0) {
+        <div class="payment-progress-cta-wrapper animate-fade-in">
+          <app-button variant="primary" size="md" [isLoading]="facade.isInitiatingPayment()" [disabled]="facade.isInitiatingPayment()" (clicked)="facade.payApprovedOrders()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="me-2 inline-icon">
+              <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+            {{ 'ORDER_DETAILS_PAY_NEXT_INSTALLMENT' | translate }}
+          </app-button>
+        </div>
+        }
+      </div>
+
+      <!-- Timeline Stepper -->
+      <div class="payment-timeline-container position-relative mb-4">
+        <div class="payment-stepper">
+          @for (stage of paymentStages(); track stage.id; let idx = $index) {
+          <div class="payment-node" 
+               [class.is-complete]="stage.status === 'completed'" 
+               [class.is-active]="stage.status === 'current'"
+               [class.is-upcoming]="stage.status === 'upcoming'">
+            
+            <div class="payment-icon-box">
+              @if (stage.icon === 'credit-card') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="step-icon">
+                <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="2" y1="10" x2="22" y2="10"></line>
+              </svg>
+              } @else if (stage.icon === 'hammer') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="step-icon">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              } @else if (stage.icon === 'truck') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="step-icon">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+              }
+            </div>
+
+            <div class="payment-timeline-text mt-3">
+              <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                <span class="payment-timeline-label">{{ stage.titleKey | translate }}</span>
+                <span class="payment-stage-badge py-0.5 px-2 rounded-full font-sans">
+                  {{ 'STATUS_STAGE_' + (stage.status | uppercase) | translate }}
+                </span>
+              </div>
+              <p class="payment-timeline-desc text-muted mb-0 mt-1 small">{{ stage.descKey | translate }}</p>
+            </div>
+
+            @if (idx < 2) {
+            <div class="payment-connector" [class.is-active-line]="stage.status === 'completed'"></div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Info Footer -->
+      <div class="payment-progress-footer border-top pt-3 mt-3 d-flex align-items-start gap-2 text-muted small">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary flex-shrink-0 mt-0.5">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>{{ 'ORDER_DETAILS_FLEXIBLE_PAYMENTS_NOTE' | translate }}</span>
+      </div>
+    </div>
+    }
+
     <!-- Lock Banner indicating processing state -->
     @if (!facade.canModifyOrder() && order()!.status !== 'awaiting_customer_approval') {
     <div class="lock-banner animate-fade-in mb-4">

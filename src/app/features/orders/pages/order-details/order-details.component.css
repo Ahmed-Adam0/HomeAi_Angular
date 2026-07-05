@@ -976,3 +976,360 @@
 }
 
 
+/* ==========================================================================
+   FLEXIBLE PAYMENT COMPACT BANNER (Hero top section)
+   ========================================================================== */
+
+.payment-info-banner {
+  background: rgba(184, 147, 92, 0.08);
+  border: 1px solid rgba(184, 147, 92, 0.25) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.3s var(--fm-ease-smooth), background-color 0.3s var(--fm-ease-smooth);
+  max-width: 800px;
+}
+
+.payment-info-banner:hover {
+  background: rgba(184, 147, 92, 0.12);
+  border-color: rgba(184, 147, 92, 0.4) !important;
+}
+
+.payment-banner-icon {
+  color: var(--fm-color-primary-400);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.payment-banner-content {
+  line-height: 1.5;
+  font-size: 0.875rem;
+}
+
+.payment-banner-title {
+  color: var(--fm-color-primary-400);
+  font-family: var(--fm-font-sans);
+}
+
+.payment-banner-desc {
+  font-family: var(--fm-font-sans);
+  font-weight: 400;
+}
+
+
+/* ==========================================================================
+   FLEXIBLE PAYMENT PROGRESS SECTION & STAGES TIMELINE
+   ========================================================================== */
+
+.payment-progress-card {
+  background: linear-gradient(135deg, rgba(184, 147, 92, 0.02) 0%, rgba(184, 147, 92, 0.05) 100%), var(--fm-surface-card);
+  border: 1px solid rgba(184, 147, 92, 0.15) !important;
+  box-shadow: 0 10px 30px -15px rgba(184, 147, 92, 0.12), var(--fm-shadow-sm) !important;
+  transition: transform 0.4s var(--fm-ease-smooth), box-shadow 0.4s var(--fm-ease-smooth), border-color 0.4s var(--fm-ease-smooth);
+}
+
+.payment-progress-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px -10px rgba(184, 147, 92, 0.18), var(--fm-shadow-md) !important;
+  border-color: rgba(184, 147, 92, 0.35) !important;
+}
+
+.payment-progress-icon-bg {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(184, 147, 92, 0.08);
+  flex-shrink: 0;
+  border: 1px solid rgba(184, 147, 92, 0.12);
+  transition: background-color 0.3s var(--fm-ease-smooth);
+}
+
+.payment-progress-card:hover .payment-progress-icon-bg {
+  background: rgba(184, 147, 92, 0.12);
+}
+
+.payment-progress-title {
+  font-family: var(--fm-font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--fm-text-heading);
+  letter-spacing: -0.01em;
+}
+
+.payment-progress-desc {
+  font-size: 0.875rem;
+  color: var(--fm-text-body);
+}
+
+.payment-timeline-container {
+  padding: var(--fm-space-16) 0;
+}
+
+.payment-stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  gap: var(--fm-space-16);
+}
+
+.payment-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  flex: 1;
+  z-index: 2;
+}
+
+.payment-icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--fm-radius-circle);
+  background: var(--fm-color-neutral-100);
+  color: var(--fm-color-neutral-400);
+  border: 2px solid var(--fm-border-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+  z-index: 2;
+}
+
+.payment-node:hover .step-icon {
+  transform: scale(1.1);
+}
+
+.step-icon {
+  transition: transform var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+}
+
+.payment-timeline-text {
+  margin-top: 12px;
+}
+
+.payment-timeline-label {
+  font-family: var(--fm-font-sans);
+  font-weight: 700;
+  color: var(--fm-text-heading);
+  font-size: 0.85rem;
+  letter-spacing: -0.01em;
+}
+
+.payment-timeline-desc {
+  font-size: 0.75rem;
+  margin-top: 4px;
+  color: var(--fm-text-muted);
+  line-height: 1.45;
+  max-width: 220px;
+  margin-inline: auto;
+}
+
+/* Stepper Connector Lines */
+.payment-connector {
+  position: absolute;
+  top: 22px;
+  left: calc(50% + 23px);
+  right: calc(-50% + 23px);
+  height: 2px;
+  background: var(--fm-border-medium);
+  z-index: 1;
+  transition: background-color var(--fm-transition-duration-normal) var(--fm-ease-smooth);
+}
+
+/* Active Connector line (completed) */
+.is-active-line {
+  background: var(--fm-color-success-500) !important;
+}
+
+/* Stage Badge Styling */
+.payment-stage-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--fm-radius-pill);
+}
+
+/* 1. Completed Stage - Sage/Olive */
+.payment-node.is-complete .payment-icon-box {
+  background: var(--fm-color-success-50);
+  border-color: var(--fm-color-success-500);
+  color: var(--fm-color-success-500);
+  box-shadow: 0 0 0 3px rgba(101, 126, 93, 0.05);
+}
+
+.payment-node.is-complete .payment-stage-badge {
+  background: var(--fm-color-success-50);
+  color: var(--fm-color-success-600);
+  border: 1px solid rgba(101, 126, 93, 0.15);
+}
+
+/* 2. Current Active Stage - Signature Gold */
+.payment-node.is-active .payment-icon-box {
+  background: var(--fm-color-primary-50);
+  border-color: var(--fm-color-primary-500);
+  color: var(--fm-color-primary-500);
+  box-shadow: 0 0 0 4px rgba(184, 147, 92, 0.2);
+  animation: pulseGlow 2.5s infinite var(--fm-ease-in-out);
+}
+
+.payment-node.is-active .payment-timeline-label {
+  color: var(--fm-color-primary-600);
+}
+
+.payment-node.is-active .payment-stage-badge {
+  background: var(--fm-color-primary-100);
+  color: var(--fm-color-primary-700);
+  border: 1px solid rgba(184, 147, 92, 0.2);
+}
+
+/* 3. Upcoming Stage - Neutral Muted */
+.payment-node.is-upcoming .payment-icon-box {
+  background: var(--fm-color-neutral-50);
+  border-color: var(--fm-border-medium);
+  color: var(--fm-color-neutral-400);
+}
+
+.payment-node.is-upcoming .payment-stage-badge {
+  background: var(--fm-color-neutral-100);
+  color: var(--fm-color-neutral-500);
+  border: 1px solid var(--fm-border-medium);
+}
+
+/* Entrance animation */
+.animate-fade-in-up {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeInUp 0.45s var(--fm-ease-smooth) forwards 0.1s;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0 0px rgba(184, 147, 92, 0.25);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(184, 147, 92, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0px rgba(184, 147, 92, 0);
+  }
+}
+
+/* ==========================================================================
+   MOBILE & TABLET RESPONSIVENESS (Vertical Timeline Stepper)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .payment-stepper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--fm-space-24);
+    padding-left: var(--fm-space-8);
+  }
+
+  .payment-node {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: var(--fm-space-16);
+    flex: initial;
+    width: 100%;
+  }
+
+  .payment-timeline-text {
+    margin-top: 0;
+    text-align: left;
+  }
+
+  .payment-timeline-desc {
+    margin-inline: 0;
+    max-width: none;
+    text-align: left;
+  }
+
+  .payment-timeline-text .d-flex {
+    justify-content: flex-start !important;
+  }
+
+  .payment-connector {
+    position: absolute;
+    top: 46px;
+    left: 22px;
+    bottom: -24px;
+    right: auto;
+    width: 2px;
+    height: auto;
+    z-index: 1;
+  }
+}
+
+/* ==========================================================================
+   RTL LANGUAGE LAYOUTS (Arabic support)
+   ========================================================================== */
+
+[dir="rtl"] .payment-stepper,
+.payment-progress-card[dir="rtl"] .payment-stepper {
+  direction: rtl;
+}
+
+[dir="rtl"] .payment-node,
+.payment-progress-card[dir="rtl"] .payment-node {
+  text-align: center;
+}
+
+[dir="rtl"] .payment-connector,
+.payment-progress-card[dir="rtl"] .payment-connector {
+  left: calc(-50% + 23px);
+  right: calc(50% + 23px);
+}
+
+@media (max-width: 768px) {
+  [dir="rtl"] .payment-stepper,
+  .payment-progress-card[dir="rtl"] .payment-stepper {
+    padding-left: 0;
+    padding-right: var(--fm-space-8);
+  }
+
+  [dir="rtl"] .payment-node,
+  .payment-progress-card[dir="rtl"] .payment-node {
+    flex-direction: row;
+    text-align: right;
+  }
+
+  [dir="rtl"] .payment-timeline-text,
+  .payment-progress-card[dir="rtl"] .payment-timeline-text {
+    text-align: right;
+  }
+
+  [dir="rtl"] .payment-timeline-desc,
+  .payment-progress-card[dir="rtl"] .payment-timeline-desc {
+    text-align: right;
+  }
+
+  [dir="rtl"] .payment-timeline-text .d-flex,
+  .payment-progress-card[dir="rtl"] .payment-timeline-text .d-flex {
+    justify-content: flex-start !important;
+  }
+
+  [dir="rtl"] .payment-connector,
+  .payment-progress-card[dir="rtl"] .payment-connector {
+    left: auto;
+    right: 22px;
+    top: 46px;
+    bottom: -24px;
+    height: auto;
+    width: 2px;
+  }
+}
+
+
+

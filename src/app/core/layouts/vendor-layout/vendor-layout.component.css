@@ -32,7 +32,7 @@
   top: 0;
   left: 0;
   z-index: 1040;
-  transition: width var(--sidebar-transition);
+  transition: width var(--sidebar-transition), transform var(--sidebar-transition);
   border-right: 1px solid var(--color-border);
   overflow: visible;
   white-space: nowrap;
@@ -382,6 +382,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-width: 0;
   transition: margin-left var(--sidebar-transition);
 }
 
@@ -742,6 +743,10 @@
   .sidebar-toggle-btn {
     display: none !important;
   }
+
+  .action-group {
+    gap: 16px !important;
+  }
 }
 
 /* ── Extra Small Devices ─────────────────────────── */
@@ -781,6 +786,10 @@
     padding: 4px 8px;
     font-size: 11px;
   }
+
+  .action-group {
+    gap: 6px !important;
+  }
 }
 
 /* ── Small Devices ───────────────────────────────── */
@@ -806,6 +815,10 @@
     width: 34px;
     height: 34px;
     font-size: 13px;
+  }
+
+  .action-group {
+    gap: 10px !important;
   }
 }
 
@@ -950,6 +963,7 @@
   .vendor-main {
     margin-left: 0;
     margin-right: var(--sidebar-width-collapsed);
+    min-width: 0;
     transition: margin-right var(--sidebar-transition);
   }
 

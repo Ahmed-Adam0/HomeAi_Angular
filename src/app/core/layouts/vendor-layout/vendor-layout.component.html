@@ -65,7 +65,7 @@
           <i class="bi bi-shop"></i>
           <span>{{ 'VENDOR.LAYOUT.NAV_BACK_MARKETPLACE' | translate }}</span>
         </a>
-        <a (click)="logout()" class="nav-item btn-logout cursor-pointer text-danger" [attr.aria-label]="translationService.currentLang() === 'ar' ? 'تسجيل الخروج' : 'Logout'">
+        <a (click)="logout()" class="nav-item btn-logout d-md-none mt-2 cursor-pointer text-danger" [attr.aria-label]="translationService.currentLang() === 'ar' ? 'تسجيل الخروج' : 'Logout'">
           <i class="bi bi-box-arrow-right"></i>
           <span>{{ translationService.currentLang() === 'ar' ? 'تسجيل الخروج' : 'Logout' }}</span>
         </a>

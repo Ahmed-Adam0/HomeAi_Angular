@@ -323,9 +323,22 @@
   <div class="drawer-body flex-grow-1 overflow-y-auto p-3">
     <!-- Navigation Links -->
     <div class="mobile-nav-list d-flex flex-column gap-1">
+      <!-- Home -->
+      <a routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold d-flex align-items-center gap-2 fs-6"
+        [class.active]="isNavLinkActive('/', 'Home')"
+        (click)="selectMainLink('Home')">
+        <i class="bi bi-house-fill text-gold fs-7"></i>
+        <span>{{ 'NAV_HOME' | translate }}</span>
+      </a>
+
       <!-- Products -->
       <a routerLink="/products"
+        routerLinkActive="active"
         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold d-flex align-items-center gap-2 fs-6"
+        [class.active]="isNavLinkActive('/products', 'Products')"
         (click)="selectMainLink('Products')">
         <i class="bi bi-grid-fill text-gold fs-7"></i>
         <span>{{ 'NAV_PRODUCTS' | translate }}</span>
@@ -333,7 +346,9 @@
 
       <!-- AI Chat -->
       <a routerLink="/room-upload"
+        routerLinkActive="active"
         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold d-flex align-items-center gap-2 fs-6"
+        [class.active]="isNavLinkActive('/room-upload', 'AI Accent')"
         (click)="selectMainLink('AI Accent')">
         <i class="bi bi-stars text-gold fs-7"></i>
         <span>{{ 'NAV_AI_ACCENT' | translate }}</span>
@@ -341,7 +356,9 @@
 
       <!-- Inspirations -->
       <a routerLink="/inspirations"
+        routerLinkActive="active"
         class="mobile-nav-link text-decoration-none py-2 px-1 fw-semibold d-flex align-items-center gap-2 fs-6"
+        [class.active]="isNavLinkActive('/inspirations', 'Inspirations')"
         (click)="selectMainLink('Inspirations')">
         <i class="bi bi-compass-fill text-gold fs-7"></i>
         <span>{{ 'NAV_INSPIRATIONS' | translate }}</span>
