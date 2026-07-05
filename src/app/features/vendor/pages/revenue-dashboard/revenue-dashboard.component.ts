@@ -15,6 +15,7 @@ import { VendorRevenueService } from '../../services/vendor-revenue.service';
 import { IRevenueAnalytics } from '../../interfaces';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pipe';
+import { ThemeService } from '../../../../core/services/theme.service';
 
 interface KpiCard {
   key: string;
@@ -55,6 +56,7 @@ export class RevenueDashboard implements OnInit {
   protected readonly revenueService = inject(VendorRevenueService);
   private readonly currencyFormat = inject(CurrencyFormatPipe);
   private readonly datePipe = inject(DatePipe);
+  protected readonly themeService = inject(ThemeService);
 
   readonly data = this.revenueService.revenueSignal;
   readonly loading = this.revenueService.loadingSignal;
@@ -240,11 +242,17 @@ export class RevenueDashboard implements OnInit {
 
   /* ---------- Charts ---------- */
 
-  private readonly palette = [getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(), '#657e5d', '#5c7f93', '#ad5c51', '#b08149', '#8B5CF6', '#EC4899'];
+  private getPalette(): string[] {
+    const isBrowser = typeof document !== 'undefined';
+    const primary = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() : '#b8935c';
+    return [primary, '#657e5d', '#5c7f93', '#ad5c51', '#b08149', '#8B5CF6', '#EC4899'];
+  }
 
   readonly lineChartData = computed(() => {
+    this.themeService.currentThemeSignal();
     const d = this.data();
     if (!d?.dailyBreakdown?.length) return null;
+    const palette = this.getPalette();
     return {
       labels: d.dailyBreakdown.map((i) => {
         const date = new Date(i.date);
@@ -253,7 +261,7 @@ export class RevenueDashboard implements OnInit {
       datasets: [{
         label: 'Revenue',
         data: d.dailyBreakdown.map((i) => i.revenue),
-        borderColor: this.palette[0],
+        borderColor: palette[0],
         backgroundColor: (ctx: any) => {
           if (!ctx.chart?.ctx) return 'transparent';
           const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 300);
@@ -264,11 +272,11 @@ export class RevenueDashboard implements OnInit {
         fill: true,
         tension: 0.45,
         pointBackgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() : 'var(--color-heading)',
-        pointBorderColor: this.palette[0],
+        pointBorderColor: palette[0],
         pointBorderWidth: 2.5,
         pointRadius: 4,
         pointHoverRadius: 7,
-        pointHoverBackgroundColor: this.palette[0],
+        pointHoverBackgroundColor: palette[0],
         pointHoverBorderColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() : 'var(--color-heading)',
         pointHoverBorderWidth: 3,
         borderWidth: 3,
@@ -277,15 +285,17 @@ export class RevenueDashboard implements OnInit {
   });
 
   readonly barChartData = computed(() => {
+    this.themeService.currentThemeSignal();
     const d = this.data();
     if (!d?.monthlyBreakdown?.length) return null;
+    const palette = this.getPalette();
     return {
       labels: d.monthlyBreakdown.map((i) => i.month),
       datasets: [{
         label: 'Revenue',
         data: d.monthlyBreakdown.map((i) => i.revenue),
-        backgroundColor: d.monthlyBreakdown.map((_, i) => this.palette[i % this.palette.length] + 'D4'),
-        borderColor: d.monthlyBreakdown.map((_, i) => this.palette[i % this.palette.length]),
+        backgroundColor: d.monthlyBreakdown.map((_, i) => palette[i % palette.length] + 'D4'),
+        borderColor: d.monthlyBreakdown.map((_, i) => palette[i % palette.length]),
         borderWidth: 1,
         borderRadius: 8,
         borderSkipped: false,
@@ -294,94 +304,179 @@ export class RevenueDashboard implements OnInit {
   });
 
   readonly doughnutChartData = computed(() => {
+    this.themeService.currentThemeSignal();
     const d = this.data();
     if (!d?.ordersByStatus?.length) return null;
+    const palette = this.getPalette();
+    const isBrowser = typeof document !== 'undefined';
+    const surfaceColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() : 'var(--color-heading)';
     return {
       labels: d.ordersByStatus.map((i) => i.status),
       datasets: [{
         data: d.ordersByStatus.map((i) => i.count),
-        backgroundColor: d.ordersByStatus.map((_, i) => this.palette[i % this.palette.length]),
+        backgroundColor: d.ordersByStatus.map((_, i) => palette[i % palette.length]),
         borderWidth: 3,
-        borderColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() : 'var(--color-heading)',
-        hoverBorderColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim() : 'var(--color-heading)',
+        borderColor: surfaceColor,
+        hoverBorderColor: surfaceColor,
         hoverBorderWidth: 4,
         hoverOffset: 8,
       }],
     };
   });
 
-  readonly chartOptions: any = {
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: { mode: 'index', intersect: false },
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : 'var(--color-heading)',
-        titleFont: { family: 'Inter', size: 12, weight: '600' },
-        bodyFont: { family: 'Inter', size: 13 },
-        padding: 12,
-        cornerRadius: 8,
-        displayColors: true,
-        callbacks: { label: (ctx: any) => `EGP ${ctx.parsed.y.toFixed(2)}` },
-      },
-    },
-    scales: {
-      x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375', maxRotation: 45 } },
-      y: { beginAtZero: true, grid: { color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() : 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375', callback: (v: any) => `EGP ${v}` } },
-    },
-  };
+  readonly chartOptions = computed(() => {
+    this.themeService.currentThemeSignal();
+    const isBrowser = typeof document !== 'undefined';
+    const cardColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : '#ffffff';
+    const textColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim() : '#544d43';
+    const textMutedColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375';
+    const borderColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() : 'rgba(31,28,24,0.06)';
+    const primaryColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() : '#b8935c';
 
-  readonly barChartOptions: any = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : 'var(--color-heading)',
-        titleFont: { family: 'Inter', size: 12, weight: '600' },
-        bodyFont: { family: 'Inter', size: 13 },
-        padding: 12,
-        cornerRadius: 8,
-        callbacks: { label: (ctx: any) => `EGP ${ctx.parsed.y.toFixed(2)}` },
-      },
-    },
-    scales: {
-      x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375' } },
-      y: { beginAtZero: true, grid: { color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() : 'rgba(31,28,24,0.06)', drawBorder: false }, ticks: { font: { family: 'Inter', size: 11 }, color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375', callback: (v: any) => `EGP ${v}` } },
-    },
-  };
-
-  readonly doughnutOptions: any = {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: '68%',
-    plugins: {
-      legend: {
-        position: 'bottom',
-        labels: {
-          font: { family: 'Inter', size: 12, weight: '500' },
-          color: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#544d43',
-          padding: 16,
-          usePointStyle: true,
-          pointStyleWidth: 10,
-        },
-      },
-      tooltip: {
-        backgroundColor: typeof document !== 'undefined' ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : 'var(--color-heading)',
-        titleFont: { family: 'Inter', size: 12, weight: '600' },
-        bodyFont: { family: 'Inter', size: 13 },
-        padding: 12,
-        cornerRadius: 8,
-        callbacks: {
-          label: (ctx: any) => {
-            const total = ctx.dataset.data.reduce((a: number, b: number) => a + b, 0);
-            return ` ${ctx.label}: ${ctx.parsed} (${((ctx.parsed / total) * 100).toFixed(1)}%)`;
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: cardColor,
+          titleColor: textColor,
+          bodyColor: textColor,
+          borderColor: primaryColor,
+          borderWidth: 1,
+          titleFont: { family: 'Inter', size: 12, weight: '600' },
+          bodyFont: { family: 'Inter', size: 13 },
+          padding: 12,
+          cornerRadius: 8,
+          displayColors: true,
+          callbacks: {
+            label: (ctx: any) => ` EGP ${ctx.parsed.y.toLocaleString()}`
           },
         },
       },
-    },
-  };
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { family: 'Inter', size: 11 },
+            color: textMutedColor,
+            maxRotation: 45
+          }
+        },
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: borderColor,
+            drawBorder: false
+          },
+          ticks: {
+            font: { family: 'Inter', size: 11 },
+            color: textMutedColor,
+            callback: (v: any) => `EGP ${v.toLocaleString()}`
+          }
+        },
+      },
+    };
+  });
+
+  readonly barChartOptions = computed(() => {
+    this.themeService.currentThemeSignal();
+    const isBrowser = typeof document !== 'undefined';
+    const cardColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : '#ffffff';
+    const textColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim() : '#544d43';
+    const textMutedColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375';
+    const borderColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim() : 'rgba(31,28,24,0.06)';
+    const primaryColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() : '#b8935c';
+
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: cardColor,
+          titleColor: textColor,
+          bodyColor: textColor,
+          borderColor: primaryColor,
+          borderWidth: 1,
+          titleFont: { family: 'Inter', size: 12, weight: '600' },
+          bodyFont: { family: 'Inter', size: 13 },
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            label: (ctx: any) => ` EGP ${ctx.parsed.y.toLocaleString()}`
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { family: 'Inter', size: 11 },
+            color: textMutedColor
+          }
+        },
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: borderColor,
+            drawBorder: false
+          },
+          ticks: {
+            font: { family: 'Inter', size: 11 },
+            color: textMutedColor,
+            callback: (v: any) => `EGP ${v.toLocaleString()}`
+          }
+        },
+      },
+    };
+  });
+
+  readonly doughnutOptions = computed(() => {
+    this.themeService.currentThemeSignal();
+    const isBrowser = typeof document !== 'undefined';
+    const cardColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-card').trim() : '#ffffff';
+    const textColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim() : '#544d43';
+    const textMutedColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() : '#8c8375';
+    const primaryColor = isBrowser ? getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() : '#b8935c';
+
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { family: 'Inter', size: 12, weight: '500' },
+            color: textMutedColor,
+            padding: 16,
+            usePointStyle: true,
+            pointStyleWidth: 10,
+          },
+        },
+        tooltip: {
+          backgroundColor: cardColor,
+          titleColor: textColor,
+          bodyColor: textColor,
+          borderColor: primaryColor,
+          borderWidth: 1,
+          titleFont: { family: 'Inter', size: 12, weight: '600' },
+          bodyFont: { family: 'Inter', size: 13 },
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            label: (ctx: any) => {
+              const total = ctx.dataset.data.reduce((a: number, b: number) => a + b, 0);
+              const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : '0';
+              return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+            },
+          },
+        },
+      },
+    };
+  });
 
   ngOnInit(): void {
     this.revenueService.startPolling(30_000);
