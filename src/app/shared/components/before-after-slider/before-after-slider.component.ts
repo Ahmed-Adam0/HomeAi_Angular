@@ -18,6 +18,14 @@ export class BeforeAfterSliderComponent {
 
   sliderPosition = 50;
   isDragging = false;
+  aspectRatio = '16 / 11';
+
+  onImageLoad(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img && img.naturalWidth && img.naturalHeight) {
+      this.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+    }
+  }
 
   startDrag(event: MouseEvent | TouchEvent): void {
     event.preventDefault();
