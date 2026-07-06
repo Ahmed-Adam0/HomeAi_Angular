@@ -29,14 +29,33 @@
         [label]="'PAYMENT_FAILED.CTA_RETRY' | translate"
         variant="danger"
         size="lg"
+        class="w-100"
         (clicked)="retryCheckout()">
       </app-button>
       <app-button
         [label]="'PAYMENT_FAILED.CTA_BACK_TO_CART' | translate"
         variant="outline"
         size="lg"
+        class="w-100"
         (clicked)="backToCart()">
       </app-button>
+      
+      <div class="secondary-actions-group">
+        <app-button
+          [label]="'PAYMENT_FAILED.CTA_VIEW_ORDERS' | translate"
+          variant="outline"
+          size="md"
+          class="w-100"
+          (clicked)="viewOrders()">
+        </app-button>
+        <app-button
+          [label]="'PAYMENT_FAILED.CTA_CONTINUE_SHOPPING' | translate"
+          variant="outline"
+          size="md"
+          class="w-100"
+          (clicked)="continueShopping()">
+        </app-button>
+      </div>
     </div>
   </div>
 </div>
