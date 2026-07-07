@@ -17,6 +17,21 @@
         [afterLabel]="'AI.ROOM_PREVIEW.GENERATED_LABEL' | translate"
         class="w-100 h-100 d-block"
       ></app-before-after-slider>
+
+      <button 
+        class="btn btn-download position-absolute d-flex align-items-center gap-2"
+        [disabled]="isDownloading()"
+        (click)="downloadImage()"
+        [attr.aria-label]="'AI.WORKSPACE.DOWNLOAD_IMAGE' | translate"
+      >
+        @if (isDownloading()) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span>{{ 'AI.WORKSPACE.DOWNLOADING' | translate }}</span>
+        } @else {
+          <i class="bi bi-download"></i>
+          <span>{{ 'AI.WORKSPACE.DOWNLOAD_IMAGE' | translate }}</span>
+        }
+      </button>
     } @else {
       <img
         [src]="workspaceImageUrl()"

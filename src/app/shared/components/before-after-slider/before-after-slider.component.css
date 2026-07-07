@@ -1,7 +1,16 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 /* Comparison Container */
 .comparison-container {
   position: relative;
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
   aspect-ratio: 16 / 11;
   overflow: hidden;
   user-select: none;

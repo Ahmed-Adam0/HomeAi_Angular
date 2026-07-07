@@ -1,6 +1,6 @@
-<div class="comparison-container" #container [class.dragging]="isDragging">
+<div class="comparison-container" #container [class.dragging]="isDragging" [style.aspect-ratio]="aspectRatio">
   <!-- AFTER Image (Base Layer) -->
-  <img [src]="afterImageUrl" class="image-after" alt="After Transformation" loading="lazy" />
+  <img [src]="afterImageUrl" (load)="onImageLoad($event)" class="image-after" alt="After Transformation" loading="lazy" />
   @if (afterLabel) {
     <span class="badge-tag badge-after">
       {{ afterLabel }}
@@ -9,6 +9,7 @@
 
   <!-- BEFORE Image (Clipped Overlay Layer) -->
   <img [src]="beforeImageUrl" 
+       (load)="onImageLoad($event)"
        class="image-before" 
        [style.clip-path]="'inset(0 ' + (100 - sliderPosition) + '% 0 0)'" 
        alt="Before Transformation" 

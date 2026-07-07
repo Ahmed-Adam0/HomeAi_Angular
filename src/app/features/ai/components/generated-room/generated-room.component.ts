@@ -1,9 +1,10 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AiService } from '../../services/ai.service';
 import { RoomDesignSessionService } from '../../services/room-design-session.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { BeforeAfterSliderComponent } from '../../../../shared/components/before-after-slider/before-after-slider.component';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-generated-room',
@@ -15,6 +16,9 @@ import { BeforeAfterSliderComponent } from '../../../../shared/components/before
 export class GeneratedRoom {
   protected readonly aiService = inject(AiService);
   protected readonly sessionService = inject(RoomDesignSessionService);
+  protected readonly notificationService = inject(NotificationService);
+
+  readonly isDownloading = signal(false);
 
   /**
    * The image URL to show in the main workspace.
@@ -47,4 +51,52 @@ export class GeneratedRoom {
   openSummary(): void {
     this.aiService.isSummaryOpen.set(true);
   }
+
+  async downloadImage(): Promise<void> {
+    const imageUrl = this.sessionService.session().generatedImageUrl;
+    if (!imageUrl) return;
+
+    this.isDownloading.set(true);
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const filename = `furnimind-ai-room-${year}-${month}-${day}-${hours}-${minutes}.png`;
+
+    try {
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.warn('CORS/Blob download failed, attempting direct download fallback:', error);
+      try {
+        const a = document.createElement('a');
+        a.href = imageUrl;
+        a.download = filename;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (fallbackError) {
+        console.error('Direct download fallback failed:', fallbackError);
+        this.notificationService.error('AI.WORKSPACE.DOWNLOAD_ERROR');
+      }
+    } finally {
+      this.isDownloading.set(false);
+    }
+  }
 }
+

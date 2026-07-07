@@ -46,10 +46,18 @@
     overflow-y: auto;
   }
 
-  .chat-sidebar-section,
-  .room-display-section,
-  .product-sidebar-section {
-    height: 500px;
+  .chat-sidebar-section {
+    width: 100%;
+    height: clamp(400px, 60vh, 550px);
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid var(--fm-color-neutral-200, var(--color-border));
+  }
+
+  .room-display-section {
+    width: 100%;
+    height: auto;
+    overflow: visible;
     border-right: none;
     border-left: none;
     border-bottom: 1px solid var(--fm-color-neutral-200, var(--color-border));
@@ -67,3 +75,4 @@
     box-shadow: -4px 0 24px var(--color-shadow);
   }
 }
+

@@ -582,3 +582,33 @@
   color: var(--fm-color-danger-500, #ad5c51);
   background: var(--fm-color-danger-50, rgba(173, 92, 81, 0.08));
 }
+
+/* Responsive adjustments for chat panel on smaller screens */
+@media (max-width: 767.98px) {
+  .chat-messages {
+    padding: clamp(10px, 3vw, 16px) !important; /* override Bootstrap p-3 */
+  }
+
+  .welcome-container {
+    padding: clamp(16px, 4vw, 24px) clamp(12px, 3vw, 20px) !important;
+  }
+
+  .chatbot-input {
+    padding: clamp(8px, 2.5vw, 12px) clamp(10px, 3vw, 14px) !important;
+  }
+
+  .input-wrapper {
+    padding: 5px 6px 5px 10px !important;
+    gap: 4px !important;
+  }
+
+  .chatbot-textarea {
+    font-size: 0.8125rem; /* slightly smaller font for mobile inputs */
+  }
+
+  .btn-mic,
+  .btn-send {
+    width: 32px;
+    height: 32px;
+  }
+}

@@ -6,6 +6,8 @@
 .room-container {
   max-width: 1050px;
   width: 100%;
+  height: auto;
+  max-height: calc(100% - 100px);
   aspect-ratio: 16 / 10;
   background: var(--fm-color-neutral-200, #e8e4dc);
   border: 1px solid var(--fm-color-neutral-300, var(--color-border));
@@ -171,3 +173,83 @@
 .btn-proceed:active {
   transform: translateY(0);
 }
+
+/* Floating Download Button Style */
+.btn-download {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 15;
+  background-color: rgba(31, 28, 24, 0.75); /* Dark background with glassmorphism */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--fm-radius-pill, 9999px);
+  padding: 8px 16px;
+  font-size: 0.785rem;
+  font-family: var(--fm-font-sans), sans-serif;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-download:hover:not(:disabled) {
+  background-color: var(--fm-color-primary-500, #b8935c);
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(184, 147, 92, 0.35);
+}
+
+.btn-download:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-download:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* RTL adjustment */
+[dir="rtl"] .btn-download {
+  right: auto;
+  left: 16px;
+}
+
+/* Responsive adjustments for generated room display */
+@media (max-width: 991.98px) {
+  .room-wrapper {
+    padding: clamp(12px, 4vw, 24px) !important; /* override Bootstrap p-4 */
+    height: auto;
+  }
+
+  .room-container {
+    max-height: none; /* remove desktop height constraints on mobile */
+  }
+
+  .room-wrapper .mt-4 {
+    margin-top: clamp(12px, 4vw, 24px) !important; /* reduce spacing above proceed button */
+  }
+}
+
+@media (max-width: 767.98px) {
+  .room-wrapper {
+    padding: clamp(8px, 3vw, 16px) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .btn-download {
+    bottom: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    font-size: 0.7rem;
+  }
+  [dir="rtl"] .btn-download {
+    right: auto;
+    left: 10px;
+  }
+}
+
+
