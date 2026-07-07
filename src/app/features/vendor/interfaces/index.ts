@@ -7,3 +7,4 @@ export * from './ivendor-notification';
 export * from './iworkshop-profile';
 export * from './iworkshop-profile-form';
 export * from './iorder-analytics';
+export * from './ivendor-wallet';

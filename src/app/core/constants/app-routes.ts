@@ -50,7 +50,8 @@ export const APP_ROUTES = {
   VENDOR_SHOWCASE_CREATE: 'showcases/create',
   VENDOR_SHOWCASE_EDIT: 'showcases/edit/:id',
   VENDOR_MATERIALS: 'materials',
-
+  VENDOR_WALLET: 'wallet',
+  
   AI_CHAT: 'ai-chat',
   ROOM_UPLOAD: 'room-upload',
 
@@ -111,7 +112,8 @@ export const NAV_ROUTES = {
   VENDOR_SHOWCASE_CREATE: '/vendor/showcases/create',
   vendorShowcaseEdit: (id: string | number) => `/vendor/showcases/edit/${id}`,
   VENDOR_MATERIALS: '/vendor/materials',
-
+  VENDOR_WALLET: '/vendor/wallet',
+  
   AI_CHAT: '/ai-chat',
   ROOM_UPLOAD: '/room-upload',
 
