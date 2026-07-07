@@ -142,6 +142,13 @@ export const vendorRoutes: Routes = [
           import('./pages/vendor-materials/vendor-materials.component').then(
             (m) => m.VendorMaterials,
           ),
+      },
+      {
+        path: APP_ROUTES.VENDOR_WALLET, // 'wallet'
+        loadComponent: () =>
+          import('./pages/vendor-wallet/vendor-wallet.component').then(
+            (m) => m.VendorWalletComponent,
+          ),
       }
     ],
   },

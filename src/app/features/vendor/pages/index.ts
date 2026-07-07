@@ -8,3 +8,4 @@ export { VendorNotifications } from './vendor-notifications/vendor-notifications
 export { VendorProducts } from './vendor-products/vendor-products.component';
 export { VendorProductAdd } from './vendor-product-add/vendor-product-add.component';
 export { VendorReviews } from './vendor-reviews/vendor-reviews.component';
+export { VendorWalletComponent } from './vendor-wallet/vendor-wallet.component';

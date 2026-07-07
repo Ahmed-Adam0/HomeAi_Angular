@@ -1,0 +1,276 @@
+/* ========================================================================
+   VENDOR WALLET — FurniMind Vendor Portal Design System
+   ======================================================================== */
+
+.vendor-wallet {
+  --color-bg: var(--fm-color-neutral-50, var(--color-surface));
+  --color-surface: var(--fm-color-neutral-100, #f4f2ee);
+  --color-border: var(--fm-border-medium, rgba(184, 147, 92, 0.2));
+  --color-text-primary: var(--color-text, #1c1916);
+  --color-text-secondary: var(--fm-color-neutral-600, #70675a);
+  --color-gold: var(--color-primary, #b8935c);
+  --color-gold-soft: rgba(184, 147, 92, 0.12);
+  --color-gold-subtle: rgba(184, 147, 92, 0.05);
+
+  padding: 2rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(184, 147, 92, 0.07) 0%, transparent 70%),
+    var(--color-bg);
+  color: var(--color-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:host-context(html[data-theme="dark"]) .vendor-wallet {
+  --color-bg: #12100e;
+  --color-surface: #1c1916;
+  --color-border: rgba(184, 147, 92, 0.15);
+  --color-text-primary: #e6e3df;
+  --color-text-secondary: #a89f91;
+  --color-gold: #cfa86e;
+  --color-gold-soft: rgba(207, 168, 110, 0.15);
+  --color-gold-subtle: rgba(207, 168, 110, 0.06);
+}
+
+/* Header Section */
+.vendor-wallet__header {
+  max-width: 100%;
+}
+
+.vendor-wallet__eyebrow {
+  color: var(--color-gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.vendor-wallet__title {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(1.8rem, 3.2vw + 0.6rem, 2.5rem);
+  font-weight: 850;
+  color: var(--color-text-primary);
+  line-height: 1.15;
+}
+
+.vendor-wallet__description {
+  color: var(--color-text-secondary);
+  font-size: clamp(0.85rem, 0.15vw + 0.8rem, 0.98rem);
+  max-width: 650px;
+  line-height: 1.55;
+}
+
+.vendor-wallet__meta {
+  display: inline-flex;
+  align-items: center;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(145deg, var(--color-surface) 0%, var(--color-bg) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  padding: 0.35rem 0.8rem;
+}
+
+.vendor-wallet__meta-badge {
+  color: var(--color-gold);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Premium KPI Cards */
+.kpi-card {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease !important;
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(184, 147, 92, 0.08) !important;
+}
+
+.kpi-label {
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.kpi-value {
+  color: var(--color-text-primary);
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+}
+
+.kpi-icon-wrapper {
+  background: var(--color-gold-soft) !important;
+  color: var(--color-gold) !important;
+}
+
+.kpi-withdrawn-val {
+  color: var(--color-text-primary);
+}
+
+/* Call to Action Banner Card */
+.card-cta-banner {
+  background: linear-gradient(135deg, var(--color-gold-subtle) 0%, var(--color-surface) 100%) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease !important;
+}
+
+.card-cta-banner:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(184, 147, 92, 0.08) !important;
+}
+
+.cta-title {
+  color: var(--color-text-primary);
+}
+
+.cta-description {
+  color: var(--color-text-secondary);
+}
+
+/* Premium Buttons */
+.btn-premium-action {
+  background-color: var(--color-gold) !important;
+  color: #ffffff !important;
+  transition: all 0.3s ease !important;
+  border: 1px solid transparent !important;
+}
+
+.btn-premium-action:hover:not([disabled]) {
+  background-color: var(--color-text-primary) !important;
+  transform: scale(1.03);
+}
+
+.btn-premium-action[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* History Card & Table Styling */
+.history-card {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 16px !important;
+}
+
+.history-title {
+  color: var(--color-text-primary);
+}
+
+.custom-table {
+  width: 100%;
+}
+
+.custom-table th {
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid var(--color-border) !important;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+}
+
+.custom-table td {
+  border-bottom: 1px solid var(--color-border) !important;
+  padding: 16px;
+  color: var(--color-text-primary);
+}
+
+.table-date {
+  color: var(--color-text-secondary);
+}
+
+.table-amount {
+  color: var(--color-text-primary);
+}
+
+.table-phone {
+  color: var(--color-text-primary);
+}
+
+.table-ref {
+  color: var(--color-text-secondary);
+}
+
+/* Status Badges */
+.bg-warning-soft {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  color: #f59e0b !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+.bg-success-soft {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+}
+
+.bg-danger-soft {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}
+
+/* Modal form inputs & styling */
+.modal-label {
+  color: var(--color-text-primary);
+}
+
+.custom-input {
+  background-color: var(--color-bg) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+  transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+  border-color: var(--color-gold) !important;
+  box-shadow: 0 0 0 3px rgba(184, 147, 92, 0.18) !important;
+}
+
+.btn-cancel {
+  background-color: transparent !important;
+  color: var(--color-text-secondary) !important;
+}
+
+.btn-cancel:hover {
+  background-color: var(--color-gold-soft) !important;
+  color: var(--color-gold) !important;
+}
+
+.btn-confirm-action {
+  background-color: var(--color-gold) !important;
+  color: white !important;
+}
+
+.btn-confirm-action:hover:not([disabled]) {
+  background-color: var(--color-text-primary) !important;
+}
+
+.badge-gold-themed-text {
+  color: #7c5a2b !important; /* Dark bronze/gold in light mode for clear contrast */
+}
+
+:host-context(html[data-theme="dark"]) .badge-gold-themed-text {
+  color: #f2c98a !important; /* Luminous light gold in dark mode for clean contrast */
+}
+
+/* Responsive Scaling details */
+@media (max-width: 768px) {
+  .vendor-wallet {
+    padding: 1.2rem;
+  }
+
+  .vendor-wallet__header {
+    margin-bottom: 2rem !important;
+  }
+}

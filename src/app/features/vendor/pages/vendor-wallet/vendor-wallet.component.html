@@ -1,0 +1,212 @@
+<main class="vendor-wallet py-4 py-md-5 px-3 px-md-5" [attr.dir]="translationService.currentLang() === 'ar' ? 'rtl' : 'ltr'">
+  <!-- Header -->
+  <header class="vendor-wallet__header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 mb-md-5">
+    <div class="vendor-wallet__header-content">
+      <p class="vendor-wallet__eyebrow fw-bold mb-1 letter-spacing-wide">
+        {{ translationService.currentLang() === 'ar' ? 'المحفظة والسحوبات' : 'Wallet & Payouts' }}
+      </p>
+      <h1 class="vendor-wallet__title fw-extrabold mb-0">
+        {{ translationService.currentLang() === 'ar' ? 'إدارة محفظتك' : 'Manage Your Wallet' }}
+      </h1>
+      <p class="vendor-wallet__description fs-7 mt-1 mb-0">
+        {{ translationService.currentLang() === 'ar' ? 'عرض رصيدك المتاح وتقديم طلبات سحب الأرباح إلى المحفظة الإلكترونية للهاتف المحمول.' : 'View your available balance and request payouts to your mobile wallet.' }}
+      </p>
+    </div>
+    <div class="vendor-wallet__meta align-self-start align-self-md-center">
+      <span class="vendor-wallet__meta-badge px-3 py-1.5 rounded-pill font-xxs fw-bold uppercase">Wallet Overview</span>
+    </div>
+  </header>
+
+  <!-- Error Callout from Backend -->
+  <div *ngIf="errorMsg()" class="alert alert-danger font-xs rounded-3 p-3 mb-4 border-0 d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span>{{ errorMsg() }}</span>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading() && !wallet()" class="py-4">
+    <app-skeleton-loader type="vendor-dashboard" [count]="1"></app-skeleton-loader>
+  </div>
+
+  <!-- Wallet Main Content -->
+  <div class="vendor-wallet__content mt-4" *ngIf="!isLoading() || wallet()">
+    
+    <!-- Balance Card Row -->
+    <div class="row g-4 mb-4 mb-md-5">
+      <div class="col-md-6 col-lg-4">
+        <div class="card kpi-card border-0 rounded-4 p-4 shadow-xs h-100 transition-all hover-lift">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <span class="kpi-label uppercase font-xxs fw-bold tracking-wider">
+                {{ translationService.currentLang() === 'ar' ? 'الرصيد المتاح' : 'Available Balance' }}
+              </span>
+              <h2 class="kpi-value h3 fw-extrabold m-0 mt-2">
+                {{ (wallet()?.availableBalance || 0) | currencyFormat }}
+              </h2>
+            </div>
+            <div class="kpi-icon-wrapper rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+              <i class="bi bi-wallet2 fs-4"></i>
+            </div>
+          </div>
+          <div class="kpi-footer d-flex align-items-center justify-content-between mt-3 pt-3 border-top border-light-subtle">
+            <span class="font-xxs text-secondary">
+              {{ translationService.currentLang() === 'ar' ? 'إجمالي السحوبات السابقة:' : 'Total Withdrawn:' }}
+              <strong class="kpi-withdrawn-val">{{ (wallet()?.totalWithdrawn || 0) | currencyFormat }}</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Action Callout Card -->
+      <div class="col-md-6 col-lg-8">
+        <div class="card card-cta-banner rounded-4 border-0 p-4 h-100 shadow-xs position-relative overflow-hidden transition-all hover-lift">
+          <div class="row align-items-center g-4 position-relative z-2 h-100">
+            <div class="col-sm-8">
+              <span class="badge bg-gold-soft text-gold badge-gold-themed-text font-xxs mb-2 px-2.5 py-1 rounded-pill fw-bold">
+                {{ translationService.currentLang() === 'ar' ? 'تحويل أرباحك' : 'Payout Transfer' }}
+              </span>
+              <h2 class="cta-title h5 fw-extrabold mb-2">
+                {{ translationService.currentLang() === 'ar' ? 'سحب رصيد محفظتك' : 'Withdraw Wallet Balance' }}
+              </h2>
+              <p class="cta-description font-xs mb-0" style="max-width: 580px; line-height: 1.6;">
+                {{ translationService.currentLang() === 'ar' ? 'قم بتحويل أرباحك مباشرة إلى رقم محفظتك الإلكترونية الخاصة بـ Paymob (فودافون كاش، اتصالات كاش، أورانج كاش، أو محفظة ذكية أخرى).' : 'Transfer your earnings directly to your mobile wallet (Vodafone Cash, Etisalat Cash, Orange Cash, or any smart wallet) securely via Paymob.' }}
+              </p>
+            </div>
+            <div class="col-sm-4 text-sm-end">
+              <button 
+                (click)="openWithdrawDialog()"
+                [disabled]="!(wallet()?.availableBalance || 0)"
+                class="btn btn-premium-action rounded-pill px-4 py-2.5 font-xs fw-bold border-0 shadow-sm transition-all hover-lift d-inline-flex align-items-center gap-2">
+                <i class="bi bi-cash-stack"></i>
+                {{ translationService.currentLang() === 'ar' ? 'طلب سحب رصيد' : 'Request Payout' }}
+              </button>
+            </div>
+          </div>
+          <div class="cta-background-decor position-absolute"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payout History Section -->
+    <section class="vendor-wallet__section">
+      <div class="card history-card border-0 rounded-4 p-4 shadow-xs">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-light-subtle pb-3">
+          <h3 class="history-title h6 fw-extrabold m-0">
+            {{ translationService.currentLang() === 'ar' ? 'سجل السحوبات والطلبات السابقة' : 'Payout History' }}
+          </h3>
+          <span class="badge bg-gold-soft text-gold badge-gold-themed-text px-2.5 py-1 rounded-pill font-xxs fw-bold">
+            {{ withdrawals().length }} {{ translationService.currentLang() === 'ar' ? 'عمليات' : 'transfers' }}
+          </span>
+        </div>
+
+        <!-- History Table -->
+        <div class="table-responsive">
+          <table class="table align-middle custom-table">
+            <thead>
+              <tr class="font-xxs uppercase tracking-wider">
+                <th scope="col" class="border-0 pb-3">{{ translationService.currentLang() === 'ar' ? 'التاريخ' : 'Date' }}</th>
+                <th scope="col" class="border-0 pb-3">{{ translationService.currentLang() === 'ar' ? 'المبلغ' : 'Amount' }}</th>
+                <th scope="col" class="border-0 pb-3">{{ translationService.currentLang() === 'ar' ? 'رقم المحفظة' : 'Wallet Number' }}</th>
+                <th scope="col" class="border-0 pb-3 text-center">{{ translationService.currentLang() === 'ar' ? 'الحالة' : 'Status' }}</th>
+                <th scope="col" class="border-0 pb-3">{{ translationService.currentLang() === 'ar' ? 'المرجع' : 'Reference' }}</th>
+              </tr>
+            </thead>
+            <tbody class="font-xs">
+              <tr *ngFor="let item of withdrawals()" class="align-middle">
+                <td class="py-3 border-light-subtle table-date">{{ item.createdAt | date:'mediumDate' }}</td>
+                <td class="py-3 border-light-subtle fw-bold table-amount">{{ item.amount | currencyFormat }}</td>
+                <td class="py-3 border-light-subtle font-mono table-phone">{{ item.walletNumber }}</td>
+                <td class="py-3 border-light-subtle text-center">
+                  <span [ngClass]="{
+                    'bg-warning-soft text-warning': item.status === 'Pending',
+                    'bg-success-soft text-success': item.status === 'Completed',
+                    'bg-danger-soft text-danger': item.status === 'Failed'
+                  }" class="badge rounded-pill px-2.5 py-1.5 font-xxs fw-bold">
+                    {{ item.status === 'Pending' ? (translationService.currentLang() === 'ar' ? 'قيد الانتظار' : 'Pending') : 
+                       item.status === 'Completed' ? (translationService.currentLang() === 'ar' ? 'مكتمل' : 'Completed') : 
+                       (translationService.currentLang() === 'ar' ? 'فشل' : 'Failed') }}
+                  </span>
+                </td>
+                <td class="py-3 border-light-subtle font-mono text-muted text-xxs table-ref">{{ item.transactionReference || '—' }}</td>
+              </tr>
+              <tr *ngIf="!withdrawals().length">
+                <td colspan="5" class="py-5 text-center text-muted border-0">
+                  {{ translationService.currentLang() === 'ar' ? 'لا توجد طلبات سحب سابقة.' : 'No withdrawal requests found.' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Withdrawal Modal -->
+  <app-modal 
+    [visible]="showWithdrawModal()" 
+    [title]="translationService.currentLang() === 'ar' ? 'طلب سحب رصيد' : 'Request Withdrawal'" 
+    size="md" 
+    (close)="showWithdrawModal.set(false)">
+    
+    <form [formGroup]="withdrawForm" (ngSubmit)="onSubmitWithdraw()" class="py-2">
+      <!-- Error Callout inside modal -->
+      <div *ngIf="actionError()" class="alert alert-danger font-xs rounded-3 p-3 mb-3 border-0 d-flex align-items-center gap-2">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>{{ actionError() }}</span>
+      </div>
+
+      <div class="mb-3">
+        <label for="amount" class="form-label modal-label font-xs fw-bold mb-2">
+          {{ translationService.currentLang() === 'ar' ? 'المبلغ المطلوب سحبه (بالجنيه المصري) *' : 'Amount to Withdraw (EGP) *' }}
+        </label>
+        <input 
+          type="number" 
+          id="amount" 
+          formControlName="amount" 
+          class="form-control custom-input px-3 py-2.5 fs-7 rounded-3" 
+          [placeholder]="translationService.currentLang() === 'ar' ? 'أدخل المبلغ...' : 'Enter amount...'"
+          [class.is-invalid]="isInvalid('amount')"
+        />
+        <div class="invalid-feedback fs-8 px-1 mt-1">
+          {{ translationService.currentLang() === 'ar' ? 'يرجى إدخال مبلغ صالح (10 جنيه على الأقل).' : 'Please enter a valid amount (minimum 10 EGP).' }}
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="walletNumber" class="form-label modal-label font-xs fw-bold mb-2">
+          {{ translationService.currentLang() === 'ar' ? 'رقم المحفظة الإلكترونية (فودافون كاش، اتصالات، إلخ) *' : 'Mobile Wallet Number *' }}
+        </label>
+        <input 
+          type="text" 
+          id="walletNumber" 
+          formControlName="walletNumber" 
+          class="form-control custom-input px-3 py-2.5 fs-7 rounded-3" 
+          placeholder="01xxxxxxxxx"
+          [class.is-invalid]="isInvalid('walletNumber')"
+        />
+        <div class="invalid-feedback fs-8 px-1 mt-1">
+          {{ translationService.currentLang() === 'ar' ? 'يرجى إدخال رقم محفظة إلكترونية صحيح مكون من 11 رقماً (مثال: 01012345678).' : 'Please enter a valid 11-digit mobile wallet number (e.g. 01012345678).' }}
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex justify-content-end gap-2 pt-3 border-top border-light-subtle">
+        <button 
+          type="button" 
+          class="btn btn-cancel rounded-pill px-4 py-2 fs-7 fw-bold border-0 transition-all" 
+          [disabled]="isSubmitting()" 
+          (click)="showWithdrawModal.set(false)">
+          {{ translationService.currentLang() === 'ar' ? 'إلغاء' : 'Cancel' }}
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-premium-action btn-confirm-action rounded-pill px-4 py-2 fs-7 fw-bold d-flex align-items-center gap-2 border-0 transition-all hover-lift"
+          [disabled]="isSubmitting() || withdrawForm.invalid">
+          <span *ngIf="isSubmitting()" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <i *ngIf="!isSubmitting()" class="bi bi-check-circle-fill"></i>
+          {{ translationService.currentLang() === 'ar' ? 'تأكيد السحب' : 'Confirm Payout' }}
+        </button>
+      </div>
+    </form>
+  </app-modal>
+</main>
