@@ -98,6 +98,9 @@ export const API_URLS = {
     DELETE_GROUP: (groupId: string | number) => `VendorMaterials/Groups/${groupId}`,
     ADD_OPTION: (groupId: string | number) => `VendorMaterials/Groups/${groupId}/Options`,
     DELETE_OPTION: (optionId: string | number) => `VendorMaterials/Options/${optionId}`,
+    WALLET: 'vendor/wallet',
+    WITHDRAW: 'vendor/wallet/withdraw',
+    WITHDRAWALS: 'vendor/wallet/withdrawals',
   },
 } as const;
 
