@@ -15,10 +15,11 @@ export class CurrencyFormatPipe implements PipeTransform {
       return '';
     }
     
+    const formatted = numericValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const lang = this.translationService.currentLang();
     if (lang === 'ar') {
-      return `${numericValue.toLocaleString('ar-EG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ج.م`;
+      return `${formatted} ج.م`;
     }
-    return `EGP ${numericValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `EGP ${formatted}`;
   }
 }

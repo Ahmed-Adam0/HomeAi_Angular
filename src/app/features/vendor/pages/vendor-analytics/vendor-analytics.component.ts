@@ -7,7 +7,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UIChart } from 'primeng/chart';
 import { DatePicker } from 'primeng/datepicker';
@@ -49,7 +49,7 @@ function toRfc3339Start(date: Date): string {
 @Component({
   selector: 'app-vendor-analytics',
   standalone: true,
-  imports: [UIChart, DatePicker, FormsModule, CurrencyPipe, DatePipe, CurrencyFormatPipe, ProgressBar, TranslatePipe, SkeletonLoader],
+  imports: [UIChart, DatePicker, FormsModule, CurrencyPipe, DatePipe, DecimalPipe, CurrencyFormatPipe, ProgressBar, TranslatePipe, SkeletonLoader],
   providers: [CurrencyFormatPipe, DatePipe],
   templateUrl: './vendor-analytics.component.html',
   styleUrl: './vendor-analytics.component.css',
