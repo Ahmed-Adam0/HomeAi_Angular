@@ -179,7 +179,7 @@
                   <span class="vendor-analytics__perf-stat-label">{{ 'VENDOR.ORDERS_ANALYTICS.PERF_TOTAL_ORDERS' | translate }}</span>
                 </div>
                 <div class="vendor-analytics__perf-stat">
-                  <span class="vendor-analytics__perf-stat-value">{{ data()?.averageCompletionTimeHours ?? 0 }}h</span>
+                  <span class="vendor-analytics__perf-stat-value">{{ (data()?.averageCompletionTimeHours ?? 0) | number:'1.0-1' }}h</span>
                   <span class="vendor-analytics__perf-stat-label">{{ 'VENDOR.ORDERS_ANALYTICS.PERF_AVG_TIME' | translate }}</span>
                 </div>
               </div>
