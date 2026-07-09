@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { APP_ROUTES } from '../../core/constants';
 import { roomSessionGuard } from '../../core/guards/room-session.guard';
+import { authGuard } from '../../core/guards';
 
 export const aiRoutes: Routes = [
   {
@@ -10,6 +11,7 @@ export const aiRoutes: Routes = [
   },
   {
     path: APP_ROUTES.ROOM_UPLOAD,
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/room-upload/room-upload.component').then((m) => m.RoomUpload),
   },
